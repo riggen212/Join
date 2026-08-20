@@ -1,0 +1,10 @@
+:root {
+    --background-dark-color: #2A3647;
+    --background-bright-color: #F6F7F8;
+
+    --background-dark-hover-color: #091931;
+}
+
+.button-login-next {
+    /* dies ist die Schreibweise für CSS-Klassen Namen und auch für ID-Namen */
+}
