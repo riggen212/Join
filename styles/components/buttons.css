@@ -1,0 +1,23 @@
+/* Button User Profile Initials */
+.profile-initials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 10px 10px;
+
+    height: 40px;
+    aspect-ratio: 1/1;
+
+    color: var(--light-blue-color);
+    font-size: 1.25rem;
+    font-weight: 700;
+
+    background-color: inherit;
+    border: solid 2px var(--background-dark-color);
+    border-radius: 50%;
+}
+
+.profile-initials:hover {
+    background-color: #0c2e6210;
+}

@@ -1,8 +1,12 @@
 :root {
+    /* Color */
     --background-dark-color: #2A3647;
     --background-bright-color: #F6F7F8;
-
     --background-dark-hover-color: #091931;
+    --light-blue-color: #124658;
+
+    /* Space */
+    --content-lock: 1440px;
 }
 
 .button-login-next {
@@ -22,4 +26,22 @@ h1 {
 h2 {
     font-size: 1.5rem;
     font-weight: 700;
+}
+
+button {
+    cursor: pointer;
+}
+
+.header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1rem 1.5rem;
+
+    height: 80px;
+}
+
+.header-mobile-logo {
+    height: 40px;
 }
