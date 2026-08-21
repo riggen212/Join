@@ -8,3 +8,18 @@
 .button-login-next {
     /* dies ist die Schreibweise für CSS-Klassen Namen und auch für ID-Namen */
 }
+
+* {
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
