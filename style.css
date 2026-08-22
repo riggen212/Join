@@ -37,3 +37,53 @@
 
     font-family: "Inter", sans-serif;
 }
+
+.button-dark {
+    min-height: 48px;
+    padding: var(--space-sm) var(--space-lg);
+
+    font-size: var(--font-button);
+    font-weight: 700;
+
+    border-radius: var(--border-radius-middle);
+    cursor: pointer;
+    color: #fff;
+    background-color: var(--background-dark-color);
+    border: 1px solid transparent;
+    border-radius: var( --border-radius-middle);
+}
+
+.button-dark:hover {
+    background-color: var(--background-dark-hover-color);
+    box-shadow: var(--button-hover-shadow)
+}
+
+.button-dark:active {
+    background-color: var(--button-dark-active-background-color);
+}
+
+.button-bright {
+    min-height: 48px;
+    padding: var(--space-sm) var(--space-lg);
+
+    font-size: var(--font-button);
+    font-weight: 700;
+
+    border-radius: var(--border-radius-middle);
+    cursor: pointer;
+    color: #2a3647;
+    background-color: #fff;
+    border: 1px solid #2a3647;
+    border-radius: var( --border-radius-middle);
+}
+
+.button-bright:hover {
+    color: var(--background-dark-hover-color);
+    border-color: var(--background-dark-hover-color);
+    outline: 2px solid var(--background-dark-hover-color);
+    box-shadow: var(--button-hover-shadow);
+}
+
+.button-bright:active {
+    outline: none;
+}

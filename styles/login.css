@@ -1,21 +1,59 @@
+:root {
+    --login-max-width: 650px;
+    --form-max-width: 460px;
+}
+
 .landing-page {
-    position: relative;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     width: 100%;
     min-height: 100dvh;
-    padding: var(--space-lg);
-    overflow: hidden;
 
     background-color: var(--background-dark-color);
 
     animation: background-fade 2s ease-in-out forwards;
 }
 
-/* logos */
+header {
+    position: absolute;
+    top: var(--space-lg);
+    left: 50%;
+    z-index: 3;
+
+    display: flex;
+    justify-content: flex-end;
+
+    width: min(100%, var(--content-max-width));
+    padding: var(--space-lg);
+
+    transform: translateX(-50%);
+}
+
+.sign-up-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+
+    opacity: 0;
+    animation: fade-in 2.5s ease-in-out forwards;
+}
+
+.sign-up-wrapper span {
+    font-size: 20px;
+}
+
+.landing-page-content {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: min(100%, var(--content-max-width));
+    min-height: 100dvh;
+    margin-inline: auto;
+    padding: var(--space-lg);
+
+    overflow: hidden;
+}
 
 .logo-bright,
 .logo-dark {
@@ -40,8 +78,6 @@
     opacity: 1;
     animation: move-dark-logo 2s ease-in-out forwards;
 }
-
-/* login area */
 
 .login {
     position: relative;
@@ -90,8 +126,6 @@
     width: min(100%, var(--form-max-width));
 }
 
-/* input fields */
-
 .input-wrapper {
     display: flex;
     align-items: center;
@@ -138,7 +172,7 @@
 
     background-color: transparent;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
 }
 
 .input-wrapper button {
@@ -163,61 +197,36 @@
     border-radius: var(--border-radius-middle);
 }
 
-
-/* button area */
-
 .login-button-area {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--space-md);
 
+    padding-top: var(--space-lg);
     width: 100%;
 }
 
-.login-button-area button {
-    flex: 1 1 180px;
+footer {
+    position: fixed;
+    bottom: 32px;
+    left: 0;
+    width: 100%;
 
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
 
-    font-size: var(--font-button);
-    font-weight: 700;
+    opacity: 0;
+    animation: fade-in 2.5s ease-in-out forwards;
 
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
-}
+    a {
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 400;
 
-.button-dark {
-    color: #fff;
-    background-color: var(--background-dark-color);
-    border: 1px solid transparent;
-}
-
-.button-dark:hover {
-    background-color: var(--background-dark-hover-color);
-    box-shadow: var(--button-hover-shadow)
-}
-
-.button-dark:active {
-    background-color: var(--button-dark-active-background-color);
-}
-
-.button-bright {
-    color: #2a3647;
-    background-color: #fff;
-    border: 1px solid #2a3647;
-}
-
-.button-bright:hover {
-    color: var(--background-dark-hover-color);
-    border-color: var(--background-dark-hover-color);
-    outline: 2px solid var(--background-dark-hover-color);
-    box-shadow: var(--button-hover-shadow);
-}
-
-.button-bright:active {
-    outline: none;
+        color: #000000;
+    }
 }
 
 /* keyboard navigation */
