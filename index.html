@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="./script.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="./assets/icons/logo_dark.svg">
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./styles/login.css">
     <link rel="stylesheet" href="./styles/fonts.css">
 
     <title>Join</title>
@@ -18,7 +20,7 @@
     </header>
 
     <main class="landing-page">
-        <img class="logo-brigt" src="./assets/icons/logo_bright.svg" alt="">
+        <img class="logo-bright" src="./assets/icons/logo_bright.svg" alt="">
         <img class="logo-dark" src="./assets/icons/logo_dark.svg" alt="">
         <section class="login">
             <h1>Log in</h1>
@@ -26,11 +28,14 @@
             <form>
                 <div class="input-wrapper">
                     <input type="email" autocomplete="email" placeholder="Email">
-                    <img src="./assets/icons/mail.svg" alt="">
+                    <span class="input-icon">
+                        <img src="./assets/icons/mail.svg" alt="">
+                    </span>
                 </div>
 
                 <div class="input-wrapper">
-                    <input type="password" id="passwortFeld" autocomplete="current-password" placeholder="Passwort eingeben">
+                    <input type="password" id="passwortFeld" autocomplete="current-password"
+                        placeholder="Passwort eingeben">
                     <button type="button">
                         <img id="augeIcon" src="./assets/icons/show_password.svg" alt="Anzeigen">
                     </button>

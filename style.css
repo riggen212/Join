@@ -5,284 +5,35 @@
 
     --border-radius-high: 30px;
     --border-radius-middle: 10px;
+
+    --content-max-width: 1440px;
+
+    /* root settings for login screen */
+    --space-xs: 8px;
+    --space-sm: clamp(8px, 6.86px + 0.36vw, 12px);
+    --space-md: clamp(8px, 5.71px + 0.71vw, 16px);
+    --space-lg: clamp(16px, 13.71px + 0.71vw, 24px);
+    --space-xl: clamp(24px, 17.14px + 2.14vw, 48px);
+
+    --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
+    --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
+    --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
+
+    --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
+    --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
+
+    --login-max-width: 650px;
+    --form-max-width: 460px;
+
+    --button-hover-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+    --button-dark-active-background-color: #091931;
 }
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
 
     font-family: "Inter", sans-serif;
-}
-
-.button-login-next {
-    /* dies ist die Schreibweise für CSS-Klassen Namen und auch für ID-Namen */
-}
-
-/* index-styling */
-
-.landing-page {
-    display: flex;
-    flex-direction: column;
-
-    background-color: var(--background-dark-color);
-
-    animation-name: backgroundFade;
-    animation-duration: 2s;
-    animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
-
-    height: 100dvh;
-    padding: 24px 16px;
-}
-
-.logo-brigt {
-    height: 420px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-
-    opacity: 0;
-
-    animation-name: moveBrightLogo;
-    animation-duration: 2s;
-    animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
-}
-
-.logo-dark {
-    height: 420px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-
-    opacity: 1;
-
-    animation-name: moveDarkLogo;
-    animation-duration: 2s;
-    animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
-}
-
-.login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    gap: 32px;
-
-    width: 650px;
-    height: 450px;
-
-    background-color: #FFFFFF;
-    box-shadow: 0px 0px 16px -1px rgba(0, 0, 0, 0.5);
-    border-radius: var(--border-radius-high);
-
-    z-index: 0;
-    opacity: 0;
-
-    animation-name: fadeIn;
-    animation-duration: 2.5s;
-    animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
-
-    h1 {
-        font-weight: 700;
-        font-size: 60px;
-        font-style: normal;
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        align-items: center;
-
-        .button-show-password {
-            background-color: transparent;
-            padding: 0;
-            border: none;
-        }
-
-        .login-input-mail {
-            padding: 24px;
-
-            width: 420px;
-            height: 48px;
-
-            border-radius: var(--border-radius-middle);
-
-            font-weight: 400;
-            font-size: 20px;
-        }
-
-        .login-input-password {
-            padding: 24px;
-
-            width: 420px;
-            height: 48px;
-
-            border-radius: var(--border-radius-middle);
-
-            font-weight: 400;
-            font-size: 20px;
-        }
-
-        .login-button-area {
-            display: flex;
-            gap: 24px;
-
-            button {
-                padding: 16px 24px;
-                border-radius: var(--border-radius-middle);
-                font-size: 20px;
-                font-weight: 700;
-            }
-
-            .button-dark {
-                background-color: var(--background-dark-color);
-                color: white;
-
-                border: 1px solid transparent;
-            }
-
-            .button-dark:hover {
-                background-color: var(--background-dark-hover-color);
-            }
-
-            .button-bright {
-                background-color: #FFFFFF;
-                border: 1px solid #2A3647;
-            }
-
-            .button-bright:hover {
-                outline: 1px solid var(--background-dark-hover-color);
-            }
-
-            button:hover {
-                cursor: pointer;
-            }
-        }
-    }
-
-
-
-    /* index-styling */
-}
-
-
-/* Der Container übernimmt das optische Design des Input-Feldes */
-.input-wrapper {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius-middle);
-    padding: 0 20px;
-    /* Rechter Abstand für das Icon ist hier direkt integriert */
-    width: 100%;
-
-    background-color: white;
-
-    font-weight: 400;
-    font-size: 20px;
-}
-
-/* Das eigentliche Input-Feld verliert seinen eigenen Rahmen */
-.input-wrapper input {
-    flex: 1;
-    border: none;
-    outline: none;
-    /* Entfernt den Standard-Auswahlrahmen */
-    height: 48px;
-    width: 400px;
-    padding: 0;
-    font-size: 20px;
-
-
-}
-
-/* Der Button verhält sich wie ein klickbares Icon */
-.input-wrapper button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-
-    margin-left: 8px;
-    /* Abstand zwischen Text und Icon */
-    display: flex;
-    align-items: center;
-}
-
-.input-wrapper img {
-    width: 20px;
-    height: auto;
-}
-
-/* Optischer Fokus-Effekt für den Container, wenn man ins Feld klickt */
-.input-wrapper:focus-within {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(41, 171, 226, 0.25);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes backgroundFade {
-    from {
-        background-color: var(--background-dark-color);
-    }
-
-    to {
-        background-color: var(--background-bright-color);
-    }
-}
-
-@keyframes moveDarkLogo {
-    from {
-        top: 50%;
-        left: 50%;
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(1);
-    }
-
-    to {
-        height: 100px;
-        top: 20px;
-        left: 20px;
-        opacity: 1;
-        transform: translate(0, 0);
-    }
-}
-
-@keyframes moveBrightLogo {
-    from {
-        top: 50%;
-        left: 50%;
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-
-    to {
-        height: 100px;
-        top: 20px;
-        left: 20px;
-        opacity: 0;
-        transform: translate(0, 0);
-    }
 }
