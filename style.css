@@ -22,9 +22,6 @@
     --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
     --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
 
-    --login-max-width: 650px;
-    --form-max-width: 460px;
-
     --button-hover-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
     --button-dark-active-background-color: #091931;
 }
