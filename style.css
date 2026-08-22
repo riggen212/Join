@@ -1,10 +1,86 @@
 :root {
     --background-dark-color: #2A3647;
     --background-bright-color: #F6F7F8;
+    --background-dark-hover-color: #124658;
 
-    --background-dark-hover-color: #091931;
+    --border-radius-high: 30px;
+    --border-radius-middle: 10px;
+
+    --content-max-width: 1440px;
+
+    /* root settings for login screen */
+    --space-xs: 8px;
+    --space-sm: clamp(8px, 6.86px + 0.36vw, 12px);
+    --space-md: clamp(8px, 5.71px + 0.71vw, 16px);
+    --space-lg: clamp(16px, 13.71px + 0.71vw, 24px);
+    --space-xl: clamp(24px, 17.14px + 2.14vw, 48px);
+
+    --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
+    --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
+    --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
+
+    --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
+    --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
+
+    --button-hover-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+    --button-dark-active-background-color: #091931;
 }
 
-.button-login-next {
-    /* dies ist die Schreibweise für CSS-Klassen Namen und auch für ID-Namen */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+
+    font-family: "Inter", sans-serif;
+}
+
+.button-dark {
+    min-height: 48px;
+    padding: var(--space-sm) var(--space-lg);
+
+    font-size: var(--font-button);
+    font-weight: 700;
+
+    border-radius: var(--border-radius-middle);
+    cursor: pointer;
+    color: #fff;
+    background-color: var(--background-dark-color);
+    border: 1px solid transparent;
+    border-radius: var( --border-radius-middle);
+}
+
+.button-dark:hover {
+    background-color: var(--background-dark-hover-color);
+    box-shadow: var(--button-hover-shadow)
+}
+
+.button-dark:active {
+    background-color: var(--button-dark-active-background-color);
+}
+
+.button-bright {
+    min-height: 48px;
+    padding: var(--space-sm) var(--space-lg);
+
+    font-size: var(--font-button);
+    font-weight: 700;
+
+    border-radius: var(--border-radius-middle);
+    cursor: pointer;
+    color: #2a3647;
+    background-color: #fff;
+    border: 1px solid #2a3647;
+    border-radius: var( --border-radius-middle);
+}
+
+.button-bright:hover {
+    color: var(--background-dark-hover-color);
+    border-color: var(--background-dark-hover-color);
+    outline: 2px solid var(--background-dark-hover-color);
+    box-shadow: var(--button-hover-shadow);
+}
+
+.button-bright:active {
+    outline: none;
 }
