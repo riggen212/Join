@@ -160,7 +160,46 @@
     background-color: #0c2e6210;
 }
 
+/* Header mobile */
+.header {
+    position: fixed;
+    top: 0;
+    
+    width: 100%;
+    
+    box-shadow: 0 0 16px -1px rgb(0 0 0 / 50%);
+}
+
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    height: var(--mobile-header-footer-height);
+    width: min(100%, var(--content-max-width));
+    
+    margin-inline: auto;
+    padding: var(--space-lg) var(--space-md);
+    
+    background-color: white;
+}
+
+.header-wrapper > button {
+    cursor: pointer;
+}
+
+.header-logo {
+    height: 40px;
+}
+
 /* Navbar  */
+.footer-navbar {
+    position: fixed;
+    bottom: 0;
+    
+    width: 100%;
+}
+
 .navbar {
     display: flex;
     justify-content: center;
