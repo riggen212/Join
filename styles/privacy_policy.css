@@ -1,0 +1,51 @@
+
+
+/* Content */
+.privacy-policy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    padding: var(--mobile-header-footer-height) 0;
+}
+
+.privacy-policy-wrapper {
+    width: min(100%, var(--content-max-width));
+
+    padding: var(--space-md);
+}
+
+.privacy-policy-wrapper section {
+    margin-top: var(--space-xl);
+}
+
+.privacy-policy-wrapper h1 {
+    margin-top: var(--space-xl);
+
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.privacy-policy-wrapper h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.privacy-policy-wrapper h3 {
+    margin-top: var(--space-md);
+}
+
+.privacy-policy-wrapper h4 {
+    margin-top: var(--space-sm);
+}
+
+.privacy-policy-wrapper p,
+.privacy-policy-wrapper address {
+    margin-top: var(--space-xs);
+}
+ .privacy-policy-wrapper-headline-container {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+ }
