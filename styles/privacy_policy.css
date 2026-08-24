@@ -15,26 +15,33 @@
     padding: var(--space-md);
 }
 
+.privacy-policy-wrapper section {
+    margin-top: var(--space-xl);
+}
+
 .privacy-policy-wrapper h1 {
-    margin: var(--space-xl) 0;
+    margin-top: var(--space-xl);
 
     font-size: 2.5rem;
     font-weight: 700;
 }
 
 .privacy-policy-wrapper h2 {
-    margin-bottom: var(--space-sm);
-
     font-size: 1.5rem;
     font-weight: 700;
 }
 
-.privacy-policy-wrapper h3, h4 {
+.privacy-policy-wrapper h3 {
+    margin-top: var(--space-md);
+}
+
+.privacy-policy-wrapper h4 {
     margin-top: var(--space-sm);
 }
 
-.privacy-policy-wrapper p {
-    margin: var(--space-xs) 0;
+.privacy-policy-wrapper p,
+.privacy-policy-wrapper address {
+    margin-top: var(--space-xs);
 }
  .privacy-policy-wrapper-headline-container {
     display: flex;
