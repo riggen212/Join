@@ -136,31 +136,29 @@
     background-color: var(--background-dark-hover-color);
 }
 
-/* Button User Profile Initials */
-.profile-initials {
+.button-arrow {
     display: flex;
     justify-content: center;
     align-items: center;
 
-    padding: 10px 10px;
+    min-height: unset;
+    width: 32px;
+    height: 32px;
 
-    height: 40px;
-    aspect-ratio: 1/1;
+    margin-top: var(--space-xl);
+    padding: 0;
 
-    color: var(--background-dark-hover-color);
-    font-size: 1.25rem;
-    font-weight: 700;
-
-    background-color: inherit;
-    border: solid 2px var(--background-dark-color);
-    border-radius: 50%;
+    background-color: unset;
+    border: unset;
 }
 
-.profile-initials:hover {
-    background-color: #0c2e6210;
+.button-arrow > img {
+    width: 50%;
+    aspect-ratio: 1/1;
 }
 
 /* Header mobile */
+
 .header {
     position: fixed;
     top: 0;
@@ -190,6 +188,29 @@
 
 .header-logo {
     height: 40px;
+}
+
+.header-profile-initials-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px 10px;
+
+    height: 40px;
+    aspect-ratio: 1/1;
+
+    color: var(--background-dark-hover-color);
+    font-size: 1.25rem;
+    font-weight: 700;
+
+    background-color: inherit;
+    border: solid 2px var(--background-dark-color);
+    border-radius: 50%;
+}
+
+.header-profile-initials-button:hover {
+    background-color: #0c2e6210;
 }
 
 /* Navbar  */
