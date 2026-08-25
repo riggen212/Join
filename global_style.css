@@ -8,6 +8,8 @@
 
     --content-max-width: 1440px;
 
+    --link-color: #124658;
+
     /* root settings for login screen */
     --space-xxs: 4px;
     --space-xs: 8px;
@@ -43,6 +45,12 @@
     margin: 0;
 
     font-family: "Inter", sans-serif;
+}
+/* links */
+
+a {
+    text-decoration: none;
+    color: var(--link-color);
 }
 
 /* Buttons */

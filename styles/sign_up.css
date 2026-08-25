@@ -1,0 +1,79 @@
+.sign-up-page .landing-page {
+    background-color: var(--background-bright-color);
+}
+
+.sign-up-page .logo-bright {
+    opacity: 0;
+}
+
+.sign-up-page .logo-dark {
+    top: var(--space-lg);
+    left: var(--space-lg);
+
+    height: var(--logo-end-size);
+    opacity: 1;
+
+    transform: none;
+}
+
+.sign-up-page .login {
+    opacity: 1;
+}
+
+.sign-up-headline {
+    position: relative;
+    width: 100%;
+}
+
+.back-to-login {
+    position: absolute;
+    top: 50%;
+    left: var(--space-md);
+
+    width: 32px;
+    height: 32px;
+    padding: 0;
+
+    transform: translateY(-50%);
+
+    background-color: transparent;
+    border: none;
+}
+
+.back-to-logig img {
+    width: 21px !important;
+}
+
+.sign_up-button-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
+
+    padding-top: var(--space-lg);
+    width: 100%;
+
+    text-align: center;
+}
+
+.sign-up-page footer {
+    position: fixed;
+    bottom: 32px;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+
+    opacity: 1;
+
+    a {
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 400;
+
+        color: #686868;
+    }
+}
