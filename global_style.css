@@ -19,6 +19,7 @@
     --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
+    --font-heading-two: clamp(1.5rem, 1.3977rem + 0.4545vw, 1.75rem);
 
     --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
     --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
@@ -29,6 +30,10 @@
     /* root settings for header/navbar */
     --navbar-button-grey-color: #cdcdcd;
     --mobile-header-footer-height: 80px;
+
+    /* root settings for buttons */
+    --size-button-add-mobile: clamp(36px, 34.8571px + 0.3571vw, 40px);
+    --size-button-search: clamp(30px, 27.1429px + 0.8929vw, 40px);
 }
 
 *,
@@ -153,7 +158,41 @@
 }
 
 .button-arrow > img {
+    display: block;
     width: 50%;
+    aspect-ratio: 1/1;
+}
+
+.button-add-task {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: var(--space-sm);
+    min-height: unset;
+    max-height: var(--size-button-add-mobile);
+    max-width: var(--size-button-add-mobile);
+}
+
+.button-search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-inline: var(--space-sm);
+    padding: 0;
+
+    min-height: unset;
+    height: var(--size-button-search);
+    width: var(--size-button-search);
+    
+    border: unset;
+    background-color: inherit;
+}
+
+.button-search img {
+    display: block;
+    height: 60%;
     aspect-ratio: 1/1;
 }
 
@@ -162,9 +201,9 @@
 .header {
     position: fixed;
     top: 0;
-    
+
     width: 100%;
-    
+
     box-shadow: 0 0 16px -1px rgb(0 0 0 / 50%);
 }
 
@@ -172,13 +211,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     height: var(--mobile-header-footer-height);
     width: min(100%, var(--content-max-width));
-    
+
     margin-inline: auto;
     padding: var(--space-lg) var(--space-md);
-    
+
     background-color: white;
 }
 
@@ -217,7 +256,7 @@
 .footer-navbar {
     position: fixed;
     bottom: 0;
-    
+
     width: 100%;
 }
 
@@ -230,7 +269,7 @@
 .navbar-wrapper {
     display: flex;
     justify-content: space-around;
-    
+
     width: min(100%, var(--content-max-width));
     height: var(--mobile-header-footer-height);
 }
