@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="../script.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="./assets/icons/logo_dark.svg">
+    <link rel="stylesheet" href="../global_style.css">
+    <link rel="stylesheet" href="../styles/login.css">
+    <link rel="stylesheet" href="../styles/fonts.css">
+    <link rel="stylesheet" href="../styles/add_task.css">
+
+    <title>Join</title>
+</head>
+<main>
+    <h1>Add Task</h1>
+    <section class="add-task">
+
+
+        <form class="task-form" action="">
+            <label for="task-title">Title<span class="required">*</span></label>
+            <input class="input-wrapper" id="task-title" type="text" placeholder="Enter a title" required>
+
+            <label for="task-description">Description</label>
+            <textarea class="input-wrapper" id="task-description" rows="" cols="" placeholder="Enter a Description"
+                required></textarea>
+
+            <label for="task-due-date">Title</label>
+            <input class="input-wrapper" id="task-due-date" type="date" placeholder="dd/mm/jjj" required>
+        </form>
+
+        <form class="task-form" action="">
+            <label for="">Priority</label>
+            <div class="task-priority">
+                <div>
+                    <button class="button" type="button">Urgent
+                        <img src="../assets/icons/priority_arrows_up.svg" alt="">
+                    </button>
+                </div>
+
+                <div>
+                    <button class="button medium" type="button">Medium
+                        <img src="../assets/icons/priority_equal.svg" alt="">
+                    </button>
+                </div>
+
+                <div>
+                    <button class="button" type="button">Low
+                        <img src="../assets/icons/priority_arrows_down.svg" alt="">
+                    </button>
+                </div>
+            </div>
+
+            <label for="task-assigned">Assigned to</label>
+            <select id="task-assigned" name="assigned">
+                <option value="Anna">Anna</option>
+                <option value="Martin">Martin</option>
+            </select>
+
+            <label for="task-category">Category<span class="required">*</span></label>
+            <select id="task-category" name="category">
+                <option value="Technical Task">Technical Task</option>
+                <option value="User Story">User Story</option>
+            </select>
+
+            <label for="subtask">Subtask</label>
+            <input class="input-wrapper" id="subtask" type="text" placeholder="Add new subtask">
+        </form>
+
+    </section>
+
+    <div class="submit-task">
+        <p><span class="required">*</span>This field is required</p>
+        <div class="submit-task-send">
+            <button class="button-bright" type="button">Cancel</button>
+            <button class="button-dark" type="button"> Create Task</button>
+        </div>
+    </div>
+</main>
+
+<footer>
+
+</footer>
