@@ -1,29 +1,17 @@
 :root {
     --color-input-placeholder: #d1d1d1;
-    --color-card-task-type-blue: #0038ff;
-    --color-card-task-type-green: #1fd7c1;
+    
     --color-card-task-progress-grey: #f4f4f4;
     --color-card-task-progress-blue: #4589ff;
 
     --background-board-feedback-color: #e7e7e7;
-
-    /* User badge colors */
-    --color-badge-user-orange: #ff7a00;
-    --color-badge-user-red: #ff4646;
-    --color-badge-user-purple: #9327ff;
-    --color-badge-user-pink: #fc71ff;
-    --color-badge-user-blue-dark: #462f8a;
-    --color-badge-user-blue-medium: #6e52ff;
-    --color-badge-user-blue-light: #00bee8;
-    --color-badge-user-mint: #1fd7c1;
-    --color-badge-user-yellow: #ffbb2b;
 
     --size-badge-user: clamp(40px, 38.8571px + 0.3571vw, 44px);
 
     --size-input-height: clamp(48px, 45.71px + 0.71vw, 56px);
     --size-task-card-maxwidth: 250px;
 
-    --font-size-task-card: clamp(16px, 14.8571px + 0.3571vw, 20px);
+    --font-size-task: clamp(16px, 14.8571px + 0.3571vw, 20px);
     --space-task-card: 16px;
 
     --border-radius-task-card: 24px;
@@ -163,7 +151,7 @@
 
     color: var(--color-grey-bright);
     font-family: "Open Sans";
-    font-size: var(--font-size-task-card);
+    font-size: var(--font-size-task);
     font-weight: 400;
 
     background-color: var(--background-board-feedback-color);
@@ -181,24 +169,10 @@
     padding: var(--space-task-card);
     gap: var(--space-task-card);
 
-    font-size: var(--font-size-task-card);
+    font-size: var(--font-size-task);
 
     border-radius: var(--border-radius-task-card);
     box-shadow: 0 0 7px -3px rgb(0 0 0 / 50%);
-}
-
-.task-card-type {
-    width: 50%;
-
-    padding: var(--space-xxs);
-
-    font-weight: 400;
-    text-align: center;
-    text-wrap: nowrap;
-    color: #fff;
-
-    background-color: var(--color-card-task-type-blue);
-    border-radius: var(--border-radius-small);
 }
 
 .task-card-body {
@@ -263,6 +237,36 @@
     margin-inline-start: -10px;
 }
 
+/* Dialog */
+.task-overlay {
+    display: flex;
+    flex-direction: column;
+
+    max-height: 80dvh;
+
+    padding-inline: 24px;
+    padding-block: 32px;
+
+    font-size: var(--font-size-task);
+
+    border: solid 1px var(--color-grey-bright);
+    border-radius: var(--border-radius-high);
+}
+
+.task-overlay-header {
+}
+
+.task-overlay-type-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-overlay-body {
+}
+
+.task-overlay-footer {
+}
 
 @media screen and (min-width: 992px) {
     .board-header {

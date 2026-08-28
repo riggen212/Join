@@ -40,6 +40,20 @@
     --size-button-add-mobile-dark: clamp(36px, 34.8571px + 0.3571vw, 40px);
     --size-button-add-mobile-bright: clamp(26px, 24.8571px + 0.3571vw, 30px);
     --size-button-search: clamp(30px, 27.1429px + 0.8929vw, 40px);
+
+    /* root settings for badges */
+    --color-badge-user-orange: #ff7a00;
+    --color-badge-user-red: #ff4646;
+    --color-badge-user-purple: #9327ff;
+    --color-badge-user-pink: #fc71ff;
+    --color-badge-user-blue-dark: #462f8a;
+    --color-badge-user-blue-medium: #6e52ff;
+    --color-badge-user-blue-light: #00bee8;
+    --color-badge-user-mint: #1fd7c1;
+    --color-badge-user-yellow: #ffbb2b;
+
+    --color-badge-type-blue: #0038ff;
+    --color-badge-type-green: #1fd7c1;
 }
 
 *,
@@ -175,6 +189,11 @@ a {
     aspect-ratio: 1/1;
 }
 
+.button-close {
+    border: unset;
+    background-color: unset;
+}
+
 .button-add-task {
     display: flex;
     justify-content: center;
@@ -216,7 +235,7 @@ a {
     aspect-ratio: 1/1;
 }
 
-/* User badges */
+/* Badges */
 .badge-user {
     display: flex;
     justify-content: center;
@@ -235,29 +254,58 @@ a {
 .badge-user-orange {
     background-color: var(--color-badge-user-orange);
 }
+
 .badge-user-red {
     background-color: var(--color-badge-user-red);
 }
+
 .badge-user-purple {
     background-color: var(--color-badge-user-purple);
 }
+
 .badge-user-blue-light {
     background-color: var(--color-badge-user-blue-light);
 }
+
 .badge-user-blue-dark {
     background-color: var(--color-badge-user-blue-dark);
 }
+
 .badge-user-blue-medium {
     background-color: var(--color-badge-user-blue-medium);
 }
+
 .badge-user-pink {
     background-color: var(--color-badge-user-pink);
 }
+
 .badge-user-yellow {
     background-color: var(--color-badge-user-yellow);
 }
+
 .badge-user-mint {
     background-color: var(--color-badge-user-mint);
+}
+
+.badge-type {
+    margin-inline-end: auto;
+    padding-block: var(--space-xxs);
+    padding-inline: var(--space-xs);
+
+    font-weight: 400;
+    text-align: start;
+    text-wrap: nowrap;
+    color: #fff;
+
+    border-radius: var(--border-radius-small);
+}
+
+.badge-type-user {
+    background-color: var(--color-badge-type-blue);
+}
+
+.badge-type-technical {
+    background-color: var(--color-badge-type-green);
 }
 
 /* Header mobile */
