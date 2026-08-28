@@ -248,6 +248,7 @@
 
     padding-inline: 24px;
     padding-block: 32px;
+    gap: var(--space-task);
 
     font-size: var(--font-size-task);
 
@@ -256,7 +257,11 @@
 }
 
 .task-overlay-header {
-    h2 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-task);
+
+    & h2 {
         font-size: var(--font-size-task-overlay-heading-two);
         font-weight: 700;
     }
@@ -269,28 +274,36 @@
 }
 
 .task-overlay-body {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-task);
 }
 
 .task-overlay-details {
     display: grid;
     grid-template-columns: max-content 1fr;
+    gap: var(--space-task);
 
-    dt {
+    & dt {
         color: var(--color-overlay-task-details-term);
     }
 
-    ul {
-        padding-inline-start: var(--space-task);
+    & ul {
+        padding-inline-start: 0;
 
         list-style-type: none;
     }
 
-    li {
+    & li {
         display: flex;
         align-items: center;
 
-        margin-block-start: var(--space-task);
         gap: var(--space-task);
+    }
+
+    & li ~ li {
+        margin-block-start: var(--space-task);
     }
 
     & .task-overlay-assignees ~ dd,
