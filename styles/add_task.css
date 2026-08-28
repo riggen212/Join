@@ -1,0 +1,286 @@
+:root {
+    --task-fields-max-width:
+        calc(405px + var(--space-md) + var(--space-md));
+
+    /*
+     * Half of --space-xl.
+     * Used to position the divider in the middle of the column gap.
+     */
+    --task-column-gap-half:
+        clamp(12px, 8.57px + 1.07vw, 24px);
+}
+
+
+/* General task layout */
+
+.required {
+    color: #f67d8b;
+}
+
+.add-task {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-lg);
+}
+
+.task-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+
+    width: 100%;
+}
+
+.task-form label,
+.task-form > span {
+    margin: 12px 0 12px;
+}
+
+.add-task-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: var(--space-xl);
+
+    width: 100%;
+
+    /*
+     * Allows the layout to react to the width of this container
+     * instead of the complete viewport.
+     */
+    container-type: inline-size;
+}
+
+
+/* Form columns */
+
+.task-form {
+    display: flex;
+    flex: 1 1 400px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-self: flex-start;
+
+    min-width: 0;
+}
+
+.task-form:first-child {
+    /*
+     * Creates the positioning context for the column divider.
+     */
+    position: relative;
+}
+
+
+/* Page heading */
+
+h1 {
+    padding-left: var(--space-sm);
+    padding-bottom: var(--space-xs);
+}
+
+
+/* Textarea */
+
+.task-form textarea {
+    width: 100%;
+    min-width: 0;
+    min-height: 88px;
+
+    resize: none;
+}
+
+
+/* Select fields */
+
+.task-form select {
+    height: 32px;
+    padding-left: var(--space-md);
+    padding-right: 40px;
+
+    font: inherit;
+
+    appearance: none;
+
+    background-image: url("../assets/icons/arrow_drop_down.svg");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 8px;
+
+    border-radius: var(--border-radius-middle);
+}
+
+.task-form select:open {
+    background-image: url("../assets/icons/arrow_drop_up.svg");
+}
+
+
+/* Utility class */
+
+.no-flex {
+    display: block;
+}
+
+
+/* Priority buttons */
+
+.task-priority {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.task-priority > div {
+    flex: 1 1 0;
+
+    max-width: 135px;
+    min-width: 0;
+}
+
+.task-priority button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+
+    width: 100%;
+    height: 48px;
+    padding-inline: var(--space-xs);
+
+    color: inherit;
+    background-color: #fff;
+
+    border: 1px solid rgb(0 0 0 / 50%);
+    box-shadow: 0 0 25px -13px rgb(0 0 0 / 20%);
+
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.task-priority button:hover {
+    box-shadow: var(--button-hover-shadow);
+}
+
+
+/* Selected priority states */
+
+.task-priority button.urgent {
+    color: #fff;
+    background-color: #ff3d00;
+}
+
+.task-priority button.medium {
+    color: #fff;
+    background-color: #ffa800;
+}
+
+.task-priority button.low {
+    color: #fff;
+    background-color: #7ae229;
+}
+
+.task-priority button.urgent img,
+.task-priority button.medium img,
+.task-priority button.low img {
+    filter: brightness(0) invert(1);
+}
+
+
+/* Form submission area */
+
+.submit-task {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+
+    margin-top: var(--space-lg);
+    padding: var(--space-sm);
+}
+
+.submit-task p {
+    display: flex;
+}
+
+.submit-task-send {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-lg);
+
+    padding-top: var(--space-lg);
+}
+
+
+/* Custom calendar icon */
+
+.input-date[type="date"] {
+    position: relative;
+
+    padding-right: 48px;
+
+    background-image: url("../assets/icons/calender.svg");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 20px;
+}
+
+
+/* Hide the native calendar icon while keeping it clickable */
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 48px;
+    height: 100%;
+    margin: 0;
+
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+/*
+ * Shared width for the priority group, select fields
+ * and the subtask input.
+ */
+
+.task-priority,
+#task-assigned,
+#task-category,
+#subtask {
+    width: 100%;
+    max-width: none;
+
+    box-sizing: border-box;
+}
+
+
+/*
+ * Show the divider only when both columns have enough
+ * space to be displayed next to each other.
+ */
+
+@container (min-width: 850px) {
+    .task-priority,
+    #task-assigned,
+    #task-category,
+    #subtask {
+        max-width: var(--task-fields-max-width);
+    }
+
+    .task-form:first-child::after {
+        content: "";
+
+        position: absolute;
+        top: 0;
+        right: calc(0px - var(--task-column-gap-half));
+        bottom: 0;
+
+        width: 1px;
+
+        background-color: #d1d1d1;
+    }
+}
