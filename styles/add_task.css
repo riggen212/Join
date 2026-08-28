@@ -1,3 +1,8 @@
+main {
+    max-width: var(--content-max-width);
+    margin: auto;
+}
+
 .required {
     color: #F67D8B;
 }
@@ -7,8 +12,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-md);
-
-    max-width: 1440px;
 }
 
 .task-form {
