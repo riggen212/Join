@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="../script.js" defer></script>
+    <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="../global_style.css">
+    <link rel="stylesheet" href="../styles/login.css">
+    <link rel="stylesheet" href="../styles/add_task.css">
+    <link rel="stylesheet" href="../styles/fonts.css">
+    <link rel="stylesheet" href="../styles/board.css" />
+
+
+    <title>Join</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-wrapper">
+            <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+            <button class="header-profile-initials-button">G</button>
+        </div>
+    </header>
+
+    <main class="board">
+        <div class="board-inner">
+            <h1>Add Task</h1>
+            <section class="add-task">
+            <form class="task-form-wrapper">
+
+                <div class="add-task-form">
+                    <!-- Left column -->
+                    <div class="task-form">
+                        <label for="task-title">
+                            Title<span class="required">*</span>
+                        </label>
+
+                        <input
+                            class="input-wrapper"
+                            id="task-title"
+                            name="title"
+                            type="text"
+                            placeholder="Enter a title"
+                            required
+                        >
+
+                        <label for="task-description">
+                            Description
+                        </label>
+
+                        <textarea
+                            class="input-wrapper"
+                            id="task-description"
+                            name="description"
+                            placeholder="Enter a Description"
+                            required
+                        ></textarea>
+
+                        <label for="task-due-date">
+                            Due date<span class="required">*</span>
+                        </label>
+
+                        <input
+                            class="input-wrapper no-flex input-date"
+                            id="task-due-date"
+                            name="dueDate"
+                            type="date"
+                            required
+                        >
+                    </div>
+
+                    <!-- Right column -->
+                    <div class="task-form">
+                        <span>Priority</span>
+
+                        <div class="task-priority">
+                            <div>
+                                <button class="button" type="button">
+                                    Urgent
+                                    <img
+                                        src="../assets/icons/priority_arrows_up.svg"
+                                        alt=""
+                                    >
+                                </button>
+                            </div>
+
+                            <div>
+                                <button class="button medium" type="button">
+                                    Medium
+                                    <img
+                                        src="../assets/icons/priority_equal.svg"
+                                        alt=""
+                                    >
+                                </button>
+                            </div>
+
+                            <div>
+                                <button class="button" type="button">
+                                    Low
+                                    <img
+                                        src="../assets/icons/priority_arrows_down.svg"
+                                        alt=""
+                                    >
+                                </button>
+                            </div>
+                        </div>
+
+                        <label for="task-assigned">
+                            Assigned to
+                        </label>
+
+                        <select id="task-assigned" name="assigned">
+                            <option value="Anna">Anna</option>
+                            <option value="Martin">Martin</option>
+                        </select>
+
+                        <label for="task-category">
+                            Category<span class="required">*</span>
+                        </label>
+
+                        <select
+                            id="task-category"
+                            name="category"
+                            required
+                        >
+                            <option value="Technical Task">
+                                Technical Task
+                            </option>
+                            <option value="User Story">
+                                User Story
+                            </option>
+                        </select>
+
+                        <label for="subtask">
+                            Subtask
+                        </label>
+
+                        <input
+                            class="input-wrapper"
+                            id="subtask"
+                            name="subtask"
+                            type="text"
+                            placeholder="Add new subtask"
+                        >
+                    </div>
+                </div>
+
+                <div class="submit-task">
+                    <p>
+                        <span class="required">*</span>
+                        This field is required
+                    </p>
+
+                    <div class="submit-task-send">
+                        <button class="button-bright" type="reset">
+                            Cancel
+                        </button>
+
+                        <button class="button-dark" type="submit">
+                            Create Task
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </section>
+        </div>
+
+    </main>
+
+    <footer class="footer-navbar">
+        <nav class="navbar">
+            <div class="navbar-wrapper">
+                <button class="button button-navbar">
+                    <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                    <span>Summary</span>
+                </button>
+                <button class="button button-navbar">
+                    <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                    <span>Add Task</span>
+                </button>
+                <button class="button button-navbar">
+                    <img src="../assets/icons/board.svg" alt="Board icon" />
+                    <span>Board</span>
+                </button>
+                <button class="button button-navbar">
+                    <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                    <span>Contacts</span>
+                </button>
+            </div>
+        </nav>
+    </footer>
+</body>
