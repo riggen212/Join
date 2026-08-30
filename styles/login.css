@@ -357,3 +357,34 @@ button:focus-visible,
         animation: none;
     }
 }
+
+#login:target ~ .login-header .sign-up-wrapper,
+#login:target ~ .landing-page,
+#login:target ~ .landing-page .logo-dark,
+#login:target ~ .landing-page .logo-bright,
+#login:target ~ .landing-page .login,
+#login:target ~ footer {
+    animation: none;
+}
+
+#login:target ~ .landing-page {
+    background-color: var(--background-bright-color);
+}
+
+#login:target ~ .landing-page .logo-dark {
+    top: var(--space-lg);
+    left: var(--space-lg);
+    height: var(--logo-end-size);
+    opacity: 1;
+    transform: none;
+}
+
+#login:target ~ .landing-page .logo-bright {
+    opacity: 0;
+}
+
+#login:target ~ .login-header .sign-up-wrapper,
+#login:target ~ .landing-page .login,
+#login:target ~ footer {
+    opacity: 1;
+}
