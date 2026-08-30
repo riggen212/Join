@@ -1,11 +1,9 @@
-
-
 /* Content */
 .privacy-policy {
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+
     padding: var(--mobile-header-footer-height) 0;
 
     min-height: 100dvh;
@@ -45,9 +43,16 @@
 .privacy-policy-wrapper address {
     margin-top: var(--space-xs);
 }
- .privacy-policy-wrapper-headline-container {
+.privacy-policy-wrapper-headline-container {
     display: flex;
     justify-content: space-between;
 
     width: 100%;
- }
+}
+
+@media screen and (min-width: 1280px) {
+    .privacy-policy {
+        padding-bottom: 0;
+        padding-left: var(--navbar-desktop-width);
+    }
+}

@@ -1,15 +1,12 @@
 :root {
-    --task-fields-max-width:
-        calc(405px + var(--space-md) + var(--space-md));
+    --task-fields-max-width: calc(405px + var(--space-md) + var(--space-md));
 
     /*
      * Half of --space-xl.
      * Used to position the divider in the middle of the column gap.
      */
-    --task-column-gap-half:
-        clamp(12px, 8.57px + 1.07vw, 24px);
+    --task-column-gap-half: clamp(12px, 8.57px + 1.07vw, 24px);
 }
-
 
 /* General task layout */
 
@@ -53,7 +50,6 @@
     container-type: inline-size;
 }
 
-
 /* Form columns */
 
 .task-form {
@@ -73,14 +69,12 @@
     position: relative;
 }
 
-
 /* Page heading */
 
 h1 {
     padding-left: var(--space-sm);
     padding-bottom: var(--space-xs);
 }
-
 
 /* Textarea */
 
@@ -91,7 +85,6 @@ h1 {
 
     resize: none;
 }
-
 
 /* Select fields */
 
@@ -116,13 +109,11 @@ h1 {
     background-image: url("../assets/icons/arrow_drop_up.svg");
 }
 
-
 /* Utility class */
 
 .no-flex {
     display: block;
 }
-
 
 /* Priority buttons */
 
@@ -163,7 +154,6 @@ h1 {
     box-shadow: var(--button-hover-shadow);
 }
 
-
 /* Selected priority states */
 
 .task-priority button.urgent {
@@ -186,7 +176,6 @@ h1 {
 .task-priority button.low img {
     filter: brightness(0) invert(1);
 }
-
 
 /* Form submission area */
 
@@ -211,7 +200,6 @@ h1 {
     padding-top: var(--space-lg);
 }
 
-
 /* Custom calendar icon */
 
 .input-date[type="date"] {
@@ -224,7 +212,6 @@ h1 {
     background-position: right 16px center;
     background-size: 20px;
 }
-
 
 /* Hide the native calendar icon while keeping it clickable */
 
@@ -241,7 +228,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
 
-
 /*
  * Shared width for the priority group, select fields
  * and the subtask input.
@@ -256,7 +242,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     box-sizing: border-box;
 }
-
 
 /*
  * Show the divider only when both columns have enough
@@ -282,5 +267,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         width: 1px;
 
         background-color: #d1d1d1;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    .board {
+        padding-bottom: 0;
+        padding-left: var(--navbar-desktop-width);
     }
 }

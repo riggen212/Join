@@ -24,7 +24,7 @@
     flex-direction: column;
     align-items: center;
 
-    padding: var(--mobile-header-footer-height) 0;
+    padding-block: var(--mobile-header-footer-height);
 
     min-height: 100dvh;
 }
@@ -315,7 +315,12 @@
 .task-overlay-footer {
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1280px) {
+    .board {
+        padding-bottom: 0;
+        padding-left: var(--navbar-desktop-width);
+    }
+
     .board-header {
         grid-template-columns: 2fr 1fr 1fr;
         grid-template-rows: 1fr;

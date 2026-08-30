@@ -20,6 +20,7 @@
     --space-md: clamp(8px, 5.71px + 0.71vw, 16px);
     --space-lg: clamp(16px, 13.71px + 0.71vw, 24px);
     --space-xl: clamp(24px, 17.14px + 2.14vw, 48px);
+    --space-xxl: 56px;
 
     --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
@@ -35,6 +36,9 @@
     /* root settings for header/navbar */
     --navbar-link-grey-color: #cdcdcd;
     --navbar-link-border-radius: 16px;
+    --navbar-desktop-link-height: 48px;
+    --navbar-desktop-width: 220px;
+    --navbar-desktop-padding-block: 64px;
     --mobile-header-footer-height: 80px;
 
     /* root settings for buttons */
@@ -332,20 +336,33 @@ a {
 }
 
 /* Navbar  */
-.footer-navbar {
-    position: fixed;
-    bottom: 0;
-
-    width: 100%;
+footer,
+.navbar-logo {
+    display: none;
 }
 
 .navbar {
     display: flex;
     justify-content: center;
+
+    position: fixed;
+    bottom: 0;
+
+    width: 100%;
+
     background-color: var(--background-dark-color);
 }
 
 .navbar-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    gap: calc(var(--space-xxl) * 2);
+}
+
+.navbar-links {
     display: flex;
     justify-content: space-around;
 
@@ -386,8 +403,70 @@ a {
     &:hover {
         background-color: var(--background-dark-hover-color);
     }
-    
+
     &:active {
         background-color: var(--button-dark-active-background-color);
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    footer {
+        display: unset;
+    }
+
+    .header-wrapper {
+        padding-left: calc(var(--navbar-desktop-width) + var(--space-md));
+    }
+
+    .navbar {
+        flex-direction: column;
+        justify-content: space-between;
+
+        bottom: unset;
+        top: 0;
+
+        max-width: var(--navbar-desktop-width);
+        height: 100dvh;
+
+        padding-block: var(--navbar-desktop-padding-block);
+    }
+
+    .navbar-logo {
+        display: block;
+
+        height: var(--logo-end-size);
+        width: auto;
+    }
+
+    .navbar-links {
+        flex-direction: column;
+        justify-content: center;
+
+        width: min(100%, var(--content-max-width));
+        height: 100%;
+
+        gap: 16px;
+    }
+
+    footer .navbar-links {
+        gap: unset;
+    }
+
+    .link-navbar {
+        flex-direction: row;
+        justify-content: flex-start;
+
+        height: var(--navbar-desktop-link-height);
+        width: 100%;
+
+        padding-block: var(--space-xs);
+        padding-inline: var(--space-xxl);
+        gap: var(--space-xs);
+
+        border-radius: unset;
+
+        & img {
+            width: 30px;
+        }
     }
 }
