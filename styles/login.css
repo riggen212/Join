@@ -358,33 +358,35 @@ button:focus-visible,
     }
 }
 
-#login:target ~ .login-header .sign-up-wrapper,
-#login:target ~ .landing-page,
-#login:target ~ .landing-page .logo-dark,
-#login:target ~ .landing-page .logo-bright,
-#login:target ~ .landing-page .login,
-#login:target ~ footer {
+body#login:target .landing-page,
+body#login:target .logo-dark,
+body#login:target .logo-bright,
+body#login:target .login,
+body#login:target .sign-up-wrapper,
+body#login:target footer {
     animation: none;
 }
 
-#login:target ~ .landing-page {
+body#login:target .landing-page {
     background-color: var(--background-bright-color);
 }
 
-#login:target ~ .landing-page .logo-dark {
+body#login:target .logo-dark {
     top: var(--space-lg);
     left: var(--space-lg);
+
     height: var(--logo-end-size);
     opacity: 1;
+
     transform: none;
 }
 
-#login:target ~ .landing-page .logo-bright {
+body#login:target .logo-bright {
     opacity: 0;
 }
 
-#login:target ~ .login-header .sign-up-wrapper,
-#login:target ~ .landing-page .login,
-#login:target ~ footer {
+body#login:target .login,
+body#login:target .sign-up-wrapper,
+body#login:target footer {
     opacity: 1;
 }
