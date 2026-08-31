@@ -69,6 +69,11 @@
 
     font-family: "Inter", sans-serif;
 }
+
+.app-wrapper {
+    min-height: 100dvh;
+}
+
 /* links */
 
 a {
@@ -314,6 +319,7 @@ a {
 
     width: 100%;
 
+    background-color: white;
     box-shadow: 0 0 16px -1px rgb(0 0 0 / 50%);
 }
 
@@ -327,8 +333,6 @@ a {
 
     margin-inline: auto;
     padding: var(--space-lg) var(--space-md);
-
-    background-color: white;
 }
 
 .header-wrapper > button {
@@ -441,6 +445,19 @@ a {
 }
 
 @media screen and (min-width: 1280px) {
+    .app-wrapper {
+        display: flex;
+
+        width: min(100%, var(--content-max-width));
+
+        margin-inline: auto;
+
+        & main {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+    }
+
     .header-wrapper {
         padding-left: calc(var(--navbar-desktop-width) + var(--space-md));
     }
@@ -449,13 +466,15 @@ a {
         flex-direction: column;
         justify-content: space-between;
 
-        bottom: unset;
+        position: sticky;
         top: 0;
+        bottom: auto;
 
-        max-width: var(--navbar-desktop-width);
+        flex: 0 0 var(--navbar-desktop-width);
         height: 100dvh;
 
         padding-block: var(--navbar-desktop-padding-block);
+
 
         & footer {
             display: unset;

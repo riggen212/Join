@@ -53,6 +53,5 @@
 @media screen and (min-width: 1280px) {
     .privacy-policy {
         padding-bottom: 0;
-        padding-left: var(--navbar-desktop-width);
     }
 }
