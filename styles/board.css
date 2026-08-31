@@ -24,7 +24,7 @@
     flex-direction: column;
     align-items: center;
 
-    padding: var(--mobile-header-footer-height) 0;
+    padding-block: var(--mobile-header-footer-height);
 
     min-height: 100dvh;
 }
@@ -121,6 +121,7 @@
     flex-direction: column;
 
     margin-block-start: var(--space-lg);
+    margin-inline-end: auto;
     gap: var(--space-md);
 }
 
@@ -133,7 +134,8 @@
 
 .board-column-content {
     display: flex;
-    flex-direction: column;
+
+    gap: var(--space-lg);
 
     & button {
         background-color: unset;
@@ -144,10 +146,10 @@
 }
 
 .board-column-feedback {
-    max-width: var(--size-task-card-maxwidth);
-    width: 100%;
+    width: var(--size-task-card-maxwidth);
 
     padding-block: var(--space-md);
+    padding-inline: var(--space-task);
 
     text-align: center;
 
@@ -248,6 +250,7 @@
 
     padding-inline: 24px;
     padding-block: 32px;
+    gap: var(--space-task);
 
     font-size: var(--font-size-task);
 
@@ -256,7 +259,11 @@
 }
 
 .task-overlay-header {
-    h2 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-task);
+
+    & h2 {
         font-size: var(--font-size-task-overlay-heading-two);
         font-weight: 700;
     }
@@ -269,28 +276,36 @@
 }
 
 .task-overlay-body {
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-task);
 }
 
 .task-overlay-details {
     display: grid;
     grid-template-columns: max-content 1fr;
+    gap: var(--space-task);
 
-    dt {
+    & dt {
         color: var(--color-overlay-task-details-term);
     }
 
-    ul {
-        padding-inline-start: var(--space-task);
+    & ul {
+        padding-inline-start: 0;
 
         list-style-type: none;
     }
 
-    li {
+    & li {
         display: flex;
         align-items: center;
 
-        margin-block-start: var(--space-task);
         gap: var(--space-task);
+    }
+
+    & li ~ li {
+        margin-block-start: var(--space-task);
     }
 
     & .task-overlay-assignees ~ dd,
@@ -300,9 +315,27 @@
 }
 
 .task-overlay-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    & .button ~ .button {
+        border-left: solid 1px var(--color-input-placeholder);
+    }
+
+    & .button ~ .button:hover {
+        border-left: unset;
+    }
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1280px) {
+    .board {
+        padding-bottom: 0;
+    }
+
+    .board-inner {
+        width: 100%;
+    }
+
     .board-header {
         grid-template-columns: 2fr 1fr 1fr;
         grid-template-rows: 1fr;
@@ -324,5 +357,9 @@
     .board-column {
         max-width: var(--size-task-card-maxwidth);
         width: 100%;
+    }
+
+    .board-column-content {
+        flex-direction: column;
     }
 }
