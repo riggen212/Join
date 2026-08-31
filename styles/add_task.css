@@ -10,10 +10,6 @@
 
 /* General task layout */
 
-.required {
-    color: #f67d8b;
-}
-
 .add-task {
     display: flex;
     flex-direction: column;
