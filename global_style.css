@@ -368,6 +368,9 @@ footer,
 
     width: min(100%, var(--content-max-width));
     height: var(--mobile-header-footer-height);
+
+    list-style-type: none;
+    padding-inline-start: 0;
 }
 
 .link-navbar {
@@ -376,9 +379,10 @@ footer,
     justify-content: center;
     align-items: center;
 
+    height: 100%;
     width: 80px;
-    padding: 0;
 
+    padding: 0;
     gap: var(--space-xxs);
 
     color: var(--navbar-link-grey-color);
