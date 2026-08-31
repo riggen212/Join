@@ -336,7 +336,7 @@ a {
 }
 
 /* Navbar  */
-footer,
+.navbar footer,
 .navbar-logo {
     display: none;
 }
@@ -414,10 +414,6 @@ footer,
 }
 
 @media screen and (min-width: 1280px) {
-    footer {
-        display: unset;
-    }
-
     .header-wrapper {
         padding-left: calc(var(--navbar-desktop-width) + var(--space-md));
     }
@@ -433,6 +429,10 @@ footer,
         height: 100dvh;
 
         padding-block: var(--navbar-desktop-padding-block);
+
+        & footer {
+            display: unset;
+        }
     }
 
     .navbar-logo {
