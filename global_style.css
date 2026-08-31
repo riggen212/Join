@@ -206,6 +206,33 @@ a {
     aspect-ratio: 1/1;
 }
 
+.button-task-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 0;
+
+    padding-block: 0;
+    padding-inline: var(--space-xs);
+    gap: var(--space-xs);
+
+    color: var(--background-dark-color);
+    font-weight: 400;
+
+    background-color: unset;
+    border: unset;
+    border-radius: 0;
+
+    &:hover {
+        font-weight: 700;
+    }
+
+    & img {
+        display: block;
+    }
+}
+
 /* Badges */
 .badge-user {
     display: flex;
