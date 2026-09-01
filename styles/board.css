@@ -7,8 +7,6 @@
 
     --background-board-feedback-color: #e7e7e7;
 
-    --size-badge-user: clamp(40px, 38.8571px + 0.3571vw, 44px);
-
     --size-input-height: clamp(48px, 45.71px + 0.71vw, 56px);
     --size-task-card-maxwidth: 250px;
 

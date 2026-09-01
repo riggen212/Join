@@ -47,6 +47,8 @@
     --size-button-search: clamp(30px, 27.1429px + 0.8929vw, 40px);
 
     /* root settings for badges */
+    --size-badge-user: clamp(40px, 38.8571px + 0.3571vw, 44px);
+
     --color-badge-user-orange: #ff7a00;
     --color-badge-user-red: #ff4646;
     --color-badge-user-purple: #9327ff;
