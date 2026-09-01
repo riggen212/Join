@@ -10,6 +10,7 @@
     --border-radius-small: 8px;
 
     --content-max-width: 1440px;
+    --breakpoint-mobile-to-desktop: 1280px;
 
     --link-color: #124658;
 
@@ -25,7 +26,8 @@
     --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
-    --font-heading-two: clamp(24px, 22.8571px + 0.3571vw, 28px);
+    --font-heading-two-desktop: 20px;
+    --font-heading-two-mobile: 27px;
 
     --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
     --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
