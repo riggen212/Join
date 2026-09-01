@@ -51,7 +51,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="link-navbar">
+                        <a href="../pages/contacts.html" class="link-navbar">
                             <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
                             <span>Contacts</span>
                         </a>
@@ -74,78 +74,88 @@
             </footer>
         </nav>
         <main class="board">
-            <div class="contact-list">
-                <section class="contact-group">
-                    <h2>A</h2>
-                    <article class="contact-card">
-                        <div class="badge-user badge-user-orange">
-                            <span>AM</span>
-                        </div>
-                        <div>
-                            <p>Anton Mayer</p>
-                            <a href="mailto:antonm@gmail.com">antonm@gmail.com</a>
-                        </div>
-                    </article>
+            <div class="contacts-content">
 
-                    <article class="contact-card">
-                        <div class="badge-user badge-user-purple">
-                            <span>AS</span>
-                        </div>
-                        <div>
-                            <p>Anja Schulz</p>
-                            <a href="mailto:anjaz@gmx.com">anjaz@gmx.com</a>
-                        </div>
-                    </article>
-                </section>
+                <div class="contact-list">
+                    <section class="contact-group">
+                        <h2>A</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-orange">
+                                <span>AM</span>
+                            </div>
+                            <div>
+                                <p>Anton Mayer</p>
+                                <p class="adress">antonm@gmail.com</p>
+                            </div>
+                        </article>
 
-                <section class="contact-group">
-                    <h2>B</h2>
-                    <article class="contact-card">
-                        <div class="badge-user badge-user-pink">
-                            <span>BZ</span>
-                        </div>
-                        <div>
-                            <p>Benedikt Ziegler</p>
-                            <a href="mailto:benediktz@gmail.com">benediktz@gmail.com</a>
-                        </div>
-                    </article>
-                </section>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-purple">
+                                <span>AS</span>
+                            </div>
+                            <div>
+                                <p>Anja Schulz</p>
+                                <p class="adress">anjaz@gmx.com</p>
+                            </div>
+                        </article>
+                    </section>
 
-                <section class="contact-group">
-                    <h2>D</h2>
-                    <article class="contact-card">
-                        <div class="badge-user badge-user-pink">
-                            <span>DE</span>
-                        </div>
-                        <div>
-                            <p>David Eisenberg</p>
-                            <a href="mailto:davide@hotmail.com">davide@hotmail.com</a>
-                        </div>
-                    </article>
-                </section>
+                    <section class="contact-group">
+                        <h2>B</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-pink">
+                                <span>BZ</span>
+                            </div>
+                            <div>
+                                <p>Benedikt Ziegler</p>
+                                <p class="adress">benediktz@gmail.com</p>
+                            </div>
+                        </article>
+                    </section>
 
-                <section class="contact-group">
-                    <h2>E</h2>
-                    <article class="contact-card">
-                        <div class="badge-user badge-user-mint">
-                            <span>EF</span>
-                        </div>
-                        <div>
-                            <p>Eva Fischer</p>
-                            <a href="mailto:evaf@gmx.de">evaf@gmx.de</a>
-                        </div>
-                    </article>
+                    <section class="contact-group">
+                        <h2>D</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-pink">
+                                <span>DE</span>
+                            </div>
+                            <div>
+                                <p>David Eisenberg</p>
+                                <p class="adress">davide@hotmail.com</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="contact-group">
+                        <h2>E</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-mint">
+                                <span>EF</span>
+                            </div>
+                            <div>
+                                <p>Eva Fischer</p>
+                                <p class="adress">evaf@gmx.de</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <button class="button button-dark detail-view" type="button">
+                        <img src="../assets/icons/person_add.svg" alt="">
+                    </button>
+                </div>
+                <section id="show-details" class="contact-details">
+                    <header>
+                        <h2>Contacts</h2>
+                        <span>Better with a team</span>
+                    </header>
+                    <section>
+
+                    </section>
+                    <button class="button button-dark contact-add" type="button">
+                        &#8942;
+                    </button>
                 </section>
             </div>
-            <section class="contact-details">
-                <header>
-                    <h2>Contacts</h2>
-                    <span>Better with a team</span>
-                </header>
-                <section>
-
-                </section>
-            </section>
         </main>
     </div>
 </body>

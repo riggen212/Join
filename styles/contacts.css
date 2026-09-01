@@ -1,28 +1,56 @@
 .board {
-    flex-direction: row;
+    position: relative;
     align-items: flex-start;
-
+    width: 100%;
 }
 
+.contacts-content {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: flex-start;
+
+    width: 100%;
+}
+
+
+/* Contact list */
+
 .contact-list {
-    min-width: 400px;
+    width: 40%;
+    min-width: 0;
 }
 
 .contact-group {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-lg);
 
     padding-top: var(--space-xl);
 }
 
+.contact-group h2 {
+    position: relative;
+
+    padding-left: 36px;
+    padding-bottom: 24px;
+
+    font-size: 20px;
+    font-weight: 400;
+}
+
 .contact-group h2::after {
     content: "";
-    display: block;
-    width: clamp(85px, calc(66.429px + 5.804vw), 150px);
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
     height: 2px;
-    margin: 12px 0 0;
-    background-color: #D1D1D1;
+
+    background-color: #d1d1d1;
 }
 
 .contact-group .contact-card {
@@ -30,13 +58,74 @@
     gap: var(--space-lg);
 }
 
-.contact-details {
-    padding-top: var(--space-xl);
-
-    min-width: 600px;
+.contact-group + .contact-group {
+    margin-top: var(--space-md);
 }
 
-.contact-details header {
+.contact-card + .contact-card {
+    margin-top: var(--space-lg);
+}
+
+.contact-card {
+    display: flex;
+    align-items: center;
+    gap: clamp(24px, 7vw, 38px);
+
+    padding-inline: clamp(16px, 6vw, 26px) 0;
+
+    cursor: pointer;
+}
+
+.contact-card p {
+    font-size: clamp(18px, 5vw, 20px);
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.adress {
+    display: block;
+
+    margin-top: var(--space-xxs);
+
+    color: #007cee;
+    font-size: clamp(14px, 4vw, 16px);
+    line-height: 1.2;
+}
+
+/* to prevent email addresses from overflowin */
+.contact-card > div:last-child {
+    min-width: 0;
+}
+
+.contact-card a {
+    overflow-wrap: anywhere;
+}
+
+.detail-view {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: clamp(48px, 14vw, 64px);
+    aspect-ratio: 1;
+    padding: 0;
+
+    bottom: 15%;
+    left: 80%;
+
+    border-radius: 50%;
+}
+
+/* Contact details */
+
+.contact-details {
+    width: 60%;
+    min-width: 0;
+    padding-top: var(--space-xl);
+}
+
+.contact-details > header {
     display: flex;
     align-items: center;
     gap: var(--space-md);
@@ -58,6 +147,94 @@
 
     width: 2px;
     height: 60px;
-    margin-left: 16px;
-    background-color: #29ABE2;
+    margin-left: var(--space-md);
+
+    background-color: #29abe2;
+}
+
+
+/* Mobile contact view */
+
+@media (max-width: 600px) {
+    .board {
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    .contacts-content {
+        display: block;
+
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .contact-list {
+        width: 100%;
+        height: 100%;
+        padding: var(--space-xl) clamp(24px, 8vw, 42px) 100px;
+
+        overflow-y: auto;
+    }
+
+    .contact-details {
+        position: fixed;
+        top: var(--mobile-header-footer-height);
+        right: 0;
+        bottom: var(--mobile-header-footer-height);
+        left: 0;
+        z-index: 2;
+
+        display: none;
+
+        width: 100%;
+        padding: var(--space-xl) var(--space-lg);
+
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    .contact-details.is-open {
+        display: block;
+    }
+
+    html.contact-details-open,
+    body.contact-details-open {
+        overflow: hidden;
+    }
+
+    .contact-card .badge-user {
+        flex-shrink: 0;
+
+        width: clamp(38px, 11vw, 42px);
+        aspect-ratio: 1;
+    }
+
+    .contact-card .badge-user span {
+        font-size: 16px;
+    }
+
+    .contact-add-button {
+        position: fixed;
+        right: var(--space-lg);
+        bottom: calc(
+            var(--mobile-header-footer-height) + var(--space-md)
+        );
+        z-index: 9;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: clamp(52px, 15vw, 60px);
+        aspect-ratio: 1;
+        padding: 0;
+
+        border-radius: 50%;
+        box-shadow: var(--button-hover-shadow);
+    }
+
+    .contact-add-button img {
+        width: clamp(24px, 7vw, 30px);
+        height: auto;
+    }
 }
