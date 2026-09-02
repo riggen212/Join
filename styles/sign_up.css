@@ -1,3 +1,7 @@
+.main-wrapper {
+    opacity: 1;
+}
+
 .sign-up-page .landing-page {
     background-color: var(--background-bright-color);
 }
@@ -40,11 +44,11 @@
     border: none;
 }
 
-.back-to-logig img {
+.back-to-login img {
     width: 21px !important;
 }
 
-.sign_up-button-area {
+.sign-up-button-area {
     display: flex;
     flex-direction: column;
     justify-content: center;

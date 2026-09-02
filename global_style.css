@@ -13,6 +13,8 @@
 
     --link-color: #124658;
 
+    --input-focus-color: rgba(41 171 226 0.5);
+
     /* root settings for login screen */
     --space-xxs: 4px;
     --space-xs: 8px;
@@ -74,6 +76,10 @@
     min-height: 100dvh;
 }
 
+.required {
+    color: #f67d8b;
+}
+
 /* links */
 
 a {
@@ -81,241 +87,12 @@ a {
     color: var(--link-color);
 }
 
-/* Buttons */
-.button {
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
-
-    font-size: var(--font-button);
-    font-weight: 700;
-
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
-}
-
-.button-dark {
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
-
-    font-size: var(--font-button);
-    font-weight: 700;
-
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
-    color: #fff;
-    background-color: var(--background-dark-color);
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-middle);
-}
-
-.button-dark:hover {
-    background-color: var(--background-dark-hover-color);
-    box-shadow: var(--button-hover-shadow);
-}
-
-.button-dark:active {
-    background-color: var(--button-dark-active-background-color);
-}
-
-.button-bright {
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
-
-    font-size: var(--font-button);
-    font-weight: 700;
-
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
-    color: #2a3647;
-    background-color: #fff;
-    border: 1px solid #2a3647;
-    border-radius: var(--border-radius-middle);
-}
-
-.button-bright:hover {
-    color: var(--background-dark-hover-color);
-    border-color: var(--background-dark-hover-color);
-    outline: 2px solid var(--background-dark-hover-color);
-    box-shadow: var(--button-hover-shadow);
-}
-
-.button-bright:active {
-    outline: none;
-}
-
-.button-arrow {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    min-height: unset;
-    width: 32px;
-    height: 32px;
-
-    margin-top: var(--space-xl);
-    padding: 0;
-
-    background-color: unset;
-    border: unset;
-}
-
-.button-arrow > img {
-    display: block;
-    width: 50%;
-    aspect-ratio: 1/1;
-}
-
-.button-close {
-    border: unset;
-    background-color: unset;
-}
-
-.button-add-task {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    padding: var(--space-sm);
-    min-height: unset;
-}
-
-.button-add-task-dark-size {
-    max-height: var(--size-button-add-mobile-dark);
-    max-width: var(--size-button-add-mobile-dark);
-}
-
-.button-add-task-bright-size {
-    max-height: var(--size-button-add-mobile-bright);
-    max-width: var(--size-button-add-mobile-bright);
-}
-
-.button-search {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-inline: var(--space-sm);
-    padding: 0;
-
-    min-height: unset;
-    height: var(--size-button-search);
-    width: var(--size-button-search);
-
-    border: unset;
-    background-color: inherit;
-}
-
-.button-search img {
-    display: block;
-    height: 60%;
-    aspect-ratio: 1/1;
-}
-
-.button-task-overlay {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    min-height: 0;
-
-    padding-block: 0;
-    padding-inline: var(--space-xs);
-    gap: var(--space-xs);
-
-    color: var(--background-dark-color);
-    font-weight: 400;
-
-    background-color: unset;
-    border: unset;
-    border-radius: 0;
-
-    &:hover {
-        font-weight: 700;
-    }
-
-    & img {
-        display: block;
-    }
-}
-
-/* Badges */
-.badge-user {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    height: var(--size-badge-user);
-    width: var(--size-badge-user);
-
-    color: #fff;
-    font-size: 16px;
-
-    border: solid 2px #fff;
-    border-radius: 50%;
-}
-
-.badge-user-orange {
-    background-color: var(--color-badge-user-orange);
-}
-
-.badge-user-red {
-    background-color: var(--color-badge-user-red);
-}
-
-.badge-user-purple {
-    background-color: var(--color-badge-user-purple);
-}
-
-.badge-user-blue-light {
-    background-color: var(--color-badge-user-blue-light);
-}
-
-.badge-user-blue-dark {
-    background-color: var(--color-badge-user-blue-dark);
-}
-
-.badge-user-blue-medium {
-    background-color: var(--color-badge-user-blue-medium);
-}
-
-.badge-user-pink {
-    background-color: var(--color-badge-user-pink);
-}
-
-.badge-user-yellow {
-    background-color: var(--color-badge-user-yellow);
-}
-
-.badge-user-mint {
-    background-color: var(--color-badge-user-mint);
-}
-
-.badge-type {
-    margin-inline-end: auto;
-    padding-block: var(--space-xxs);
-    padding-inline: var(--space-xs);
-
-    font-weight: 400;
-    text-align: start;
-    text-wrap: nowrap;
-    color: #fff;
-
-    border-radius: var(--border-radius-small);
-}
-
-.badge-type-user {
-    background-color: var(--color-badge-type-blue);
-}
-
-.badge-type-technical {
-    background-color: var(--color-badge-type-green);
-}
-
 /* Header mobile */
 
 .header {
     position: fixed;
     top: 0;
+    z-index: 10;
 
     width: 100%;
 
@@ -378,6 +155,7 @@ a {
 
     position: fixed;
     bottom: 0;
+    z-index: 10;
 
     width: 100%;
 

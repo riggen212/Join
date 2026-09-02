@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="../script.js" defer></script>
+    <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+
+    <link rel="stylesheet" href="../global_style.css" />
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/login.css" />
+    <link rel="stylesheet" href="../styles/add_task.css" />
+    <link rel="stylesheet" href="../styles/fonts.css" />
+    <link rel="stylesheet" href="../styles/board.css" />
+    <link rel="stylesheet" href="../styles/contacts.css">
+
+    <title>Join</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-wrapper">
+            <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+            <button class="header-profile-initials-button">G</button>
+        </div>
+    </header>
+
+    <div class="app-wrapper">
+        <nav class="navbar">
+            <div class="navbar-wrapper">
+                <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
+                <ul class="navbar-links">
+                    <li>
+                        <a href="#" class="link-navbar">
+                            <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                            <span>Summary</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/add_task.html" class="link-navbar">
+                            <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                            <span>Add Task</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/board.html" class="link-navbar">
+                            <img src="../assets/icons/board.svg" alt="Board icon" />
+                            <span>Board</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/contacts.html" class="link-navbar">
+                            <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                            <span>Contacts</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <footer>
+                <ul class="navbar-links">
+                    <li>
+                        <a href="../pages/privacy_policy.html" class="link-navbar">
+                            <span>Privacy Policy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/legal_notice.html" class="link-navbar">
+                            <span>Legal notice</span>
+                        </a>
+                    </li>
+                </ul>
+            </footer>
+        </nav>
+        <main class="board">
+            <div class="contacts-content">
+
+                <div class="contact-list">
+                    <section class="contact-group">
+                        <h2>A</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-orange">
+                                <span>AM</span>
+                            </div>
+                            <div>
+                                <p>Anton Mayer</p>
+                                <p class="adress">antonm@gmail.com</p>
+                            </div>
+                        </article>
+
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-purple">
+                                <span>AS</span>
+                            </div>
+                            <div>
+                                <p>Anja Schulz</p>
+                                <p class="adress">anjaz@gmx.com</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="contact-group">
+                        <h2>B</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-pink">
+                                <span>BZ</span>
+                            </div>
+                            <div>
+                                <p>Benedikt Ziegler</p>
+                                <p class="adress">benediktz@gmail.com</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="contact-group">
+                        <h2>D</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-pink">
+                                <span>DE</span>
+                            </div>
+                            <div>
+                                <p>David Eisenberg</p>
+                                <p class="adress">davide@hotmail.com</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="contact-group">
+                        <h2>E</h2>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-mint">
+                                <span>EF</span>
+                            </div>
+                            <div>
+                                <p>Eva Fischer</p>
+                                <p class="adress">evaf@gmx.de</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <button class="button button-dark detail-view" type="button">
+                        <img src="../assets/icons/person_add.svg" alt="">
+                    </button>
+                </div>
+                <section id="show-details" class="contact-details">
+                    <header>
+                        <h2>Contacts</h2>
+                        <span>Better with a team</span>
+                    </header>
+                    <section>
+
+                    </section>
+                    <button class="button button-dark contact-add" type="button">
+                        &#8942;
+                    </button>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
