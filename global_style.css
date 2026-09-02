@@ -21,6 +21,8 @@
     --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
+    --font-heading-h2: clamp(36px, 29.14px + 2.14vw, 60px);
+    --font-heading-strong: clamp(48px, 44.57px + 1.07vw, 60px);
 
     --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
     --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
