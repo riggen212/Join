@@ -80,8 +80,23 @@ dialog[open] {
 }
 
 .button-close {
-    border: unset;
+    min-height: unset;
+
+    padding: var(--space-xs);
+
     background-color: unset;
+    border: unset;
+    border-radius: 50%;
+
+    &:hover {
+        background-color: #EEEEEE;
+    }
+
+    & > img {
+        display: block;
+        height: 14px;
+        aspect-ratio: 1/1;
+    }
 }
 
 .button-add {
