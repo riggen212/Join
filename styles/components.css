@@ -1,3 +1,18 @@
+/* dialog */
+dialog[open] {
+    position: absolute;
+
+    max-height: 90dvh;
+    width: clamp(300px, 234.2857px + 20.5357vw, 530px);
+
+    margin: auto;
+    padding: 0;
+
+    background-color: unset;
+    border: unset;
+    border-radius: var(--border-radius-high);
+}
+
 /* buttons */
 .button {
     min-height: 48px;
@@ -69,7 +84,7 @@
     background-color: unset;
 }
 
-.button-add-task {
+.button-add {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -78,12 +93,21 @@
     min-height: unset;
 }
 
-.button-add-task-dark-size {
+.button-add-icon-mobile {
+    display: block;
+}
+
+.button-add-icon-desktop,
+.button-add-span-desktop {
+    display: none;
+}
+
+.button-add-dark-mobile {
     max-height: var(--size-button-add-mobile-dark);
     max-width: var(--size-button-add-mobile-dark);
 }
 
-.button-add-task-bright-size {
+.button-add-bright-mobile {
     max-height: var(--size-button-add-mobile-bright);
     max-width: var(--size-button-add-mobile-bright);
 }

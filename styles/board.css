@@ -181,6 +181,8 @@ h2 {
     border: unset;
     border-radius: var(--border-radius-task-card);
     box-shadow: 0 0 7px -3px rgb(0 0 0 / 50%);
+
+    cursor: pointer;
 }
 
 .task-card-body {
@@ -250,16 +252,18 @@ h2 {
     display: flex;
     flex-direction: column;
 
-    max-height: 80dvh;
-
     padding-inline: 24px;
     padding-block: 32px;
     gap: var(--space-task);
 
     font-size: var(--font-size-task);
 
+    background-color: #fff;
     border: solid 1px var(--color-grey-bright);
     border-radius: var(--border-radius-high);
+
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 .task-overlay-header {
@@ -375,6 +379,27 @@ h2 {
 
         overflow-x: unset;
         overflow-y: scroll;
+    }
+
+    /* Buttons */
+    .button-dark {
+        padding: var(--space-sm) var(--space-lg);
+        gap: var(--space-xs);
+    }
+
+    .button-add-dark-mobile {
+        max-height: unset;
+        min-height: 48px;
+        max-width: unset;
+    }
+
+    .button-add-icon-mobile {
+        display: none;
+    }
+
+    .button-add-icon-desktop,
+    .button-add-span-desktop {
+        display: inline;
     }
 
     /* Task cards */

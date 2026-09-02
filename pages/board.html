@@ -1,15 +1,17 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon"/>
-        
-        <link rel="stylesheet" href="../global_style.css"/>
-        <link rel="stylesheet" href="../styles/components.css">
-        <link rel="stylesheet" href="../styles/fonts.css"/>
-        <link rel="stylesheet" href="../styles/board.css"/>
+        <script src="../scripts/templates.js" defer></script>
+        <script src="../script.js" defer></script>
+        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+
+        <link rel="stylesheet" href="../global_style.css" />
+        <link rel="stylesheet" href="../styles/components.css" />
+        <link rel="stylesheet" href="../styles/fonts.css" />
+        <link rel="stylesheet" href="../styles/board.css" />
         <title>Join</title>
     </head>
     <body>
@@ -70,8 +72,10 @@
                 <div class="board-inner">
                     <header class="board-header">
                         <h1>Board</h1>
-                        <button class="button button-dark button-add-task button-add-task-dark-size">
-                            <img src="../assets/icons/add_mobile_white.svg" alt="Add" />
+                        <button class="button button-dark button-add button-add-dark-mobile">
+                            <img class="button-add-icon-mobile" src="../assets/icons/add_mobile_white.svg" alt="Add" />
+                            <span class="button-add-span-desktop">Add Task</span>
+                            <img class="button-add-icon-desktop" src="../assets/icons/add.svg" alt="Add" />
                         </button>
                         <div class="board-search">
                             <input id="search" class="board-search-input" type="search" placeholder="Find Task" />
@@ -84,12 +88,12 @@
                         <section class="board-column">
                             <header class="board-column-header">
                                 <h2>To do</h2>
-                                <button class="button button-bright button-add-task button-add-task-bright-size">
+                                <button class="button button-bright button-add button-add-bright-mobile">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
                             <div class="board-column-content">
-                                <button type="button" class="task-card">
+                                <button type="button" class="task-card" onclick="openDialogTask()">
                                     <span class="badge-type badge-type-user">User Story</span>
                                     <div class="task-card-body">
                                         <h3 class="task-card-title">HTML Base Template Creation</h3>
@@ -268,7 +272,7 @@
                         <section class="board-column">
                             <header class="board-column-header">
                                 <h2>In progress</h2>
-                                <button class="button button-bright button-add-task button-add-task-bright-size">
+                                <button class="button button-bright button-add button-add-bright-mobile">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
@@ -279,7 +283,7 @@
                         <section class="board-column">
                             <header class="board-column-header">
                                 <h2>Await feedback</h2>
-                                <button class="button button-bright button-add-task button-add-task-bright-size">
+                                <button class="button button-bright button-add button-add-bright-mobile">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
@@ -324,60 +328,8 @@
                             </div>
                         </section>
                     </div>
-                    <div style="display: none" class="task-overlay">
-                        <header class="task-overlay-header">
-                            <div class="task-overlay-type-wrapper">
-                                <span class="badge-type badge-type-user">User Story</span>
-                                <button class="button button-close">
-                                    <img src="../assets/icons/cancel.svg" alt="Close" />
-                                </button>
-                            </div>
-                            <h2>HTML Base Template Creation</h2>
-                        </header>
-                        <div class="task-overlay-body">
-                            <p class="task-overlay-description">Build start page with recipe recommendation.</p>
-                            <dl class="task-overlay-details">
-                                <dt>Due Date:</dt>
-                                <dd>10/05/2023</dd>
-                                <dt>Priority:</dt>
-                                <dd>Medium</dd>
-                                <dt class="task-overlay-assignees">Assigned To:</dt>
-                                <dd>
-                                    <ul>
-                                        <li>
-                                            <span class="badge-user badge-user-orange">CL</span
-                                            ><span>Calvin Lamel</span>
-                                        </li>
-                                        <li>
-                                            <span class="badge-user badge-user-blue-light">SS</span
-                                            ><span>Sebastian Stock</span>
-                                        </li>
-                                        <li>
-                                            <span class="badge-user badge-user-mint">ND</span><span>Norman Domann</span>
-                                        </li>
-                                    </ul>
-                                </dd>
-                                <dt class="task-overlay-subtasks">Subtasks</dt>
-                                <dd>
-                                    <ul>
-                                        <li><input type="checkbox" />Implement Recipe Recommendation</li>
-                                        <li><input type="checkbox" />Start Page Layout</li>
-                                    </ul>
-                                </dd>
-                            </dl>
-                        </div>
-                        <footer class="task-overlay-footer">
-                            <button class="button button-task-overlay">
-                                <img src="../assets/icons/delete.svg" alt="Delete" />
-                                <span>Delete</span>
-                            </button>
-                            <button class="button button-task-overlay">
-                                <img src="../assets/icons/edit.svg" alt="Edit" />
-                                <span>Edit</span>
-                            </button>
-                        </footer>
-                    </div>
                 </div>
+                <dialog id="dialog-task" closedby="any"></dialog>
             </main>
         </div>
     </body>

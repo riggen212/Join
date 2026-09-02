@@ -76,6 +76,19 @@
     font-family: "Inter", sans-serif;
 }
 
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.d-flex-align-center {
+    display: flex;
+    align-items: center;
+}
+
+.gap-xs {
+    gap: var(--space-xs);
+}
+
 .app-wrapper {
     min-height: 100dvh;
 }
