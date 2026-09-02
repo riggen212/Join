@@ -10,6 +10,7 @@
     --border-radius-small: 8px;
 
     --content-max-width: 1440px;
+    --breakpoint-mobile-to-desktop: 1280px;
 
     --link-color: #124658;
 
@@ -27,7 +28,8 @@
     --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
-    --font-heading-two: clamp(24px, 22.8571px + 0.3571vw, 28px);
+    --font-heading-two-desktop: 20px;
+    --font-heading-two-mobile: 27px;
 
     --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
     --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
@@ -49,6 +51,8 @@
     --size-button-search: clamp(30px, 27.1429px + 0.8929vw, 40px);
 
     /* root settings for badges */
+    --size-badge-user: clamp(40px, 38.8571px + 0.3571vw, 44px);
+
     --color-badge-user-orange: #ff7a00;
     --color-badge-user-red: #ff4646;
     --color-badge-user-purple: #9327ff;
@@ -70,6 +74,19 @@
     margin: 0;
 
     font-family: "Inter", sans-serif;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.d-flex-align-center {
+    display: flex;
+    align-items: center;
+}
+
+.gap-xs {
+    gap: var(--space-xs);
 }
 
 .app-wrapper {
