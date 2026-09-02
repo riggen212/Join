@@ -3,12 +3,17 @@
     --background-bright-color: #f6f7f8;
     --background-dark-hover-color: #124658;
 
+    --color-grey-bright: #a8a8a8;
+
     --border-radius-high: 30px;
     --border-radius-middle: 10px;
+    --border-radius-small: 8px;
 
     --content-max-width: 1440px;
 
     --link-color: #124658;
+
+    --input-focus-color: rgba(41 171 226 0.5);
 
     /* root settings for login screen */
     --space-xxs: 4px;
@@ -17,12 +22,14 @@
     --space-md: clamp(8px, 5.71px + 0.71vw, 16px);
     --space-lg: clamp(16px, 13.71px + 0.71vw, 24px);
     --space-xl: clamp(24px, 17.14px + 2.14vw, 48px);
+    --space-xxl: 56px;
 
     --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
     --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
     --font-heading-h2: clamp(36px, 29.14px + 2.14vw, 60px);
     --font-heading-strong: clamp(48px, 44.57px + 1.07vw, 60px);
+    --font-heading-two: clamp(24px, 22.8571px + 0.3571vw, 28px);
 
     --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
     --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
@@ -31,8 +38,31 @@
     --button-dark-active-background-color: #091931;
 
     /* root settings for header/navbar */
-    --navbar-button-grey-color: #cdcdcd;
+    --navbar-link-grey-color: #cdcdcd;
+    --navbar-link-border-radius: 16px;
+    --navbar-desktop-link-height: 48px;
+    --navbar-desktop-width: 220px;
+    --navbar-desktop-padding-block: 64px;
     --mobile-header-footer-height: 80px;
+
+    /* root settings for buttons */
+    --size-button-add-mobile-dark: clamp(36px, 34.8571px + 0.3571vw, 40px);
+    --size-button-add-mobile-bright: clamp(26px, 24.8571px + 0.3571vw, 30px);
+    --size-button-search: clamp(30px, 27.1429px + 0.8929vw, 40px);
+
+    /* root settings for badges */
+    --color-badge-user-orange: #ff7a00;
+    --color-badge-user-red: #ff4646;
+    --color-badge-user-purple: #9327ff;
+    --color-badge-user-pink: #fc71ff;
+    --color-badge-user-blue-dark: #462f8a;
+    --color-badge-user-blue-medium: #6e52ff;
+    --color-badge-user-blue-light: #00bee8;
+    --color-badge-user-mint: #1fd7c1;
+    --color-badge-user-yellow: #ffbb2b;
+
+    --color-badge-type-blue: #0038ff;
+    --color-badge-type-green: #1fd7c1;
 }
 
 *,
@@ -43,6 +73,15 @@
 
     font-family: "Inter", sans-serif;
 }
+
+.app-wrapper {
+    min-height: 100dvh;
+}
+
+.required {
+    color: #f67d8b;
+}
+
 /* links */
 
 a {
@@ -50,131 +89,16 @@ a {
     color: var(--link-color);
 }
 
-/* Buttons */
-.button {
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
-
-    font-size: var(--font-button);
-    font-weight: 700;
-
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
-}
-
-.button-dark {
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
-
-    font-size: var(--font-button);
-    font-weight: 700;
-
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
-    color: #fff;
-    background-color: var(--background-dark-color);
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-middle);
-}
-
-.button-dark:hover {
-    background-color: var(--background-dark-hover-color);
-    box-shadow: var(--button-hover-shadow);
-}
-
-.button-dark:active {
-    background-color: var(--button-dark-active-background-color);
-}
-
-.button-bright {
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
-
-    font-size: var(--font-button);
-    font-weight: 700;
-
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
-    color: #2a3647;
-    background-color: #fff;
-    border: 1px solid #2a3647;
-    border-radius: var(--border-radius-middle);
-}
-
-.button-bright:hover {
-    color: var(--background-dark-hover-color);
-    border-color: var(--background-dark-hover-color);
-    outline: 2px solid var(--background-dark-hover-color);
-    box-shadow: var(--button-hover-shadow);
-}
-
-.button-bright:active {
-    outline: none;
-}
-
-.button-navbar {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    width: 80px;
-    padding: 0;
-
-    gap: var(--space-xxs);
-
-    color: var(--navbar-button-grey-color);
-
-    background-color: var(--background-dark-color);
-    border: unset;
-}
-
-.button-navbar > img {
-    width: 24px;
-    aspect-ratio: 1/1;
-}
-
-.button-navbar > span {
-    font-family: "Open Sans";
-    font-size: 1rem;
-    font-weight: 400;
-
-    text-wrap: nowrap;
-}
-
-.button-navbar:hover {
-    background-color: var(--background-dark-hover-color);
-}
-
-.button-arrow {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    min-height: unset;
-    width: 32px;
-    height: 32px;
-
-    margin-top: var(--space-xl);
-    padding: 0;
-
-    background-color: unset;
-    border: unset;
-}
-
-.button-arrow > img {
-    width: 50%;
-    aspect-ratio: 1/1;
-}
-
 /* Header mobile */
 
 .header {
     position: fixed;
     top: 0;
-    
+    z-index: 10;
+
     width: 100%;
-    
+
+    background-color: white;
     box-shadow: 0 0 16px -1px rgb(0 0 0 / 50%);
 }
 
@@ -182,14 +106,12 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     height: var(--mobile-header-footer-height);
     width: min(100%, var(--content-max-width));
-    
+
     margin-inline: auto;
     padding: var(--space-lg) var(--space-md);
-    
-    background-color: white;
 }
 
 .header-wrapper > button {
@@ -224,23 +146,157 @@ a {
 }
 
 /* Navbar  */
-.footer-navbar {
-    position: fixed;
-    bottom: 0;
-    
-    width: 100%;
+.navbar footer,
+.navbar-logo {
+    display: none;
 }
 
 .navbar {
     display: flex;
     justify-content: center;
+
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
+
+    width: 100%;
+
     background-color: var(--background-dark-color);
 }
 
 .navbar-wrapper {
     display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    gap: calc(var(--space-xxl) * 2);
+}
+
+.navbar-links {
+    display: flex;
     justify-content: space-around;
-    
+
     width: min(100%, var(--content-max-width));
     height: var(--mobile-header-footer-height);
+
+    list-style-type: none;
+    padding-inline-start: 0;
+}
+
+.link-navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 80px;
+
+    padding: 0;
+    gap: var(--space-xxs);
+
+    color: var(--navbar-link-grey-color);
+
+    background-color: var(--background-dark-color);
+    border: unset;
+    border-radius: var(--navbar-link-border-radius);
+
+    & img {
+        width: 24px;
+        aspect-ratio: 1/1;
+    }
+
+    & span {
+        font-family: "Open Sans";
+        font-size: 1rem;
+        font-weight: 400;
+
+        text-wrap: nowrap;
+    }
+
+    &:hover {
+        background-color: var(--background-dark-hover-color);
+    }
+
+    &:active {
+        background-color: var(--button-dark-active-background-color);
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    .app-wrapper {
+        display: flex;
+
+        width: min(100%, var(--content-max-width));
+
+        margin-inline: auto;
+
+        & main {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+    }
+
+    .header-wrapper {
+        padding-left: calc(var(--navbar-desktop-width) + var(--space-md));
+    }
+
+    .navbar {
+        flex-direction: column;
+        justify-content: space-between;
+
+        position: sticky;
+        top: 0;
+        bottom: auto;
+
+        flex: 0 0 var(--navbar-desktop-width);
+        height: 100dvh;
+
+        padding-block: var(--navbar-desktop-padding-block);
+
+
+        & footer {
+            display: unset;
+        }
+    }
+
+    .navbar-logo {
+        display: block;
+
+        height: var(--logo-end-size);
+        width: auto;
+    }
+
+    .navbar-links {
+        flex-direction: column;
+        justify-content: center;
+
+        width: min(100%, var(--content-max-width));
+        height: 100%;
+
+        gap: 16px;
+    }
+
+    footer .navbar-links {
+        gap: unset;
+    }
+
+    .link-navbar {
+        flex-direction: row;
+        justify-content: flex-start;
+
+        height: var(--navbar-desktop-link-height);
+        width: 100%;
+
+        padding-block: var(--space-xs);
+        padding-inline: var(--space-xxl);
+        gap: var(--space-xs);
+
+        border-radius: unset;
+
+        & img {
+            width: 30px;
+        }
+    }
 }
