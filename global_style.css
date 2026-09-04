@@ -96,6 +96,10 @@
     gap: var(--space-xs);
 }
 
+.gap-xxs {
+    gap: var(--space-xxs);
+}
+
 .app-wrapper {
     min-height: 100dvh;
 }
@@ -109,6 +113,21 @@
 a {
     text-decoration: none;
     color: var(--link-color);
+}
+
+/* checkbox */
+input[type="checkbox"] {
+    appearance: none;
+    height: 24px;
+    width: 24px;
+
+    background-image: url(./assets/icons/checkbox_unchecked.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+input[type="checkbox"]:checked {
+    background-image: url(./assets/icons/checkbox_checked.svg);
 }
 
 /* Header mobile */
@@ -301,6 +320,7 @@ a {
         & .navbar-links {
             gap: unset;
         }
+
         & .link-navbar:hover {
             background-color: unset;
             color: var(--background-dark-hover-color);

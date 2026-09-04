@@ -1,5 +1,5 @@
 function getTaskCardTemplate() {
-    return `<button type="button" class="task-card">
+    return `<button type="button" class="task-card" onclick="openDialogTask()" arial-label="Open task">
                 <span class="badge-type badge-type-user">User Story</span>
                 <div class="task-card-body">
                     <h3 class="task-card-title">HTML Base Template Creation</h3>
@@ -35,7 +35,7 @@ function getTaskOverlayTemplate() {
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-user">User Story</span>
-                        <button class="button button-close" onclick="closeDialogTask()">
+                        <button class="button button-close" onclick="closeDialogTask()" aria-label="Close Task">
                             <img src="../assets/icons/cancel.svg" alt="Close" />
                         </button>
                     </div>
@@ -72,18 +72,18 @@ function getTaskOverlayTemplate() {
                         <dt class="task-overlay-subtasks">Subtasks</dt>
                         <dd>
                             <ul>
-                                <li><input type="checkbox" />Implement Recipe Recommendation</li>
-                                <li><input type="checkbox" />Start Page Layout</li>
+                                <li><input type="checkbox" aria-label="Check Task"/>Implement Recipe Recommendation</li>
+                                <li><input type="checkbox" aria-label="Check Task"/>Start Page Layout</li>
                             </ul>
                         </dd>
                     </dl>
                 </div>
                 <footer class="task-overlay-footer">
-                    <button class="button button-task-overlay">
+                    <button class="button button-task-overlay" onclick="deleteTask()">
                         <img src="../assets/icons/delete.svg" alt="Delete" />
                         <span>Delete</span>
                     </button>
-                    <button class="button button-task-overlay">
+                    <button class="button button-task-overlay" onclick="editTask()">
                         <img src="../assets/icons/edit.svg" alt="Edit" />
                         <span>Edit</span>
                     </button>
