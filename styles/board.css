@@ -259,7 +259,6 @@ h2 {
     font-size: var(--font-size-task);
 
     background-color: #fff;
-    border: solid 1px var(--color-grey-bright);
     border-radius: var(--border-radius-high);
 
     overflow-y: scroll;

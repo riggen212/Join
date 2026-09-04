@@ -87,8 +87,17 @@
     align-items: center;
 }
 
+.active {
+    color: #fff !important;
+    background-color: var(--button-dark-active-background-color) !important;
+}
+
 .gap-xs {
     gap: var(--space-xs);
+}
+
+.gap-xxs {
+    gap: var(--space-xxs);
 }
 
 .app-wrapper {
@@ -104,6 +113,21 @@
 a {
     text-decoration: none;
     color: var(--link-color);
+}
+
+/* checkbox */
+input[type="checkbox"] {
+    appearance: none;
+    height: 24px;
+    width: 24px;
+
+    background-image: url(./assets/icons/checkbox_unchecked.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+input[type="checkbox"]:checked {
+    background-image: url(./assets/icons/checkbox_checked.svg);
 }
 
 /* Header mobile */
@@ -215,7 +239,6 @@ a {
 
     color: var(--navbar-link-grey-color);
 
-    background-color: var(--background-dark-color);
     border: unset;
     border-radius: var(--navbar-link-border-radius);
 
@@ -231,15 +254,14 @@ a {
 
         text-wrap: nowrap;
     }
-
-    &:hover {
-        background-color: var(--background-dark-hover-color);
-    }
-
-    &:active {
-        background-color: var(--button-dark-active-background-color);
-    }
 }
+
+/* footer .link-navbar {
+    &:hover {
+        background-color: unset;
+        color: var(--background-dark-hover-color);
+    }
+} */
 
 @media screen and (min-width: 1280px) {
     .app-wrapper {
@@ -272,7 +294,6 @@ a {
 
         padding-block: var(--navbar-desktop-padding-block);
 
-
         & footer {
             display: unset;
         }
@@ -295,8 +316,15 @@ a {
         gap: 16px;
     }
 
-    footer .navbar-links {
-        gap: unset;
+    footer {
+        & .navbar-links {
+            gap: unset;
+        }
+
+        & .link-navbar:hover {
+            background-color: unset;
+            color: var(--background-dark-hover-color);
+        }
     }
 
     .link-navbar {
@@ -314,6 +342,10 @@ a {
 
         & img {
             width: 30px;
+        }
+
+        &:hover {
+            background-color: var(--background-dark-hover-color);
         }
     }
 }

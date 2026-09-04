@@ -1,16 +1,37 @@
 /* dialog */
 dialog[open] {
-    position: absolute;
+    top: 50%;
+    left: 50%;
 
     max-height: 90dvh;
-    width: clamp(300px, 234.2857px + 20.5357vw, 530px);
+    max-width: 530px;
+    width: 90dvw;
 
-    margin: auto;
     padding: 0;
 
     background-color: unset;
     border: unset;
     border-radius: var(--border-radius-high);
+
+    animation: slide-in-from-right 120ms linear forwards;
+}
+
+@keyframes slide-in-from-right {
+    from {
+        transform: translate(100%, -50%);
+    }
+    to {
+        transform: translate(-50%, -50%);
+    }
+
+}
+@keyframes slide-in-from-bottom {
+    from {
+        transform: translate(-50%, 100%);
+    }
+    to {
+        transform: translate(-50%, -50%);
+    }
 }
 
 /* buttons */
@@ -89,7 +110,7 @@ dialog[open] {
     border-radius: 50%;
 
     &:hover {
-        background-color: #EEEEEE;
+        background-color: #eeeeee;
     }
 
     & > img {
