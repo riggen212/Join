@@ -77,6 +77,11 @@
             <div class="contacts-content">
 
                 <div class="contact-list">
+                    <button class="button button-dark detail-view" type="button">
+                        <span>Add new contact</span>
+                        <img src="../assets/icons/person_add.svg" alt="">
+                    </button>
+
                     <section class="contact-group">
                         <h2>A</h2>
                         <article class="contact-card" onclick="showContactDetails()">
@@ -84,7 +89,7 @@
                                 <span>AM</span>
                             </div>
                             <div>
-                                <p>Anton Mayer</p>
+                                <p class="hover-bright">Anton Mayer</p>
                                 <p class="adress">antonm@gmail.com</p>
                             </div>
                         </article>
@@ -94,7 +99,7 @@
                                 <span>AS</span>
                             </div>
                             <div>
-                                <p>Anja Schulz</p>
+                                <p class="hover-bright">Anja Schulz</p>
                                 <p class="adress">anjaz@gmx.com</p>
                             </div>
                         </article>
@@ -107,7 +112,7 @@
                                 <span>BZ</span>
                             </div>
                             <div>
-                                <p>Benedikt Ziegler</p>
+                                <p class="hover-bright">Benedikt Ziegler</p>
                                 <p class="adress">benediktz@gmail.com</p>
                             </div>
                         </article>
@@ -120,7 +125,7 @@
                                 <span>DE</span>
                             </div>
                             <div>
-                                <p>David Eisenberg</p>
+                                <p class="hover-bright">David Eisenberg</p>
                                 <p class="adress">davide@hotmail.com</p>
                             </div>
                         </article>
@@ -133,25 +138,38 @@
                                 <span>EF</span>
                             </div>
                             <div>
-                                <p>Eva Fischer</p>
+                                <p class="hover-bright">Eva Fischer</p>
                                 <p class="adress">evaf@gmx.de</p>
                             </div>
                         </article>
-                    </section>
-
-                    <button class="button button-dark detail-view" type="button">
-                        <img src="../assets/icons/person_add.svg" alt="">
-                    </button>
+                    </section> 
                 </div>
+
                 <section id="show-details" class="contact-details">
                     <header>
-                        <h2>Contacts</h2>
-                        <span>Better with a team</span>
+                        <div>
+                            <h2>Contacts</h2>
+                            <span>Better with a team</span>
+                        </div>
+                        <button class="button button-close" onclick="hideContactDetails()" aria-label="Back to contact list">
+                            <img src="../assets/icons/arrow.svg" alt="Close" />
+                        </button>
                     </header>
-                    <section>
+                    <section class="contact-details-info">
+                        <div>
+                            <div class="badge-user badge-user-pink">
+                                <span>DE</span>
+                            </div>
+                            <h3>David Eisenberg</h3>
+                        </div>
 
+                        <p>Contact Information</p>
+                        <h4>Email</h4>
+                        <span class="detail-info">davide@hotmail.com</span>
+                        <h4>Phone</h4>
+                        <span>+49 1111 111 11 1</span>
                     </section>
-                    <button class="button button-dark contact-add" type="button">
+                    <button class="button button-dark contact-add detail-view" type="button">
                         &#8942;
                     </button>
                 </section>
