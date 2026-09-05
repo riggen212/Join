@@ -30,3 +30,11 @@ function closeDialogTask() {
     
     dialogRef.close();
 }
+
+function editContact() {
+    
+}
+
+function deleteContact() {
+    
+}

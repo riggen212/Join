@@ -142,7 +142,7 @@
                                 <p class="adress">evaf@gmx.de</p>
                             </div>
                         </article>
-                    </section> 
+                    </section>
                 </div>
 
                 <section id="show-details" class="contact-details">
@@ -151,7 +151,8 @@
                             <h2>Contacts</h2>
                             <span>Better with a team</span>
                         </div>
-                        <button class="button button-close" onclick="hideContactDetails()" aria-label="Back to contact list">
+                        <button class="button button-close" onclick="hideContactDetails()"
+                            aria-label="Back to contact list">
                             <img src="../assets/icons/arrow.svg" alt="Close" />
                         </button>
                     </header>
@@ -161,6 +162,16 @@
                                 <span>DE</span>
                             </div>
                             <h3>David Eisenberg</h3>
+                            <div>
+                                <button class="button button-task-overlay" onclick="editContact()">
+                                    <img src="../assets/icons/edit.svg" alt="edit Contact" />
+                                    <span>Edit</span>
+                                </button>
+                                <button class="button button-task-overlay" onclick="deleteContact()">
+                                    <img src="../assets/icons/delete.svg" alt="delete Contact" />
+                                    <span>Delete</span>
+                                </button>
+                            </div>
                         </div>
 
                         <p>Contact Information</p>
