@@ -31,6 +31,14 @@ function closeDialogTask() {
     dialogRef.close();
 }
 
+function addNewContact() {
+    const dialog = document.getElementById("addNewContact");
+
+    if (!dialog.open) {
+        dialog.showModal();
+    }
+}
+
 function editContact() {
     
 }

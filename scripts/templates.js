@@ -90,3 +90,7 @@ function getTaskOverlayTemplate() {
                 </footer>
             </div>`;
 }
+
+function renderAddContactTemplate() {
+    
+}

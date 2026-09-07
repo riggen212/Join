@@ -7,12 +7,9 @@
 .contacts-content {
     position: relative;
     z-index: 1;
-
     display: flex;
     align-items: flex-start;
-
     width: 100%;
-
     container: contacts / inline-size;
 }
 
@@ -21,23 +18,42 @@
 
 .contact-list {
     flex: 0 0 400px;
-
     height: calc(100dvh - var(--mobile-header-footer-height));
     padding: var(--space-lg) var(--space-lg) var(--space-xl);
-
     background-color: #fff;
     box-shadow: 4px 0 6px rgb(0 0 0 / 8%);
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #a8a8a8 transparent;
+}
+
+/* for scrollbar */
+
+.contact-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.contact-list::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.contact-list::-webkit-scrollbar-thumb {
+    background-color: #a8a8a8;
+    background-clip: content-box;
+    border: 2px solid transparent;
+    border-radius: 999px;
+}
+
+.contact-list::-webkit-scrollbar-thumb:hover {
+    background-color: #808080;
 }
 
 .contact-list>.detail-view {
     position: static;
-
     display: flex;
     justify-content: center;
     align-items: center;
     gap: var(--space-sm);
-
     width: 100%;
     min-height: 48px;
     padding: var(--space-sm) var(--space-lg);
@@ -55,36 +71,25 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
-
     padding-top: var(--space-xl);
 }
 
 .contact-group h2 {
     position: relative;
-
     padding-left: 36px;
     padding-bottom: 24px;
-
     font-size: 20px;
     font-weight: 400;
 }
 
 .contact-group h2::after {
     content: "";
-
     position: absolute;
     right: 0;
     bottom: 0;
     left: 0;
-
     height: 2px;
-
     background-color: #d1d1d1;
-}
-
-.contact-group .contact-card {
-    display: flex;
-    gap: var(--space-lg);
 }
 
 .contact-group+.contact-group {
@@ -95,10 +100,8 @@
     display: flex;
     align-items: center;
     gap: clamp(24px, 7vw, 38px);
-
     padding: 16px;
     border-radius: var(--border-radius-middle);
-
     cursor: pointer;
 }
 
@@ -118,9 +121,7 @@
 
 .adress {
     display: block;
-
     margin-top: var(--space-xxs);
-
     color: #007cee;
     font-size: clamp(14px, 4vw, 16px);
     line-height: 1.2;
@@ -132,19 +133,13 @@
     min-width: 0;
 }
 
-.contact-card a {
-    overflow-wrap: anywhere;
-}
-
 /* Contact details */
 
 .contact-details {
     flex: 1 1 auto;
     min-width: 0;
     padding: clamp(48px, 6vw, 96px);
-
-    container-name: contact-details;
-    container-type: inline-size;
+    container: contact-details / inline-size;
 }
 
 .contact-details>header {
@@ -153,7 +148,6 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-md);
-
     width: 100%;
 }
 
@@ -162,19 +156,16 @@
     flex: 1 1 auto;
     align-items: center;
     gap: var(--space-md);
-
     min-width: 0;
 }
 
 .contact-details>header>div h2 {
     order: 1;
-
     font-size: var(--font-heading-strong);
 }
 
 .contact-details>header>div span {
     order: 3;
-
     font-size: clamp(20px, calc(18px + 0.625vw), 27px);
     font-weight: 400;
 }
@@ -182,11 +173,9 @@
 .contact-details>header>div::after {
     content: "";
     order: 2;
-
     flex: 0 0 2px;
     width: 2px;
     height: 60px;
-
     background-color: #29abe2;
 }
 
@@ -210,7 +199,6 @@
         min-width: 0;
         padding: 24px 0 12px 0;
         font-size: 36px;
-
         overflow-wrap: normal;
         word-break: normal;
     }
@@ -232,18 +220,14 @@
     padding-bottom: 24px;
 }
 
-.contact-details-info > div:first-child {
+.contact-details-info>div:first-child {
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
     gap: 8px 24px;
 }
 
-.contact-details-info .badge-user {
-    grid-row: span 2;
-}
-
-.contact-details-info > div:first-child > div:last-child {
+.contact-details-info>div:first-child>div:last-child {
     display: flex;
     gap: var(--space-md);
 }
@@ -254,6 +238,7 @@
 }
 
 .contact-details-info .badge-user {
+    grid-row: span 2;
     flex: 0 0 80px;
 
     width: 80px;
@@ -273,6 +258,181 @@
     display: none;
 }
 
+/* dialog new contact */
+
+#addNewContact {
+    width: min(calc(100% - 32px), 512px);
+    padding: 0;
+    background-color: #fff;
+    border: none;
+    border-radius: var(--border-radius-high);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#addNewContact::backdrop {
+    background-color: rgb(0 0 0 / 25%);
+}
+
+#addNewContact>div:first-child {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: clamp(260px, 38dvh, 440px);
+    padding: clamp(32px, 8vw, 48px);
+    color: #fff;
+    background-color: var(--background-dark-color);
+}
+
+#addNewContact>div:first-child h1 {
+    font-size: clamp(40px, 10vw, 60px);
+    line-height: 1.1;
+}
+
+#addNewContact>div:first-child p {
+    margin-top: var(--space-md);
+    font-size: clamp(20px, 5vw, 27px);
+    line-height: 1.2;
+}
+
+#addNewContact>div:first-child p::after {
+    content: "";
+    display: block;
+    width: 115px;
+    height: 3px;
+    margin-top: var(--space-lg);
+    background-color: #29abe2;
+    border-radius: 999px;
+}
+
+#addNewContact>div:first-child>.button-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    background-color: transparent;
+    border: none;
+}
+
+#addNewContact>div:first-child>.button-close img {
+    width: 100%;
+    height: 100%;
+    filter: brightness(0) invert(1);
+}
+
+#addNewContact>.badge-user {
+    position: relative;
+    z-index: 2;
+    width: 156px;
+    height: 156px;
+    margin: -78px auto 0;
+    background-color: #d1d1d1;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+}
+
+#addNewContact>.badge-user img {
+    width: 64px;
+    height: 64px;
+    filter: brightness(0) invert(1);
+}
+
+#addNewContact>form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 32px 20px 48px;
+    background-color: #fff;
+}
+
+#addNewContact>form>.input-wrapper {
+    width: 100%;
+    max-width: 452px;
+}
+
+#addNewContact>form>.button {
+    margin-top: 20px;
+}
+
+#addNewContact .input-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 16px;
+    background-color: #fff;
+    border: 1px solid #2a3647;
+    border-radius: var(--border-radius-middle);
+    box-shadow: none;
+}
+
+#addNewContact .input-wrapper input {
+    flex: 1;
+    min-width: 0;
+    height: 50px;
+    padding: 0;
+    color: #000;
+    font-size: 20px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+#addNewContact .input-wrapper .input-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    margin-left: var(--space-xs);
+    padding: 4px;
+}
+
+#addNewContact .input-wrapper .input-icon img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+#addNewContact .input-wrapper:focus-within {
+    border-color: #29abe2;
+    box-shadow: 0 0 0 1px #29abe2;
+}
+
+#addNewContact>form>.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 0 16px;
+    margin-top: 20px;
+    color: #fff;
+    font-size: 21px;
+    font-weight: 700;
+    white-space: nowrap;
+    background-color: var(--background-dark-color);
+    border: none;
+    border-radius: var(--border-radius-middle);
+    cursor: pointer;
+}
+
+#addNewContact>form>.button img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+body:has(#addNewContact[open]) .contact-list>.detail-view {
+    display: none;
+}
 
 /* Mobile contact view */
 
@@ -284,7 +444,6 @@
 
     .contacts-content {
         display: block;
-
         height: 100%;
         overflow: hidden;
     }
@@ -293,8 +452,6 @@
         width: 100%;
         height: 100%;
         padding: var(--space-xl) clamp(24px, 8vw, 42px) 100px;
-
-        overflow-y: auto;
     }
 
     .contact-list>.detail-view {
@@ -302,13 +459,11 @@
         right: 16px;
         bottom: 96px;
         z-index: 9;
-
         width: clamp(48px, 14vw, 64px);
         min-height: unset;
         aspect-ratio: 1;
         margin: 0;
         padding: 0;
-
         border-radius: 50%;
     }
 
@@ -329,12 +484,9 @@
         bottom: var(--mobile-header-footer-height);
         left: 0;
         z-index: 2;
-
         display: none;
-
         width: 100%;
         padding: var(--space-xl) var(--space-lg);
-
         background-color: #fff;
         overflow: hidden;
     }
@@ -356,26 +508,22 @@
         display: none;
     }
 
-    .contact-details.is-open > .contact-add {
+    .contact-details.is-open>.contact-add {
         position: fixed;
         right: 16px;
         bottom: 96px;
         z-index: 9;
-
         display: flex;
         justify-content: center;
         align-items: center;
-
         width: clamp(48px, 14vw, 64px);
         aspect-ratio: 1;
         padding: 0;
-
         border-radius: 50%;
     }
 
     .contact-card .badge-user {
         flex-shrink: 0;
-
         width: clamp(38px, 11vw, 42px);
         aspect-ratio: 1;
     }
@@ -384,27 +532,31 @@
         font-size: 16px;
     }
 
-    .contact-add-button {
-        position: fixed;
-        right: var(--space-lg);
-        bottom: calc(var(--mobile-header-footer-height) + var(--space-md));
-        z-index: 9;
+    /* for add-contact dialog */
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        width: clamp(52px, 15vw, 60px);
-        aspect-ratio: 1;
-        padding: 0;
-
-        border-radius: 50%;
-        box-shadow: var(--button-hover-shadow);
+    #addNewContact[open] {
+        animation: none;
+        transform: none;
     }
+    
+    #addNewContact {
+        position: fixed;
 
-    .contact-add-button img {
-        width: clamp(24px, 7vw, 30px);
+        inset:
+            var(--mobile-header-footer-height) 16px var(--mobile-header-footer-height);
+
+        width: calc(100% - 32px);
+        max-width: 512px;
         height: auto;
+        min-height: 0;
+        max-height: none;
+
+        margin: 0 auto;
+        box-sizing: border-box;
+        transform: none;
+
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 }
 
@@ -425,7 +577,6 @@
 
     .contact-details>header>div::after {
         order: 3;
-
         flex: 0 0 2px;
         width: 90px;
         height: 2px;
