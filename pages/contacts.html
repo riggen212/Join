@@ -23,8 +23,31 @@
     <header class="header">
         <div class="header-wrapper">
             <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
-            <button class="header-profile-initials-button">G</button>
+            <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
         </div>
+        <dialog
+                id="dialog-profile"
+                closedby="any"
+                oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
+                onanimationend="closeProfileDialog(event)"
+            >
+                <nav>
+                    <ul>
+                        <li>
+                            <a href="#" class="link-navbar">Help</a>
+                        </li>
+                        <li>
+                            <a href="../pages/legal_notice.html" class="link-navbar">Legal Notice</a>
+                        </li>
+                        <li>
+                            <a href="../pages/privacy_policy.html" class="link-navbar">Privacy Policy</a>
+                        </li>
+                        <li>
+                            <a href="../index.html" class="link-navbar">Log out</a>
+                        </li>
+                    </ul>
+                </nav>
+            </dialog>
     </header>
 
     <div id="content" class="app-wrapper">
