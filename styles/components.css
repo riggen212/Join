@@ -1,5 +1,5 @@
 /* dialog */
-dialog[open] {
+#dialog-task[open] {
     top: 50%;
     left: 50%;
 
@@ -13,24 +13,96 @@ dialog[open] {
     border: unset;
     border-radius: var(--border-radius-high);
 
-    animation: slide-in-from-right 120ms linear forwards;
+    &:not(.dialog-task-closing) {
+        animation: slide-in-from-right-to-center 256ms linear forwards;
+    }
+}
+
+.dialog-task-closing {
+    animation: slide-out-from-center-to-right 256ms linear forwards;
+}
+
+@keyframes slide-in-from-right-to-center {
+    from {
+        transform: translate(50vw, -50%);
+    }
+    to {
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slide-out-from-center-to-right {
+    from {
+        transform: translate(-50%, -50%);
+    }
+    to {
+        transform: translate(50vw, -50%);
+    }
+}
+
+@keyframes slide-in-from-bottom-to-center {
+    from {
+        transform: translate(-50%, 50dvh);
+    }
+    to {
+        transform: translate(-50%, -50%);
+    }
+}
+
+#dialog-profile[open] {
+    position: fixed;
+    top: var(--mobile-header-footer-height);
+    right: var(--navbar-profile-dialog-right);
+    bottom: auto;
+    left: auto;
+
+    margin: 0;
+
+    padding: var(--space-xs);
+
+    background-color: var(--background-dark-color);
+    border: unset;
+    border-radius: 20px 0 20px 20px;
+    box-shadow: 0 0 7px 0 rgb(0 0 0 / 50%);
+
+    &:not(.dialog-profile-closing) {
+        animation: slide-in-from-right 256ms linear forwards;
+    }
+
+    & ul {
+        padding: var(--space-xs);
+        list-style-type: none;
+    }
+
+    & .link-navbar {
+        align-items: unset;
+        height: unset;
+        width: unset;
+
+        padding-block: 16px;
+        padding-inline: var(--space-xs);
+    }
+}
+
+.dialog-profile-closing {
+    animation: slide-out-to-right 256ms linear forwards;
 }
 
 @keyframes slide-in-from-right {
     from {
-        transform: translate(100%, -50%);
+        transform: translateX(calc(100% + var(--navbar-profile-dialog-right)));
     }
     to {
-        transform: translate(-50%, -50%);
+        transform: translateX(0);
     }
-
 }
-@keyframes slide-in-from-bottom {
+
+@keyframes slide-out-to-right {
     from {
-        transform: translate(-50%, 100%);
+        transform: translateX(0);
     }
     to {
-        transform: translate(-50%, -50%);
+        transform: translateX(calc(100% + var(--navbar-profile-dialog-right)));
     }
 }
 
@@ -189,7 +261,9 @@ dialog[open] {
     border-radius: 0;
 
     &:hover {
-        font-weight: 700;
+        text-shadow:
+        0.5px 0 currentColor,
+        -0.5px 0 currentColor;
     }
 
     & img {
