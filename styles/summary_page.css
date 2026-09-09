@@ -1,3 +1,7 @@
+:root {
+    --fluid-40-70: clamp(40px, 31.4286px + 2.6786cqi, 70px);
+}
+
 .main {
     min-height: calc(100vh - 160px);
     margin-top: 80px;
@@ -18,7 +22,12 @@
     gap: 24px;
 }
 
+.desktop-wrapper {
+    display: contents;
+}
+
 .headline-h2 {
+    display: none;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
@@ -70,14 +79,22 @@
     flex-direction: column;
     width: 100%;
     flex-wrap: nowrap;
-    gap: 16px;
+    gap: 32px;
+    margin-top: 16px;
 }
 
 .section-inner {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
+    align-items: center;
+    gap: 12px;
+}
+
+.flexbox-container {
+    border: 1px solid #d1d1d1;
+    border-radius: 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .flexbox {
@@ -86,16 +103,12 @@
     align-content: center;
     justify-content: center;
     gap: 16px;
-
-    width: 140px;
-    height: 100px;
-    border: 1px solid #d1d1d1;
-    border-radius: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    height: 100%;
+    padding: var(--space-xs);
 }
 
 .section-img {
-    width: 40px;
+    width: var(--fluid-40-70);
 }
 
 .flexbox-inner {
@@ -119,7 +132,6 @@
 }
 
 .deadline-container {
-    height: 100px;
     border: 1px solid #d1d1d1;
     border-radius: 24px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
@@ -128,10 +140,9 @@
 .deadline-inner {
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
     gap: 8px;
-    height: 100%;
-    justify-content: space-between;
-    padding: 0 8px;
+    padding: var(--space-xs);
 }
 
 .deadline-hr {
@@ -153,8 +164,6 @@
 }
 
 .task-container {
-    width: 90px;
-    height: 100px;
     border: 1px solid #d1d1d1;
     border-radius: 24px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
@@ -165,6 +174,75 @@
     flex-direction: column;
     align-content: center;
     justify-content: center;
-    height: 100%;
     text-align: center;
+    padding: var(--space-xs);
+}
+
+/* ==== Desktop ==== */
+
+@media (min-width: 1280px) {
+    
+    .main {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        margin-left: 48px;
+    }
+
+    .headline-h2 {
+        align-content: center;
+        display: block;
+    }
+
+    .desktop-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .headline-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-top: 108px;
+        gap: 24px;
+    }
+
+    .headline-container::after {
+        display: none;
+    } 
+
+    .headline-container h2::after {
+        content: "";
+        display: inline-block;
+        width: 3px;
+        height: 70px;
+        background-color: #29abe2;
+        border-radius: 2px;
+        vertical-align: top;
+        margin-left: 24px;
+    }
+
+    .section-container {
+        margin-top: 48px;
+    }
+
+    .section-inner {
+
+    }
+
+    .flexbox {
+        padding: 38px 19px 38px 19px;
+    }
+
+    .deadline-inner {
+        padding: 28px 48px;
+    }
+
+    .taks-inner {
+        padding: 25px 13px;
+    }
 }
