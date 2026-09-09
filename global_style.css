@@ -46,6 +46,7 @@
     --navbar-desktop-width: 220px;
     --navbar-desktop-padding-block: 64px;
     --mobile-header-footer-height: 80px;
+    --navbar-profile-dialog-right: calc(max(0px, (100vw - var(--content-max-width)) / 2) + var(--space-xs));
 
     /* root settings for buttons */
     --size-button-add-mobile-dark: clamp(36px, 34.8571px + 0.3571vw, 40px);
@@ -255,13 +256,6 @@ input[type="checkbox"]:checked {
         text-wrap: nowrap;
     }
 }
-
-/* footer .link-navbar {
-    &:hover {
-        background-color: unset;
-        color: var(--background-dark-hover-color);
-    }
-} */
 
 @media screen and (min-width: 1280px) {
     .app-wrapper {

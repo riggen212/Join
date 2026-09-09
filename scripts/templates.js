@@ -1,33 +1,33 @@
 function getTaskCardTemplate() {
-    return `<button type="button" class="task-card" onclick="openDialogTask()" arial-label="Open task">
-                <span class="badge-type badge-type-user">User Story</span>
-                <div class="task-card-body">
-                    <h3 class="task-card-title">HTML Base Template Creation</h3>
-                    <div class="task-card-description">
-                        Lorem ipsum dolor sit amet, consectetur.
-                    </div>
+    return `<button type="button" class="task-card" onclick="openTaskDialog('dialog-task')" aria-label="Open Task">
+            <span class="badge-type badge-type-user">User Story</span>
+            <div class="task-card-body">
+                <h3 class="task-card-title">HTML Base Template Creation</h3>
+                <div class="task-card-description">Lorem ipsum dolor sit amet, consectetur.</div>
+            </div>
+            <div class="task-card-subtasks">
+                <div class="task-card-progress">
+                    <div class="task-card-progress-bar"></div>
                 </div>
-                <div class="task-card-subtasks">
-                    <div class="task-card-progress">
-                        <div class="task-card-progress-bar"></div>
-                    </div>
-                    <span class="task-card-summary">1/4 Subtasks</span>
-                </div>
-                <div class="task-card-assignees">
-                    <ul class="task-card-users">
-                        <li class="badge-user badge-user-orange">
-                            <span>CL</span>
-                        </li>
-                        <li class="badge-user badge-user-blue-light">
-                            <span>SS</span>
-                        </li>
-                        <li class="badge-user badge-user-mint">
-                            <span>ND</span>
-                        </li>
-                    </ul>
-                    <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                </div>
-            </button>`;
+                <span class="task-card-summary">1/4 Subtasks</span>
+            </div>
+            <div class="task-card-assignees">
+                <ul class="task-card-users">
+                    <li class="badge-user badge-user-orange">
+                        <span>CL</span>
+                    </li>
+                    <li class="badge-user badge-user-blue-light">
+                        <span>SS</span>
+                    </li>
+                    <li class="badge-user badge-user-mint">
+                        <span>ND</span>
+                    </li>
+                </ul>
+                <span>
+                    <img src="../assets/icons/prio_low.svg" alt="Priority low" />
+                </span>
+            </div>
+        </button>`;
 }
 
 function getTaskOverlayTemplate() {
@@ -35,7 +35,7 @@ function getTaskOverlayTemplate() {
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-user">User Story</span>
-                        <button class="button button-close" onclick="closeDialogTask()" aria-label="Close Task">
+                        <button class="button button-close" onclick="requestCloseTaskDialog()" aria-label="Close Task">
                             <img src="../assets/icons/cancel.svg" alt="Close" />
                         </button>
                     </div>
@@ -88,5 +88,6 @@ function getTaskOverlayTemplate() {
                         <span>Edit</span>
                     </button>
                 </footer>
-            </div>`;
+            </div>
+            `;
 }

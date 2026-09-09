@@ -329,7 +329,7 @@ h2 {
     }
 
     & .button ~ .button:hover {
-        border-left: unset;
+        border-left-color: transparent;
     }
 }
 
