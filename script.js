@@ -14,19 +14,70 @@ function hideContactDetails() {
     document.body.classList.remove("contact-details-open");
 }
 
-function openDialogTask() {
-    const dialogRef = document.getElementById("dialog-task");
+function openDialog(dialogId) {
+    const dialogRef = document.getElementById(dialogId);
 
-    dialogRef.innerHTML = getTaskOverlayTemplate();
-    document.body.classList.add("overflow-hidden")
-    
+    document.body.classList.add("overflow-hidden");
+
     dialogRef.showModal();
 }
 
-function closeDialogTask() {
+function closeDialog(dialogId) {
+    const dialogRef = document.getElementById(dialogId);
+
+    dialogRef.close();
+}
+
+function openTaskDialog() {
     const dialogRef = document.getElementById("dialog-task");
 
-    document.body.classList.remove("overflow-hidden")
-    
-    dialogRef.close();
+    dialogRef.innerHTML = getTaskOverlayTemplate();
+    openDialog("dialog-task");
+}
+
+function requestCloseTaskDialog() {
+    const dialogRef = document.getElementById("dialog-task");
+
+    dialogRef.requestClose();
+}
+
+function closeTaskDialog(event) {
+    if (event.animationName !== "slide-out-from-center-to-right") {
+        return;
+    }
+
+    const dialogRef = document.getElementById("dialog-task");
+
+    dialogRef.classList.remove("dialog-task-closing");
+    document.body.classList.remove("overflow-hidden");
+
+    closeDialog("dialog-task");
+}
+
+function closeProfileDialog(event) {
+    if (event.animationName !== "slide-out-to-right") {
+        return;
+    }
+
+    const dialogRef = document.getElementById("dialog-profile");
+
+    dialogRef.classList.remove("dialog-profile-closing");
+    document.body.classList.remove("overflow-hidden");
+
+    closeDialog("dialog-profile");
+}
+
+// function dialogTaskSlideOut(event) {
+//     event.preventDefault();
+//     event.currentTarget.classList.add("dialog-task-closing");
+// }
+
+// function dialogProfileSlideOut(event) {
+//     event.preventDefault();
+//     event.currentTarget.classList.add("dialog-profile-closing");
+// }
+
+function dialogSlideOut(event, closingClass) {
+    event.preventDefault();
+    event.currentTarget.classList.add(closingClass);
 }
