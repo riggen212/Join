@@ -183,7 +183,7 @@
                     </section>
                 </div>
 
-                <section id="show-details" class="contact-details">
+                <section id="show-details" class="contact-details" onclick="hideContactActions()">
                     <header>
                         <div>
                             <h2>Contacts</h2>
@@ -200,12 +200,12 @@
                                 <span>DE</span>
                             </div>
                             <h3>David Eisenberg</h3>
-                            <div>
-                                <button class="button button-task-overlay" onclick="editContact()">
+                            <div id="contact-actions">
+                                <button class="button button-task-overlay" onclick="editContact(); hideContactActions()">
                                     <img src="../assets/icons/edit.svg" alt="edit Contact" />
                                     <span>Edit</span>
                                 </button>
-                                <button class="button button-task-overlay" onclick="deleteContact()">
+                                <button class="button button-task-overlay" onclick="deleteContact(); hideContactActions()">
                                     <img src="../assets/icons/delete.svg" alt="delete Contact" />
                                     <span>Delete</span>
                                 </button>
@@ -218,7 +218,7 @@
                         <h4>Phone</h4>
                         <span>+49 1111 111 11 1</span>
                     </section>
-                    <button class="button button-dark contact-add detail-view" type="button">
+                    <button class="button button-dark contact-add detail-view" type="button" onclick="event.stopPropagation(); toggleContactActions()" aria-controls="contact-actions" aria-expanded="false" aria-label="Show contact actions">
                         &#8942;
                     </button>
                 </section>

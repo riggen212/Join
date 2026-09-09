@@ -398,7 +398,6 @@
 #addNewContact .input-wrapper .input-icon img {
     width: 22px;
     height: 22px;
-    object-fit: contain;
 }
 
 #addNewContact .input-wrapper:focus-within {
@@ -535,28 +534,130 @@ body:has(#addNewContact[open]) .contact-list>.detail-view {
     /* for add-contact dialog */
 
     #addNewContact[open] {
+        --dialog-header-height:
+            clamp(170px, calc(100% - 300px), 46%);
+        --badge-size:
+            clamp(96px, min(30vw, 18dvh), 156px);
+        display: grid;
+        grid-template-rows: var(--dialog-header-height) 1fr;
         animation: none;
         transform: none;
     }
-    
+
     #addNewContact {
         position: fixed;
-
-        inset:
-            var(--mobile-header-footer-height) 16px var(--mobile-header-footer-height);
-
+        inset: calc(var(--mobile-header-footer-height) + 8px) 16px calc(var(--mobile-header-footer-height) + 8px);
         width: calc(100% - 32px);
         max-width: 512px;
         height: auto;
         min-height: 0;
         max-height: none;
-
         margin: 0 auto;
         box-sizing: border-box;
         transform: none;
+        overflow: hidden;
+    }
 
-        overflow-x: hidden;
-        overflow-y: auto;
+    #addNewContact>div:first-child {
+        height: 100%;
+        min-height: 0;
+    }
+
+    #addNewContact>div:first-child h1 {
+        font-size: clamp(32px, min(10vw, 7dvh), 60px);
+    }
+
+    #addNewContact>div:first-child p {
+        margin-top: clamp(8px, 1.8dvh, 16px);
+        font-size: clamp(18px, min(5vw, 3.2dvh), 27px);
+    }
+
+    #addNewContact>div:first-child p::after {
+        margin-top: 12px;
+    }
+
+    #addNewContact>.badge-user {
+        position: absolute;
+        top: var(--dialog-header-height);
+        left: 50%;
+        z-index: 2;
+
+        width: var(--badge-size);
+        height: var(--badge-size);
+        margin: 0;
+
+        transform: translate(-50%, -50%);
+    }
+
+    #addNewContact>.badge-user img {
+        width: 40%;
+        height: 40%;
+    }
+
+    #addNewContact>form {
+        height: 100%;
+        gap: clamp(8px, 1.8dvh, 18px);
+
+        padding:
+            calc(var(--badge-size) / 2 + clamp(16px, 2.5dvh, 24px)) 20px clamp(24px, 4dvh, 40px);
+    }
+
+    #addNewContact .input-wrapper {
+        height: 40px;
+        min-height: 40px;
+    }
+
+    #addNewContact .input-wrapper input {
+        height: 100%;
+        min-height: 0;
+    }
+
+    #addNewContact>form>.button {
+        min-height: clamp(48px, 7dvh, 64px);
+        margin-top: clamp(8px, 2dvh, 20px);
+        font-size: 18px;
+    }
+
+    #contact-actions {
+        display: none;
+    }
+
+    #contact-actions.is-open {
+        position: fixed;
+        right: 16px;
+        bottom: calc(var(--mobile-header-footer-height) + 16px);
+        z-index: 10;
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+
+        padding: 16px 12px;
+
+        background-color: #fff;
+        border-radius: 20px 20px 0 20px;
+        box-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    }
+
+    #contact-actions .button-task-overlay {
+        justify-content: flex-start;
+        gap: 8px;
+
+        width: 100%;
+        padding: 8px;
+
+        color: var(--background-dark-color);
+        font-size: 16px;
+        font-weight: 400;
+
+        background-color: transparent;
+        border: none;
+    }
+
+    #contact-actions .button-task-overlay img {
+        width: 24px;
+        height: 24px;
     }
 }
 
