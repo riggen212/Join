@@ -1,16 +1,13 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
     <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-        <script src="../script.js" defer></script>
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon"/>
-
-        <link rel="stylesheet" href="../global_style.css"/>
-        <link rel="stylesheet" href="../styles/components.css">
-        <link rel="stylesheet" href="../styles/fonts.css"/>
-        <link rel="stylesheet" href="../styles/privacy_policy.css"/>
+        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+        <link rel="stylesheet" href="../styles/fonts.css" />
+        <link rel="stylesheet" href="../styles/meta.css" />
+        <link rel="stylesheet" href="../global_style.css" />
 
         <title>Legal Notice</title>
     </head>
@@ -46,36 +43,124 @@
             </dialog>
         </header>
 
-        <div class="app-wrapper">
-            <nav class="navbar">
+        <main class="privacy-policy">
+            <div class="privacy-policy-wrapper">
+                <div class="privacy-policy-wrapper-headline-container">
+                    <h1>Legal Notice</h1>
+                    <button class="button button-arrow" onclick="window.history.back()">
+                        <img src="../assets/icons/arrow.svg" alt="Back" />
+                    </button>
+                </div>
+
+                <section aria-labelledby="angaben-ddg">
+                    <h2 id="angaben-ddg">Information according to § 5 DDG</h2>
+
+                    <address>
+                        Max Muster – Sample Profession<br />
+                        c/o Example Office<br />
+                        Musterweg<br />
+                        12345 Musterstadt
+                    </address>
+
+                    <h3>Represented by</h3>
+                    <p>Max Muster</p>
+
+                    <h3>Contact</h3>
+                    <p>
+                        Phone: 01234-789456<br />
+                        Fax: 1234-56789<br />
+                        Email:
+                        <a href="mailto:max@muster.de">max@muster.de</a>
+                    </p>
+
+                    <h3>VAT identification number</h3>
+                    <p>
+                        VAT identification number according to § 27a of the German Value Added Tax Act:
+                        Musterustid.
+                    </p>
+
+                    <h3>Economic identification number</h3>
+                    <p>Musterwirtschaftsid</p>
+
+                    <h3>Supervisory authority</h3>
+                    <p>Sample Supervisory Authority, Musterstadt</p>
+                </section>
+
+                <section aria-labelledby="streitbeilegung">
+                    <h2 id="streitbeilegung">Consumer Dispute Resolution / Universal Arbitration Board</h2>
+                    <p>
+                        We do not participate in dispute resolution proceedings before a consumer arbitration board
+                        and are not obliged to do so.
+                    </p>
+                </section>
+
+                <section aria-labelledby="haftungsausschluss">
+                    <h2 id="haftungsausschluss">Disclaimer</h2>
+
+                    <h3>Liability for content</h3>
+                    <p>
+                        The contents of our pages were created with the greatest possible care. However, we cannot
+                        guarantee the accuracy, completeness, or timeliness of the content. As a service provider, we
+                        are responsible for our own content on these pages in accordance with general laws pursuant to
+                        § 7 para. 1 DDG. According to §§ 8 to 10 DDG, however, we as a service provider are not obliged
+                        to monitor transmitted or stored third-party information or to investigate circumstances
+                        indicating illegal activity. Obligations to remove or block the use of information under
+                        general laws remain unaffected by this. Liability in this regard is only possible from the
+                        moment a specific legal infringement becomes known. Upon becoming aware of any corresponding
+                        legal infringements, we will remove this content immediately.
+                    </p>
+
+                    <h3>Liability for links</h3>
+                    <p>
+                        Our offer contains links to external third-party websites over whose content we have no
+                        influence. Therefore, we cannot assume any liability for this third-party content. The
+                        respective provider or operator of the linked pages is always responsible for their content.
+                        The linked pages were checked for possible legal violations at the time the links were created.
+                        No unlawful content was identifiable at that time. However, permanent monitoring of the content
+                        of the linked pages is not reasonable without specific indications of a legal infringement.
+                        Upon becoming aware of any legal violations, we will remove such links immediately.
+                    </p>
+
+                    <h3>Copyright</h3>
+                    <p>
+                        The content and works created by the site operators on these pages are subject to German
+                        copyright law. The reproduction, editing, distribution, and any kind of exploitation beyond the
+                        limits of copyright law require the written consent of the respective author or creator.
+                        Downloads and copies of this site are permitted for private, non-commercial use only.
+                    </p>
+
+                    <p>
+                        Where the content on this site was not created by the operator, the copyrights of third parties
+                        are respected. In particular, third-party content is identified as such. If you nevertheless
+                        become aware of a copyright infringement, please notify us accordingly. Upon becoming aware of
+                        any legal violations, we will remove such content immediately.
+                    </p>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer-navbar">
+            <div class="navbar">
                 <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
-                    <ul class="navbar-links">
-                        <li>
-                            <a href="../pages/summary_page.html" class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
-                                <span>Summary</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/add_task.html" class="link-navbar">
-                                <img src="../assets/icons/add_task.svg" alt="Add task icon" />
-                                <span>Add Task</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/board.html" class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="Board icon" />
-                                <span>Board</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/contacts.html" class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
-                                <span>Contacts</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <button class="button button-navbar">
+                        <img src="../assets/icons/summary.svg" alt="Summary" />
+                        <span>Summary</span>
+                    </button>
+
+                    <button class="button button-navbar">
+                        <img src="../assets/icons/add_task.svg" alt="Add task" />
+                        <span>Add task</span>
+                    </button>
+
+                    <button class="button button-navbar">
+                        <img src="../assets/icons/board.svg" alt="Board" />
+                        <span>Board</span>
+                    </button>
+
+                    <button class="button button-navbar">
+                        <img src="../assets/icons/contacts.svg" alt="Contacts" />
+                        <span>Contacts</span>
+                    </button>
                 </div>
                 <footer>
                     <ul class="navbar-links">
