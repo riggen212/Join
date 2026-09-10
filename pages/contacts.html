@@ -5,16 +5,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <script src="../scripts/templates.js" defer></script>
     <script src="../script.js" defer></script>
     <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
 
-    <link rel="stylesheet" href="../global_style.css" />
+    <link rel="stylesheet" href="../global_style.css">
     <link rel="stylesheet" href="../styles/components.css">
-    <link rel="stylesheet" href="../styles/login.css" />
-    <link rel="stylesheet" href="../styles/add_task.css" />
-    <link rel="stylesheet" href="../styles/fonts.css" />
-    <link rel="stylesheet" href="../styles/board.css" />
+    <link rel="stylesheet" href="../styles/login.css">
+    <link rel="stylesheet" href="../styles/add_task.css">
+    <link rel="stylesheet" href="../styles/fonts.css">
+    <link rel="stylesheet" href="../styles/board.css">
     <link rel="stylesheet" href="../styles/contacts.css">
+    <link rel="stylesheet" href="../styles/add_contact.css">
+
 
     <title>Join</title>
 </head>
@@ -224,11 +227,11 @@
                             </div>
                             <h3>David Eisenberg</h3>
                             <div id="contact-actions">
-                                <button class="button button-task-overlay" onclick="editContact(); hideContactActions()">
+                                <button class="button button-task-overlay" onclick="editContact()">
                                     <img src="../assets/icons/edit.svg" alt="edit Contact" />
                                     <span>Edit</span>
                                 </button>
-                                <button class="button button-task-overlay" onclick="deleteContact(); hideContactActions()">
+                                <button class="button button-task-overlay" onclick="deleteContact()">
                                     <img src="../assets/icons/delete.svg" alt="delete Contact" />
                                     <span>Delete</span>
                                 </button>
@@ -241,7 +244,7 @@
                         <h4>Phone</h4>
                         <span>+49 1111 111 11 1</span>
                     </section>
-                    <button class="button button-dark contact-add detail-view" type="button" onclick="event.stopPropagation(); toggleContactActions()" aria-controls="contact-actions" aria-expanded="false" aria-label="Show contact actions">
+                    <button class="button button-dark contact-add detail-view" type="button">
                         &#8942;
                     </button>
                 </section>
@@ -249,42 +252,7 @@
         </main>
     </div>
 
-    <dialog id="addNewContact">
-        <div>
-            <button class="button button-close" type="button" onclick="this.closest('dialog').close()" aria-label="Close dialog">
-                <img src="../assets/icons/cancel.svg" alt="">
-            </button>
-
-            <h1>Add Contact</h1>
-            <p>Tasks are better with a team!</p>
-        </div>
-        <div class="badge-user">
-            <img src="../assets/icons/person.svg" alt="">
-        </div>
-        <form action="">
-            <div class="input-wrapper">
-                <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" required>
-                <span type="button">
-                    <img src="../assets/icons/person.svg" alt="show password">
-                </span>
-            </div>
-            <div class="input-wrapper">
-                <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" required>
-                <span type="button">
-                    <img src="../assets/icons/mail.svg" alt="show password">
-                </span>
-            </div>
-            <div class="input-wrapper">
-                <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" required>
-                <span type="button">
-                    <img src="../assets/icons/phone.svg" alt="show password">
-                </span>
-            </div>
-            <button class="button button-dark" type="submit">
-                <span>Create contact</span>
-                <img src="../assets/icons/check.svg" alt="">
-            </button>
-        </form>
+    <dialog id="contact">   
     </dialog>
 </body>
 

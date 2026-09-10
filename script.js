@@ -16,6 +16,14 @@ function hideContactDetails() {
     hideContactActions();
 }
 
+function hideContactActions() {
+    const actions = document.getElementById("contact-actions");
+    const menuButton = document.querySelector(".contact-details > .contact-add");
+
+    actions.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
+}
+
 function openDialog(dialogId) {
     const dialogRef = document.getElementById(dialogId);
 
@@ -86,33 +94,34 @@ function dialogSlideOut(event, closingClass) {
 
 
 function addNewContact() {
-    const dialog = document.getElementById("addNewContact");
+    const dialog = document.getElementById("contact");
 
     if (!dialog.open) {
-        dialog.showModal();
+        dialog.classList.remove("contact-edit");
+        dialog.innerHTML = renderAddContactTemplate();
+        openDialog("contact");
     }
 }
 
+const dummyContact = {
+    name: "Anton Mayer",
+    email: "anton@gmail.com",
+    phone: "+49 1111 111 11 1",
+    initials: "AM",
+    colorClass: "badge-user-orange"
+};
+
+
 function editContact() {
-    
+    const dialog = document.getElementById("contact");
+
+    if (!dialog.open) {
+        dialog.classList.add("contact-edit");
+        dialog.innerHTML = renderEditContactTemplate(dummyContact);
+        openDialog("contact");
+    }
 }
 
 function deleteContact() {
-    
-}
 
-function toggleContactActions() {
-    const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(".contact-details > .contact-add");
-    const isOpen = actions.classList.toggle("is-open");
-
-    menuButton.setAttribute("aria-expanded", isOpen);
-}
-
-function hideContactActions() {
-    const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(".contact-details > .contact-add");
-
-    actions.classList.remove("is-open");
-    menuButton.setAttribute("aria-expanded", "false");
 }
