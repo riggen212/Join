@@ -35,7 +35,7 @@ function getTaskOverlayTemplate() {
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-user">User Story</span>
-                        <button class="button button-close" onclick="requestCloseTaskDialog()" aria-label="Close Task">
+                        <button class="button button-close" onclick="requestCloseDialog('dialog-task')" aria-label="Close Task">
                             <img src="../assets/icons/cancel.svg" alt="Close" />
                         </button>
                     </div>
@@ -94,7 +94,7 @@ function getTaskOverlayTemplate() {
 
 function renderAddContactTemplate() {
     return `<div>
-            <button class="button button-close" type="button" onclick="this.closest('dialog').close()" aria-label="Close dialog">
+            <button class="button button-close" type="button" onclick="requestCloseDialog('contact')" aria-label="Close dialog">
                 <img src="../assets/icons/cancel.svg" alt="">
             </button>
 

@@ -241,8 +241,8 @@ body:has(#contact[open]) .contact-lis > .detail-view {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: var(--dialog-header-height) 1fr;
-        animation: none;
-        transform: none;
+        /* animation: none;
+        transform: none; */
     }
 
     #contact {

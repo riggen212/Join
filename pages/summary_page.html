@@ -7,35 +7,44 @@
 
     <script src="../script.js" defer></script>
     <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="../global_style.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
     <link rel="stylesheet" href="../styles/fonts.css" />
     <link rel="stylesheet" href="../styles/privacy_policy.css" />
     <link rel="stylesheet" href="../styles/summary_page.css">
-    <link rel="stylesheet" href="../global_style.css" />
     <title>Summary</title>
 </head>
 
 <body>
     <header class="header">
-        <div class="header-wrapper">
-            <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
-            <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
-        </div>
-        <dialog
+            <div class="header-wrapper">
+                <div>
+                    <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+                    <p class="header-headline">Kanban Project Management Tool</p>
+                </div>
+                <div class="d-flex-align-center gap-lg">
+                    <a href="../pages/help.html" class="header-link">
+                        <img src="../assets/icons/help.svg" alt="Help" />
+                    </a>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+                </div>
+            </div>
+            <dialog
                 id="dialog-profile"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event)"
+                onanimationend="closeProfileDialog(event, this.id)"
             >
                 <nav>
                     <ul>
                         <li>
-                            <a href="#" class="link-navbar">Help</a>
+                            <a id="link-help-profile-dialog" href="../pages/help.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Help</a>
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar">Legal Notice</a>
+                            <a href="../pages/legal_notice.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Legal Notice</a>
                         </li>
                         <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar">Privacy Policy</a>
+                            <a href="../pages/privacy_policy.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Privacy Policy</a>
                         </li>
                         <li>
                             <a href="../index.html" class="link-navbar">Log out</a>
@@ -43,7 +52,7 @@
                     </ul>
                 </nav>
             </dialog>
-    </header>
+        </header>
     <div class="app-wrapper">
         <nav class="navbar">
             <div class="navbar-wrapper">

@@ -13,13 +13,39 @@
     border: unset;
     border-radius: var(--border-radius-high);
 
-    &:not(.dialog-task-closing) {
+    &:not(.dialog-closing-to-right) {
         animation: slide-in-from-right-to-center 256ms linear forwards;
     }
 }
 
-.dialog-task-closing {
+#contact[open] {
+    top: 50%;
+    left: 50%;
+
+    /* top: 50%;
+    left: 50%;
+
+    max-height: 90dvh;
+    max-width: 530px;
+    width: 90dvw;
+
+    padding: 0;
+
+    background-color: unset;
+    border: unset;
+    border-radius: var(--border-radius-high); */
+
+    &:not(.dialog-closing-to-bottom) {
+        animation: slide-in-from-bottom-to-center 256ms linear forwards;
+    }
+}
+
+.dialog-closing-to-right {
     animation: slide-out-from-center-to-right 256ms linear forwards;
+}
+
+.dialog-closing-to-bottom {
+    animation: slide-out-from-center-to-bottom 256ms linear forwards;
 }
 
 @keyframes slide-in-from-right-to-center {
@@ -49,21 +75,28 @@
     }
 }
 
-#dialog-profile[open] {
+@keyframes slide-out-from-center-to-bottom {
+    from {
+        transform: translate(-50%, -50%);
+    }
+    to {
+        transform: translate(-50%, 50dvh);
+    }
+}
+
+#dialog-profile[open],
+#dialog-edit-contact[open] {
     position: fixed;
-    top: var(--mobile-header-footer-height);
     right: var(--navbar-profile-dialog-right);
-    bottom: auto;
     left: auto;
 
     margin: 0;
 
     padding: var(--space-xs);
 
-    background-color: var(--background-dark-color);
     border: unset;
     border-radius: 20px 0 20px 20px;
-    box-shadow: 0 0 7px 0 rgb(0 0 0 / 50%);
+    box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 50%);
 
     &:not(.dialog-profile-closing) {
         animation: slide-in-from-right 256ms linear forwards;
@@ -73,6 +106,13 @@
         padding: var(--space-xs);
         list-style-type: none;
     }
+}
+
+#dialog-profile[open] {
+    top: var(--mobile-header-footer-height);
+    bottom: auto;
+
+    background-color: var(--background-dark-color);
 
     & .link-navbar {
         align-items: unset;
@@ -81,6 +121,19 @@
 
         padding-block: 16px;
         padding-inline: var(--space-xs);
+    }
+}
+
+#dialog-edit-contact[open] {
+    top: auto;
+    bottom: calc(var(--mobile-header-footer-height) + 16px);
+
+    & .button-task-overlay {
+        padding-block: 16px;
+    }
+
+    & .button-task-overlay:hover {
+        text-shadow: unset;
     }
 }
 
@@ -262,8 +315,8 @@
 
     &:hover {
         text-shadow:
-        0.5px 0 currentColor,
-        -0.5px 0 currentColor;
+            0.5px 0 currentColor,
+            -0.5px 0 currentColor;
     }
 
     & img {

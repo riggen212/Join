@@ -1,49 +1,71 @@
 <!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="../scripts/templates.js" defer></script>
+        <script src="../script.js" defer></script>
+        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
 
-    <script src="../scripts/templates.js" defer></script>
-    <script src="../script.js" defer></script>
-    <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+        <link rel="stylesheet" href="../global_style.css" />
+        <link rel="stylesheet" href="../styles/components.css" />
+        <link rel="stylesheet" href="../styles/login.css" />
+        <link rel="stylesheet" href="../styles/add_task.css" />
+        <link rel="stylesheet" href="../styles/fonts.css" />
+        <link rel="stylesheet" href="../styles/board.css" />
+        <link rel="stylesheet" href="../styles/contacts.css" />
+        <link rel="stylesheet" href="../styles/add_contact.css" />
 
-    <link rel="stylesheet" href="../global_style.css">
-    <link rel="stylesheet" href="../styles/components.css">
-    <link rel="stylesheet" href="../styles/login.css">
-    <link rel="stylesheet" href="../styles/add_task.css">
-    <link rel="stylesheet" href="../styles/fonts.css">
-    <link rel="stylesheet" href="../styles/board.css">
-    <link rel="stylesheet" href="../styles/contacts.css">
-    <link rel="stylesheet" href="../styles/add_contact.css">
+        <title>Join</title>
+    </head>
 
-
-    <title>Join</title>
-</head>
-
-<body>
-    <header class="header">
-        <div class="header-wrapper">
-            <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
-            <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
-        </div>
-        <dialog
+    <body>
+        <header class="header">
+            <div class="header-wrapper">
+                <div>
+                    <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+                    <p class="header-headline">Kanban Project Management Tool</p>
+                </div>
+                <div class="d-flex-align-center gap-lg">
+                    <a href="../pages/help.html" class="header-link">
+                        <img src="../assets/icons/help.svg" alt="Help" />
+                    </a>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+                </div>
+            </div>
+            <dialog
                 id="dialog-profile"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event)"
+                onanimationend="closeProfileDialog(event, this.id)"
             >
                 <nav>
                     <ul>
                         <li>
-                            <a href="#" class="link-navbar">Help</a>
+                            <a
+                                id="link-help-profile-dialog"
+                                href="../pages/help.html"
+                                class="link-navbar"
+                                onclick="closeDialog('dialog-profile')"
+                                >Help</a
+                            >
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar">Legal Notice</a>
+                            <a
+                                href="../pages/legal_notice.html"
+                                class="link-navbar"
+                                onclick="closeDialog('dialog-profile')"
+                                >Legal Notice</a
+                            >
                         </li>
                         <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar">Privacy Policy</a>
+                            <a
+                                href="../pages/privacy_policy.html"
+                                class="link-navbar"
+                                onclick="closeDialog('dialog-profile')"
+                                >Privacy Policy</a
+                            >
                         </li>
                         <li>
                             <a href="../index.html" class="link-navbar">Log out</a>
@@ -51,209 +73,239 @@
                     </ul>
                 </nav>
             </dialog>
-    </header>
+        </header>
 
-    <div id="content" class="app-wrapper">
-        <nav class="navbar">
-            <div class="navbar-wrapper">
-                <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
-                <ul class="navbar-links">
-                    <li>
-                        <a href="../pages/summary_page.html" class="link-navbar">
-                            <img src="../assets/icons/summary.svg" alt="Summary icon" />
-                            <span>Summary</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/add_task.html" class="link-navbar">
-                            <img src="../assets/icons/add_task.svg" alt="Add task icon" />
-                            <span>Add Task</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/board.html" class="link-navbar">
-                            <img src="../assets/icons/board.svg" alt="Board icon" />
-                            <span>Board</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/contacts.html" class="link-navbar active">
-                            <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
-                            <span>Contacts</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <footer>
-                <ul class="navbar-links">
-                    <li>
-                        <a href="../pages/privacy_policy.html" class="link-navbar">
-                            <span>Privacy Policy</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/legal_notice.html" class="link-navbar">
-                            <span>Legal notice</span>
-                        </a>
-                    </li>
-                </ul>
-            </footer>
-        </nav>
-        <main class="board">
-            <div class="contacts-content">
+        <div id="content" class="app-wrapper">
+            <nav class="navbar">
+                <div class="navbar-wrapper">
+                    <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
+                    <ul class="navbar-links">
+                        <li>
+                            <a href="../pages/summary_page.html" class="link-navbar">
+                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                                <span>Summary</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/add_task.html" class="link-navbar">
+                                <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                                <span>Add Task</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/board.html" class="link-navbar">
+                                <img src="../assets/icons/board.svg" alt="Board icon" />
+                                <span>Board</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/contacts.html" class="link-navbar active">
+                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                                <span>Contacts</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <footer>
+                    <ul class="navbar-links">
+                        <li>
+                            <a href="../pages/privacy_policy.html" class="link-navbar">
+                                <span>Privacy Policy</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/legal_notice.html" class="link-navbar">
+                                <span>Legal notice</span>
+                            </a>
+                        </li>
+                    </ul>
+                </footer>
+            </nav>
+            <main class="board">
+                <div class="contacts-content">
+                    <div class="contact-list">
+                        <button class="button button-dark detail-view" type="button" onclick="addNewContact()">
+                            <span>Add new contact</span>
+                            <img src="../assets/icons/person_add.svg" alt="" />
+                        </button>
 
-                <div class="contact-list">
-                    <button class="button button-dark detail-view" type="button" onclick="addNewContact()">
-                        <span>Add new contact</span>
-                        <img src="../assets/icons/person_add.svg" alt="">
-                    </button>
+                        <section class="contact-group">
+                            <h2>A</h2>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-orange">
+                                    <span>AM</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">Anton Mayer</p>
+                                    <p class="adress">antonm@gmail.com</p>
+                                </div>
+                            </article>
 
-                    <section class="contact-group">
-                        <h2>A</h2>
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-orange">
-                                <span>AM</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">Anton Mayer</p>
-                                <p class="adress">antonm@gmail.com</p>
-                            </div>
-                        </article>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-purple">
+                                    <span>AS</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">Anja Schulz</p>
+                                    <p class="adress">anjaz@gmx.com</p>
+                                </div>
+                            </article>
+                        </section>
 
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-purple">
-                                <span>AS</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">Anja Schulz</p>
-                                <p class="adress">anjaz@gmx.com</p>
-                            </div>
-                        </article>
-                    </section>
+                        <section class="contact-group">
+                            <h2>B</h2>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-pink">
+                                    <span>BZ</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">Benedikt Ziegler</p>
+                                    <p class="adress">benediktz@gmail.com</p>
+                                </div>
+                            </article>
+                        </section>
 
-                    <section class="contact-group">
-                        <h2>B</h2>
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-pink">
-                                <span>BZ</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">Benedikt Ziegler</p>
-                                <p class="adress">benediktz@gmail.com</p>
-                            </div>
-                        </article>
-                    </section>
+                        <section class="contact-group">
+                            <h2>D</h2>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-pink">
+                                    <span>DE</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">David Eisenberg</p>
+                                    <p class="adress">davide@hotmail.com</p>
+                                </div>
+                            </article>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-pink">
+                                    <span>DE</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">David Eisenberg</p>
+                                    <p class="adress">davide@hotmail.com</p>
+                                </div>
+                            </article>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-pink">
+                                    <span>DE</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">David Eisenberg</p>
+                                    <p class="adress">davide@hotmail.com</p>
+                                </div>
+                            </article>
+                        </section>
 
-                    <section class="contact-group">
-                        <h2>D</h2>
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-pink">
-                                <span>DE</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">David Eisenberg</p>
-                                <p class="adress">davide@hotmail.com</p>
-                            </div>
-                        </article>
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-pink">
-                                <span>DE</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">David Eisenberg</p>
-                                <p class="adress">davide@hotmail.com</p>
-                            </div>
-                        </article>
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-pink">
-                                <span>DE</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">David Eisenberg</p>
-                                <p class="adress">davide@hotmail.com</p>
-                            </div>
-                        </article>
-                    </section>
+                        <section class="contact-group">
+                            <h2>E</h2>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-mint">
+                                    <span>EF</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">Eva Fischer</p>
+                                    <p class="adress">evaf@gmx.de</p>
+                                </div>
+                            </article>
 
-                    <section class="contact-group">
-                        <h2>E</h2>
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-mint">
-                                <span>EF</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">Eva Fischer</p>
-                                <p class="adress">evaf@gmx.de</p>
-                            </div>
-                        </article>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-mint">
+                                    <span>EF</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">Eva Fischer</p>
+                                    <p class="adress">evaf@gmx.de</p>
+                                </div>
+                            </article>
 
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-mint">
-                                <span>EF</span>
-                            </div>
-                            <div>
-                                <p class="hover-bright">Eva Fischer</p>
-                                <p class="adress">evaf@gmx.de</p>
-                            </div>
-                        </article>
+                            <article class="contact-card" onclick="showContactDetails()">
+                                <div class="badge-user badge-user-mint">
+                                    <span>EF</span>
+                                </div>
+                                <div>
+                                    <p class="hover-bright">Eva Fischer</p>
+                                    <p class="adress">evaf@gmx.de</p>
+                                </div>
+                            </article>
+                        </section>
+                    </div>
 
-                        <article class="contact-card" onclick="showContactDetails()">
-                            <div class="badge-user badge-user-mint">
-                                <span>EF</span>
-                            </div>
+                    <section id="show-details" class="contact-details" onclick="hideContactActions()">
+                        <header>
                             <div>
-                                <p class="hover-bright">Eva Fischer</p>
-                                <p class="adress">evaf@gmx.de</p>
+                                <h2>Contacts</h2>
+                                <span>Better with a team</span>
                             </div>
-                        </article>
+                            <button
+                                class="button button-close"
+                                onclick="hideContactDetails()"
+                                aria-label="Back to contact list"
+                            >
+                                <img src="../assets/icons/arrow.svg" alt="Close" />
+                            </button>
+                        </header>
+                        <section class="contact-details-info">
+                            <div>
+                                <div class="badge-user badge-user-pink">
+                                    <span>DE</span>
+                                </div>
+                                <h3>David Eisenberg</h3>
+                                <div id="contact-actions">
+                                    <button class="button button-task-overlay" onclick="editContact()">
+                                        <img src="../assets/icons/edit.svg" alt="edit Contact" />
+                                        <span>Edit</span>
+                                    </button>
+                                    <button class="button button-task-overlay" onclick="deleteContact()">
+                                        <img src="../assets/icons/delete.svg" alt="delete Contact" />
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p>Contact Information</p>
+                            <h4>Email</h4>
+                            <span class="detail-info">davide@hotmail.com</span>
+                            <h4>Phone</h4>
+                            <span>+49 1111 111 11 1</span>
+                        </section>
+                        <button
+                            class="button button-dark contact-add detail-view"
+                            type="button"
+                            onclick="openDialog('dialog-edit-contact')"
+                        >
+                            &#8942;
+                        </button>
+                        <dialog
+                            id="dialog-edit-contact"
+                            closedby="any"
+                            oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
+                            onanimationend="closeProfileDialog(event, this.id)"
+                        >
+                            <ul>
+                                <li>
+                                    <button class="button button-task-overlay" onclick="deleteContact()">
+                                        <img src="../assets/icons/delete.svg" alt="Delete" />
+                                        <span>Delete</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="button button-task-overlay" onclick="editContact()">
+                                        <img src="../assets/icons/edit.svg" alt="Edit" />
+                                        <span>Edit</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </dialog>
                     </section>
                 </div>
+            </main>
+        </div>
 
-                <section id="show-details" class="contact-details" onclick="hideContactActions()">
-                    <header>
-                        <div>
-                            <h2>Contacts</h2>
-                            <span>Better with a team</span>
-                        </div>
-                        <button class="button button-close" onclick="hideContactDetails()"
-                            aria-label="Back to contact list">
-                            <img src="../assets/icons/arrow.svg" alt="Close" />
-                        </button>
-                    </header>
-                    <section class="contact-details-info">
-                        <div>
-                            <div class="badge-user badge-user-pink">
-                                <span>DE</span>
-                            </div>
-                            <h3>David Eisenberg</h3>
-                            <div id="contact-actions">
-                                <button class="button button-task-overlay" onclick="editContact()">
-                                    <img src="../assets/icons/edit.svg" alt="edit Contact" />
-                                    <span>Edit</span>
-                                </button>
-                                <button class="button button-task-overlay" onclick="deleteContact()">
-                                    <img src="../assets/icons/delete.svg" alt="delete Contact" />
-                                    <span>Delete</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <p>Contact Information</p>
-                        <h4>Email</h4>
-                        <span class="detail-info">davide@hotmail.com</span>
-                        <h4>Phone</h4>
-                        <span>+49 1111 111 11 1</span>
-                    </section>
-                    <button class="button button-dark contact-add detail-view" type="button">
-                        &#8942;
-                    </button>
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <dialog id="contact">   
-    </dialog>
-</body>
-
+        <dialog
+            id="contact"
+            closedby="any"
+            oncancel="dialogSlideOut(event, 'dialog-closing-to-bottom')"
+            onanimationend="closeContactDialog(event)"
+        ></dialog>
+    </body>
 </html>
