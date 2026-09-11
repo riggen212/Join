@@ -12,6 +12,16 @@ function hideContactDetails() {
     contactDetails.classList.remove("is-open");
     document.documentElement.classList.remove("contact-details-open");
     document.body.classList.remove("contact-details-open");
+
+    hideContactActions();
+}
+
+function hideContactActions() {
+    const actions = document.getElementById("contact-actions");
+    const menuButton = document.querySelector(".contact-details > .contact-add");
+
+    actions.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
 }
 
 function openDialog(dialogId) {
@@ -80,4 +90,38 @@ function closeProfileDialog(event) {
 function dialogSlideOut(event, closingClass) {
     event.preventDefault();
     event.currentTarget.classList.add(closingClass);
+}
+
+
+function addNewContact() {
+    const dialog = document.getElementById("contact");
+
+    if (!dialog.open) {
+        dialog.classList.remove("contact-edit");
+        dialog.innerHTML = renderAddContactTemplate();
+        openDialog("contact");
+    }
+}
+
+const dummyContact = {
+    name: "Anton Mayer",
+    email: "anton@gmail.com",
+    phone: "+49 1111 111 11 1",
+    initials: "AM",
+    colorClass: "badge-user-orange"
+};
+
+
+function editContact() {
+    const dialog = document.getElementById("contact");
+
+    if (!dialog.open) {
+        dialog.classList.add("contact-edit");
+        dialog.innerHTML = renderEditContactTemplate(dummyContact);
+        openDialog("contact");
+    }
+}
+
+function deleteContact() {
+
 }

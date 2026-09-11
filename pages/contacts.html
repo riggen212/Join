@@ -5,16 +5,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <script src="../scripts/templates.js" defer></script>
     <script src="../script.js" defer></script>
     <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
 
-    <link rel="stylesheet" href="../global_style.css" />
+    <link rel="stylesheet" href="../global_style.css">
     <link rel="stylesheet" href="../styles/components.css">
-    <link rel="stylesheet" href="../styles/login.css" />
-    <link rel="stylesheet" href="../styles/add_task.css" />
-    <link rel="stylesheet" href="../styles/fonts.css" />
-    <link rel="stylesheet" href="../styles/board.css" />
+    <link rel="stylesheet" href="../styles/login.css">
+    <link rel="stylesheet" href="../styles/add_task.css">
+    <link rel="stylesheet" href="../styles/fonts.css">
+    <link rel="stylesheet" href="../styles/board.css">
     <link rel="stylesheet" href="../styles/contacts.css">
+    <link rel="stylesheet" href="../styles/add_contact.css">
+
 
     <title>Join</title>
 </head>
@@ -50,7 +53,7 @@
             </dialog>
     </header>
 
-    <div class="app-wrapper">
+    <div id="content" class="app-wrapper">
         <nav class="navbar">
             <div class="navbar-wrapper">
                 <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
@@ -100,7 +103,7 @@
             <div class="contacts-content">
 
                 <div class="contact-list">
-                    <button class="button button-dark detail-view" type="button">
+                    <button class="button button-dark detail-view" type="button" onclick="addNewContact()">
                         <span>Add new contact</span>
                         <img src="../assets/icons/person_add.svg" alt="">
                     </button>
@@ -152,6 +155,24 @@
                                 <p class="adress">davide@hotmail.com</p>
                             </div>
                         </article>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-pink">
+                                <span>DE</span>
+                            </div>
+                            <div>
+                                <p class="hover-bright">David Eisenberg</p>
+                                <p class="adress">davide@hotmail.com</p>
+                            </div>
+                        </article>
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-pink">
+                                <span>DE</span>
+                            </div>
+                            <div>
+                                <p class="hover-bright">David Eisenberg</p>
+                                <p class="adress">davide@hotmail.com</p>
+                            </div>
+                        </article>
                     </section>
 
                     <section class="contact-group">
@@ -165,16 +186,37 @@
                                 <p class="adress">evaf@gmx.de</p>
                             </div>
                         </article>
-                    </section> 
+
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-mint">
+                                <span>EF</span>
+                            </div>
+                            <div>
+                                <p class="hover-bright">Eva Fischer</p>
+                                <p class="adress">evaf@gmx.de</p>
+                            </div>
+                        </article>
+
+                        <article class="contact-card" onclick="showContactDetails()">
+                            <div class="badge-user badge-user-mint">
+                                <span>EF</span>
+                            </div>
+                            <div>
+                                <p class="hover-bright">Eva Fischer</p>
+                                <p class="adress">evaf@gmx.de</p>
+                            </div>
+                        </article>
+                    </section>
                 </div>
 
-                <section id="show-details" class="contact-details">
+                <section id="show-details" class="contact-details" onclick="hideContactActions()">
                     <header>
                         <div>
                             <h2>Contacts</h2>
                             <span>Better with a team</span>
                         </div>
-                        <button class="button button-close" onclick="hideContactDetails()" aria-label="Back to contact list">
+                        <button class="button button-close" onclick="hideContactDetails()"
+                            aria-label="Back to contact list">
                             <img src="../assets/icons/arrow.svg" alt="Close" />
                         </button>
                     </header>
@@ -184,6 +226,16 @@
                                 <span>DE</span>
                             </div>
                             <h3>David Eisenberg</h3>
+                            <div id="contact-actions">
+                                <button class="button button-task-overlay" onclick="editContact()">
+                                    <img src="../assets/icons/edit.svg" alt="edit Contact" />
+                                    <span>Edit</span>
+                                </button>
+                                <button class="button button-task-overlay" onclick="deleteContact()">
+                                    <img src="../assets/icons/delete.svg" alt="delete Contact" />
+                                    <span>Delete</span>
+                                </button>
+                            </div>
                         </div>
 
                         <p>Contact Information</p>
@@ -199,6 +251,9 @@
             </div>
         </main>
     </div>
+
+    <dialog id="contact">   
+    </dialog>
 </body>
 
 </html>
