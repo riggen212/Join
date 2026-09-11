@@ -25,25 +25,49 @@
 <body>
     <header class="header">
         <div class="header-wrapper">
+                <div>
             <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+                    <p class="header-headline">Kanban Project Management Tool</p>
+                </div>
+                <div class="d-flex-align-center gap-lg">
+                    <a href="../pages/help.html" class="header-link">
+                        <img src="../assets/icons/help.svg" alt="Help" />
+                    </a>
             <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+                </div>
         </div>
         <dialog
                 id="dialog-profile"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event)"
+                onanimationend="closeProfileDialog(event, this.id)"
             >
                 <nav>
                     <ul>
                         <li>
-                            <a href="#" class="link-navbar">Help</a>
+                            <a
+                                id="link-help-profile-dialog"
+                                href="../pages/help.html"
+                                class="link-navbar"
+                                onclick="closeDialog('dialog-profile')"
+                                >Help</a
+                            >
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar">Legal Notice</a>
+                            <a
+                                href="../pages/legal_notice.html"
+                                class="link-navbar"
+                                onclick="closeDialog('dialog-profile')"
+                                >Legal Notice</a
+                            >
                         </li>
                         <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar">Privacy Policy</a>
+                            <a
+                                href="../pages/privacy_policy.html"
+                                class="link-navbar"
+                                onclick="closeDialog('dialog-profile')"
+                                >Privacy Policy</a
+                            >
                         </li>
                         <li>
                             <a href="../index.html" class="link-navbar">Log out</a>
@@ -244,9 +268,34 @@
                         <h4>Phone</h4>
                         <span>+49 1111 111 11 1</span>
                     </section>
-                    <button class="button button-dark contact-add detail-view" type="button">
+                        <button
+                            class="button button-dark contact-add detail-view"
+                            type="button"
+                            onclick="openDialog('dialog-edit-contact')"
+                        >
                         &#8942;
                     </button>
+                        <dialog
+                            id="dialog-edit-contact"
+                            closedby="any"
+                            oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
+                            onanimationend="closeProfileDialog(event, this.id)"
+                        >
+                            <ul>
+                                <li>
+                                    <button class="button button-task-overlay" onclick="deleteContact()">
+                                        <img src="../assets/icons/delete.svg" alt="Delete" />
+                                        <span>Delete</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="button button-task-overlay" onclick="editContact()">
+                                        <img src="../assets/icons/edit.svg" alt="Edit" />
+                                        <span>Edit</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </dialog>
                 </section>
             </div>
         </main>

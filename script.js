@@ -45,8 +45,8 @@ function openTaskDialog() {
     openDialog("dialog-task");
 }
 
-function requestCloseTaskDialog() {
-    const dialogRef = document.getElementById("dialog-task");
+function requestCloseDialog(dialogId) {
+    const dialogRef = document.getElementById(dialogId);
 
     dialogRef.requestClose();
 }
@@ -58,23 +58,23 @@ function closeTaskDialog(event) {
 
     const dialogRef = document.getElementById("dialog-task");
 
-    dialogRef.classList.remove("dialog-task-closing");
+    dialogRef.classList.remove("dialog-closing-to-right");
     document.body.classList.remove("overflow-hidden");
 
     closeDialog("dialog-task");
 }
 
-function closeProfileDialog(event) {
+function closeProfileDialog(event, dialogId) {
     if (event.animationName !== "slide-out-to-right") {
         return;
     }
 
-    const dialogRef = document.getElementById("dialog-profile");
+    const dialogRef = document.getElementById(dialogId);
 
     dialogRef.classList.remove("dialog-profile-closing");
     document.body.classList.remove("overflow-hidden");
 
-    closeDialog("dialog-profile");
+    closeDialog(dialogId);
 }
 
 // function dialogTaskSlideOut(event) {
