@@ -94,7 +94,7 @@ function getTaskOverlayTemplate() {
 
 function renderAddContactTemplate() {
     return `<div>
-            <button class="button button-close" type="button" onclick="this.closest('dialog').close()" aria-label="Close dialog">
+            <button class="button button-close" type="button" onclick="requestCloseDialog('contact')" aria-label="Close dialog">
                 <img src="../assets/icons/cancel.svg" alt="">
             </button>
 
