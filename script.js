@@ -25,72 +25,63 @@ function hideContactActions() {
 }
 
 function openDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
+    const dialog = document.getElementById(dialogId);
 
     document.body.classList.add("overflow-hidden");
 
-    dialogRef.showModal();
-}
-
-function closeDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
-
-    dialogRef.close();
+    dialog.showModal();
 }
 
 function openTaskDialog() {
-    const dialogRef = document.getElementById("dialog-task");
+    const dialog = document.getElementById("dialog-task");
 
-    dialogRef.innerHTML = getTaskOverlayTemplate();
+    dialog.innerHTML = getTaskOverlayTemplate();
     openDialog("dialog-task");
 }
 
-function requestCloseDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
-
-    dialogRef.requestClose();
-}
-
 function closeTaskDialog(event) {
-    if (event.animationName !== "slide-out-from-center-to-right") {
-        return;
-    }
+    const dialog = event.currentTarget;
 
-    const dialogRef = document.getElementById("dialog-task");
-
-    dialogRef.classList.remove("dialog-task-closing");
-    document.body.classList.remove("overflow-hidden");
-
-    closeDialog("dialog-task");
-}
-
-function closeContactDialog(event) {
     if (
-        event.animationName !== "slide-out-from-center-to-bottom" &&
-        event.animationName !== "slide-out-from-center-to-right"
+        event.target !== dialog ||
+        !dialog.classList.contains("dialog-task-closing") 
     ) {
         return;
     }
 
-    const dialogRef = document.getElementById("contact");
-
-    dialogRef.classList.remove("contact-closing");
+    dialog.classList.remove("dialog-task-closing");
     document.body.classList.remove("overflow-hidden");
-
-    closeDialog("contact");
+    dialog.close()
 }
 
-function closeProfileDialog(event, dialogId) {
-    if (event.animationName !== "slide-out-to-right") {
+function closeContactDialog(event) {
+    const dialog = event.currentTarget;
+
+    if (
+        event.target !== dialog ||
+        !dialog.classList.contains("contact-closing") 
+    ) {
         return;
     }
 
-    const dialogRef = document.getElementById(dialogId);
-
-    dialogRef.classList.remove("dialog-profile-closing");
+    dialog.classList.remove("contact-closing");
     document.body.classList.remove("overflow-hidden");
+    dialog.close()
+}
 
-    closeDialog(dialogId);
+function closeProfileDialog(event) {
+    const dialog = event.currentTarget;
+
+    if (
+        event.target !== dialog ||
+        !dialog.classList.contains("dialog-profile-closing") 
+    ) {
+        return;
+    }
+
+    dialog.classList.remove("dialog-profile-closing");
+    document.body.classList.remove("overflow-hidden");
+    dialog.close()
 }
 
 function dialogSlideOut(event, closingClass) {

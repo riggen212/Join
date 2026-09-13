@@ -485,9 +485,6 @@ button:focus-visible,
 
 @media screen and (min-width: 1280px) {
     #contact[open] {
-        top: 50%;
-        left: 50%;
-
         &:not(.contact-closing) {
             animation: slide-in-from-right-to-center 256ms linear forwards;
         }
