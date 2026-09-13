@@ -58,20 +58,23 @@ function closeTaskDialog(event) {
 
     const dialogRef = document.getElementById("dialog-task");
 
-    dialogRef.classList.remove("dialog-closing-to-right");
+    dialogRef.classList.remove("dialog-task-closing");
     document.body.classList.remove("overflow-hidden");
 
     closeDialog("dialog-task");
 }
 
 function closeContactDialog(event) {
-    if (event.animationName !== "slide-out-from-center-to-bottom") {
+    if (
+        event.animationName !== "slide-out-from-center-to-bottom" &&
+        event.animationName !== "slide-out-from-center-to-right"
+    ) {
         return;
     }
 
     const dialogRef = document.getElementById("contact");
 
-    dialogRef.classList.remove("dialog-closing-to-bottom");
+    dialogRef.classList.remove("contact-closing");
     document.body.classList.remove("overflow-hidden");
 
     closeDialog("contact");
@@ -95,7 +98,6 @@ function dialogSlideOut(event, closingClass) {
     event.currentTarget.classList.add(closingClass);
 }
 
-
 function addNewContact() {
     const dialog = document.getElementById("contact");
 
@@ -111,9 +113,8 @@ const dummyContact = {
     email: "anton@gmail.com",
     phone: "+49 1111 111 11 1",
     initials: "AM",
-    colorClass: "badge-user-orange"
+    colorClass: "badge-user-orange",
 };
-
 
 function editContact() {
     const dialog = document.getElementById("contact");
@@ -125,6 +126,4 @@ function editContact() {
     }
 }
 
-function deleteContact() {
-
-}
+function deleteContact() {}

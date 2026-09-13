@@ -13,7 +13,7 @@
     border: unset;
     border-radius: var(--border-radius-high);
 
-    &:not(.dialog-closing-to-right) {
+    &:not(.dialog-task-closing) {
         animation: slide-in-from-right-to-center 256ms linear forwards;
     }
 }
@@ -22,65 +22,8 @@
     top: 50%;
     left: 50%;
 
-    /* top: 50%;
-    left: 50%;
-
-    max-height: 90dvh;
-    max-width: 530px;
-    width: 90dvw;
-
-    padding: 0;
-
-    background-color: unset;
-    border: unset;
-    border-radius: var(--border-radius-high); */
-
-    &:not(.dialog-closing-to-bottom) {
+    &:not(.contact-closing) {
         animation: slide-in-from-bottom-to-center 256ms linear forwards;
-    }
-}
-
-.dialog-closing-to-right {
-    animation: slide-out-from-center-to-right 256ms linear forwards;
-}
-
-.dialog-closing-to-bottom {
-    animation: slide-out-from-center-to-bottom 256ms linear forwards;
-}
-
-@keyframes slide-in-from-right-to-center {
-    from {
-        transform: translate(50vw, -50%);
-    }
-    to {
-        transform: translate(-50%, -50%);
-    }
-}
-
-@keyframes slide-out-from-center-to-right {
-    from {
-        transform: translate(-50%, -50%);
-    }
-    to {
-        transform: translate(50vw, -50%);
-    }
-}
-
-@keyframes slide-in-from-bottom-to-center {
-    from {
-        transform: translate(-50%, 50dvh);
-    }
-    to {
-        transform: translate(-50%, -50%);
-    }
-}
-
-@keyframes slide-out-from-center-to-bottom {
-    from {
-        transform: translate(-50%, -50%);
-    }
-    to {
-        transform: translate(-50%, 50dvh);
     }
 }
 
@@ -137,8 +80,52 @@
     }
 }
 
+.dialog-task-closing {
+    animation: slide-out-from-center-to-right 256ms linear forwards;
+}
+
+.contact-closing {
+    animation: slide-out-from-center-to-bottom 256ms linear forwards;
+}
+
 .dialog-profile-closing {
     animation: slide-out-to-right 256ms linear forwards;
+}
+
+@keyframes slide-in-from-right-to-center {
+    from {
+        transform: translate(50vw, -50%);
+    }
+    to {
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slide-out-from-center-to-right {
+    from {
+        transform: translate(-50%, -50%);
+    }
+    to {
+        transform: translate(50vw, -50%);
+    }
+}
+
+@keyframes slide-in-from-bottom-to-center {
+    from {
+        transform: translate(-50%, 50dvh);
+    }
+    to {
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slide-out-from-center-to-bottom {
+    from {
+        transform: translate(-50%, -50%);
+    }
+    to {
+        transform: translate(-50%, 50dvh);
+    }
 }
 
 @keyframes slide-in-from-right {
@@ -494,4 +481,18 @@ button:focus-visible,
 
 .badge-type-technical {
     background-color: var(--color-badge-type-green);
+}
+
+@media screen and (min-width: 1280px) {
+    #contact[open] {
+        top: 50%;
+        left: 50%;
+
+        &:not(.contact-closing) {
+            animation: slide-in-from-right-to-center 256ms linear forwards;
+        }
+    }
+    .contact-closing {
+        animation: slide-out-from-center-to-right 256ms linear forwards;
+    }
 }

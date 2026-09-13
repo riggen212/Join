@@ -232,30 +232,27 @@ body:has(#contact[open]) .contact-lis > .detail-view {
 }
 
 @media (max-width: 1279px) {
-
     #contact[open] {
-        --dialog-header-height:
-            clamp(170px, calc(100% - 300px), 46%);
-        --badge-size:
-            clamp(96px, min(30vw, 18dvh), 156px);
+        --dialog-header-height: clamp(170px, calc(100% - 300px), 46%);
+        --badge-size: clamp(96px, min(30vw, 18dvh), 156px);
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: var(--dialog-header-height) 1fr;
-        /* animation: none;
-        transform: none; */
     }
 
     #contact {
         position: fixed;
-        inset: calc(var(--mobile-header-footer-height) + 8px) 16px calc(var(--mobile-header-footer-height) + 8px);
+        top: 50%;
+        bottom: 50%;
+        right: auto;
+        left: 50%;
         width: calc(100% - 32px);
         max-width: 512px;
-        height: auto;
+        height: calc(100dvh - (var(--mobile-header-footer-height) * 2) - 16px);
         min-height: 0;
         max-height: none;
-        margin: 0 auto;
-        box-sizing: border-box;
-        transform: none;
+        margin: 0;
+        transform: translate(-50%, -50%);
         overflow: hidden;
     }
 
@@ -299,8 +296,7 @@ body:has(#contact[open]) .contact-lis > .detail-view {
         height: 100%;
         gap: clamp(8px, 1.8dvh, 18px);
 
-        padding:
-            calc(var(--badge-size) / 2 + clamp(16px, 2.5dvh, 24px)) 20px clamp(24px, 4dvh, 40px);
+        padding: calc(var(--badge-size) / 2 + clamp(16px, 2.5dvh, 24px)) 20px clamp(24px, 4dvh, 40px);
     }
 
     #contact .input-wrapper {
