@@ -4,10 +4,13 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+        <script src="../scripts/database.js"></script>
         <script src="../scripts/templates.js" defer></script>
         <script src="../script.js" defer></script>
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+        <script src="../scripts/board/board.js" defer></script>
+        <script src="../scripts/board/board-templates.js" defer></script>
 
+        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
         <link rel="stylesheet" href="../global_style.css" />
         <link rel="stylesheet" href="../styles/components.css" />
         <link rel="stylesheet" href="../styles/fonts.css" />
@@ -15,7 +18,7 @@
         <link rel="stylesheet" href="../styles/board-task.css" />
         <title>Join</title>
     </head>
-    <body>
+    <body onload="initBoard()">
         <header class="header">
             <div class="header-wrapper">
                 <div>
@@ -159,187 +162,7 @@
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div class="board-column-content">
-                                <button
-                                    type="button"
-                                    class="task-card"
-                                    onclick="openTaskDialog('dialog-task')"
-                                    aria-label="Open Task"
-                                >
-                                    <span class="badge-type badge-type-user">User Story</span>
-                                    <div class="task-card-body">
-                                        <h3 class="task-card-title">HTML Base Template Creation</h3>
-                                        <div class="task-card-description">
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </div>
-                                    <div class="task-card-subtasks">
-                                        <div class="task-card-progress">
-                                            <div class="task-card-progress-bar"></div>
-                                        </div>
-                                        <span class="task-card-summary">1/4 Subtasks</span>
-                                    </div>
-                                    <div class="task-card-assignees">
-                                        <ul class="task-card-users">
-                                            <li class="badge-user badge-user-orange">
-                                                <span>CL</span>
-                                            </li>
-                                            <li class="badge-user badge-user-blue-light">
-                                                <span>SS</span>
-                                            </li>
-                                            <li class="badge-user badge-user-mint">
-                                                <span>ND</span>
-                                            </li>
-                                        </ul>
-                                        <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                                    </div>
-                                </button>
-                                <button type="button" class="task-card">
-                                    <span class="badge-type badge-type-user">User Story</span>
-                                    <div class="task-card-body">
-                                        <h3 class="task-card-title">HTML Base Template Creation</h3>
-                                        <div class="task-card-description">
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </div>
-                                    <div class="task-card-subtasks">
-                                        <div class="task-card-progress">
-                                            <div class="task-card-progress-bar"></div>
-                                        </div>
-                                        <span class="task-card-summary">1/4 Subtasks</span>
-                                    </div>
-                                    <div class="task-card-assignees">
-                                        <ul class="task-card-users">
-                                            <li class="badge-user badge-user-orange">
-                                                <span>CL</span>
-                                            </li>
-                                            <li class="badge-user badge-user-blue-light">
-                                                <span>SS</span>
-                                            </li>
-                                            <li class="badge-user badge-user-mint">
-                                                <span>ND</span>
-                                            </li>
-                                        </ul>
-                                        <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                                    </div>
-                                </button>
-                                <button type="button" class="task-card">
-                                    <span class="badge-type badge-type-user">User Story</span>
-                                    <div class="task-card-body">
-                                        <h3 class="task-card-title">HTML Base Template Creation</h3>
-                                        <div class="task-card-description">
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </div>
-                                    <div class="task-card-subtasks">
-                                        <div class="task-card-progress">
-                                            <div class="task-card-progress-bar"></div>
-                                        </div>
-                                        <span class="task-card-summary">1/4 Subtasks</span>
-                                    </div>
-                                    <div class="task-card-assignees">
-                                        <ul class="task-card-users">
-                                            <li class="badge-user badge-user-orange">
-                                                <span>CL</span>
-                                            </li>
-                                            <li class="badge-user badge-user-blue-light">
-                                                <span>SS</span>
-                                            </li>
-                                            <li class="badge-user badge-user-mint">
-                                                <span>ND</span>
-                                            </li>
-                                        </ul>
-                                        <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                                    </div>
-                                </button>
-                                <button type="button" class="task-card">
-                                    <span class="badge-type badge-type-user">User Story</span>
-                                    <div class="task-card-body">
-                                        <h3 class="task-card-title">HTML Base Template Creation</h3>
-                                        <div class="task-card-description">
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </div>
-                                    <div class="task-card-subtasks">
-                                        <div class="task-card-progress">
-                                            <div class="task-card-progress-bar"></div>
-                                        </div>
-                                        <span class="task-card-summary">1/4 Subtasks</span>
-                                    </div>
-                                    <div class="task-card-assignees">
-                                        <ul class="task-card-users">
-                                            <li class="badge-user badge-user-orange">
-                                                <span>CL</span>
-                                            </li>
-                                            <li class="badge-user badge-user-blue-light">
-                                                <span>SS</span>
-                                            </li>
-                                            <li class="badge-user badge-user-mint">
-                                                <span>ND</span>
-                                            </li>
-                                        </ul>
-                                        <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                                    </div>
-                                </button>
-                                <button type="button" class="task-card">
-                                    <span class="badge-type badge-type-user">User Story</span>
-                                    <div class="task-card-body">
-                                        <h3 class="task-card-title">HTML Base Template Creation</h3>
-                                        <div class="task-card-description">
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </div>
-                                    <div class="task-card-subtasks">
-                                        <div class="task-card-progress">
-                                            <div class="task-card-progress-bar"></div>
-                                        </div>
-                                        <span class="task-card-summary">1/4 Subtasks</span>
-                                    </div>
-                                    <div class="task-card-assignees">
-                                        <ul class="task-card-users">
-                                            <li class="badge-user badge-user-orange">
-                                                <span>CL</span>
-                                            </li>
-                                            <li class="badge-user badge-user-blue-light">
-                                                <span>SS</span>
-                                            </li>
-                                            <li class="badge-user badge-user-mint">
-                                                <span>ND</span>
-                                            </li>
-                                        </ul>
-                                        <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                                    </div>
-                                </button>
-                                <button type="button" class="task-card">
-                                    <span class="badge-type badge-type-user">User Story</span>
-                                    <div class="task-card-body">
-                                        <h3 class="task-card-title">HTML Base Template Creation</h3>
-                                        <div class="task-card-description">
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </div>
-                                    <div class="task-card-subtasks">
-                                        <div class="task-card-progress">
-                                            <div class="task-card-progress-bar"></div>
-                                        </div>
-                                        <span class="task-card-summary">1/4 Subtasks</span>
-                                    </div>
-                                    <div class="task-card-assignees">
-                                        <ul class="task-card-users">
-                                            <li class="badge-user badge-user-orange">
-                                                <span>CL</span>
-                                            </li>
-                                            <li class="badge-user badge-user-blue-light">
-                                                <span>SS</span>
-                                            </li>
-                                            <li class="badge-user badge-user-mint">
-                                                <span>ND</span>
-                                            </li>
-                                        </ul>
-                                        <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                                    </div>
-                                </button>
-                            </div>
+                            <div id="todo-content" class="board-column-content"></div>
                         </section>
                         <section class="board-column">
                             <header class="board-column-header">
@@ -352,9 +175,7 @@
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div class="board-column-content">
-                                <span class="board-column-feedback">No tasks Done</span>
-                            </div>
+                            <div id="progress-content" class="board-column-content"></div>
                         </section>
                         <section class="board-column">
                             <header class="board-column-header">
@@ -367,45 +188,13 @@
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div class="board-column-content">
-                                <button type="button" class="task-card">
-                                    <span class="badge-type badge-type-user">User Story</span>
-                                    <div class="task-card-body">
-                                        <h3 class="task-card-title">HTML Base Template Creation</h3>
-                                        <div class="task-card-description">
-                                            Lorem ipsum dolor sit amet, consectetur.
-                                        </div>
-                                    </div>
-                                    <div class="task-card-subtasks">
-                                        <div class="task-card-progress">
-                                            <div class="task-card-progress-bar"></div>
-                                        </div>
-                                        <span class="task-card-summary">1/4 Subtasks</span>
-                                    </div>
-                                    <div class="task-card-assignees">
-                                        <ul class="task-card-users">
-                                            <li class="badge-user badge-user-orange">
-                                                <span>CL</span>
-                                            </li>
-                                            <li class="badge-user badge-user-blue-light">
-                                                <span>SS</span>
-                                            </li>
-                                            <li class="badge-user badge-user-mint">
-                                                <span>ND</span>
-                                            </li>
-                                        </ul>
-                                        <span><img src="../assets/icons/prio_low.svg" alt="Priority low" /></span>
-                                    </div>
-                                </button>
-                            </div>
+                            <div id="feedback-content" class="board-column-content"></div>
                         </section>
                         <section class="board-column">
                             <header class="board-column-header">
                                 <h2>Done</h2>
                             </header>
-                            <div class="board-column-content">
-                                <span class="board-column-feedback">No tasks Done</span>
-                            </div>
+                            <div id="done-content" class="board-column-content"></div>
                         </section>
                     </div>
                 </div>
