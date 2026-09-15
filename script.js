@@ -1,5 +1,9 @@
-function showContactDetails() {
+function showContactDetails(card) {
     const contactDetails = document.getElementById("show-details");
+    const selectedContact = document.querySelector(".contact-card.is-selected");
+
+    selectedContact?.classList.remove("is-selected");
+    card.classList.add("is-selected");
 
     contactDetails.classList.add("is-open");
     document.documentElement.classList.add("contact-details-open");
@@ -13,6 +17,7 @@ function hideContactDetails() {
     document.documentElement.classList.remove("contact-details-open");
     document.body.classList.remove("contact-details-open");
 
+    document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
     hideContactActions();
 }
 
