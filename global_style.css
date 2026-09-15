@@ -154,9 +154,8 @@ input[type="checkbox"]:checked {
     align-items: center;
 
     height: var(--mobile-header-footer-height);
-    width: min(100%, var(--content-max-width));
 
-    margin-inline: auto;
+    width: 100%;
     padding: var(--space-lg) var(--space-md);
 }
 
@@ -274,10 +273,7 @@ input[type="checkbox"]:checked {
 @media screen and (min-width: 1280px) {
     .app-wrapper {
         display: flex;
-
-        width: min(100%, var(--content-max-width));
-
-        margin-inline: auto;
+        width: 100%;
 
         & main {
             flex: 1 1 auto;
