@@ -36,7 +36,6 @@ h2 {
 .board {
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     padding-block: var(--mobile-header-footer-height);
 
@@ -50,7 +49,7 @@ h2 {
     width: min(100%, var(--content-max-width));
 
     margin-top: var(--space-xl);
-    padding: var(--space-md);
+    padding-inline: var(--space-xl);
     gap: var(--space-lg);
 }
 
