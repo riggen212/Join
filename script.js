@@ -70,7 +70,11 @@ function closeTaskDialog(event) {
 }
 
 function closeContactDialog(event) {
-    if (event.animationName !== "slide-out-from-center-to-bottom") {
+    const isContactClosingAnimation =
+        event.animationName === "slide-out-from-center-to-bottom" ||
+        event.animationName === "slide-out-from-center-to-right";
+
+    if (!isContactClosingAnimation) {
         return;
     }
 
