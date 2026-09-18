@@ -30,7 +30,7 @@
 #dialog-profile[open],
 #dialog-edit-contact[open] {
     position: fixed;
-    right: var(--navbar-profile-dialog-right);
+    right: var(--space-xs);
     left: auto;
 
     margin: 0;
@@ -130,7 +130,7 @@
 
 @keyframes slide-in-from-right {
     from {
-        transform: translateX(calc(100% + var(--navbar-profile-dialog-right)));
+        transform: translateX(100%);
     }
     to {
         transform: translateX(0);
@@ -142,7 +142,7 @@
         transform: translateX(0);
     }
     to {
-        transform: translateX(calc(100% + var(--navbar-profile-dialog-right)));
+        transform: translateX(100%);
     }
 }
 

@@ -63,6 +63,7 @@
     width: 50%;
 
     text-align: center;
+    text-wrap: nowrap;
 }
 
 .task-card-assignees {

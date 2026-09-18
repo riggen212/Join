@@ -37,27 +37,27 @@ function openDialog(dialogId) {
     dialog.showModal();
 }
 
-function openTaskDialog() {
-    const dialog = document.getElementById("dialog-task");
+// function openTaskDialog() {
+//     const dialog = document.getElementById("dialog-task");
 
-    dialog.innerHTML = getTaskOverlayTemplate();
-    openDialog("dialog-task");
-}
+//     dialog.innerHTML = getTaskOverlayTemplate();
+//     openDialog("dialog-task");
+// }
 
-function closeTaskDialog(event) {
-    const dialog = event.currentTarget;
+// function closeTaskDialog(event) {
+//     const dialog = event.currentTarget;
 
-    if (
-        event.target !== dialog ||
-        !dialog.classList.contains("dialog-task-closing") 
-    ) {
-        return;
-    }
+//     if (
+//         event.target !== dialog ||
+//         !dialog.classList.contains("dialog-task-closing") 
+//     ) {
+//         return;
+//     }
 
-    dialog.classList.remove("dialog-task-closing");
-    document.body.classList.remove("overflow-hidden");
-    dialog.close()
-}
+//     dialog.classList.remove("dialog-task-closing");
+//     document.body.classList.remove("overflow-hidden");
+//     dialog.close()
+// }
 
 function closeContactDialog(event) {
     const dialog = event.currentTarget;

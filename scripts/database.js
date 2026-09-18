@@ -1,3 +1,8 @@
+/**
+ * Ein Gedanke bezueglich der Tasks.assignedTo, wuerde hier nicht auch ein array mit den mit den keys der contacts ausreichen,
+ * ohne den boolean (da immer true)?
+ */
+
 const data = {
     users: {
         0: {
@@ -69,7 +74,7 @@ const data = {
                     title: "Prepare presentation",
                     description: "Create the project presentation.",
                     dueDate: "2026-09-30",
-                    priority: "medium",
+                    priority: "Medium",
                     category: "User Story",
                     status: "toDo",
 
@@ -90,7 +95,7 @@ const data = {
                     title: "Update contact list",
                     description: "Check and update all contact information.",
                     dueDate: "2026-10-05",
-                    priority: "low",
+                    priority: "Low",
                     category: "Technical Task",
                     status: "inProgress",
 
@@ -114,7 +119,7 @@ const data = {
                     title: "Design mobile view",
                     description: "Adjust the mobile layout to the Figma design.",
                     dueDate: "2026-10-10",
-                    priority: "high",
+                    priority: "High",
                     category: "User Story",
                     status: "awaitFeedback",
 
@@ -123,14 +128,31 @@ const data = {
                         contact5: true,
                     },
 
-                    subtasks: {},
+                    subtasks: {
+                        subtask1: {
+                            title: "Check email addresses",
+                            completed: true,
+                        },
+                        subtask2: {
+                            title: "Check phone numbers",
+                            completed: false,
+                        },
+                        subtask3: {
+                            title: "Check domains",
+                            completed: true,
+                        },
+                        subtask4: {
+                            title: "Check phone calls",
+                            completed: true,
+                        },
+                    },
                 },
 
                 task4: {
                     title: "Test application",
                     description: "Test all pages and functions.",
                     dueDate: "2026-10-15",
-                    priority: "medium",
+                    priority: "Medium",
                     category: "Technical Task",
                     status: "toDo",
 
@@ -154,7 +176,7 @@ const data = {
                     title: "Finish documentation",
                     description: "Complete the project documentation.",
                     dueDate: "2026-10-20",
-                    priority: "low",
+                    priority: "Low",
                     category: "Technical Task",
                     status: "done",
 

@@ -50,6 +50,7 @@ h2 {
 
     margin-top: var(--space-xl);
     padding-inline: var(--space-xl);
+    padding-block: var(--space-md);
     gap: var(--space-lg);
 }
 
@@ -133,6 +134,9 @@ h2 {
 .board-column-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+
+    height: var(--size-button-add-mobile-bright);
 }
 
 .board-column-content {
