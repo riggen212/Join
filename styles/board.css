@@ -36,7 +36,6 @@ h2 {
 .board {
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     padding-block: var(--mobile-header-footer-height);
 
@@ -50,7 +49,8 @@ h2 {
     width: min(100%, var(--content-max-width));
 
     margin-top: var(--space-xl);
-    padding: var(--space-md);
+    padding-inline: var(--space-xl);
+    padding-block: var(--space-md);
     gap: var(--space-lg);
 }
 
@@ -134,6 +134,9 @@ h2 {
 .board-column-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+
+    height: var(--size-button-add-mobile-bright);
 }
 
 .board-column-content {
