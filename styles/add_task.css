@@ -1,14 +1,7 @@
 :root {
     --task-fields-max-width: calc(405px + var(--space-md) + var(--space-md));
-
-    /*
-     * Half of --space-xl.
-     * Used to position the divider in the middle of the column gap.
-     */
     --task-column-gap-half: clamp(12px, 8.57px + 1.07vw, 24px);
 }
-
-/* General task layout */
 
 .add-task {
     display: flex;
@@ -25,10 +18,100 @@
     width: 100%;
 }
 
-.task-form label,
-.task-form > span {
-    margin: 12px 0 12px;
+.task-form > label,
+.task-form > span,
+.assigned-dropdown > legend,
+.category-field > legend {
+    margin: 12px 0;
+    font-size: var(--font-input);
 }
+
+.assigned-dropdown,
+.category-field {
+    position: relative;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+}
+
+.assigned-options,
+.category-options,
+.assigned-badges {
+    padding: 0;
+    list-style: none;
+}
+
+.assigned-options,
+.category-options {
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    display: none;
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: var(--border-radius-middle);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+}
+
+.category-field > .input-wrapper {
+    justify-content: space-between;
+    font-size: var(--font-input);
+    cursor: pointer;
+}
+
+.category-options label {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-input);
+    cursor: pointer;
+}
+
+.category-options label:hover,
+.category-options label:focus-within {
+    background-color: #f5f5f5;
+}
+
+.category-options input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.assigned-option {
+    display: grid;
+    grid-template-columns: var(--size-badge-user) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-md);
+    min-height: 56px;
+    padding-inline: var(--space-md);
+    font-size: var(--font-input);
+    cursor: pointer;
+}
+
+.assigned-option:hover,
+.assigned-option:focus-within {
+    background-color: #f5f5f5;
+}
+
+.assigned-option input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--background-dark-color);
+}
+
+.assigned-dropdown:focus-within .assigned-options,
+.category-field:focus-within .category-options {
+    display: block;
+}
+
+.assigned-dropdown .input-wrapper img,
+.category-field .input-wrapper img { width: 8px; }
+
+.assigned-dropdown:focus-within .input-wrapper img,
+.category-field:focus-within .input-wrapper img { transform: rotate(180deg); }
 
 .add-task-form {
     display: flex;
@@ -36,17 +119,9 @@
     align-items: flex-start;
     align-content: flex-start;
     gap: var(--space-xl);
-
     width: 100%;
-
-    /*
-     * Allows the layout to react to the width of this container
-     * instead of the complete viewport.
-     */
     container-type: inline-size;
 }
-
-/* Form columns */
 
 .task-form {
     display: flex;
@@ -58,60 +133,22 @@
     min-width: 0;
 }
 
-.task-form:first-child {
-    /*
-     * Creates the positioning context for the column divider.
-     */
-    position: relative;
+.task-form:first-child { position: relative; }
+
+.task-form > .input-wrapper {
+    font-size: var(--font-input);
 }
 
-/* Page heading */
-
-h1 {
-    padding-left: var(--space-sm);
-    padding-bottom: var(--space-xs);
-}
-
-/* Textarea */
+h1 { padding-bottom: var(--space-xs); }
 
 .task-form textarea {
     width: 100%;
     min-width: 0;
     min-height: 88px;
-
     resize: none;
 }
 
-/* Select fields */
-
-.task-form select {
-    height: 32px;
-    padding-left: var(--space-md);
-    padding-right: 40px;
-
-    font: inherit;
-
-    appearance: none;
-
-    background-image: url("../assets/icons/arrow_drop_down.svg");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 8px;
-
-    border-radius: var(--border-radius-middle);
-}
-
-.task-form select:open {
-    background-image: url("../assets/icons/arrow_drop_up.svg");
-}
-
-/* Utility class */
-
-.no-flex {
-    display: block;
-}
-
-/* Priority buttons */
+.no-flex { display: block; }
 
 .task-priority {
     display: flex;
@@ -121,7 +158,6 @@ h1 {
 
 .task-priority > div {
     flex: 1 1 0;
-
     max-width: 135px;
     min-width: 0;
 }
@@ -131,26 +167,20 @@ h1 {
     align-items: center;
     justify-content: center;
     gap: var(--space-xs);
-
     width: 100%;
     height: 48px;
     padding-inline: var(--space-xs);
-
     color: inherit;
     background-color: #fff;
-
     border: 1px solid rgb(0 0 0 / 50%);
     box-shadow: 0 0 25px -13px rgb(0 0 0 / 20%);
-
-    font-size: 16px;
-    font-weight: 300;
+    font-size: var(--font-input);
+    font-weight: 400;
 }
 
-.task-priority button:hover {
-    box-shadow: var(--button-hover-shadow);
-}
+.task-priority button:is(.urgent, .medium, .low) { font-weight: 700; }
 
-/* Selected priority states */
+.task-priority button:hover { box-shadow: var(--button-hover-shadow); }
 
 .task-priority button.urgent {
     color: #fff;
@@ -173,8 +203,6 @@ h1 {
     filter: brightness(0) invert(1);
 }
 
-/* Form submission area */
-
 .submit-task {
     display: flex;
     flex-direction: column;
@@ -184,90 +212,121 @@ h1 {
     padding: var(--space-sm);
 }
 
-.submit-task p {
-    display: flex;
-}
+.submit-task p { display: flex; }
 
 .submit-task-send {
     display: flex;
     justify-content: flex-end;
-    gap: var(--space-lg);
-
+    gap: var(--space-md);
     padding-top: var(--space-lg);
 }
 
-/* Custom calendar icon */
+.submit-task-send .button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.submit-task-send .button-bright { font-weight: 400; }
 
 .input-date[type="date"] {
     position: relative;
-
     padding-right: 48px;
-
     background-image: url("../assets/icons/calender.svg");
     background-repeat: no-repeat;
     background-position: right 16px center;
     background-size: 20px;
 }
 
-/* Hide the native calendar icon while keeping it clickable */
-
 input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
     top: 0;
     right: 0;
-
     width: 48px;
     height: 100%;
     margin: 0;
-
     opacity: 0;
     cursor: pointer;
 }
 
-/*
- * Shared width for the priority group, select fields
- * and the subtask input.
- */
-
 .task-priority,
-#task-assigned,
+.assigned-dropdown,
 #task-category,
 #subtask {
     width: 100%;
     max-width: none;
-
     box-sizing: border-box;
 }
 
-/*
- * Show the divider only when both columns have enough
- * space to be displayed next to each other.
- */
+.assigned-badges {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    height: calc(var(--size-badge-user) + var(--space-xs));
+    margin-top: var(--space-xs);
+    overflow-x: auto;
+}
+
+.assigned-badges > .badge-user { flex: 0 0 var(--size-badge-user); }
 
 @container (min-width: 850px) {
     .task-priority,
-    #task-assigned,
+    .assigned-dropdown,
     #task-category,
-    #subtask {
-        max-width: var(--task-fields-max-width);
-    }
+    #subtask { max-width: var(--task-fields-max-width); }
 
     .task-form:first-child::after {
         content: "";
-
         position: absolute;
         top: 0;
         right: calc(0px - var(--task-column-gap-half));
         bottom: 0;
-
         width: 1px;
-
         background-color: #d1d1d1;
     }
 }
 
 @media screen and (min-width: 1280px) {
-    .board {
-        padding-bottom: 0;
+    .board.add-task-page { background-color: var(--background-bright-color); }
+
+    .add-task-form {
+        --task-column-gap-half: var(--space-xl);
+        max-width: calc(2 * var(--task-fields-max-width) + 2 * var(--space-xl));
+        column-gap: calc(2 * var(--space-xl));
+    }
+
+    .submit-task {
+        max-width: calc(2 * var(--task-fields-max-width) + 2 * var(--space-xl));
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0;
+        margin-top: 0;
+    }
+
+    .submit-task-send {
+        padding-top: 0;
+    }
+
+    .task-form-wrapper {
+        gap: 120px;
+    }
+
+    .task-form textarea {
+        min-height: 120px;
+    }
+
+    .task-priority button {
+        height: 56px;
+    }
+
+    .board-inner.add-task-inner {
+        margin-top: 0;
+        padding-block-start: clamp(48px, 6vw, 96px);
+        padding-inline-start: calc(2 * var(--space-xl));
+    }
+
+    .assigned-dropdown {
+        margin-top: var(--space-lg);
     }
 }
