@@ -301,6 +301,8 @@ body.contact-details-open {
     }
 
     .contact-details-info {
+        visibility: hidden;
+
         & h3 {
             font-size: 48px;
             white-space: nowrap;
@@ -309,6 +311,11 @@ body.contact-details-open {
         & h4 {
             padding: 12px 0 20px;
         }
+    }
+
+    .contact-details.is-open .contact-details-info {
+        visibility: visible;
+        animation: contact-details-slide-in 256ms ease-out both;
     }
 
     .contact-details-info > span + h4 { padding-top: 20px; }
@@ -345,4 +352,14 @@ body.contact-details-open {
     }
 
     #contact-actions > .button { font-size: 16px; }
+}
+
+@keyframes contact-details-slide-in {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
 }

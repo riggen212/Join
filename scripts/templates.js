@@ -4,7 +4,7 @@ function renderAddContactTemplate() {
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
                 <img class="contact-dialog-logo" src="../assets/icons/logo_bright.svg" alt="">
-                <h1>Add Contact</h1>
+                <h1>Add contact</h1>
                 <p>Tasks are better with a team!</p>
             </div>
 
@@ -33,7 +33,7 @@ function renderAddContactTemplate() {
                 </div>
 
                 <div class="contact-form-actions">
-                    <button class="button button-bright button-cancel" type="button" onclick="requestCloseDialog('contact')">
+                    <button class="button button-bright button-cancel" type="button" onclick="this.closest('dialog').requestClose()">
                         <span>Cancel</span>
                         <img src="../assets/icons/cancel.svg" alt="">
                     </button>
