@@ -21,6 +21,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #a8a8a8 transparent;
+    scrollbar-width: none;
 }
 
 .contact-list::-webkit-scrollbar { width: 8px; }
@@ -247,6 +248,7 @@ body.contact-details-open {
     .contact-list {
         flex: 0 0 400px;
         padding: var(--space-lg) var(--space-lg) var(--space-xl);
+        scrollbar-width: thin;
     }
 
     .contact-list > .detail-view {
