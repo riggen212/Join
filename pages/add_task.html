@@ -35,18 +35,34 @@
                 id="dialog-profile"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event, this.id)"
+                onanimationend="closeProfileDialog(event)"
             >
                 <nav>
                     <ul>
                         <li>
-                            <a id="link-help-profile-dialog" href="../pages/help.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Help</a>
+                            <a
+                                id="link-help-profile-dialog"
+                                href="../pages/help.html"
+                                class="link-navbar"
+                                onclick="event.target.closest('dialog').close()"
+                                >Help</a
+                            >
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Legal Notice</a>
+                            <a
+                                href="../pages/legal_notice.html"
+                                class="link-navbar"
+                                onclick="event.target.closest('dialog').close()"
+                                >Legal Notice</a
+                            >
                         </li>
                         <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Privacy Policy</a>
+                            <a
+                                href="../pages/privacy_policy.html"
+                                class="link-navbar"
+                                onclick="event.target.closest('dialog').close()"
+                                >Privacy Policy</a
+                            >
                         </li>
                         <li>
                             <a href="../index.html" class="link-navbar">Log out</a>

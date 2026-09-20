@@ -30,80 +30,69 @@ function hideContactActions() {
 }
 
 function openDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
+    const dialog = document.getElementById(dialogId);
 
     document.body.classList.add("overflow-hidden");
 
-    dialogRef.showModal();
+    dialog.showModal();
 }
 
-function closeDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
+// function openTaskDialog() {
+//     const dialog = document.getElementById("dialog-task");
 
-    dialogRef.close();
-}
+//     dialog.innerHTML = getTaskOverlayTemplate();
+//     openDialog("dialog-task");
+// }
 
-function openTaskDialog() {
-    const dialogRef = document.getElementById("dialog-task");
+// function closeTaskDialog(event) {
+//     const dialog = event.currentTarget;
 
-    dialogRef.innerHTML = getTaskOverlayTemplate();
-    openDialog("dialog-task");
-}
+//     if (
+//         event.target !== dialog ||
+//         !dialog.classList.contains("dialog-task-closing") 
+//     ) {
+//         return;
+//     }
 
-function requestCloseDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
-
-    dialogRef.requestClose();
-}
-
-function closeTaskDialog(event) {
-    if (event.animationName !== "slide-out-from-center-to-right") {
-        return;
-    }
-
-    const dialogRef = document.getElementById("dialog-task");
-
-    dialogRef.classList.remove("dialog-closing-to-right");
-    document.body.classList.remove("overflow-hidden");
-
-    closeDialog("dialog-task");
-}
+//     dialog.classList.remove("dialog-task-closing");
+//     document.body.classList.remove("overflow-hidden");
+//     dialog.close()
+// }
 
 function closeContactDialog(event) {
-    const isContactClosingAnimation =
-        event.animationName === "slide-out-from-center-to-bottom" ||
-        event.animationName === "slide-out-from-center-to-right";
+    const dialog = event.currentTarget;
 
-    if (!isContactClosingAnimation) {
+    if (
+        event.target !== dialog ||
+        !dialog.classList.contains("contact-closing") 
+    ) {
         return;
     }
 
-    const dialogRef = document.getElementById("contact");
-
-    dialogRef.classList.remove("dialog-closing-to-bottom");
+    dialog.classList.remove("contact-closing");
     document.body.classList.remove("overflow-hidden");
-
-    closeDialog("contact");
+    dialog.close()
 }
 
-function closeProfileDialog(event, dialogId) {
-    if (event.animationName !== "slide-out-to-right") {
+function closeProfileDialog(event) {
+    const dialog = event.currentTarget;
+
+    if (
+        event.target !== dialog ||
+        !dialog.classList.contains("dialog-profile-closing") 
+    ) {
         return;
     }
 
-    const dialogRef = document.getElementById(dialogId);
-
-    dialogRef.classList.remove("dialog-profile-closing");
+    dialog.classList.remove("dialog-profile-closing");
     document.body.classList.remove("overflow-hidden");
-
-    closeDialog(dialogId);
+    dialog.close()
 }
 
 function dialogSlideOut(event, closingClass) {
     event.preventDefault();
     event.currentTarget.classList.add(closingClass);
 }
-
 
 function addNewContact() {
     const dialog = document.getElementById("contact");
@@ -120,9 +109,8 @@ const dummyContact = {
     email: "anton@gmail.com",
     phone: "+49 1111 111 11 1",
     initials: "AM",
-    colorClass: "badge-user-orange"
+    colorClass: "badge-user-orange",
 };
-
 
 function editContact() {
     const dialog = document.getElementById("contact");
@@ -134,6 +122,4 @@ function editContact() {
     }
 }
 
-function deleteContact() {
-
-}
+function deleteContact() {}

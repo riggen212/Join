@@ -54,7 +54,6 @@
 
 .task-card-progress-bar {
     height: 100%;
-    width: 25%;
 
     background-color: var(--color-card-task-progress-blue);
     border-radius: inherit;
@@ -64,6 +63,7 @@
     width: 50%;
 
     text-align: center;
+    text-wrap: nowrap;
 }
 
 .task-card-assignees {

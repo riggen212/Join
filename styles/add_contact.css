@@ -215,7 +215,6 @@ body:has(#contact[open]) .contact-lis > .detail-view {
 }
 
 @media (max-width: 1279px) {
-
     #contact[open] {
         --dialog-header-height: clamp(170px, calc(100% - 300px), 46%);
         --badge-size: clamp(96px, min(30vw, 18dvh), 156px);
