@@ -1,6 +1,6 @@
 function renderAddContactTemplate() {
     return `<div>
-                <button class="button button-close" type="button" onclick="event.target.closest('dialog').requestClose()" aria-label="Close dialog">
+                <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
                 <img class="contact-dialog-logo" src="../assets/icons/logo_bright.svg" alt="">
@@ -48,7 +48,7 @@ function renderAddContactTemplate() {
 
 function renderEditContactTemplate(contact) {
     return `<div>
-                <button class="button button-close" type="button" onclick="event.target.closest('dialog').close()" aria-label="Close dialog">
+                <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
                 <img class="contact-dialog-logo" src="../assets/icons/logo_bright.svg" alt="">
