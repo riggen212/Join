@@ -203,3 +203,12 @@ const data = {
         }
     }
 };
+
+const baseUrl = "https://join-4092e-default-rtdb.europe-west1.firebasedatabase.app/";
+
+async function loadUsers() {
+  const response = await fetch(`${baseUrl}/users.json`);
+  const users = await response.json();
+
+  return users; 
+}
