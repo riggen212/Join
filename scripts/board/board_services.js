@@ -1,8 +1,20 @@
-async function loadUserProfile(userId) {
+/**
+ * Loads a user's tasks and contacts from the database.
+ * Assigns the tasks to the corresponding columns of the global board
+ * and adds the contacts to the global contact directory.
+ *
+ * @param {string} userId - The database ID of the user.
+ * @returns {Promise<void>} Resolves after the user data has been processed.
+ */
+async function loadUserBoardData(userId) {
     const data = await getData(DB_USERS + userId);
 
-    assignTasks(board, data.tasks);
-    Object.assign(contacts, data.contacts);
+    if (!data) {
+        throw new Error(`User "${userId}" was not found.`);
+    }
+
+    assignTasks(board, data.tasks ?? {});
+    Object.assign(contacts, data.contacts ?? {});
 }
 
 /**
@@ -14,59 +26,30 @@ async function loadUserProfile(userId) {
 function assignTasks(board, tasks) {
     tasks = Object.entries(tasks);
     tasks.forEach(([taskKey, taskEntry]) => {
+        if (!board[taskEntry.status]) {
+            throw new Error(`Invalid status: ${taskEntry.status}`);
+        }
+
         board[taskEntry.status].tasks[taskKey] = taskEntry;
     });
 }
 
 /**
- * Searchs a task in the boards column by using its ID and status and returns it.
+ * Searches a task in the boards column by using its ID and status and returns it.
  *
  * @param {TaskId} taskId - ID of a single task.
  * @param {Task["status"]} taskStatus - Current status of the task.
- * @returns {Task|undefined} - The matching task or `undefined` if it not exist.
+ * @returns {Task} The matching task.
+ * @throws {Error} If the task does not exist.
  */
 function getTaskById(taskId, taskStatus) {
-    if (!board[taskStatus].tasks[taskId]) {
-        return;
+    const task = board[taskStatus].tasks[taskId];
+
+    if (!task) {
+        throw new Error(`No task found.`);
     } else {
-        return board[taskStatus].tasks[taskId];
+        return task;
     }
-}
-
-/**
- * Returns data for task card HTML template.
- *
- * @param {TaskId} taskId - ID of the given task.
- * @param {Task} task - A single task.
- * @returns {Object} Object including data for the task card htHTMLml template.
- */
-function getTaskCardData(taskId, task) {
-    return {
-        taskObject: {
-            id: taskId,
-            task: task,
-        },
-        assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
-        subtasksData: getSubtasksCardData(task),
-    };
-}
-
-/**
- * Creates and returns an Object for the task overlay.
- *
- * @param {TaskId} taskId - ID of a single task.
- * @param {Task} task - A single task.
- * @returns {Object} Object containing task, taskid, assignees and subtasks HTML.
- */
-function getTaskOverlayData(taskId, task) {
-    return {
-        task: task,
-        id: taskId,
-        assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
-        subtasks: {
-            html: getTaskOverlaySubtasksHtml(task.subtasks),
-        },
-    };
 }
 
 /**

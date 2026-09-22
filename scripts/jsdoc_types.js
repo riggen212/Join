@@ -16,7 +16,7 @@
  */
 
 /**
- * @typedef {Object.<TaskId, Task>} TaskDirectory - Contains tasks as key-value pairs.
+ * @typedef {Object.<string, Task>} TaskDirectory - Contains tasks as key-value pairs.
  */
 
 /**
@@ -36,7 +36,7 @@
  */
 
 /**
- * @typedef {Object.<SubtaskId, Subtask>} SubtaskDirectory - Contains subtasks as key-value pairs.
+ * @typedef {Object.<string, Subtask>} SubtaskDirectory - Contains subtasks as key-value pairs.
  */
 
 /**

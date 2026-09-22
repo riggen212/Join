@@ -39,8 +39,12 @@ const board = {
 async function initBoard() {
     const userId = DB_GUEST_USER_ID;
 
-    await loadUserProfile(userId);
-    renderBoardColumns(board);
+    try {
+        await loadUserBoardData(userId);
+        renderBoardColumns(board);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /**
@@ -74,7 +78,12 @@ function getColumnContentHtml(columnTasksObject) {
     let columnContentHtml = "";
 
     tasksArray.forEach(([taskId, task]) => {
-        const taskData = getTaskCardData(taskId, task);
+        const taskData = {
+            id: taskId,
+            task: task,
+            subtasksData: getSubtasksCardData(task),
+            assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
+        };
 
         columnContentHtml += getTaskCardTemplate(taskData);
     });
@@ -90,7 +99,7 @@ function getColumnContentHtml(columnTasksObject) {
  * @returns {string} HTML string containing the assignees of the task.
  */
 function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
-    const assignees = Object.keys(task.assignedTo);
+    const assignees = Object.keys(task.assignedTo ?? {});
     let assigneesHtml = "";
 
     assignees.forEach((contact) => {
@@ -122,30 +131,35 @@ function getTaskOverlaySubtasksHtml(subtasks) {
 }
 
 /**
- * Updates the subtask's completion status and refrehes the task card.
+ * Updates the subtask's completion status and refreshes the task card.
  *
  * @param {TaskId} taskId - ID of the task containing the subtask.
  * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
  * @param {SubtaskId} subtaskId - ID of the subtask being toggled.
  */
 function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
-    const subtask = board[taskStatus].tasks[taskId].subtasks[subtaskId];
+    try {
+        const task = getTaskById(taskId, taskStatus);
+        const subtask = task.subtasks[subtaskId];
+    
+        subtask.completed = !subtask.completed;
+    
+        updateTaskCardSubtasksState(taskId, task);
+    } catch (error) {
+        console.error(error);
+    }
 
-    subtask.completed = !subtask.completed;
-
-    updateTaskCardSubtasksState(taskId, taskStatus);
 }
 
 /**
  * Updates the subtask summary and progress bar of the specified task card.
  *
  * @param {TaskId} taskId - ID of the task whose card is updated.
- * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
+ * @param {Task} task - The task whose subtask state is updated.
  */
-function updateTaskCardSubtasksState(taskId, taskStatus) {
-    const task = getTaskById(taskId, taskStatus);
+function updateTaskCardSubtasksState(taskId, task) {
     const subtaskData = getSubtasksCardData(task);
-    const subtasksRef = getTaskCardSubtasksHtmlElement(taskId, taskStatus);
+    const subtasksRef = getTaskCardSubtasksHtmlElement(taskId, task.status);
     const subtasksSummaryRef = subtasksRef.querySelector(".task-card-subtasks-summary");
     const subtasksProgressBarRef = subtasksRef.querySelector(".task-card-subtasks-progress-bar");
 
@@ -176,18 +190,24 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
  */
 function openTaskDialog(taskId, taskStatus) {
     const dialog = document.getElementById("dialog-task");
-    const task = getTaskById(taskId, taskStatus);
 
-    if (!task) {
-        return;
+    try {
+        const task = getTaskById(taskId, taskStatus);
+
+        const taskData = {
+            id: taskId,
+            task: task,
+            assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
+            subtasksHtml: getTaskOverlaySubtasksHtml(task.subtasks),
+        };
+
+        dialog.dataset.taskId = taskId;
+        dialog.dataset.taskStatus = taskStatus;
+        dialog.innerHTML = getTaskOverlayTemplate(taskData);
+        openDialog("dialog-task");
+    } catch (error) {
+        console.error(error);
     }
-
-    const taskData = getTaskOverlayData(taskId, task);
-
-    dialog.dataset.taskId = taskId;
-    dialog.dataset.taskStatus = taskStatus;
-    dialog.innerHTML = getTaskOverlayTemplate(taskData);
-    openDialog("dialog-task");
 }
 
 /**

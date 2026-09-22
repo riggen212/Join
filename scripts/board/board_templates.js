@@ -1,9 +1,9 @@
 function getTaskCardTemplate(taskData) {
-    return `<button type="button" data-task-id="${taskData.taskObject.id}" class="task-card" onclick="openTaskDialog('${taskData.taskObject.id}', '${taskData.taskObject.task.status}')" aria-label="Open Task">
-            <span class="badge-type badge-type-${taskData.taskObject.task.category.toLowerCase()}">${taskData.taskObject.task.category}</span>
+    return `<button type="button" data-task-id="${taskData.id}" class="task-card" onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')" aria-label="Open Task">
+            <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
             <div class="task-card-body">
-                <h3 class="task-card-title">${taskData.taskObject.task.title}</h3>
-                <div class="task-card-description">${taskData.taskObject.task.description}</div>
+                <h3 class="task-card-title">${taskData.task.title}</h3>
+                <div class="task-card-description">${taskData.task.description}</div>
             </div>
             <div class="task-card-subtasks">
                 <div class="task-card-subtasks-progress">
@@ -16,7 +16,7 @@ function getTaskCardTemplate(taskData) {
                     ${taskData.assigneesHtml}
                 </ul>
                 <span>
-                    <img src="../assets/icons/prio_${taskData.taskObject.task.priority.toLowerCase()}.svg" alt="Priority low" />
+                    <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="Priority low" />
                 </span>
             </div>
         </button>`;
@@ -64,7 +64,7 @@ function getTaskOverlayTemplate(taskData) {
                         <dt class="task-overlay-subtasks">Subtasks</dt>
                         <dd>
                             <ul>
-                                ${taskData.subtasks.html}
+                                ${taskData.subtasksHtml}
                             </ul>
                         </dd>
                     </dl>

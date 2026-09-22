@@ -2,11 +2,14 @@ const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedataba
 const DB_USERS = "users/";
 const DB_GUEST_USER_ID = "0";
 
-async function getData(path="", id="") {
-    const response = await fetch(DB_BASE_URL + path + id + ".json");
-    const data = await response.json();
+async function getData(path = "", id = "") {
+        const response = await fetch(DB_BASE_URL + path + id + ".json");
 
-    return data;
+        if (!response.ok) {
+            throw new Error(`HTTP-Fehler: ${response.status}`);
+        }
+
+        return await response.json();
 }
 
 /**
@@ -74,28 +77,6 @@ function openDialog(dialogId) {
 
     dialog.showModal();
 }
-
-// function openTaskDialog() {
-//     const dialog = document.getElementById("dialog-task");
-
-//     dialog.innerHTML = getTaskOverlayTemplate();
-//     openDialog("dialog-task");
-// }
-
-// function closeTaskDialog(event) {
-//     const dialog = event.currentTarget;
-
-//     if (
-//         event.target !== dialog ||
-//         !dialog.classList.contains("dialog-task-closing")
-//     ) {
-//         return;
-//     }
-
-//     dialog.classList.remove("dialog-task-closing");
-//     document.body.classList.remove("overflow-hidden");
-//     dialog.close()
-// }
 
 function closeContactDialog(event) {
     const dialog = event.currentTarget;
