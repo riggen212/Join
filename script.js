@@ -1,3 +1,17 @@
+const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedatabase.app/";
+const DB_USERS = "users/";
+const DB_GUEST_USER_ID = "0";
+
+async function getData(path = "", id = "") {
+        const response = await fetch(DB_BASE_URL + path + id + ".json");
+
+        if (!response.ok) {
+            throw new Error(`HTTP-Fehler: ${response.status}`);
+        }
+
+        return await response.json();
+}
+
 /**
  * Selects a contact, or hides its details when it is clicked again.
  * Restarts the slide-in animation when another contact is selected.
@@ -14,7 +28,7 @@ function showContactDetails(card) {
     card.classList.add("is-selected");
 
     restartContactDetailsAnimation(contactDetails);
-    contactDetails.classList.add("is-open");    
+    contactDetails.classList.add("is-open");
     document.documentElement.classList.add("contact-details-open");
     document.body.classList.add("contact-details-open");
 }
@@ -26,9 +40,10 @@ function showContactDetails(card) {
  * @param {HTMLElement} contactDetails - The contact details container.
  */
 function restartContactDetailsAnimation(contactDetails) {
-    const animation = contactDetails.querySelector(".contact-details-info")
+    const animation = contactDetails
+        .querySelector(".contact-details-info")
         .getAnimations()
-        .find(animation => animation.animationName === "contact-details-slide-in");
+        .find((animation) => animation.animationName === "contact-details-slide-in");
 
     if (!animation) return;
 
@@ -63,56 +78,28 @@ function openDialog(dialogId) {
     dialog.showModal();
 }
 
-// function openTaskDialog() {
-//     const dialog = document.getElementById("dialog-task");
-
-//     dialog.innerHTML = getTaskOverlayTemplate();
-//     openDialog("dialog-task");
-// }
-
-// function closeTaskDialog(event) {
-//     const dialog = event.currentTarget;
-
-//     if (
-//         event.target !== dialog ||
-//         !dialog.classList.contains("dialog-task-closing") 
-//     ) {
-//         return;
-//     }
-
-//     dialog.classList.remove("dialog-task-closing");
-//     document.body.classList.remove("overflow-hidden");
-//     dialog.close()
-// }
-
 function closeContactDialog(event) {
     const dialog = event.currentTarget;
 
-    if (
-        event.target !== dialog ||
-        !dialog.classList.contains("contact-closing")
-    ) {
+    if (event.target !== dialog || !dialog.classList.contains("contact-closing")) {
         return;
     }
 
     dialog.classList.remove("contact-closing");
     document.body.classList.remove("overflow-hidden");
-    dialog.close()
+    dialog.close();
 }
 
 function closeProfileDialog(event) {
     const dialog = event.currentTarget;
 
-    if (
-        event.target !== dialog ||
-        !dialog.classList.contains("dialog-profile-closing")
-    ) {
+    if (event.target !== dialog || !dialog.classList.contains("dialog-profile-closing")) {
         return;
     }
 
     dialog.classList.remove("dialog-profile-closing");
     document.body.classList.remove("overflow-hidden");
-    dialog.close()
+    dialog.close();
 }
 
 function dialogSlideOut(event, closingClass) {
@@ -148,5 +135,4 @@ function editContact() {
     }
 }
 
-function deleteContact() { }
-
+function deleteContact() {}

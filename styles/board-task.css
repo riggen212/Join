@@ -44,7 +44,7 @@
     align-items: center;
 }
 
-.task-card-progress {
+.task-card-subtasks-progress {
     height: var(--space-xs);
     width: 50%;
 
@@ -52,14 +52,14 @@
     border-radius: var(--border-radius-small);
 }
 
-.task-card-progress-bar {
+.task-card-subtasks-progress-bar {
     height: 100%;
 
     background-color: var(--color-card-task-progress-blue);
     border-radius: inherit;
 }
 
-.task-card-summary {
+.task-card-subtasks-summary {
     width: 50%;
 
     text-align: center;

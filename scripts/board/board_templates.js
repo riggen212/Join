@@ -1,22 +1,22 @@
 function getTaskCardTemplate(taskData) {
-    return `<button type="button" class="task-card" onclick="openTaskDialog('${taskData.taskObject.id}', '${taskData.taskObject.task.status}')" aria-label="Open Task">
-            <span class="badge-type badge-type-${taskData.taskObject.task.category.toLowerCase()}">${taskData.taskObject.task.category}</span>
+    return `<button type="button" data-task-id="${taskData.id}" class="task-card" onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')" aria-label="Open Task">
+            <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
             <div class="task-card-body">
-                <h3 class="task-card-title">${taskData.taskObject.task.title}</h3>
-                <div class="task-card-description">${taskData.taskObject.task.description}</div>
+                <h3 class="task-card-title">${taskData.task.title}</h3>
+                <div class="task-card-description">${taskData.task.description}</div>
             </div>
             <div class="task-card-subtasks">
-                <div class="task-card-progress">
-                    <div class="task-card-progress-bar" style="width: ${taskData.subtasksData.progressInPercent}%;"></div>
+                <div class="task-card-subtasks-progress">
+                    <div class="task-card-subtasks-progress-bar" style="width: ${taskData.subtasksData.progressInPercent}%;"></div>
                 </div>
-                <span class="task-card-summary">${taskData.subtasksData.completedAmount}/${taskData.subtasksData.amount} Subtasks</span>
+                <span class="task-card-subtasks-summary">${taskData.subtasksData.completedAmount}/${taskData.subtasksData.amount} Subtasks</span>
             </div>
             <div class="task-card-assignees">
                 <ul class="task-card-users">
                     ${taskData.assigneesHtml}
                 </ul>
                 <span>
-                    <img src="../assets/icons/prio_${taskData.taskObject.task.priority.toLowerCase()}.svg" alt="Priority low" />
+                    <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="Priority low" />
                 </span>
             </div>
         </button>`;
@@ -37,7 +37,7 @@ function getTaskOverlayTemplate(taskData) {
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
-                        <button class="button button-close" onclick="event.target.closest('#dialog-task').requestClose()" aria-label="Close Task">
+                        <button class="button button-close" onclick="event.target.closest('dialog').requestClose()" aria-label="Close Task">
                             <img src="../assets/icons/cancel.svg" alt="Close" />
                         </button>
                     </div>
@@ -64,7 +64,7 @@ function getTaskOverlayTemplate(taskData) {
                         <dt class="task-overlay-subtasks">Subtasks</dt>
                         <dd>
                             <ul>
-                                ${taskData.subtasks.html}
+                                ${taskData.subtasksHtml}
                             </ul>
                         </dd>
                     </dl>
@@ -89,9 +89,11 @@ function getTaskOverlayUserBadgeTemplate(contact) {
         </li>`;
 }
 
-function getTaskOverlaySubtasksTemplate(subtask, isCompleted) {
+function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
     return `<li>
-            <input type="checkbox" ${isCompleted} aria-label="Check Task" />
+            <input type="checkbox" ${isCompleted}
+            onchange="handleSubtaskCheckboxChange(this.closest('dialog').dataset.taskId, this.closest('dialog').dataset.taskStatus, '${subtaskId}')"
+            aria-label="Check Task" />
             ${subtask.title}
         </li>`;
 }

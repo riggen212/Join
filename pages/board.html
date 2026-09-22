@@ -4,11 +4,11 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <script src="../scripts/database.js"></script>
         <script src="../scripts/templates.js" defer></script>
         <script src="../script.js" defer></script>
+        <script src="../scripts/board/board_templates.js" defer></script>
+        <script src="../scripts/board/board_services.js" defer></script>
         <script src="../scripts/board/board.js" defer></script>
-        <script src="../scripts/board/board-templates.js" defer></script>
 
         <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
         <link rel="stylesheet" href="../global_style.css" />
@@ -151,7 +151,7 @@
                         </div>
                     </header>
                     <div class="board-content">
-                        <section class="board-column">
+                        <section data-column-id="toDo" class="board-column">
                             <header class="board-column-header">
                                 <h2>To do</h2>
                                 <button
@@ -164,7 +164,7 @@
                             </header>
                             <div id="todo-content" class="board-column-content"></div>
                         </section>
-                        <section class="board-column">
+                        <section data-column-id="inProgress" class="board-column">
                             <header class="board-column-header">
                                 <h2>In progress</h2>
                                 <button
@@ -177,7 +177,7 @@
                             </header>
                             <div id="progress-content" class="board-column-content"></div>
                         </section>
-                        <section class="board-column">
+                        <section data-column-id="awaitFeedback" class="board-column">
                             <header class="board-column-header">
                                 <h2>Await feedback</h2>
                                 <button
@@ -190,7 +190,7 @@
                             </header>
                             <div id="feedback-content" class="board-column-content"></div>
                         </section>
-                        <section class="board-column">
+                        <section data-column-id="done" class="board-column">
                             <header class="board-column-header">
                                 <h2>Done</h2>
                             </header>
@@ -200,6 +200,8 @@
                 </div>
                 <dialog
                     id="dialog-task"
+                    data-task-id=""
+                    data-task-status=""
                     closedby="any"
                     oncancel="dialogSlideOut(event, 'dialog-task-closing')"
                     onanimationend="closeTaskDialog(event)"
