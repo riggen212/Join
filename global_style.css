@@ -46,7 +46,6 @@
     --navbar-desktop-width: 220px;
     --navbar-desktop-padding-block: 64px;
     --mobile-header-footer-height: 80px;
-    --navbar-profile-dialog-right: calc(max(0px, (100vw - var(--content-max-width)) / 2) + var(--space-xs));
 
     /* root settings for buttons */
     --size-button-add-mobile-dark: clamp(36px, 34.8571px + 0.3571vw, 40px);
@@ -154,9 +153,8 @@ input[type="checkbox"]:checked {
     align-items: center;
 
     height: var(--mobile-header-footer-height);
-    width: min(100%, var(--content-max-width));
 
-    margin-inline: auto;
+    width: 100%;
     padding: var(--space-lg) var(--space-md);
 }
 
@@ -274,10 +272,7 @@ input[type="checkbox"]:checked {
 @media screen and (min-width: 1280px) {
     .app-wrapper {
         display: flex;
-
-        width: min(100%, var(--content-max-width));
-
-        margin-inline: auto;
+        width: 100%;
 
         & main {
             flex: 1 1 auto;

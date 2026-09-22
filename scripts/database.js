@@ -1,9 +1,14 @@
+/**
+ * Ein Gedanke bezueglich der Tasks.assignedTo, wuerde hier nicht auch ein array mit den mit den keys der contacts ausreichen,
+ * ohne den boolean (da immer true)?
+ */
+
 const data = {
     users: {
-        "0": {
+        0: {
             profile: {
                 name: "Guest",
-                type: "guest"
+                type: "guest",
             },
 
             contacts: {
@@ -12,7 +17,7 @@ const data = {
                     email: "anton@gmail.com",
                     phone: "+49 1111 111 11 1",
                     initials: "AM",
-                    colorClass: "badge-user-orange"
+                    colorClass: "badge-user-orange",
                 },
 
                 contact2: {
@@ -20,7 +25,7 @@ const data = {
                     email: "anja@gmx.com",
                     phone: "+49 2222 222 22 2",
                     initials: "AS",
-                    colorClass: "badge-user-purple"
+                    colorClass: "badge-user-purple",
                 },
 
                 contact3: {
@@ -28,7 +33,7 @@ const data = {
                     email: "benediktz@gmail.com",
                     phone: "+49 3333 333 33 3",
                     initials: "BZ",
-                    colorClass: "badge-user-pink"
+                    colorClass: "badge-user-pink",
                 },
 
                 contact4: {
@@ -36,7 +41,7 @@ const data = {
                     email: "davide@hotmail.com",
                     phone: "+49 4444 444 44 4",
                     initials: "DE",
-                    colorClass: "badge-user-blue-medium"
+                    colorClass: "badge-user-blue-medium",
                 },
 
                 contact5: {
@@ -44,7 +49,7 @@ const data = {
                     email: "eva@gmail.com",
                     phone: "+49 5555 555 55 5",
                     initials: "EF",
-                    colorClass: "badge-user-yellow"
+                    colorClass: "badge-user-yellow",
                 },
 
                 contact6: {
@@ -52,7 +57,7 @@ const data = {
                     email: "emmanuel@gmail.com",
                     phone: "+49 6666 666 66 6",
                     initials: "EM",
-                    colorClass: "badge-user-mint"
+                    colorClass: "badge-user-mint",
                 },
 
                 contact7: {
@@ -60,8 +65,8 @@ const data = {
                     email: "max@mustermann.de",
                     phone: "+49 7777 777 77 7",
                     initials: "MM",
-                    colorClass: "badge-user-blue-light"
-                }
+                    colorClass: "badge-user-blue-light",
+                },
             },
 
             tasks: {
@@ -69,98 +74,119 @@ const data = {
                     title: "Prepare presentation",
                     description: "Create the project presentation.",
                     dueDate: "2026-09-30",
-                    priority: "medium",
+                    priority: "Medium",
                     category: "User Story",
                     status: "toDo",
 
                     assignedTo: {
                         contact1: true,
-                        contact2: true
+                        contact2: true,
                     },
 
                     subtasks: {
                         subtask1: {
                             title: "Create slides",
-                            completed: false
-                        }
-                    }
+                            completed: false,
+                        },
+                    },
                 },
 
                 task2: {
                     title: "Update contact list",
                     description: "Check and update all contact information.",
                     dueDate: "2026-10-05",
-                    priority: "low",
+                    priority: "Low",
                     category: "Technical Task",
                     status: "inProgress",
 
                     assignedTo: {
-                        contact3: true
+                        contact3: true,
                     },
 
                     subtasks: {
                         subtask1: {
                             title: "Check email addresses",
-                            completed: true
+                            completed: true,
                         },
                         subtask2: {
                             title: "Check phone numbers",
-                            completed: false
-                        }
-                    }
+                            completed: false,
+                        },
+                    },
                 },
 
                 task3: {
                     title: "Design mobile view",
                     description: "Adjust the mobile layout to the Figma design.",
                     dueDate: "2026-10-10",
-                    priority: "high",
+                    priority: "High",
                     category: "User Story",
                     status: "awaitFeedback",
 
                     assignedTo: {
                         contact4: true,
-                        contact5: true
-                    }
+                        contact5: true,
+                    },
+
+                    subtasks: {
+                        subtask1: {
+                            title: "Check email addresses",
+                            completed: true,
+                        },
+                        subtask2: {
+                            title: "Check phone numbers",
+                            completed: false,
+                        },
+                        subtask3: {
+                            title: "Check domains",
+                            completed: true,
+                        },
+                        subtask4: {
+                            title: "Check phone calls",
+                            completed: true,
+                        },
+                    },
                 },
 
                 task4: {
                     title: "Test application",
                     description: "Test all pages and functions.",
                     dueDate: "2026-10-15",
-                    priority: "medium",
+                    priority: "Medium",
                     category: "Technical Task",
                     status: "toDo",
 
                     assignedTo: {
-                        contact6: true
+                        contact6: true,
                     },
 
                     subtasks: {
                         subtask1: {
                             title: "Test desktop view",
-                            completed: false
+                            completed: false,
                         },
                         subtask2: {
                             title: "Test mobile view",
-                            completed: false
-                        }
-                    }
+                            completed: false,
+                        },
+                    },
                 },
 
                 task5: {
                     title: "Finish documentation",
                     description: "Complete the project documentation.",
                     dueDate: "2026-10-20",
-                    priority: "low",
+                    priority: "Low",
                     category: "Technical Task",
                     status: "done",
 
                     assignedTo: {
-                        contact7: true
-                    }
-                }
-            }
+                        contact7: true,
+                    },
+
+                    subtasks: {},
+                },
+            },
         },
 
         FIREBASE_UID_USER_1: {
@@ -169,8 +195,8 @@ const data = {
                 email: "max@mustermann.de",
                 initials: "MM",
                 colorClass: "badge-user-blue-light",
-                type: "user"
-            }
+                type: "user",
+            },
         },
 
         FIREBASE_UID_USER_2: {
@@ -179,8 +205,8 @@ const data = {
                 email: "erika@musterfrau.de",
                 initials: "EM",
                 colorClass: "badge-user-mint",
-                type: "user"
-            }
+                type: "user",
+            },
         },
 
         FIREBASE_UID_USER_3: {
@@ -189,9 +215,9 @@ const data = {
                 email: "john@doe.com",
                 initials: "JD",
                 colorClass: "badge-user-purple",
-                type: "user"
-            }
-        }
+                type: "user",
+            },
+        },
     },
 
     templates: {

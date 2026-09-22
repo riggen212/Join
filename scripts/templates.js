@@ -1,147 +1,64 @@
-function getTaskCardTemplate() {
-    return `<button type="button" class="task-card" onclick="openTaskDialog('dialog-task')" aria-label="Open Task">
-            <span class="badge-type badge-type-user">User Story</span>
-            <div class="task-card-body">
-                <h3 class="task-card-title">HTML Base Template Creation</h3>
-                <div class="task-card-description">Lorem ipsum dolor sit amet, consectetur.</div>
-            </div>
-            <div class="task-card-subtasks">
-                <div class="task-card-progress">
-                    <div class="task-card-progress-bar"></div>
-                </div>
-                <span class="task-card-summary">1/4 Subtasks</span>
-            </div>
-            <div class="task-card-assignees">
-                <ul class="task-card-users">
-                    <li class="badge-user badge-user-orange">
-                        <span>CL</span>
-                    </li>
-                    <li class="badge-user badge-user-blue-light">
-                        <span>SS</span>
-                    </li>
-                    <li class="badge-user badge-user-mint">
-                        <span>ND</span>
-                    </li>
-                </ul>
-                <span>
-                    <img src="../assets/icons/prio_low.svg" alt="Priority low" />
-                </span>
-            </div>
-        </button>`;
-}
-
-function getTaskOverlayTemplate() {
-    return `<div class="task-overlay">
-                <header class="task-overlay-header">
-                    <div class="task-overlay-type-wrapper">
-                        <span class="badge-type badge-type-user">User Story</span>
-                        <button class="button button-close" onclick="requestCloseDialog('dialog-task')" aria-label="Close Task">
-                            <img src="../assets/icons/cancel.svg" alt="Close" />
-                        </button>
-                    </div>
-                    <h2>HTML Base Template Creation</h2>
-                </header>
-                <div class="task-overlay-body">
-                    <p class="task-overlay-description">Build start page with recipe recommendation.</p>
-                    <dl class="task-overlay-details">
-                        <dt>Due Date:</dt>
-                        <dd>10/05/2023</dd>
-                        <dt>Priority:</dt>
-                        <dd>
-                            <div class="d-flex-align-center gap-xs">
-                                <span>Medium</span>
-                                <img src="../assets/icons/prio_medium.svg">
-                            </div>
-                        </dd>
-                        <dt class="task-overlay-assignees">Assigned To:</dt>
-                        <dd>
-                            <ul>
-                                <li>
-                                    <span class="badge-user badge-user-orange">CL</span
-                                    ><span>Calvin Lamel</span>
-                                </li>
-                                <li>
-                                    <span class="badge-user badge-user-blue-light">SS</span
-                                    ><span>Sebastian Stock</span>
-                                </li>
-                                <li>
-                                    <span class="badge-user badge-user-mint">ND</span><span>Norman Domann</span>
-                                </li>
-                            </ul>
-                        </dd>
-                        <dt class="task-overlay-subtasks">Subtasks</dt>
-                        <dd>
-                            <ul>
-                                <li><input type="checkbox" aria-label="Check Task"/>Implement Recipe Recommendation</li>
-                                <li><input type="checkbox" aria-label="Check Task"/>Start Page Layout</li>
-                            </ul>
-                        </dd>
-                    </dl>
-                </div>
-                <footer class="task-overlay-footer">
-                    <button class="button button-task-overlay" onclick="deleteTask()">
-                        <img src="../assets/icons/delete.svg" alt="Delete" />
-                        <span>Delete</span>
-                    </button>
-                    <button class="button button-task-overlay" onclick="editTask()">
-                        <img src="../assets/icons/edit.svg" alt="Edit" />
-                        <span>Edit</span>
-                    </button>
-                </footer>
-            </div>
-            `;
-}
-
 function renderAddContactTemplate() {
     return `<div>
-            <button class="button button-close" type="button" onclick="requestCloseDialog('contact')" aria-label="Close dialog">
-                <img src="../assets/icons/cancel.svg" alt="">
-            </button>
+                <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
+                    <img src="../assets/icons/cancel.svg" alt="">
+                </button>
+                <img class="contact-dialog-logo" src="../assets/icons/logo_bright.svg" alt="">
+                <h1>Add contact</h1>
+                <p>Tasks are better with a team!</p>
+            </div>
 
-            <h1>Add Contact</h1>
-            <p>Tasks are better with a team!</p>
-        </div>
-        <div class="badge-user">
-            <img src="../assets/icons/person.svg" alt="">
-        </div>
-        <form action="">
-            <div class="input-wrapper">
-                <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" required>
-                <span type="button">
-                    <img src="../assets/icons/person.svg" alt="show password">
-                </span>
+            <div class="badge-user">
+                <img src="../assets/icons/person.svg" alt="">
             </div>
-            <div class="input-wrapper">
-                <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" required>
-                <span type="button">
-                    <img src="../assets/icons/mail.svg" alt="show password">
-                </span>
-            </div>
-            <div class="input-wrapper">
-                <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" required>
-                <span type="button">
-                    <img src="../assets/icons/phone.svg" alt="show password">
-                </span>
-            </div>
-            <button class="button button-dark" type="submit">
-                <span>Create contact</span>
-                <img src="../assets/icons/check.svg" alt="">
-            </button>
-        </form>
+
+            <form action="">
+                <div class="input-wrapper">
+                    <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" required>
+                    <span type="button">
+                        <img src="../assets/icons/person.svg" alt="show password">
+                    </span>
+                </div>
+                <div class="input-wrapper">
+                    <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" required>
+                    <span type="button">
+                        <img src="../assets/icons/mail.svg" alt="show password">
+                    </span>
+                </div>
+                <div class="input-wrapper">
+                    <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" required>
+                    <span type="button">
+                        <img src="../assets/icons/phone.svg" alt="show password">
+                    </span>
+                </div>
+
+                <div class="contact-form-actions">
+                    <button class="button button-bright button-cancel" type="button" onclick="this.closest('dialog').requestClose()">
+                        <span>Cancel</span>
+                        <img src="../assets/icons/cancel.svg" alt="">
+                    </button>
+                    <button class="button button-dark" type="submit">
+                        <span>Create contact</span>
+                        <img src="../assets/icons/check.svg" alt="">
+                    </button>
+                </div>
+            </form>
         `;
 }
 
 function renderEditContactTemplate(contact) {
     return `<div>
-            <button class="button button-close" type="button" onclick="this.closest('dialog').close()" aria-label="Close dialog">
-                <img src="../assets/icons/cancel.svg" alt="">
-            </button>
-
-            <h1>Edit Contact</h1>
+                <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
+                    <img src="../assets/icons/cancel.svg" alt="">
+                </button>
+                <img class="contact-dialog-logo" src="../assets/icons/logo_bright.svg" alt="">
+                <h1>Edit Contact</h1>
             </div>
+
             <div class="badge-user ${contact.colorClass}">
                 <span>${contact.initials}</span>
             </div>
+
             <form action="">
                 <div class="input-wrapper">
                     <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" value="${contact.name}" required>
@@ -149,20 +66,23 @@ function renderEditContactTemplate(contact) {
                         <img src="../assets/icons/person.svg" alt="show password">
                     </span>
                 </div>
+
                 <div class="input-wrapper">
                     <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" value="${contact.email}" required>
                     <span type="button">
                         <img src="../assets/icons/mail.svg" alt="show password">
                     </span>
                 </div>
+
                 <div class="input-wrapper">
                     <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" value="${contact.phone}" required>
                     <span type="button">
                         <img src="../assets/icons/phone.svg" alt="show password">
                     </span>
                 </div>
+
                 <div class="contact-form-actions">
-                    <button class="button button-delete" type="button" onclick="deleteContact()">
+                    <button class="button button-bright button-delete" type="button" onclick="deleteContact()">
                         Delete
                     </button>
 
@@ -173,4 +93,174 @@ function renderEditContactTemplate(contact) {
                 </div>
             </form>
             `;
+}
+
+function renderAddTask() {
+    return `<h1>Add Task</h1>
+                <section class="add-task">
+                    <form class="task-form-wrapper" onreset="resetTaskForm(this)">
+                        <div class="add-task-form">
+                            <!-- Left column -->
+                            <div class="task-form">
+                                <label for="task-title"> Title<span class="required">*</span> </label>
+                                <input class="input-wrapper" id="task-title" name="title" type="text"
+                                    placeholder="Enter a title" required />
+
+                                <label for="task-description"> Description </label>
+                                <div class="textarea-wrapper">
+                                    <textarea class="input-wrapper" id="task-description" name="description"
+                                        placeholder="Enter a Description"></textarea>
+                                    <img class="textarea-resize-icon" src="../assets/icons/recurso.svg" alt="">
+                                </div>
+
+                                <label for="task-due-date"> Due date<span class="required">*</span> </label>
+                                <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate"type="date" required />
+                            </div>
+
+                            <!-- Right column -->
+                            <div class="task-form">
+                                <span>Priority</span>
+
+                                <div class="task-priority">
+                                    <div>
+                                        <button class="button" type="button" onclick="selectTaskPriority(this, 'urgent')" aria-pressed="false">
+                                            Urgent
+                                            <img src="../assets/icons/priority_arrows_up.svg" alt="" />
+                                        </button>
+                                    </div>
+
+                                    <div>
+                                        <button class="button medium" type="button" id="priority-medium" onclick="selectTaskPriority(this, 'medium')" aria-pressed="true">
+                                            Medium
+                                            <img src="../assets/icons/priority_equal.svg" alt="" />
+                                        </button>
+                                    </div>
+
+                                    <div>
+                                        <button class="button" type="button" onclick="selectTaskPriority(this, 'low')" aria-pressed="false">
+                                            Low
+                                            <img src="../assets/icons/priority_arrows_down.svg" alt="" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <fieldset class="assigned-dropdown">
+                                    <legend>Assigned to</legend>
+
+                                    <div class="input-wrapper">
+                                        <input type="search" id="task-assigned" placeholder="Select contacts to assign"
+                                            aria-label="Search contacts">
+                                        <img src="../assets/icons/arrow_drop_down.svg" alt="">
+                                    </div>
+
+                                    <!-- Preview data: JavaScript will create these entries from the contacts JSON. -->
+                                    <ul class="assigned-options" id="assigned-options" onmousedown="event.preventDefault()">
+                                        <li>
+                                            <label class="assigned-option">
+                                                <span class="badge-user badge-user-blue-light">SM</span>
+                                                <span>Sofia Müller (You)</span>
+                                                <input type="checkbox" name="assignedTo" value="user">
+                                            </label>
+                                        </li>
+
+                                        <li>
+                                            <label class="assigned-option">
+                                                <span class="badge-user badge-user-orange">AM</span>
+                                                <span>Anton Mayer</span>
+                                                <input type="checkbox" name="assignedTo" value="contact1">
+                                            </label>
+                                        </li>
+
+                                        <li>
+                                            <label class="assigned-option">
+                                                <span class="badge-user badge-user-purple">AS</span>
+                                                <span>Anja Schulz</span>
+                                                <input type="checkbox" name="assignedTo" value="contact2" checked>
+                                            </label>
+                                        </li>
+
+                                        <li>
+                                            <label class="assigned-option">
+                                                <span class="badge-user badge-user-blue-medium">BZ</span>
+                                                <span>Benedikt Ziegler</span>
+                                                <input type="checkbox" name="assignedTo" value="contact3">
+                                            </label>
+                                        </li>
+
+                                        <li>
+                                            <label class="assigned-option">
+                                                <span class="badge-user badge-user-pink">DE</span>
+                                                <span>David Eisenberg</span>
+                                                <input type="checkbox" name="assignedTo" value="contact4" checked>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="assigned-option">
+                                                <span class="badge-user badge-user-yellow">EF</span>
+                                                <span>Eva Fischer</span>
+                                                <input type="checkbox" name="assignedTo" value="contact5" checked>
+                                            </label>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Preview badges: JavaScript will create these from the selected contact IDs. -->
+                                    <ul class="assigned-badges" id="assigned-badges" aria-label="Selected contacts">
+                                        <li class="badge-user badge-user-blue-light">SM</li>
+                                        <li class="badge-user badge-user-pink">DE</li>
+                                        <li class="badge-user badge-user-yellow">EF</li>
+                                    </ul>
+                                </fieldset>
+
+                                <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)">
+                                    <legend>Category<span class="required">*</span></legend>
+
+                                    <button class="input-wrapper" type="button">
+                                        <span>Select task category</span>
+                                        <img src="../assets/icons/arrow_drop_down.svg" alt="">
+                                    </button>
+
+                                    <ul class="category-options" onmousedown="event.preventDefault()">
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="category" value="Technical Task" required>
+                                                Technical Task
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label>
+                                                <input type="radio" name="category" value="User Story" required>
+                                                User Story
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </fieldset>
+
+                                <label for="subtask"> Subtasks </label>
+
+                                <input class="input-wrapper" id="subtask" name="subtask" type="text"
+                                    placeholder="Add new subtask" />
+                            </div>
+                        </div>
+
+                        <div class="submit-task">
+                            <p>
+                                <span class="required">*</span>
+                                This field is required
+                            </p>
+
+                            <div class="submit-task-send">
+                                <button class="button button-bright" type="reset">
+                                    <span>Clear</span>
+                                    <img src="../assets/icons/cancel.svg" alt="">
+                                </button>
+
+                                <button class="button button-dark" type="submit">
+                                    <span>Create Task</span>
+                                    <img src="../assets/icons/check.svg" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+    `;
 }

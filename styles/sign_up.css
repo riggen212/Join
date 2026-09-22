@@ -31,6 +31,8 @@
 
 .back-to-login {
     position: absolute;
+    display: grid;
+    place-items: center;
     top: 50%;
     left: var(--space-md);
 
@@ -44,8 +46,9 @@
     border: none;
 }
 
-.back-to-login img {
-    width: 21px !important;
+.back-to-login > img {
+    width: 20px;
+    height: 20px;
 }
 
 .sign-up-button-area {

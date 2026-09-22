@@ -1,9 +1,39 @@
-function showContactDetails() {
+/**
+ * Selects a contact, or hides its details when it is clicked again.
+ * Restarts the slide-in animation when another contact is selected.
+ *
+ * @param {HTMLElement} card - The contact card that was clicked.
+ */
+function showContactDetails(card) {
     const contactDetails = document.getElementById("show-details");
+    const selectedContact = document.querySelector(".contact-card.is-selected");
 
-    contactDetails.classList.add("is-open");
+    if (selectedContact === card) return hideContactDetails();
+
+    selectedContact?.classList.remove("is-selected");
+    card.classList.add("is-selected");
+
+    restartContactDetailsAnimation(contactDetails);
+    contactDetails.classList.add("is-open");    
     document.documentElement.classList.add("contact-details-open");
     document.body.classList.add("contact-details-open");
+}
+
+/**
+ * Plays the contact details slide-in animation again if it already exists.
+ * On the first click, the CSS class starts the animation instead.
+ *
+ * @param {HTMLElement} contactDetails - The contact details container.
+ */
+function restartContactDetailsAnimation(contactDetails) {
+    const animation = contactDetails.querySelector(".contact-details-info")
+        .getAnimations()
+        .find(animation => animation.animationName === "contact-details-slide-in");
+
+    if (!animation) return;
+
+    animation.currentTime = 0;
+    animation.play();
 }
 
 function hideContactDetails() {
@@ -13,6 +43,7 @@ function hideContactDetails() {
     document.documentElement.classList.remove("contact-details-open");
     document.body.classList.remove("contact-details-open");
 
+    document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
     hideContactActions();
 }
 
@@ -25,76 +56,69 @@ function hideContactActions() {
 }
 
 function openDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
+    const dialog = document.getElementById(dialogId);
 
     document.body.classList.add("overflow-hidden");
 
-    dialogRef.showModal();
+    dialog.showModal();
 }
 
-function closeDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
+// function openTaskDialog() {
+//     const dialog = document.getElementById("dialog-task");
 
-    dialogRef.close();
-}
+//     dialog.innerHTML = getTaskOverlayTemplate();
+//     openDialog("dialog-task");
+// }
 
-function openTaskDialog() {
-    const dialogRef = document.getElementById("dialog-task");
+// function closeTaskDialog(event) {
+//     const dialog = event.currentTarget;
 
-    dialogRef.innerHTML = getTaskOverlayTemplate();
-    openDialog("dialog-task");
-}
+//     if (
+//         event.target !== dialog ||
+//         !dialog.classList.contains("dialog-task-closing") 
+//     ) {
+//         return;
+//     }
 
-function requestCloseDialog(dialogId) {
-    const dialogRef = document.getElementById(dialogId);
-
-    dialogRef.requestClose();
-}
-
-function closeTaskDialog(event) {
-    if (event.animationName !== "slide-out-from-center-to-right") {
-        return;
-    }
-
-    const dialogRef = document.getElementById("dialog-task");
-
-    dialogRef.classList.remove("dialog-closing-to-right");
-    document.body.classList.remove("overflow-hidden");
-
-    closeDialog("dialog-task");
-}
+//     dialog.classList.remove("dialog-task-closing");
+//     document.body.classList.remove("overflow-hidden");
+//     dialog.close()
+// }
 
 function closeContactDialog(event) {
-    if (event.animationName !== "slide-out-from-center-to-bottom") {
+    const dialog = event.currentTarget;
+
+    if (
+        event.target !== dialog ||
+        !dialog.classList.contains("contact-closing")
+    ) {
         return;
     }
 
-    const dialogRef = document.getElementById("contact");
-
-    dialogRef.classList.remove("dialog-closing-to-bottom");
+    dialog.classList.remove("contact-closing");
     document.body.classList.remove("overflow-hidden");
-
-    closeDialog("contact");
+    dialog.close()
 }
 
-function closeProfileDialog(event, dialogId) {
-    if (event.animationName !== "slide-out-to-right") {
+function closeProfileDialog(event) {
+    const dialog = event.currentTarget;
+
+    if (
+        event.target !== dialog ||
+        !dialog.classList.contains("dialog-profile-closing")
+    ) {
         return;
     }
 
-    const dialogRef = document.getElementById(dialogId);
-
-    dialogRef.classList.remove("dialog-profile-closing");
+    dialog.classList.remove("dialog-profile-closing");
     document.body.classList.remove("overflow-hidden");
-
-    closeDialog(dialogId);
+    dialog.close()
 }
 
 function dialogSlideOut(event, closingClass) {
     event.preventDefault();
     event.currentTarget.classList.add(closingClass);
 }
-
 
 function addNewContact() {
     const dialog = document.getElementById("contact");
@@ -111,9 +135,8 @@ const dummyContact = {
     email: "anton@gmail.com",
     phone: "+49 1111 111 11 1",
     initials: "AM",
-    colorClass: "badge-user-orange"
+    colorClass: "badge-user-orange",
 };
-
 
 function editContact() {
     const dialog = document.getElementById("contact");
@@ -125,6 +148,5 @@ function editContact() {
     }
 }
 
-function deleteContact() {
+function deleteContact() { }
 
-}

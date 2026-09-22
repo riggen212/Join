@@ -1,190 +1,115 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-        <script src="../script.js" defer></script>
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon"/>
-        
-        <link rel="stylesheet" href="../global_style.css"/>
-        <link rel="stylesheet" href="../styles/components.css">
-        <link rel="stylesheet" href="../styles/login.css"/>
-        <link rel="stylesheet" href="../styles/add_task.css"/>
-        <link rel="stylesheet" href="../styles/fonts.css"/>
-        <link rel="stylesheet" href="../styles/board.css"/>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <title>Join</title>
-    </head>
+    <script src="../script.js" defer></script>
+    <script src="../scripts/templates.js" defer></script>
+    <script src="../scripts/add_task.js" defer></script>
+    <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
 
-    <body>
-        <header class="header">
-            <div class="header-wrapper">
-                <div>
-                    <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
-                    <p class="header-headline">Kanban Project Management Tool</p>
-                </div>
-                <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" class="header-link">
-                        <img src="../assets/icons/help.svg" alt="Help" />
-                    </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
-                </div>
+    <link rel="stylesheet" href="../global_style.css" />
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/login.css" />
+    <link rel="stylesheet" href="../styles/add_task.css" />
+    <link rel="stylesheet" href="../styles/fonts.css" />
+    <link rel="stylesheet" href="../styles/board.css" />
+
+    <title>Join</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-wrapper">
+            <div>
+                <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+                <p class="header-headline">Kanban Project Management Tool</p>
             </div>
-            <dialog
-                id="dialog-profile"
-                closedby="any"
-                oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event, this.id)"
-            >
-                <nav>
-                    <ul>
-                        <li>
-                            <a id="link-help-profile-dialog" href="../pages/help.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Help</a>
-                        </li>
-                        <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Legal Notice</a>
-                        </li>
-                        <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar" onclick="closeDialog('dialog-profile')">Privacy Policy</a>
-                        </li>
-                        <li>
-                            <a href="../index.html" class="link-navbar">Log out</a>
-                        </li>
-                    </ul>
-                </nav>
-            </dialog>
-        </header>
-
-        <div class="app-wrapper">
-            <nav class="navbar">
-                <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
-                    <ul class="navbar-links">
-                        <li>
-                            <a href="../pages/summary_page.html" class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
-                                <span>Summary</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/add_task.html" class="link-navbar active">
-                                <img src="../assets/icons/add_task.svg" alt="Add task icon" />
-                                <span>Add Task</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/board.html" class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="Board icon" />
-                                <span>Board</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/contacts.html" class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
-                                <span>Contacts</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <footer>
-                    <ul class="navbar-links">
-                        <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar">
-                                <span>Privacy Policy</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar">
-                                <span>Legal notice</span>
-                            </a>
-                        </li>
-                    </ul>
-                </footer>
-            </nav>
-            <main class="board">
-                <div class="board-inner">
-                    <h1>Add Task</h1>
-                    <section class="add-task">
-                        <form class="task-form-wrapper">
-                            <div class="add-task-form">
-                                <!-- Left column -->
-                                <div class="task-form">
-                                    <label for="task-title"> Title<span class="required">*</span> </label>
-                                    <input class="input-wrapper" id="task-title" name="title" type="text" placeholder="Enter a title" required/>
-
-                                    <label for="task-description"> Description </label>
-                                    <textarea class="input-wrapper" id="task-description" name="description" placeholder="Enter a Description" required></textarea>
-
-                                    <label for="task-due-date"> Due date<span class="required">*</span> </label>
-                                    <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date" required/>
-                                </div>
-
-                                <!-- Right column -->
-                                <div class="task-form">
-                                    <span>Priority</span>
-
-                                    <div class="task-priority">
-                                        <div>
-                                            <button class="button" type="button">
-                                                Urgent
-                                                <img src="../assets/icons/priority_arrows_up.svg" alt="" />
-                                            </button>
-                                        </div>
-
-                                        <div>
-                                            <button class="button medium" type="button">
-                                                Medium
-                                                <img src="../assets/icons/priority_equal.svg" alt="" />
-                                            </button>
-                                        </div>
-
-                                        <div>
-                                            <button class="button" type="button">
-                                                Low
-                                                <img src="../assets/icons/priority_arrows_down.svg" alt="" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <label for="task-assigned"> Assigned to </label>
-
-                                    <select id="task-assigned" name="assigned">
-                                        <option value="Anna">Anna</option>
-                                        <option value="Martin">Martin</option>
-                                    </select>
-
-                                    <label for="task-category"> Category<span class="required">*</span> </label>
-
-                                    <select id="task-category" name="category" required>
-                                        <option value="Technical Task">Technical Task</option>
-                                        <option value="User Story">User Story</option>
-                                    </select>
-
-                                    <label for="subtask"> Subtask </label>
-
-                                    <input
-                                        class="input-wrapper" id="subtask" name="subtask" type="text" placeholder="Add new subtask"
-                                    />
-                                </div>
-                            </div>
-
-                            <div class="submit-task">
-                                <p>
-                                    <span class="required">*</span>
-                                    This field is required
-                                </p>
-
-                                <div class="submit-task-send">
-                                    <button class="button button-bright" type="reset">Cancel</button>
-
-                                    <button class="button button-dark" type="submit">Create Task</button>
-                                </div>
-                            </div>
-                        </form>
-                    </section>
-                </div>
-            </main>
+            <div class="d-flex-align-center gap-lg">
+                <a href="../pages/help.html" class="header-link">
+                    <img src="../assets/icons/help.svg" alt="Help" />
+                </a>
+                <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+            </div>
         </div>
-    </body>
+        <dialog id="dialog-profile" closedby="any" oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
+            onanimationend="closeProfileDialog(event)">
+            <nav>
+                <ul>
+                    <li>
+                        <a id="link-help-profile-dialog" href="../pages/help.html" class="link-navbar"
+                            onclick="event.target.closest('dialog').close()">Help</a>
+                    </li>
+                    <li>
+                        <a href="../pages/legal_notice.html" class="link-navbar"
+                            onclick="event.target.closest('dialog').close()">Legal Notice</a>
+                    </li>
+                    <li>
+                        <a href="../pages/privacy_policy.html" class="link-navbar"
+                            onclick="event.target.closest('dialog').close()">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <a href="../index.html" class="link-navbar">Log out</a>
+                    </li>
+                </ul>
+            </nav>
+        </dialog>
+    </header>
+
+    <div class="app-wrapper">
+        <nav class="navbar">
+            <div class="navbar-wrapper">
+                <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
+                <ul class="navbar-links">
+                    <li>
+                        <a href="../pages/summary_page.html" class="link-navbar">
+                            <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                            <span>Summary</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/add_task.html" class="link-navbar active">
+                            <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                            <span>Add Task</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/board.html" class="link-navbar">
+                            <img src="../assets/icons/board.svg" alt="Board icon" />
+                            <span>Board</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/contacts.html" class="link-navbar">
+                            <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                            <span>Contacts</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <footer>
+                <ul class="navbar-links">
+                    <li>
+                        <a href="../pages/privacy_policy.html" class="link-navbar">
+                            <span>Privacy Policy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../pages/legal_notice.html" class="link-navbar">
+                            <span>Legal notice</span>
+                        </a>
+                    </li>
+                </ul>
+            </footer>
+        </nav>
+        <main class="board add-task-page">
+            <div class="board-inner add-task-inner">
+                
+            </div>
+        </main>
+    </div>
+</body>
+
 </html>

@@ -38,7 +38,7 @@
                 id="dialog-profile"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event, this.id)"
+                onanimationend="closeProfileDialog(event)"
             >
                 <nav>
                     <ul>
@@ -47,7 +47,7 @@
                                 id="link-help-profile-dialog"
                                 href="../pages/help.html"
                                 class="link-navbar"
-                                onclick="closeDialog('dialog-profile')"
+                                onclick="event.target.closest('dialog').close()"
                                 >Help</a
                             >
                         </li>
@@ -55,7 +55,7 @@
                             <a
                                 href="../pages/legal_notice.html"
                                 class="link-navbar"
-                                onclick="closeDialog('dialog-profile')"
+                                onclick="event.target.closest('dialog').close()"
                                 >Legal Notice</a
                             >
                         </li>
@@ -63,7 +63,7 @@
                             <a
                                 href="../pages/privacy_policy.html"
                                 class="link-navbar"
-                                onclick="closeDialog('dialog-profile')"
+                                onclick="event.target.closest('dialog').close()"
                                 >Privacy Policy</a
                             >
                         </li>
@@ -131,7 +131,7 @@
 
                         <section class="contact-group">
                             <h2>A</h2>
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-orange">
                                     <span>AM</span>
                                 </div>
@@ -141,7 +141,7 @@
                                 </div>
                             </article>
 
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-purple">
                                     <span>AS</span>
                                 </div>
@@ -154,7 +154,7 @@
 
                         <section class="contact-group">
                             <h2>B</h2>
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-pink">
                                     <span>BZ</span>
                                 </div>
@@ -167,7 +167,7 @@
 
                         <section class="contact-group">
                             <h2>D</h2>
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-pink">
                                     <span>DE</span>
                                 </div>
@@ -176,7 +176,7 @@
                                     <p class="adress">davide@hotmail.com</p>
                                 </div>
                             </article>
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-pink">
                                     <span>DE</span>
                                 </div>
@@ -185,7 +185,7 @@
                                     <p class="adress">davide@hotmail.com</p>
                                 </div>
                             </article>
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-pink">
                                     <span>DE</span>
                                 </div>
@@ -198,7 +198,7 @@
 
                         <section class="contact-group">
                             <h2>E</h2>
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-mint">
                                     <span>EF</span>
                                 </div>
@@ -208,7 +208,7 @@
                                 </div>
                             </article>
 
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-mint">
                                     <span>EF</span>
                                 </div>
@@ -218,7 +218,7 @@
                                 </div>
                             </article>
 
-                            <article class="contact-card" onclick="showContactDetails()">
+                            <article class="contact-card" onclick="showContactDetails(this)">
                                 <div class="badge-user badge-user-mint">
                                     <span>EF</span>
                                 </div>
@@ -304,8 +304,8 @@
         <dialog
             id="contact"
             closedby="any"
-            oncancel="dialogSlideOut(event, 'dialog-closing-to-bottom')"
-            onanimationend="closeContactDialog(event)"
-        ></dialog>
+            oncancel="dialogSlideOut(event, 'contact-closing')"
+            onanimationend="closeContactDialog(event)">
+        </dialog>
     </body>
 </html>
