@@ -1,64 +1,12 @@
 /**
- * @typedef {Object} Contact
- * @property {string} name - The name of the contact.
- * @property {string} initials - The initials of the contact.
- * @property {string} email - The E-Mail address of the contact.
- * @property {string} phone - The phone number of the contact.
- * @property {string} colorClass - The CSS class for the color of the contact's initials badge.
+ * Includes all contacts of the user
+ *
+ * @type {ContactDirectory}
  */
+const contacts = {};
 
 /**
- * @typedef {Object} Task
- * @property {string} title - The title of the task.
- * @property {string} description - The description of the task.
- * @property {string} dueDate - The due date of the task in YYYY-MM-DD format.
- * @property {"Low"|"Medium"|"High"} priority - The priority of the task.
- * @property {"User Story"|"Technical Task"} category - The category of the task.
- * @property {"toDo"|"inProgress"|"awaitFeedback"|"done"} status - The current status of the task.
- * @property {Object.<string, true>} assignedTo - Maps contact Ids to their assignment state.
- * @property {SubtaskDirectory} subtasks - The subtasks of the task.
- */
-
-/**
- * @typedef {Object.<string, Task>} TaskDirectory - Contains tasks as key-value pairs.
- */
-
-/**
- * @typedef {Object} Subtask
- * @property {string} title - The title of the subtask.
- * @property {boolean} completed - Indicates whether the subtask is completed.
- */
-
-/**
- * @typedef {Object.<string, Subtask>} SubtaskDirectory - Contains subtasks as key-value pairs.
- */
-
-/**
- * @typedef {Object} SubtasksData
- * @property {number} amount - Amount of all subtasks of a single task.
- * @property {number} completedAmount - Amount of all completed subtasks of a single task.
- * @property {number} progressInPercent - The Value of the completion progress as a percentage from 0 to 100.
- */
-
-/**
- * @typedef {Object} Board
- * @property {BoardColumn} toDo - Tasks with `status` `toDo` will be assigned in this column.
- * @property {BoardColumn} inProgress - Tasks with `status` `inProgress` will be assigned in this column.
- * @property {BoardColumn} awaitFeedback - Tasks with `status` `awaitFeedback` will be assigned in this column.
- * @property {BoardColumn} done - Tasks with `status` `done` will be assigned in this column.
- */
-
-/**
- * @typedef {Object} BoardColumn
- * @property {string} id - The id of the DOM element representing the column.
- * @property {string} name - The name of the column.
- * @property {TaskDirectory} tasks - An Object with the tasks assigned to the column.
- */
-
-const contacts = data.users[0].contacts;
-
-/**
- * The board including the tasks in separate columns based on each task's status.
+ * The board including the users tasks in separate columns based on each task's status.
  *
  * @type {Board}
  */
@@ -86,24 +34,13 @@ const board = {
 };
 
 /**
- * Starts the board page, loads the tasks and renders the board.
+ * Starts the board page, loads the tasks and contacts based on the users ID and renders the board.
  */
-function initBoard() {
-    loadTasks(board);
-    renderBoardColumns(board);
-}
+async function initBoard() {
+    const userId = DB_GUEST_USER_ID;
 
-/**
- * Loads the tasks from the database and assigns each task in the appropriate board column based on its status.
- * Modifies the board.
- *
- * @param {Board} board - The board including the tasks
- */
-function loadTasks(board) {
-    const tasks = Object.entries(data.users[0].tasks);
-    tasks.forEach(([taskKey, taskEntry]) => {
-        board[taskEntry.status].tasks[taskKey] = taskEntry;
-    });
+    await loadUserProfile(userId);
+    renderBoardColumns(board);
 }
 
 /**
@@ -146,24 +83,6 @@ function getColumnContentHtml(columnTasksObject) {
 }
 
 /**
- * Returns data for task card html template.
- *
- * @param {string} taskId - Id of the given task.
- * @param {Task} task - A single task.
- * @returns {Object} Object including data for the task card html template.
- */
-function getTaskCardData(taskId, task) {
-    return {
-        taskObject: {
-            id: taskId,
-            task: task,
-        },
-        assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
-        subtasksData: getSubtasksCardData(task),
-    };
-}
-
-/**
  * Iterates all assignees of a single task and creates the HTML string.
  *
  * @param {Task} task - A single task.
@@ -186,79 +105,6 @@ function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
 }
 
 /**
- * Calculates summary for the subtasks of a single task.
- *
- * @param {Task} task - A single task.
- * @returns {SubtasksData} Summary data of the task's subtasks.
- */
-function getSubtasksCardData(task) {
-    const subtasks = Object.values(task.subtasks);
-
-    return {
-        amount: subtasks.length,
-        completedAmount: getCompletedSubtasks(subtasks).length,
-        progressInPercent: getSubtaskProgressInPercent(subtasks),
-    };
-}
-
-/**
- * Returns all completed subtasks from the given subtasks.
- *
- * @param {Subtask[]} subtasks - The subtasks of a single task.
- * @returns {Subtask[]} Subtasks whose `completed` property is `true`.
- */
-function getCompletedSubtasks(subtasks) {
-    return subtasks.filter((subtask) => subtask.completed === true);
-}
-
-/**
- * Calculates the completion progress of the given subtasks.
- *
- * @param {Subtask[]} subtasks - The subtasks of a single task.
- * @returns {number} The value of the completion progress as percentage from 0 to 100.
- */
-function getSubtaskProgressInPercent(subtasks) {
-    if (subtasks.length <= 0) {
-        return 0;
-    } else {
-        return (getCompletedSubtasks(subtasks).length / subtasks.length) * 100;
-    }
-}
-
-/**
- * Searchs a task in the boards column by using its id and status and returns it.
- *
- * @param {string} taskId - Id of a single task.
- * @param {Task["status"]} taskStatus - Current status of the task.
- * @returns {Task|undefined} - The matching task or `undefined` if it not exist.
- */
-function getTaskById(taskId, taskStatus) {
-    if (!board[taskStatus].tasks[taskId]) {
-        return;
-    } else {
-        return board[taskStatus].tasks[taskId];
-    }
-}
-
-/**
- * Creates and returns an Object for the task overlay.
- *
- * @param {Task} task - A single task.
- * @param {string} taskId - Id of a single task.
- * @returns {Object} Object containing task, taskid, assignees and subtasks html.
- */
-function getTaskOverlayData(task, taskId) {
-    return {
-        task: task,
-        id: taskId,
-        assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
-        subtasks: {
-            html: getTaskOverlaySubtasksHtml(task.subtasks),
-        },
-    };
-}
-
-/**
  * Iterates through the subtasks and creates the html.
  *
  * @param {SubtaskDirectory} subtasks - Subtasks of a single task.
@@ -267,32 +113,81 @@ function getTaskOverlayData(task, taskId) {
 function getTaskOverlaySubtasksHtml(subtasks) {
     let subtasksHtml = "";
 
-    Object.values(subtasks).forEach((subtask) => {
+    Object.entries(subtasks ?? {}).forEach(([subtaskId, subtask]) => {
         const isCompleted = subtask.completed ? "checked" : "";
-        subtasksHtml += getTaskOverlaySubtasksTemplate(subtask, isCompleted);
+        subtasksHtml += getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted);
     });
 
     return subtasksHtml;
 }
 
 /**
- * Opens the dialog with the tasks data.
+ * Updates the subtask's completion status and refrehes the task card.
  *
- * @param {string} taskId - Id of a single task.
- * @param {Task["status"]} taskStatus - Currents status of the task.
+ * @param {TaskId} taskId - ID of the task containing the subtask.
+ * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
+ * @param {SubtaskId} subtaskId - ID of the subtask being toggled.
+ */
+function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
+    const subtask = board[taskStatus].tasks[taskId].subtasks[subtaskId];
+
+    subtask.completed = !subtask.completed;
+
+    updateTaskCardSubtasksState(taskId, taskStatus);
+}
+
+/**
+ * Updates the subtask summary and progress bar of the specified task card.
+ *
+ * @param {TaskId} taskId - ID of the task whose card is updated.
+ * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
+ */
+function updateTaskCardSubtasksState(taskId, taskStatus) {
+    const task = getTaskById(taskId, taskStatus);
+    const subtaskData = getSubtasksCardData(task);
+    const subtasksRef = getTaskCardSubtasksHtmlElement(taskId, taskStatus);
+    const subtasksSummaryRef = subtasksRef.querySelector(".task-card-subtasks-summary");
+    const subtasksProgressBarRef = subtasksRef.querySelector(".task-card-subtasks-progress-bar");
+
+    subtasksSummaryRef.innerHTML = `${subtaskData.completedAmount}/${subtaskData.amount} Subtasks`;
+    subtasksProgressBarRef.style.width = `${subtaskData.progressInPercent}%`;
+}
+
+/**
+ * Returns the subtask container of the specified task card.
+ *
+ * @param {TaskId} taskId - ID of the task whose card is queried.
+ * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
+ * @returns {HTMLElement|null} The subtask container, or `null` if it does not exist.
+ */
+function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
+    const columnRef = document.querySelector(`[data-column-id="${taskStatus}"]`);
+    const taskCardRef = columnRef.querySelector(`[data-task-id="${taskId}"]`);
+    const subtaskRef = taskCardRef.querySelector(".task-card-subtasks");
+
+    return subtaskRef;
+}
+
+/**
+ * Opens the dialog and renders the selected task's data.
+ *
+ * @param {TaskId} taskId - ID of the task to render.
+ * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
  */
 function openTaskDialog(taskId, taskStatus) {
     const dialog = document.getElementById("dialog-task");
     const task = getTaskById(taskId, taskStatus);
 
     if (!task) {
-        return
+        return;
     }
 
-    const taskData = getTaskOverlayData(task, taskId);
+    const taskData = getTaskOverlayData(taskId, task);
 
-        dialog.innerHTML = getTaskOverlayTemplate(taskData);
-        openDialog("dialog-task");
+    dialog.dataset.taskId = taskId;
+    dialog.dataset.taskStatus = taskStatus;
+    dialog.innerHTML = getTaskOverlayTemplate(taskData);
+    openDialog("dialog-task");
 }
 
 /**
