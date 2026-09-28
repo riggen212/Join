@@ -143,6 +143,7 @@ h2 {
     display: flex;
 
     gap: var(--space-lg);
+    border: dashed 1px transparent;
 
     overflow-x: scroll;
     scrollbar-width: none;
@@ -164,6 +165,10 @@ h2 {
     background-color: var(--background-board-feedback-color);
     border: dashed 1px var(--color-grey-bright);
     border-radius: var(--border-radius-middle);
+}
+
+.board-column-highlight {
+    border: dashed 1px var(--color-grey-bright);
 }
 
 /* Media queries */
@@ -234,3 +239,5 @@ h2 {
         display: inline;
     }
 }
+
+

@@ -91,3 +91,61 @@ function getSubtaskProgressInPercent(subtasks) {
         return (getCompletedSubtasks(subtasks).length / subtasks.length) * 100;
     }
 }
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function getDraggingTask(taskId, taskStatus) {
+    draggingTask = {
+        id: taskId,
+        status: taskStatus,
+    };
+}
+
+function moveTask(destinationId) {
+    const currentTaskData = getDataToMoveTask(destinationId);
+
+    if (currentTaskData.oldStatus === currentTaskData.newStatus) {
+        return;
+    }
+
+    moveTaskBetweenColumns(currentTaskData);
+    renderBoardColumn(board[currentTaskData.oldStatus]);
+    renderBoardColumn(board[currentTaskData.newStatus]);
+}
+
+function moveTaskBetweenColumns(currentTaskData) {
+    currentTaskData.task.status = currentTaskData.newStatus;
+    board[currentTaskData.newStatus].tasks[currentTaskData.id] = currentTaskData.task;
+    delete board[currentTaskData.oldStatus].tasks[currentTaskData.id];
+}
+
+function getDataToMoveTask(destinationId) {
+    return {
+        id: draggingTask.id,
+        task: board[draggingTask.status].tasks[draggingTask.id],
+        oldStatus: draggingTask.status,
+        newStatus: destinationId.replace("-content", ""),
+    };
+}
+
+function addHighlightDroppableColumn(columnId) {
+    const column = document.getElementById(columnId);
+    column.classList.add("board-column-highlight");
+}
+
+function removeHighlightDroppableColumn(columnId) {
+    const column = document.getElementById(columnId);
+    column.classList.remove("board-column-highlight");
+}
+
+function addFlipCard(cardId) {
+    const column = document.getElementById(cardId);
+    column.classList.add("card-task-flip");
+}
+
+function removeFlipCard(cardId) {
+    const column = document.getElementById(cardId);
+    column.classList.remove("card-task-flip");
+}

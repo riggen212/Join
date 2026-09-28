@@ -1,25 +1,33 @@
 function getTaskCardTemplate(taskData) {
-    return `<button type="button" data-task-id="${taskData.id}" class="task-card" onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')" aria-label="Open Task">
-            <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
-            <div class="task-card-body">
-                <h3 class="task-card-title">${taskData.task.title}</h3>
-                <div class="task-card-description">${taskData.task.description}</div>
-            </div>
-            <div class="task-card-subtasks">
-                <div class="task-card-subtasks-progress">
-                    <div class="task-card-subtasks-progress-bar" style="width: ${taskData.subtasksData.progressInPercent}%;"></div>
+    return `<article
+            id="${taskData.id}"
+            data-task-id="${taskData.id}"
+            class="task-card"
+            draggable="true"
+            onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
+            ondragstart="getDraggingTask('${taskData.id}', '${taskData.task.status}'), addFlipCard('${taskData.id}')"
+            ondragend="removeFlipCard('${taskData.id}')"
+            aria-label="Open Task">
+                <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                <div class="task-card-body">
+                    <h3 class="task-card-title">${taskData.task.title}</h3>
+                    <div class="task-card-description">${taskData.task.description}</div>
                 </div>
-                <span class="task-card-subtasks-summary">${taskData.subtasksData.completedAmount}/${taskData.subtasksData.amount} Subtasks</span>
-            </div>
-            <div class="task-card-assignees">
-                <ul class="task-card-users">
-                    ${taskData.assigneesHtml}
-                </ul>
-                <span>
-                    <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="Priority low" />
-                </span>
-            </div>
-        </button>`;
+                <div class="task-card-subtasks">
+                    <div class="task-card-subtasks-progress">
+                        <div class="task-card-subtasks-progress-bar" style="width: ${taskData.subtasksData.progressInPercent}%;"></div>
+                    </div>
+                    <span class="task-card-subtasks-summary">${taskData.subtasksData.completedAmount}/${taskData.subtasksData.amount} Subtasks</span>
+                </div>
+                <div class="task-card-assignees">
+                    <ul class="task-card-users">
+                        ${taskData.assigneesHtml}
+                    </ul>
+                    <span>
+                        <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="Priority low" />
+                    </span>
+                </div>
+            </article>`;
 }
 
 function getTaskCardUserBadgeTemplate(contact) {
@@ -33,7 +41,7 @@ function getTaskCardEmptyBadge(columnName) {
 }
 
 function getTaskOverlayTemplate(taskData) {
-    return `<div class="task-overlay">
+    return `<article class="task-overlay">
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
@@ -79,7 +87,7 @@ function getTaskOverlayTemplate(taskData) {
                         <span>Edit</span>
                     </button>
                 </footer>
-            </div>`;
+            </article>`;
 }
 
 function getTaskOverlayUserBadgeTemplate(contact) {

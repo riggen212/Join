@@ -12,17 +12,17 @@ const contacts = {};
  */
 const board = {
     toDo: {
-        id: "todo-content",
+        id: "toDo-content",
         name: "To Do",
         tasks: {},
     },
     inProgress: {
-        id: "progress-content",
+        id: "inProgress-content",
         name: "In progress",
         tasks: {},
     },
     awaitFeedback: {
-        id: "feedback-content",
+        id: "awaitFeedback-content",
         name: "Await feedback",
         tasks: {},
     },
@@ -33,6 +33,8 @@ const board = {
     },
 };
 
+let draggingTask = {};
+
 /**
  * Starts the board page, loads the tasks and contacts based on the users ID and renders the board.
  */
@@ -41,30 +43,26 @@ async function initBoard() {
 
     try {
         await loadUserBoardData(userId);
-        renderBoardColumns(board);
+        Object.values(board).forEach(renderBoardColumn);
     } catch (error) {
         console.error(error);
     }
 }
 
 /**
- * Iterates the board through its columns and renders it.
+ * Renders a single board column.
  *
- * @param {Board} board - The board including the tasks
+ * @param {BoardColumn} column - A single board column including the tasks
  */
-function renderBoardColumns(board) {
-    const boardEntries = Object.values(board);
+function renderBoardColumn(column) {
+    const columnContent = document.getElementById(column.id);
 
-    boardEntries.forEach((column) => {
-        const columnContent = document.getElementById(column.id);
-
-        if (Object.keys(column.tasks).length === 0) {
-            columnContent.innerHTML = getTaskCardEmptyBadge(column.name);
-        } else {
-            const columnContentHtml = getColumnContentHtml(column.tasks);
-            columnContent.innerHTML = columnContentHtml;
-        }
-    });
+    if (Object.keys(column.tasks).length === 0) {
+        columnContent.innerHTML = getTaskCardEmptyBadge(column.name);
+    } else {
+        const columnContentHtml = getColumnContentHtml(column.tasks);
+        columnContent.innerHTML = columnContentHtml;
+    }
 }
 
 /**
@@ -141,14 +139,13 @@ function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
     try {
         const task = getTaskById(taskId, taskStatus);
         const subtask = task.subtasks[subtaskId];
-    
+
         subtask.completed = !subtask.completed;
-    
+
         updateTaskCardSubtasksState(taskId, task);
     } catch (error) {
         console.error(error);
     }
-
 }
 
 /**
@@ -223,6 +220,8 @@ function closeTaskDialog(event) {
     }
 
     dialog.classList.remove("dialog-task-closing");
+    dialog.dataset.taskId = "";
+    dialog.dataset.taskStatus = "";
     document.body.classList.remove("overflow-hidden");
     dialog.close();
 }

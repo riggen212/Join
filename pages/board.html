@@ -162,7 +162,13 @@
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div id="todo-content" class="board-column-content"></div>
+                            <div
+                                id="toDo-content"
+                                class="board-column-content"
+                                ondragover="(allowDrop(event), addHighlightDroppableColumn(this.id))"
+                                ondragleave="removeHighlightDroppableColumn(this.id)"
+                                ondrop="moveTask(this.id), removeHighlightDroppableColumn(this.id)"
+                            ></div>
                         </section>
                         <section data-column-id="inProgress" class="board-column">
                             <header class="board-column-header">
@@ -175,7 +181,13 @@
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div id="progress-content" class="board-column-content"></div>
+                            <div
+                                id="inProgress-content"
+                                class="board-column-content"
+                                ondragover="(allowDrop(event), addHighlightDroppableColumn(this.id))"
+                                ondragleave="removeHighlightDroppableColumn(this.id)"
+                                ondrop="moveTask(this.id), removeHighlightDroppableColumn(this.id)"
+                            ></div>
                         </section>
                         <section data-column-id="awaitFeedback" class="board-column">
                             <header class="board-column-header">
@@ -188,13 +200,25 @@
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div id="feedback-content" class="board-column-content"></div>
+                            <div
+                                id="awaitFeedback-content"
+                                class="board-column-content"
+                                ondragover="(allowDrop(event), addHighlightDroppableColumn(this.id))"
+                                ondragleave="removeHighlightDroppableColumn(this.id)"
+                                ondrop="moveTask(this.id), removeHighlightDroppableColumn(this.id)"
+                            ></div>
                         </section>
                         <section data-column-id="done" class="board-column">
                             <header class="board-column-header">
                                 <h2>Done</h2>
                             </header>
-                            <div id="done-content" class="board-column-content"></div>
+                            <div
+                                id="done-content"
+                                class="board-column-content"
+                                ondragover="(allowDrop(event), addHighlightDroppableColumn(this.id))"
+                                ondragleave="removeHighlightDroppableColumn(this.id)"
+                                ondrop="moveTask(this.id), removeHighlightDroppableColumn(this.id)"
+                            ></div>
                         </section>
                     </div>
                 </div>
