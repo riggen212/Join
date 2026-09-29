@@ -211,18 +211,11 @@ function openTaskDialog(taskId, taskStatus) {
 }
 
 /**
- * Closes the task dialog after its closing animation has finished.
+ * Finishes the closing animation of the task dialog.
  *
- * @param {AnimationEvent} event - The dialogs animation-end event.
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @returns {void}
  */
 function closeTaskDialog(event) {
-    const dialog = event.currentTarget;
-
-    if (event.target !== dialog || !dialog.classList.contains("dialog-task-closing")) {
-        return;
-    }
-
-    dialog.classList.remove("dialog-task-closing");
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
+    closeAnimatedDialog(event, "dialog-task-closing");
 }

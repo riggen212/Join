@@ -13,6 +13,37 @@ async function getData(path = "", id = "") {
 }
 
 /**
+ * Writes data to a fixed Firebase database path.
+ *
+ * @param {string} path - The database path without the `.json` suffix.
+ * @param {Object|null} value - The data written to Firebase.
+ * @returns {Promise<Object>} The saved Firebase data.
+ */
+async function putData(path, value) {
+    const response = await fetch(DB_BASE_URL + path + ".json", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(value),
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP-Fehler: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+/**
+ * Deletes data from a Firebase database path.
+ *
+ * @param {string} path - The database path to delete.
+ * @returns {Promise<null>} Resolves after the data has been deleted.
+ */
+function deleteData(path) {
+    return putData(path, null);
+}
+
+/**
  * Selects a contact, or hides its details when it is clicked again.
  * Restarts the slide-in animation when another contact is selected.
  *
@@ -27,6 +58,7 @@ function showContactDetails(card) {
     selectedContact?.classList.remove("is-selected");
     card.classList.add("is-selected");
 
+    renderContactDetails(card.dataset.contactId);
     restartContactDetailsAnimation(contactDetails);
     contactDetails.classList.add("is-open");
     document.documentElement.classList.add("contact-details-open");
@@ -51,23 +83,38 @@ function restartContactDetailsAnimation(contactDetails) {
     animation.play();
 }
 
+/**
+ * Hides the contact details and clears the current selection.
+ *
+ * @returns {void}
+ */
 function hideContactDetails() {
     const contactDetails = document.getElementById("show-details");
 
     contactDetails.classList.remove("is-open");
     document.documentElement.classList.remove("contact-details-open");
     document.body.classList.remove("contact-details-open");
+    document.querySelector(".contact-card.is-selected")
+        ?.classList.remove("is-selected");
 
-    document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
     hideContactActions();
+    delete contactDetails.dataset.contactId;
+    document.getElementById("contact-details-info").innerHTML = "";
 }
 
+/**
+ * Hides the contact actions and resets the mobile menu button.
+ *
+ * @returns {void}
+ */
 function hideContactActions() {
     const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(".contact-details > .contact-add");
+    const menuButton = document.querySelector(
+        ".contact-details > .contact-add"
+    );
 
-    actions.classList.remove("is-open");
-    menuButton.setAttribute("aria-expanded", "false");
+    actions?.classList.remove("is-open");
+    menuButton?.setAttribute("aria-expanded", "false");
 }
 
 function openDialog(dialogId) {
@@ -78,28 +125,24 @@ function openDialog(dialogId) {
     dialog.showModal();
 }
 
+/**
+ * Finishes the closing animation of the contact form dialog.
+ *
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @returns {void}
+ */
 function closeContactDialog(event) {
-    const dialog = event.currentTarget;
-
-    if (event.target !== dialog || !dialog.classList.contains("contact-closing")) {
-        return;
-    }
-
-    dialog.classList.remove("contact-closing");
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
+    closeAnimatedDialog(event, "contact-closing");
 }
 
+/**
+ * Finishes the closing animation of a profile-style dialog.
+ *
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @returns {void}
+ */
 function closeProfileDialog(event) {
-    const dialog = event.currentTarget;
-
-    if (event.target !== dialog || !dialog.classList.contains("dialog-profile-closing")) {
-        return;
-    }
-
-    dialog.classList.remove("dialog-profile-closing");
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
+    closeAnimatedDialog(event, "dialog-profile-closing");
 }
 
 function dialogSlideOut(event, closingClass) {
@@ -117,22 +160,74 @@ function addNewContact() {
     }
 }
 
-const dummyContact = {
-    name: "Anton Mayer",
-    email: "anton@gmail.com",
-    phone: "+49 1111 111 11 1",
-    initials: "AM",
-    colorClass: "badge-user-orange",
-};
-
+/**
+ * Opens the edit dialog with the currently selected contact's data.
+ * Closes the mobile contact actions dialog before showing the edit form.
+ *
+ * @returns {void}
+ */
 function editContact() {
     const dialog = document.getElementById("contact");
+    const actionsDialog = document.getElementById("dialog-edit-contact");
+    const selectedContact = getSelectedContactEntry();
 
-    if (!dialog.open) {
-        dialog.classList.add("contact-edit");
-        dialog.innerHTML = renderEditContactTemplate(dummyContact);
-        openDialog("contact");
-    }
+    if (!selectedContact || dialog.open) return;
+    if (actionsDialog.open) actionsDialog.close();
+
+    dialog.classList.add("contact-edit");
+    dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);
+    openDialog("contact");
 }
 
-function deleteContact() {}
+/**
+ * Deletes the currently selected contact.
+ *
+ * @returns {Promise<void>}
+ */
+async function deleteContact() {
+    const selectedContact = getSelectedContactEntry();
+    if (!selectedContact) return;
+
+    try {
+        await removeContact(selectedContact.id);
+    } catch (error) {
+        console.error("Contact could not be deleted:", error);
+    };
+}
+
+/**
+ * Closes a dialog after its closing animation has finished.
+ *
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @param {string} closingClass - The class controlling the closing animation.
+ * @returns {void}
+ */
+function closeAnimatedDialog(event, closingClass) {
+    const dialog = event.currentTarget;
+
+    if (event.target !== dialog || !dialog.classList.contains(closingClass)) {
+        return;
+    };
+
+    dialog.classList.remove(closingClass);
+    document.body.classList.remove("overflow-hidden");
+    dialog.close();
+}
+
+/**
+ * Closes the dialog from which a contact was deleted.
+ * The mobile actions dialog closes immediately to release its backdrop.
+ *
+ * @returns {void}
+ */
+function closeDialogAfterContactDeletion() {
+    const contactDialog = document.getElementById("contact");
+    const actionsDialog = document.getElementById("dialog-edit-contact");
+
+    if (actionsDialog.open) {
+        actionsDialog.close();
+        document.body.classList.remove("overflow-hidden");
+    }
+
+    if (contactDialog.open) contactDialog.requestClose();
+}

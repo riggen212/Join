@@ -12,7 +12,7 @@ function renderAddContactTemplate() {
                 <img src="../assets/icons/person.svg" alt="">
             </div>
 
-            <form action="">
+            <form onsubmit="createContact(event)">
                 <div class="input-wrapper">
                     <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" required>
                     <span type="button">
@@ -59,7 +59,7 @@ function renderEditContactTemplate(contact) {
                 <span>${contact.initials}</span>
             </div>
 
-            <form action="">
+            <form onsubmit="saveContact(event)">
                 <div class="input-wrapper">
                     <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" value="${contact.name}" required>
                     <span type="button">
@@ -262,5 +262,87 @@ function renderAddTask() {
                         </div>
                     </form>
                 </section>
+    `;
+}
+
+/**
+ * Creates the HTML for one contact card.
+ *
+ * @param {string} contactId - The unique ID of the contact.
+ * @param {Contact} contact - The contact displayed in the card.
+ * @returns {string} The contact card HTML.
+ */
+function getContactCardTemplate(contactId, contact) {
+    return `
+        <article class="contact-card"
+            data-contact-id="${contactId}"
+            onclick="showContactDetails(this)">
+            <div class="badge-user ${contact.colorClass}">
+                <span>${contact.initials}</span>
+            </div>
+            <div>
+                <p class="hover-bright">${contact.name}</p>
+                <p class="adress">${contact.email}</p>
+            </div>
+        </article>
+    `;
+}
+
+/**
+ * Creates the HTML for a group of contacts sharing the same initial.
+ *
+ * @param {string} initial - The first letter of the contact names.
+ * @param {string} contactCardsHtml - The rendered contact cards.
+ * @returns {string} The complete contact group HTML.
+ */
+function getContactGroupTemplate(initial, contactCardsHtml) {
+    return `
+        <section class="contact-group">
+            <h2>${initial}</h2>
+            ${contactCardsHtml}
+        </section>
+    `;
+}
+
+/**
+ * Creates the detail view for the selected contact.
+ *
+ * @param {Contact} contact - The contact whose information is displayed.
+ * @returns {string} The contact details HTML.
+ */
+function getContactDetailsTemplate(contact) {
+    return `
+        <div>
+            <div class="badge-user ${contact.colorClass}">
+                <span>${contact.initials}</span>
+            </div>
+            <h3>${contact.name}</h3>
+            ${getContactActionsTemplate()}
+        </div>
+        <p>Contact Information</p>
+        <h4>Email</h4>
+        <span class="detail-info">${contact.email}</span>
+        <h4>Phone</h4>
+        <span>${contact.phone}</span>
+    `;
+}
+
+/**
+ * Creates the action buttons of the contact detail view.
+ *
+ * @returns {string} The contact action buttons HTML.
+ */
+function getContactActionsTemplate() {
+    return `
+        <div id="contact-actions">
+            <button class="button button-task-overlay" onclick="editContact()">
+                <img src="../assets/icons/edit.svg" alt="">
+                <span>Edit</span>
+            </button>
+            <button class="button button-task-overlay" onclick="deleteContact()">
+                <img src="../assets/icons/delete.svg" alt="">
+                <span>Delete</span>
+            </button>
+        </div>
     `;
 }
