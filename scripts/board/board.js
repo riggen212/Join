@@ -214,7 +214,6 @@ function openTaskDialog(taskId, taskStatus) {
  * @returns {void}
  */
 function closeTaskDialog(event) {
-<<<<<<< HEAD
     const dialog = event.currentTarget;
 
     if (event.target !== dialog || !dialog.classList.contains("dialog-task-closing")) {
@@ -226,7 +225,5 @@ function closeTaskDialog(event) {
     dialog.dataset.taskStatus = "";
     document.body.classList.remove("overflow-hidden");
     dialog.close();
-=======
     closeAnimatedDialog(event, "dialog-task-closing");
->>>>>>> main
 }
