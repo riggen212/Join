@@ -142,6 +142,7 @@ h2 {
 .board-column-content {
     display: flex;
 
+    padding: var(--space-xxs);
     gap: var(--space-lg);
     border: dashed 1px transparent;
 

@@ -92,10 +92,21 @@ function getSubtaskProgressInPercent(subtasks) {
     }
 }
 
+/**
+ * Allows drop cards into the column preventing the default behavior.
+ *
+ * @param {Event} event - Event that fires if drag over the column.
+ */
 function allowDrop(event) {
     event.preventDefault();
 }
 
+/**
+ * Sets the dragging task's id and status into the global variable for the current dragging task.
+ *
+ * @param {TaskId} taskId - ID of the dragging task.
+ * @param {taskStatus} taskStatus - Status of the dragging task.
+ */
 function getDraggingTask(taskId, taskStatus) {
     draggingTask = {
         id: taskId,
@@ -103,49 +114,87 @@ function getDraggingTask(taskId, taskStatus) {
     };
 }
 
-function moveTask(destinationId) {
-    const currentTaskData = getDataToMoveTask(destinationId);
+/**
+ * Moves task between columns and renders the appropriate columns.
+ * Checks whether the new status is equal to the old status and returns early if it is.
+ *
+ * @param {BoardColumn["id"]} destinationColumnId - ID of the column where the task should be moved.
+ * @returns {void}
+ */
+function moveTask(destinationColumnId) {
+    const draggingTaskData = getDataToMoveTask(destinationColumnId);
 
-    if (currentTaskData.oldStatus === currentTaskData.newStatus) {
+    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
         return;
     }
 
-    moveTaskBetweenColumns(currentTaskData);
-    renderBoardColumn(board[currentTaskData.oldStatus]);
-    renderBoardColumn(board[currentTaskData.newStatus]);
+    moveTaskBetweenColumns(draggingTaskData);
+    renderBoardColumn(board[draggingTaskData.oldStatus]);
+    renderBoardColumn(board[draggingTaskData.newStatus]);
 }
 
-function moveTaskBetweenColumns(currentTaskData) {
-    currentTaskData.task.status = currentTaskData.newStatus;
-    board[currentTaskData.newStatus].tasks[currentTaskData.id] = currentTaskData.task;
-    delete board[currentTaskData.oldStatus].tasks[currentTaskData.id];
+/**
+ * Updates the task's new status, add the task to the new columns and removes it from the old column.
+ *
+ * @param {{id: TaskId, task: Task, oldStatus: BoardColumn["id"], newStatus: BoardColumn["id"]}} draggingTaskData - Data needed to move the task..
+ */
+function moveTaskBetweenColumns(draggingTaskData) {
+    draggingTaskData.task.status = draggingTaskData.newStatus;
+    board[draggingTaskData.newStatus].tasks[draggingTaskData.id] = draggingTaskData.task;
+    delete board[draggingTaskData.oldStatus].tasks[draggingTaskData.id];
 }
 
+/**
+ * Builds and returns an object containing the data to move a task.
+ *
+ * @param {BoardColumn["id"]} destinationId - ID of the column where the task should be moved.
+ * @returns {{id: TaskId, task: Task, oldStatus: BoardColumn["id"], newStatus: BoardColumn["id"]}} Data needed to move the task.
+ */
 function getDataToMoveTask(destinationId) {
     return {
         id: draggingTask.id,
         task: board[draggingTask.status].tasks[draggingTask.id],
         oldStatus: draggingTask.status,
-        newStatus: destinationId.replace("-content", ""),
+        newStatus: destinationId,
     };
 }
 
+/**
+ * Adds the CSS class to highlight the column.
+ * 
+ * @param {BoardColumn["id"]} columnId - ID of the column that should be highlighted.
+ */
 function addHighlightDroppableColumn(columnId) {
-    const column = document.getElementById(columnId);
+    const column = document.getElementById(`${columnId}-content`);
     column.classList.add("board-column-highlight");
 }
 
+/**
+ * Removes the CSS class to stop highlighting the column.
+ * 
+ * @param {BoardColumn["id"]} columnId - ID of the column that should no longer be highlighted.
+ */
 function removeHighlightDroppableColumn(columnId) {
-    const column = document.getElementById(columnId);
+    const column = document.getElementById(`${columnId}-content`);
     column.classList.remove("board-column-highlight");
 }
 
-function addFlipCard(cardId) {
-    const column = document.getElementById(cardId);
-    column.classList.add("card-task-flip");
+/**
+ * Adds the CSS class to flip the task's card.
+ * 
+ * @param {TaskId} taskId - ID of the task whose card should be flipped.
+ */
+function addFlipCard(taskId) {
+    const card = document.getElementById(taskId);
+    card.classList.add("card-task-flip");
 }
 
-function removeFlipCard(cardId) {
-    const column = document.getElementById(cardId);
-    column.classList.remove("card-task-flip");
+/**
+ * Removes the CSS class to stop flipping the task's card.
+ * 
+ * @param {TaskId} taskId - ID of the task whose card should no longer be flipped.
+ */
+function removeFlipCard(taskId) {
+    const card = document.getElementById(taskId);
+    card.classList.remove("card-task-flip");
 }

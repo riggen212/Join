@@ -4,7 +4,7 @@
     flex-direction: column;
 
     flex: 0 0 var(--size-task-card-width);
-    max-width: var(--size-task-card-width);
+    /* max-width: var(--size-task-card-width); */
 
     margin: var(--space-xxs);
     padding: var(--space-task);
@@ -138,10 +138,13 @@
         color: var(--color-overlay-task-details-term);
     }
 
-    & ul {
-        padding-inline-start: 0;
-
+    & .task-overlay-assignees ~ dd > ul {
+        padding-inline-start: 16px;
         list-style-type: none;
+    }
+
+    & .task-overlay-subtasks ~ dd > ul {
+        padding-inline-start: 0;
     }
 
     & li {
