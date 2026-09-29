@@ -6,6 +6,8 @@
 
         <script src="../scripts/templates.js" defer></script>
         <script src="../script.js" defer></script>
+        <script src="../scripts/contacts.js" defer></script>
+
         <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
 
         <link rel="stylesheet" href="../global_style.css" />
@@ -129,105 +131,8 @@
                             <img src="../assets/icons/person_add.svg" alt="" />
                         </button>
 
-                        <section class="contact-group">
-                            <h2>A</h2>
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-orange">
-                                    <span>AM</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">Anton Mayer</p>
-                                    <p class="adress">antonm@gmail.com</p>
-                                </div>
-                            </article>
+                        <div id="contact-groups"></div>
 
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-purple">
-                                    <span>AS</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">Anja Schulz</p>
-                                    <p class="adress">anjaz@gmx.com</p>
-                                </div>
-                            </article>
-                        </section>
-
-                        <section class="contact-group">
-                            <h2>B</h2>
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-pink">
-                                    <span>BZ</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">Benedikt Ziegler</p>
-                                    <p class="adress">benediktz@gmail.com</p>
-                                </div>
-                            </article>
-                        </section>
-
-                        <section class="contact-group">
-                            <h2>D</h2>
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-pink">
-                                    <span>DE</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">David Eisenberg</p>
-                                    <p class="adress">davide@hotmail.com</p>
-                                </div>
-                            </article>
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-pink">
-                                    <span>DE</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">David Eisenberg</p>
-                                    <p class="adress">davide@hotmail.com</p>
-                                </div>
-                            </article>
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-pink">
-                                    <span>DE</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">David Eisenberg</p>
-                                    <p class="adress">davide@hotmail.com</p>
-                                </div>
-                            </article>
-                        </section>
-
-                        <section class="contact-group">
-                            <h2>E</h2>
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-mint">
-                                    <span>EF</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">Eva Fischer</p>
-                                    <p class="adress">evaf@gmx.de</p>
-                                </div>
-                            </article>
-
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-mint">
-                                    <span>EF</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">Eva Fischer</p>
-                                    <p class="adress">evaf@gmx.de</p>
-                                </div>
-                            </article>
-
-                            <article class="contact-card" onclick="showContactDetails(this)">
-                                <div class="badge-user badge-user-mint">
-                                    <span>EF</span>
-                                </div>
-                                <div>
-                                    <p class="hover-bright">Eva Fischer</p>
-                                    <p class="adress">evaf@gmx.de</p>
-                                </div>
-                            </article>
-                        </section>
                     </div>
 
                     <section id="show-details" class="contact-details" onclick="hideContactActions()">
@@ -244,43 +149,14 @@
                                 <img src="../assets/icons/arrow.svg" alt="Close" />
                             </button>
                         </header>
-                        <section class="contact-details-info">
-                            <div>
-                                <div class="badge-user badge-user-pink">
-                                    <span>DE</span>
-                                </div>
-                                <h3>David Eisenberg</h3>
-                                <div id="contact-actions">
-                                    <button class="button button-task-overlay" onclick="editContact()">
-                                        <img src="../assets/icons/edit.svg" alt="edit Contact" />
-                                        <span>Edit</span>
-                                    </button>
-                                    <button class="button button-task-overlay" onclick="deleteContact()">
-                                        <img src="../assets/icons/delete.svg" alt="delete Contact" />
-                                        <span>Delete</span>
-                                    </button>
-                                </div>
-                            </div>
 
-                            <p>Contact Information</p>
-                            <h4>Email</h4>
-                            <span class="detail-info">davide@hotmail.com</span>
-                            <h4>Phone</h4>
-                            <span>+49 1111 111 11 1</span>
-                        </section>
-                        <button
-                            class="button button-dark contact-add detail-view"
-                            type="button"
-                            onclick="openDialog('dialog-edit-contact')"
-                        >
+                        <section id="contact-details-info" class="contact-details-info"></section>
+
+                        <button class="button button-dark contact-add detail-view" type="button" onclick="openDialog('dialog-edit-contact')">
                             &#8942;
                         </button>
-                        <dialog
-                            id="dialog-edit-contact"
-                            closedby="any"
-                            oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                            onanimationend="closeProfileDialog(event, this.id)"
-                        >
+
+                        <dialog id="dialog-edit-contact" closedby="any" oncancel="dialogSlideOut(event, 'dialog-profile-closing')" onanimationend="closeProfileDialog(event, this.id)">
                             <ul>
                                 <li>
                                     <button class="button button-task-overlay" onclick="deleteContact()">
@@ -301,11 +177,6 @@
             </main>
         </div>
 
-        <dialog
-            id="contact"
-            closedby="any"
-            oncancel="dialogSlideOut(event, 'contact-closing')"
-            onanimationend="closeContactDialog(event)">
-        </dialog>
+        <dialog id="contact" closedby="any" oncancel="dialogSlideOut(event, 'contact-closing')" onanimationend="closeContactDialog(event)"></dialog>
     </body>
 </html>
