@@ -1,5 +1,6 @@
 /* dialog */
-#dialog-task[open] {
+#dialog-task[open],
+#dialog-add-task[open] {
     top: 50%;
     left: 50%;
 
@@ -16,6 +17,14 @@
     &:not(.dialog-task-closing) {
         animation: slide-in-from-right-to-center 256ms linear forwards;
     }
+}
+
+#dialog-add-task[open] {
+    max-width: unset;
+    /* width: 1000px; */
+
+    padding: 64px;
+    background-color: #fff;
 }
 
 #contact[open] {

@@ -236,6 +236,13 @@ function openTaskDialog(taskId, taskStatus) {
     }
 }
 
+function openAddTaskDialog() {
+    const dialog = document.getElementById("dialog-add-task");
+
+    dialog.innerHTML = renderAddTask();
+    openDialog("dialog-add-task");
+}
+
 /**
  * Finishes the closing animation of the task dialog.
  *
