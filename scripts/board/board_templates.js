@@ -1,39 +1,90 @@
+/**
+ * Creates the HTML for a task card.
+ *
+ * @param {{
+ *  id: TaskId,
+ *  task: Task,
+ *  subtasksData: SubtasksData,
+ *  assigneesHtml: string
+ *  }} taskData
+ * @returns {string}
+ */
 function getTaskCardTemplate(taskData) {
-    return `<button type="button" data-task-id="${taskData.id}" class="task-card" onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')" aria-label="Open Task">
-            <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
-            <div class="task-card-body">
-                <h3 class="task-card-title">${taskData.task.title}</h3>
-                <div class="task-card-description">${taskData.task.description}</div>
-            </div>
-            <div class="task-card-subtasks">
-                <div class="task-card-subtasks-progress">
-                    <div class="task-card-subtasks-progress-bar" style="width: ${taskData.subtasksData.progressInPercent}%;"></div>
+    return `<article
+            id="${taskData.id}"
+            data-task-id="${taskData.id}"
+            class="task-card"
+            draggable="true"
+            onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
+            ondragstart="getDraggingTask('${taskData.id}', '${taskData.task.status}'), addFlipCard('${taskData.id}')"
+            ondragend="removeFlipCard('${taskData.id}')"
+            aria-label="Open Task">
+                <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                <div class="task-card-body">
+                    <h3 class="task-card-title">${taskData.task.title}</h3>
+                    <div class="task-card-description">${taskData.task.description}</div>
                 </div>
-                <span class="task-card-subtasks-summary">${taskData.subtasksData.completedAmount}/${taskData.subtasksData.amount} Subtasks</span>
-            </div>
-            <div class="task-card-assignees">
-                <ul class="task-card-users">
-                    ${taskData.assigneesHtml}
-                </ul>
-                <span>
-                    <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="Priority low" />
-                </span>
-            </div>
-        </button>`;
+                <div class="task-card-subtasks">
+                    <div class="task-card-subtasks-progress">
+                        <div class="task-card-subtasks-progress-bar" style="width: ${taskData.subtasksData.progressInPercent}%;"></div>
+                    </div>
+                    <span class="task-card-subtasks-summary">${taskData.subtasksData.completedAmount}/${taskData.subtasksData.amount} Subtasks</span>
+                </div>
+                <div class="task-card-assignees">
+                    <ul class="task-card-users">
+                        ${taskData.assigneesHtml}
+                    </ul>
+                    <span>
+                        <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="Priority low" />
+                    </span>
+                </div>
+            </article>`;
 }
 
+/**
+ * Creates the HTML for a task card user badge.
+ *
+ * @param {Contact} contact
+ * @returns {string}
+ */
 function getTaskCardUserBadgeTemplate(contact) {
     return `<li class="badge-user ${contact.colorClass}">
             <span>${contact.initials}</span>
         </li>`;
 }
 
+/**
+ * Creates the HTML for a empty column badge.
+ *
+ * @param {BoardColumn["name"]} columnName
+ * @returns {string}
+ */
 function getTaskCardEmptyBadge(columnName) {
     return `<span class="board-column-feedback">No tasks ${columnName}</span>`;
 }
 
+/**
+ * Creates the HTML for a no matching task in column badge.
+ *
+ * @returns {string}
+ */
+function getTaskCardMatchingBadge() {
+    return `<span class="board-column-feedback">No matching tasks</span>`;
+}
+
+/**
+ * Creates the HTML for the overlay task.
+ *
+ * @param {{
+ *  id: TaskId,
+ *  task: Task,
+ *  assigneesHtml: string,
+ *  subtasksHtml: string
+ *  }} taskData
+ * @returns {string}
+ */
 function getTaskOverlayTemplate(taskData) {
-    return `<div class="task-overlay">
+    return `<article class="task-overlay">
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
@@ -79,9 +130,15 @@ function getTaskOverlayTemplate(taskData) {
                         <span>Edit</span>
                     </button>
                 </footer>
-            </div>`;
+            </article>`;
 }
 
+/**
+ * Creates the HTML for a task overlay user badge list item.
+ *
+ * @param {Contact} contact
+ * @returns {string}
+ */
 function getTaskOverlayUserBadgeTemplate(contact) {
     return `<li>
             <span class="badge-user ${contact.colorClass}">${contact.initials}</span>
@@ -89,6 +146,14 @@ function getTaskOverlayUserBadgeTemplate(contact) {
         </li>`;
 }
 
+/**
+ * Creates the HTML for a task overlay subtask list item.
+ *
+ * @param {SubtaskId} subtaskId
+ * @param {Subtask} subtask
+ * @param {"checked"|""} isCompleted
+ * @returns {string}
+ */
 function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
     return `<li>
             <input type="checkbox" ${isCompleted}
