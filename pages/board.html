@@ -137,15 +137,11 @@
                                 id="search"
                                 class="board-search-input"
                                 type="search"
+                                oninput="searchTasks(this.value)"
                                 placeholder="Find Task"
                                 aria-label="Search Field"
                             />
-                            <button
-                                type="button"
-                                class="button button-search"
-                                onclick="searchTask()"
-                                aria-label="Search Button"
-                            >
+                            <button type="button" class="button button-search" aria-label="Search Button">
                                 <img src="../assets/icons/search.svg" alt="Search" />
                             </button>
                         </div>

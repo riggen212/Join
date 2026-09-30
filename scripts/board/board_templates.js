@@ -1,3 +1,14 @@
+/**
+ * Creates the HTML for a task card.
+ *
+ * @param {{
+ *  id: TaskId,
+ *  task: Task,
+ *  subtasksData: SubtasksData,
+ *  assigneesHtml: string
+ *  }} taskData
+ * @returns {string}
+ */
 function getTaskCardTemplate(taskData) {
     return `<article
             id="${taskData.id}"
@@ -30,16 +41,48 @@ function getTaskCardTemplate(taskData) {
             </article>`;
 }
 
+/**
+ * Creates the HTML for a task card user badge.
+ *
+ * @param {Contact} contact
+ * @returns {string}
+ */
 function getTaskCardUserBadgeTemplate(contact) {
     return `<li class="badge-user ${contact.colorClass}">
             <span>${contact.initials}</span>
         </li>`;
 }
 
+/**
+ * Creates the HTML for a empty column badge.
+ *
+ * @param {BoardColumn["name"]} columnName
+ * @returns {string}
+ */
 function getTaskCardEmptyBadge(columnName) {
     return `<span class="board-column-feedback">No tasks ${columnName}</span>`;
 }
 
+/**
+ * Creates the HTML for a no matching task in column badge.
+ *
+ * @returns {string}
+ */
+function getTaskCardMatchingBadge() {
+    return `<span class="board-column-feedback">No matching tasks</span>`;
+}
+
+/**
+ * Creates the HTML for the overlay task.
+ *
+ * @param {{
+ *  id: TaskId,
+ *  task: Task,
+ *  assigneesHtml: string,
+ *  subtasksHtml: string
+ *  }} taskData
+ * @returns {string}
+ */
 function getTaskOverlayTemplate(taskData) {
     return `<article class="task-overlay">
                 <header class="task-overlay-header">
@@ -90,6 +133,12 @@ function getTaskOverlayTemplate(taskData) {
             </article>`;
 }
 
+/**
+ * Creates the HTML for a task overlay user badge list item.
+ *
+ * @param {Contact} contact
+ * @returns {string}
+ */
 function getTaskOverlayUserBadgeTemplate(contact) {
     return `<li>
             <span class="badge-user ${contact.colorClass}">${contact.initials}</span>
@@ -97,6 +146,14 @@ function getTaskOverlayUserBadgeTemplate(contact) {
         </li>`;
 }
 
+/**
+ * Creates the HTML for a task overlay subtask list item.
+ *
+ * @param {SubtaskId} subtaskId
+ * @param {Subtask} subtask
+ * @param {"checked"|""} isCompleted
+ * @returns {string}
+ */
 function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
     return `<li>
             <input type="checkbox" ${isCompleted}

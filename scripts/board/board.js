@@ -33,32 +33,61 @@ const board = {
     },
 };
 
-let draggingTask = {};
+/**
+ * ID and Status of the currently dragged task.
+ *
+ * @type {{id: TaskId, status: Task["status"]}|null}
+ */
+let draggingTask = null;
 
 /**
- * Starts the board page, loads the tasks and contacts based on the users ID and renders the board.
+ * Current normalized search term.
+ *
+ * @type {SearchTerm}
+ *
+ */
+let activeSearchTerm = "";
+
+/**
+ * Starts the board page, loads the tasks and contacts based on the users ID and starts rendering the board.
  */
 async function initBoard() {
     const userId = DB_GUEST_USER_ID;
 
     try {
         await loadUserBoardData(userId);
-        Object.values(board).forEach(renderBoardColumn);
+        renderBoard(Object.values(board));
     } catch (error) {
         console.error(error);
     }
 }
 
 /**
+ * Renders columns with filterd or unfilterd tasks, based on the search terms value.
+ *
+ * @param {BoardColumn[]} columns - Array of columns that should be rendered.
+ */
+function renderBoard(columns) {
+    if (activeSearchTerm.length > 0) {
+        const filteredColumns = getFilteredColumns(columns);
+
+        filteredColumns.forEach((column) => renderBoardColumn(column));
+    } else {
+        columns.forEach((column) => renderBoardColumn(column));
+    }
+}
+
+/**
  * Renders a single board column.
  *
- * @param {BoardColumn} column - A single board column including the tasks
+ * @param {BoardColumn} column - A single board column including the tasks.
  */
 function renderBoardColumn(column) {
     const columnContent = document.getElementById(column.id);
+    const getEmptyTaskBadgeTemplate = activeSearchTerm.length > 0 ? getTaskCardMatchingBadge : getTaskCardEmptyBadge;
 
     if (Object.keys(column.tasks).length === 0) {
-        columnContent.innerHTML = getTaskCardEmptyBadge(column.name);
+        columnContent.innerHTML = getEmptyTaskBadgeTemplate(column.name);
     } else {
         const columnContentHtml = getColumnContentHtml(column.tasks);
         columnContent.innerHTML = columnContentHtml;

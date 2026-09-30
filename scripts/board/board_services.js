@@ -22,10 +22,10 @@ async function loadUserBoardData(userId) {
  * Modifies the board.
  *
  * @param {Board} board - The board including the tasks
+ * @param {TaskDirectory} tasks - The tasks whose should be assigned.
  */
 function assignTasks(board, tasks) {
-    tasks = Object.entries(tasks);
-    tasks.forEach(([taskKey, taskEntry]) => {
+    Object.entries(tasks).forEach(([taskKey, taskEntry]) => {
         if (!board[taskEntry.status]) {
             throw new Error(`Invalid status: ${taskEntry.status}`);
         }
@@ -105,7 +105,7 @@ function allowDrop(event) {
  * Sets the dragging task's id and status into the global variable for the current dragging task.
  *
  * @param {TaskId} taskId - ID of the dragging task.
- * @param {taskStatus} taskStatus - Status of the dragging task.
+ * @param {Task["status"]} taskStatus - Status of the dragging task.
  */
 function getDraggingTask(taskId, taskStatus) {
     draggingTask = {
@@ -118,25 +118,25 @@ function getDraggingTask(taskId, taskStatus) {
  * Moves task between columns and renders the appropriate columns.
  * Checks whether the new status is equal to the old status and returns early if it is.
  *
- * @param {BoardColumn["id"]} destinationColumnId - ID of the column where the task should be moved.
+ * @param {Task["status"]} destinationStatus - Status of the column where the task should be moved.
  * @returns {void}
  */
-function moveTask(destinationColumnId) {
-    const draggingTaskData = getDataToMoveTask(destinationColumnId);
+function moveTask(destinationStatus) {
+    const draggingTaskData = getDataToMoveTask(destinationStatus);
 
     if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
         return;
     }
 
     moveTaskBetweenColumns(draggingTaskData);
-    renderBoardColumn(board[draggingTaskData.oldStatus]);
-    renderBoardColumn(board[draggingTaskData.newStatus]);
+
+    renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
 }
 
 /**
  * Updates the task's new status, add the task to the new columns and removes it from the old column.
  *
- * @param {{id: TaskId, task: Task, oldStatus: BoardColumn["id"], newStatus: BoardColumn["id"]}} draggingTaskData - Data needed to move the task..
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task..
  */
 function moveTaskBetweenColumns(draggingTaskData) {
     draggingTaskData.task.status = draggingTaskData.newStatus;
@@ -147,41 +147,41 @@ function moveTaskBetweenColumns(draggingTaskData) {
 /**
  * Builds and returns an object containing the data to move a task.
  *
- * @param {BoardColumn["id"]} destinationId - ID of the column where the task should be moved.
- * @returns {{id: TaskId, task: Task, oldStatus: BoardColumn["id"], newStatus: BoardColumn["id"]}} Data needed to move the task.
+ * @param {Task["status"]} destinationStatus - Status of the destination column.
+ * @returns {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} Data needed to move the task.
  */
-function getDataToMoveTask(destinationId) {
+function getDataToMoveTask(destinationStatus) {
     return {
         id: draggingTask.id,
         task: board[draggingTask.status].tasks[draggingTask.id],
         oldStatus: draggingTask.status,
-        newStatus: destinationId,
+        newStatus: destinationStatus,
     };
 }
 
 /**
  * Adds the CSS class to highlight the column.
- * 
- * @param {BoardColumn["id"]} columnId - ID of the column that should be highlighted.
+ *
+ * @param {Task["status"]} columnStatus - Status of the column that should be highlighted.
  */
-function addHighlightDroppableColumn(columnId) {
-    const column = document.getElementById(`${columnId}-content`);
+function addHighlightDroppableColumn(columnStatus) {
+    const column = document.getElementById(`${columnStatus}-content`);
     column.classList.add("board-column-highlight");
 }
 
 /**
  * Removes the CSS class to stop highlighting the column.
- * 
- * @param {BoardColumn["id"]} columnId - ID of the column that should no longer be highlighted.
+ *
+ * @param {Task["status"]} columnStatus - Status of the column that should no longer be highlighted.
  */
-function removeHighlightDroppableColumn(columnId) {
-    const column = document.getElementById(`${columnId}-content`);
+function removeHighlightDroppableColumn(columnStatus) {
+    const column = document.getElementById(`${columnStatus}-content`);
     column.classList.remove("board-column-highlight");
 }
 
 /**
  * Adds the CSS class to flip the task's card.
- * 
+ *
  * @param {TaskId} taskId - ID of the task whose card should be flipped.
  */
 function addFlipCard(taskId) {
@@ -191,10 +191,62 @@ function addFlipCard(taskId) {
 
 /**
  * Removes the CSS class to stop flipping the task's card.
- * 
+ *
  * @param {TaskId} taskId - ID of the task whose card should no longer be flipped.
  */
 function removeFlipCard(taskId) {
     const card = document.getElementById(taskId);
     card.classList.remove("card-task-flip");
+}
+
+/**
+ * Formats the search term and caches into the global variable `activeSearchTerm` and starts rendering the board.
+ *
+ * @param {SearchTerm} searchTerm - The search term getting from the HTML input element.
+ */
+function searchTasks(searchTerm) {
+    activeSearchTerm = searchTerm.toLowerCase().trim();
+    renderBoard(Object.values(board));
+}
+
+/**
+ * Filters the columns containing tasks and returns it as a new array,
+ * the columns contains the column's id, name and a tasks object,
+ * id and name are references of the original column, tasks is a new object containing the filtered tasks.
+ *
+ * @param {BoardColumn[]} columns - Array of columns whose tasks should be filtered.
+ * @returns {BoardColumn[]} The columns including its filtered tasks.
+ */
+function getFilteredColumns(columns) {
+    const filteredColumns = [];
+
+    columns.forEach((column) => {
+        filteredColumns.push({
+            id: column.id,
+            name: column.name,
+            tasks: getFilteredTasks(column.tasks),
+        });
+    });
+    return filteredColumns;
+}
+
+/**
+ * Filters the tasks using the global search term `activeSearchTerm` and the task's title and description,
+ * puts it in a new array an returns it.
+ *
+ * @param {TaskDirectory} tasks - Tasks that should be filterd.
+ * @returns {TaskDirectory} The filtered tasks.
+ */
+function getFilteredTasks(tasks) {
+    const filteredTasks = {};
+
+    Object.entries(tasks).forEach(([taskId, task]) => {
+        if (
+            task.title.toLowerCase().includes(activeSearchTerm) ||
+            task.description.toLowerCase().includes(activeSearchTerm)
+        ) {
+            filteredTasks[taskId] = task;
+        }
+    });
+    return filteredTasks;
 }
