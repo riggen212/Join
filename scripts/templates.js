@@ -1,3 +1,8 @@
+/**
+ * Creates the HTML for the Add Contact dialog.
+ *
+ * @returns {string} The Add Contact dialog HTML.
+ */
 function renderAddContactTemplate() {
     return `<div>
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
@@ -46,6 +51,12 @@ function renderAddContactTemplate() {
         `;
 }
 
+/**
+ * Creates the prefilled HTML for the Edit Contact dialog.
+ *
+ * @param {Contact} contact - The contact to edit.
+ * @returns {string} The Edit Contact dialog HTML.
+ */
 function renderEditContactTemplate(contact) {
     return `<div>
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
@@ -268,14 +279,13 @@ function renderAddTask() {
 /**
  * Creates the HTML for one contact card.
  *
- * @param {string} contactId - The unique ID of the contact.
+ * @param {ContactId} contactId - The unique ID of the contact.
  * @param {Contact} contact - The contact displayed in the card.
  * @returns {string} The contact card HTML.
  */
 function getContactCardTemplate(contactId, contact) {
     return `
-        <article class="contact-card"
-            data-contact-id="${contactId}"
+        <article class="contact-card" data-contact-id="${contactId}"
             onclick="showContactDetails(this)">
             <div class="badge-user ${contact.colorClass}">
                 <span>${contact.initials}</span>
@@ -292,7 +302,7 @@ function getContactCardTemplate(contactId, contact) {
  * Creates the HTML for a group of contacts sharing the same initial.
  *
  * @param {string} initial - The first letter of the contact names.
- * @param {string} contactCardsHtml - The rendered contact cards.
+ * @param {string} contactCardsHtml - The HTML for the contact cards.
  * @returns {string} The complete contact group HTML.
  */
 function getContactGroupTemplate(initial, contactCardsHtml) {
@@ -313,9 +323,7 @@ function getContactGroupTemplate(initial, contactCardsHtml) {
 function getContactDetailsTemplate(contact) {
     return `
         <div>
-            <div class="badge-user ${contact.colorClass}">
-                <span>${contact.initials}</span>
-            </div>
+            <div class="badge-user ${contact.colorClass}"><span>${contact.initials}</span></div>
             <h3>${contact.name}</h3>
             ${getContactActionsTemplate()}
         </div>
