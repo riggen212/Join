@@ -27,8 +27,8 @@
  * @property {"Low"|"Medium"|"High"} priority - The priority of the task.
  * @property {"User Story"|"Technical Task"} category - The category of the task.
  * @property {"toDo"|"inProgress"|"awaitFeedback"|"done"} status - The current status of the task.
- * @property {Object.<string, true>} assignedTo - Maps contact IDs to their assignment state.
- * @property {SubtaskDirectory} subtasks - The subtasks of the task.
+ * @property {Object.<string, true>} [assignedTo] - Maps contact IDs to their assignment state.
+ * @property {SubtaskDirectory} [subtasks] - The subtasks of the task.
  */
 
 /**
@@ -65,4 +65,8 @@
  * @property {string} id - The ID of the DOM element representing the column.
  * @property {string} name - The name of the column.
  * @property {TaskDirectory} tasks - An Object with the tasks assigned to the column.
+ */
+
+/**
+ * @typedef {string} SearchTerm - String that is used to search tasks they including its value.
  */

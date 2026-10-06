@@ -12,17 +12,17 @@ const contacts = {};
  */
 const board = {
     toDo: {
-        id: "todo-content",
+        id: "toDo-content",
         name: "To Do",
         tasks: {},
     },
     inProgress: {
-        id: "progress-content",
+        id: "inProgress-content",
         name: "In progress",
         tasks: {},
     },
     awaitFeedback: {
-        id: "feedback-content",
+        id: "awaitFeedback-content",
         name: "Await feedback",
         tasks: {},
     },
@@ -34,37 +34,64 @@ const board = {
 };
 
 /**
- * Starts the board page, loads the tasks and contacts based on the users ID and renders the board.
+ * ID and Status of the currently dragged task.
+ *
+ * @type {{id: TaskId, status: Task["status"]}|null}
+ */
+let draggingTask = null;
+
+/**
+ * Current normalized search term.
+ *
+ * @type {SearchTerm}
+ *
+ */
+let activeSearchTerm = "";
+
+/**
+ * Starts the board page, loads the tasks and contacts based on the users ID and starts rendering the board.
  */
 async function initBoard() {
     const userId = DB_GUEST_USER_ID;
 
     try {
         await loadUserBoardData(userId);
-        renderBoardColumns(board);
+        renderBoard(Object.values(board));
     } catch (error) {
         console.error(error);
     }
 }
 
 /**
- * Iterates the board through its columns and renders it.
+ * Renders columns with filterd or unfilterd tasks, based on the search terms value.
  *
- * @param {Board} board - The board including the tasks
+ * @param {BoardColumn[]} columns - Array of columns that should be rendered.
  */
-function renderBoardColumns(board) {
-    const boardEntries = Object.values(board);
+function renderBoard(columns) {
+    if (activeSearchTerm.length > 0) {
+        const filteredColumns = getFilteredColumns(columns);
 
-    boardEntries.forEach((column) => {
-        const columnContent = document.getElementById(column.id);
+        filteredColumns.forEach((column) => renderBoardColumn(column));
+    } else {
+        columns.forEach((column) => renderBoardColumn(column));
+    }
+}
 
-        if (Object.keys(column.tasks).length === 0) {
-            columnContent.innerHTML = getTaskCardEmptyBadge(column.name);
-        } else {
-            const columnContentHtml = getColumnContentHtml(column.tasks);
-            columnContent.innerHTML = columnContentHtml;
-        }
-    });
+/**
+ * Renders a single board column.
+ *
+ * @param {BoardColumn} column - A single board column including the tasks.
+ */
+function renderBoardColumn(column) {
+    const columnContent = document.getElementById(column.id);
+    const getEmptyTaskBadgeTemplate = activeSearchTerm.length > 0 ? getTaskCardMatchingBadge : getTaskCardEmptyBadge;
+
+    if (Object.keys(column.tasks).length === 0) {
+        columnContent.innerHTML = getEmptyTaskBadgeTemplate(column.name);
+    } else {
+        const columnContentHtml = getColumnContentHtml(column.tasks);
+        columnContent.innerHTML = columnContentHtml;
+    }
 }
 
 /**
@@ -141,14 +168,13 @@ function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
     try {
         const task = getTaskById(taskId, taskStatus);
         const subtask = task.subtasks[subtaskId];
-    
+
         subtask.completed = !subtask.completed;
-    
+
         updateTaskCardSubtasksState(taskId, task);
     } catch (error) {
         console.error(error);
     }
-
 }
 
 /**
@@ -210,10 +236,18 @@ function openTaskDialog(taskId, taskStatus) {
     }
 }
 
+function openAddTaskDialog() {
+    const dialog = document.getElementById("dialog-add-task");
+
+    dialog.innerHTML = renderAddTask();
+    openDialog("dialog-add-task");
+}
+
 /**
- * Closes the task dialog after its closing animation has finished.
+ * Finishes the closing animation of the task dialog.
  *
- * @param {AnimationEvent} event - The dialogs animation-end event.
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @returns {void}
  */
 function closeTaskDialog(event) {
     const dialog = event.currentTarget;
@@ -223,6 +257,9 @@ function closeTaskDialog(event) {
     }
 
     dialog.classList.remove("dialog-task-closing");
+    dialog.dataset.taskId = "";
+    dialog.dataset.taskStatus = "";
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+    closeAnimatedDialog(event, "dialog-task-closing");
 }

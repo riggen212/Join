@@ -4,7 +4,7 @@
     flex-direction: column;
 
     flex: 0 0 var(--size-task-card-width);
-    max-width: var(--size-task-card-width);
+    /* max-width: var(--size-task-card-width); */
 
     margin: var(--space-xxs);
     padding: var(--space-task);
@@ -12,10 +12,10 @@
 
     font-size: var(--font-size-task);
 
-    background-color: unset;
+    background-color: #fff;
     border: unset;
     border-radius: var(--border-radius-task-card);
-    box-shadow: 0 0 7px -3px rgb(0 0 0 / 50%);
+    box-shadow: inset 0 0 7px -3px rgb(0 0 0 / 50%);
 
     cursor: pointer;
 }
@@ -82,10 +82,16 @@
     }
 }
 
+.card-task-flip {
+    transform: rotateZ(3deg);
+}
+
 /* Task overlay */
 .task-overlay {
     display: flex;
     flex-direction: column;
+
+    max-width: 525px;
 
     padding-inline: 24px;
     padding-block: 32px;
@@ -132,10 +138,13 @@
         color: var(--color-overlay-task-details-term);
     }
 
-    & ul {
-        padding-inline-start: 0;
-
+    & .task-overlay-assignees ~ dd > ul {
+        padding-inline-start: 16px;
         list-style-type: none;
+    }
+
+    & .task-overlay-subtasks ~ dd > ul {
+        padding-inline-start: 0;
     }
 
     & li {

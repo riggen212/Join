@@ -9,6 +9,7 @@
         <script src="../scripts/board/board_templates.js" defer></script>
         <script src="../scripts/board/board_services.js" defer></script>
         <script src="../scripts/board/board.js" defer></script>
+        <script src="../scripts/add_task.js" defer></script>
 
         <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
         <link rel="stylesheet" href="../global_style.css" />
@@ -16,6 +17,7 @@
         <link rel="stylesheet" href="../styles/fonts.css" />
         <link rel="stylesheet" href="../styles/board.css" />
         <link rel="stylesheet" href="../styles/board-task.css" />
+        <link rel="stylesheet" href="../styles/add_task.css" />
         <title>Join</title>
     </head>
     <body onload="initBoard()">
@@ -125,7 +127,7 @@
                         <h1>Board</h1>
                         <button
                             class="button button-dark button-add button-add-dark-mobile"
-                            onclick="createTask()"
+                            onclick="openAddTaskDialog()"
                             aria-label="Create Task"
                         >
                             <img class="button-add-icon-mobile" src="../assets/icons/add_mobile_white.svg" alt="Add" />
@@ -137,15 +139,11 @@
                                 id="search"
                                 class="board-search-input"
                                 type="search"
+                                oninput="searchTasks(this.value)"
                                 placeholder="Find Task"
                                 aria-label="Search Field"
                             />
-                            <button
-                                type="button"
-                                class="button button-search"
-                                onclick="searchTask()"
-                                aria-label="Search Button"
-                            >
+                            <button type="button" class="button button-search" aria-label="Search Button">
                                 <img src="../assets/icons/search.svg" alt="Search" />
                             </button>
                         </div>
@@ -156,45 +154,89 @@
                                 <h2>To do</h2>
                                 <button
                                     class="button button-bright button-add button-add-bright-mobile"
-                                    onclick="createTaskToDo()"
+                                    onclick="openAddTaskDialog()"
                                     aria-label="Create Task to to do"
                                 >
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div id="todo-content" class="board-column-content"></div>
+                            <div
+                                id="toDo-content"
+                                class="board-column-content"
+                                ondragover="
+                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
+                                ondrop="
+                                    (moveTask(this.parentElement.dataset.columnId),
+                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                            ></div>
                         </section>
                         <section data-column-id="inProgress" class="board-column">
                             <header class="board-column-header">
                                 <h2>In progress</h2>
                                 <button
                                     class="button button-bright button-add button-add-bright-mobile"
-                                    onclick="createTaskInProgress()"
+                                    onclick="openAddTaskDialog()"
                                     aria-label="Create Task to in progress"
                                 >
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div id="progress-content" class="board-column-content"></div>
+                            <div
+                                id="inProgress-content"
+                                class="board-column-content"
+                                ondragover="
+                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
+                                ondrop="
+                                    (moveTask(this.parentElement.dataset.columnId),
+                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                            ></div>
                         </section>
                         <section data-column-id="awaitFeedback" class="board-column">
                             <header class="board-column-header">
                                 <h2>Await feedback</h2>
                                 <button
                                     class="button button-bright button-add button-add-bright-mobile"
-                                    onclick="createTaskAwaitFeedback()"
+                                    onclick="openAddTaskDialog()"
                                     aria-label="Create Task to await feedback"
                                 >
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div id="feedback-content" class="board-column-content"></div>
+                            <div
+                                id="awaitFeedback-content"
+                                class="board-column-content"
+                                ondragover="
+                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
+                                ondrop="
+                                    (moveTask(this.parentElement.dataset.columnId),
+                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                            ></div>
                         </section>
                         <section data-column-id="done" class="board-column">
                             <header class="board-column-header">
                                 <h2>Done</h2>
                             </header>
-                            <div id="done-content" class="board-column-content"></div>
+                            <div
+                                id="done-content"
+                                class="board-column-content"
+                                ondragover="
+                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
+                                ondrop="
+                                    (moveTask(this.parentElement.dataset.columnId),
+                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
+                                "
+                            ></div>
                         </section>
                     </div>
                 </div>
@@ -202,6 +244,12 @@
                     id="dialog-task"
                     data-task-id=""
                     data-task-status=""
+                    closedby="any"
+                    oncancel="dialogSlideOut(event, 'dialog-task-closing')"
+                    onanimationend="closeTaskDialog(event)"
+                ></dialog>
+                <dialog
+                    id="dialog-add-task"
                     closedby="any"
                     oncancel="dialogSlideOut(event, 'dialog-task-closing')"
                     onanimationend="closeTaskDialog(event)"
