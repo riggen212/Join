@@ -2,6 +2,13 @@ const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedataba
 const DB_USERS = "users/";
 const DB_GUEST_USER_ID = "0";
 
+/**
+ * Loads data from Firebase at the requested database path.
+ *
+ * @param {string} [path=""] - The Firebase path to load.
+ * @param {string} [id=""] - An optional additional path segment.
+ * @returns {Promise<Object|null>} The data returned by Firebase.
+ */
 async function getData(path = "", id = "") {
         const response = await fetch(DB_BASE_URL + path + id + ".json");
 
@@ -17,7 +24,7 @@ async function getData(path = "", id = "") {
  *
  * @param {string} path - The database path without the `.json` suffix.
  * @param {Object|null} value - The data written to Firebase.
- * @returns {Promise<Object>} The saved Firebase data.
+ * @returns {Promise<Object|null>} The saved Firebase data.
  */
 async function putData(path, value) {
     const response = await fetch(DB_BASE_URL + path + ".json", {
@@ -44,20 +51,17 @@ function deleteData(path) {
 }
 
 /**
- * Selects a contact, or hides its details when it is clicked again.
- * Restarts the slide-in animation when another contact is selected.
+ * Selects a contact card and opens its detail view.
  *
  * @param {HTMLElement} card - The contact card that was clicked.
+ * @returns {void}
  */
 function showContactDetails(card) {
     const contactDetails = document.getElementById("show-details");
     const selectedContact = document.querySelector(".contact-card.is-selected");
-
     if (selectedContact === card) return hideContactDetails();
-
     selectedContact?.classList.remove("is-selected");
     card.classList.add("is-selected");
-
     renderContactDetails(card.dataset.contactId);
     restartContactDetailsAnimation(contactDetails);
     contactDetails.classList.add("is-open");
@@ -70,6 +74,7 @@ function showContactDetails(card) {
  * On the first click, the CSS class starts the animation instead.
  *
  * @param {HTMLElement} contactDetails - The contact details container.
+ * @returns {void}
  */
 function restartContactDetailsAnimation(contactDetails) {
     const animation = contactDetails
@@ -117,6 +122,12 @@ function hideContactActions() {
     menuButton?.setAttribute("aria-expanded", "false");
 }
 
+/**
+ * Opens a modal dialog and prevents background scrolling.
+ *
+ * @param {string} dialogId - The ID of the dialog to open.
+ * @returns {void}
+ */
 function openDialog(dialogId) {
     const dialog = document.getElementById(dialogId);
 
@@ -145,11 +156,23 @@ function closeProfileDialog(event) {
     closeAnimatedDialog(event, "dialog-profile-closing");
 }
 
+/**
+ * Starts the closing animation of a dialog.
+ *
+ * @param {Event} event - The dialog cancel event.
+ * @param {string} closingClass - The CSS class for the closing animation.
+ * @returns {void}
+ */
 function dialogSlideOut(event, closingClass) {
     event.preventDefault();
     event.currentTarget.classList.add(closingClass);
 }
 
+/**
+ * Opens the dialog for creating a new contact.
+ *
+ * @returns {void}
+ */
 function addNewContact() {
     const dialog = document.getElementById("contact");
 
@@ -192,7 +215,7 @@ async function deleteContact() {
         await removeContact(selectedContact.id);
     } catch (error) {
         console.error("Contact could not be deleted:", error);
-    };
+    }
 }
 
 /**
@@ -207,7 +230,7 @@ function closeAnimatedDialog(event, closingClass) {
 
     if (event.target !== dialog || !dialog.classList.contains(closingClass)) {
         return;
-    };
+    }
 
     dialog.classList.remove(closingClass);
     document.body.classList.remove("overflow-hidden");

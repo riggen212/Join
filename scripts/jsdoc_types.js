@@ -4,11 +4,37 @@
  * @property {string} initials - The initials of the contact.
  * @property {string} email - The E-Mail address of the contact.
  * @property {string} phone - The phone number of the contact.
- * @property {string} colorClass - The CSS class for the color of the contact's initials badge.
+ * @property {ContactColorClass} colorClass - The CSS class for the color of the contact's initials badge.
  */
 
 /**
- * @typedef {Object.<string, Contact>} ContactDirectory - Contains contacts as key-value pairs.
+ * @typedef {Object} ContactFormValues
+ * @property {string} name - The entered contact name.
+ * @property {string} email - The entered email address.
+ * @property {string} phone - The entered phone number.
+ * @property {string} initials - The initials created from the name.
+ */
+
+/**
+ * @typedef {string} ContactId - The unique ID of a contact.
+ */
+
+/**
+ * @typedef {Object} ContactEntry
+ * @property {ContactId} id - The unique ID of the contact.
+ * @property {Contact} contact - The contact data.
+ */
+
+/**
+ * @typedef {Object.<ContactId, Contact>} ContactDirectory - Contains contacts as key-value pairs.
+ */
+
+/**
+ * @typedef {[ContactId, Contact]} ContactListEntry - A contact ID and its contact data as one list entry.
+ */
+
+/**
+ * @typedef {Object.<string, ContactListEntry[]>} ContactGroups - Contacts grouped by their initial letter.
  */
 
 /**
