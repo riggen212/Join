@@ -19,7 +19,7 @@
     <title>Join</title>
 </head>
 
-<body id="login" class="login-page" onload="loadUsers()">
+<body id="login" class="login-page">
     <header class="login-header">
         <div class="sign-up-wrapper">
             <span>
@@ -38,25 +38,26 @@
                 <h1>Log in</h1>
 
                 <form>
-                    <div class="input-wrapper">
+                    <div class="input-wrapper" id="loginEmailRed">
                         <input type="email" id="emailField" autocomplete="email" placeholder="Email" required>
                         <span class="input-icon">
                             <img src="./assets/icons/mail.svg" alt="">
                         </span>
                     </div>
 
-                    <div class="input-wrapper">
+                    <div class="input-wrapper" id="loginPasswordRed">
                         <input type="password" id="passwortField" autocomplete="current-password" placeholder="Password" required>
                         <button type="button">
                             <img id="augeIcon" src="./assets/icons/show_password.svg" alt="show password">
                         </button>
                     </div>
+                    <div id="loginTextError"></div>
 
                     <div class="login-button-area">
-                        <button class="button button-dark" type="submit" onclick="login()">
+                        <button class="button button-dark" type="button" onclick="login()">
                             Log in
                         </button>
-                        <button class="button button-bright" type="button">
+                        <button class="button button-bright" type="button" onclick="guestLogin()">
                             Guest Log in
                         </button>
                     </div>

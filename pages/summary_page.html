@@ -6,11 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="../script.js" defer></script>
+    <script src="../scripts/login.js" defer></script>
+    <script src="../scripts/summary_page.js" defer></script>
+
     <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
     <link rel="stylesheet" href="../global_style.css" />
     <link rel="stylesheet" href="../styles/components.css" />
     <link rel="stylesheet" href="../styles/fonts.css" />
-    <link rel="stylesheet" href="../styles/privacy_policy.css" />
+   <!-- <link rel="stylesheet" href="../styles/privacy_policy.css" />-->
     <link rel="stylesheet" href="../styles/summary_page.css">
     <title>Summary</title>
 </head>
@@ -131,7 +134,7 @@
             <!--Switch later with js is this pic-->
             <div class="desktop-wrapper">
                 <h2 class="headline-h2">
-                Good morning,<br><strong class="headline-strong"> Sofia Müller</strong>
+                Good morning,<br><strong class="headline-strong" id="userNames"></strong>
                 </h2>
                 <section class="section-container">
                     <div class="section-inner">

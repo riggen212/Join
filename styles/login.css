@@ -309,3 +309,9 @@ body#login:target footer {
         animation: none;
     }
 }
+
+.login-fail {
+    border-color: red;
+    color: red;
+    align-content: flex-start;
+}

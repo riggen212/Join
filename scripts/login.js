@@ -1,6 +1,6 @@
 async function login() {
 
-    const users = await loadUsers();
+    const users = await getData(DB_USERS);
     let email = document.getElementById('emailField').value;
     let password = document.getElementById('passwortField').value;
 
@@ -9,16 +9,31 @@ async function login() {
 
 function checkLoginData(users, email, password) {
 
+    let loginSuccessful = false;
+
     for (let key in users) {
         if (
             users[key].profile.email === email &&
             users[key].profile.password === password
         ) {
-            window.location.href = "./pages/summary_page.html";
-        }else {
-            /*Rückmeldung für Falsche Login daten noch zurück geben*/
+            loginSuccessful = true;
+            window.location.href = `./pages/summary_page.html?user=${key}`;
         }
-        /*console.log(users[key].profile.email);*/
-        
     }
+        if (!loginSuccessful) showLoginError();   
+}
+
+function showLoginError() {
+
+    document.getElementById('loginTextError').innerText =
+            'Check your email and password. Please try again.';
+
+    document.getElementById('loginEmailRed').classList.add('login-fail');
+    document.getElementById('loginPasswordRed').classList.add('login-fail');
+    document.getElementById('loginTextError').classList.add('login-fail');
+}
+
+function guestLogin() {
+
+    window.location.href = "./pages/summary_page.html";
 }
