@@ -13,13 +13,13 @@ const DB_SUBTASKS = "/subtasks";
  * @throws {Error} If the HTTP response is not successful.
  */
 async function getData(path = "", id = "") {
-        const response = await fetch(DB_BASE_URL + path + id + ".json");
+    const response = await fetch(DB_BASE_URL + path + id + ".json");
 
-        if (!response.ok) {
-            throw new Error(`HTTP-Fehler: ${response.status}`);
-        }
+    if (!response.ok) {
+        throw new Error(`HTTP-Fehler: ${response.status}`);
+    }
 
-        return await response.json();
+    return await response.json();
 }
 
 /**
@@ -125,8 +125,7 @@ function hideContactDetails() {
     contactDetails.classList.remove("is-open");
     document.documentElement.classList.remove("contact-details-open");
     document.body.classList.remove("contact-details-open");
-    document.querySelector(".contact-card.is-selected")
-        ?.classList.remove("is-selected");
+    document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
 
     hideContactActions();
     delete contactDetails.dataset.contactId;
@@ -140,9 +139,7 @@ function hideContactDetails() {
  */
 function hideContactActions() {
     const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(
-        ".contact-details > .contact-add"
-    );
+    const menuButton = document.querySelector(".contact-details > .contact-add");
 
     actions?.classList.remove("is-open");
     menuButton?.setAttribute("aria-expanded", "false");
@@ -279,4 +276,18 @@ function closeDialogAfterContactDeletion() {
     }
 
     if (contactDialog.open) contactDialog.requestClose();
+}
+
+/**
+ * Closes the task dialog immediately and clears its state.
+ *
+ * @param {HTMLDialogElement} dialog - The task dialog to close.
+ * @returns {void}
+ */
+function closeTaskDialogImmediately(dialog) {
+    dialog.classList.remove("dialog-task-closing");
+    dialog.dataset.taskId = "";
+    dialog.dataset.taskStatus = "";
+    document.body.classList.remove("overflow-hidden");
+    dialog.close();
 }
