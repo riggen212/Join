@@ -30,7 +30,7 @@ function showLoginError() {
 
     document.getElementById('loginEmailRed').classList.add('login-fail');
     document.getElementById('loginPasswordRed').classList.add('login-fail');
-    document.getElementById('loginTextError').classList.add('login-fail');
+    document.getElementById('loginTextError').classList.add('login-text-fail');
 }
 
 function guestLogin() {

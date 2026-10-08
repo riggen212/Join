@@ -173,6 +173,10 @@
     border: 1px solid transparent;
 }
 
+.button-width {
+    width: 60%;
+}
+
 .button-dark:hover {
     background-color: var(--background-dark-hover-color);
     box-shadow: var(--button-hover-shadow);
@@ -338,6 +342,10 @@
     box-shadow: 0 0 16px -1px rgb(0 0 0 / 50%);
 
     opacity: 0;
+}
+
+.main-margin-bottom {
+    margin-bottom: 48px;
 }
 
 .main-wrapper h1 {
