@@ -78,6 +78,7 @@ body#login:target footer {
 
 .sign-up-wrapper {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: var(--space-lg);
 
@@ -88,8 +89,16 @@ body#login:target footer {
     text-decoration: none;
 }
 
+.sing-up-position {
+    position: absolute;
+    top: 720px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+}
+
 .sign-up-wrapper span {
-    font-size: 20px;
+    font-size: var(--space-lg);
 }
 
 .landing-page-content {
@@ -141,7 +150,7 @@ body#login:target footer {
 .main-wrapper form {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--space-lg);
 
     width: min(100%, var(--form-max-width));
@@ -163,7 +172,9 @@ body#login:target footer {
 .login-button-area {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: var(--space-md);
 
     padding-top: var(--space-lg);
@@ -202,6 +213,28 @@ body#login:target footer {
 
     .sign-up-page .landing-page-content {
         padding-top: clamp(140px, 20vh, 210px);
+    }
+
+    .sing-up-position {
+        position: static;
+        transform: none;
+        width: auto;
+    }
+
+    .login-button-area {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 40px;
+    }
+
+    .button-login-desktop {
+        padding: var(--space-xxs);
+        width: 24%;
+    }
+
+    .button-questlogin-desktop {
+        padding: var(--space-xxs);
+        width: 38%;
     }
 }
 
@@ -312,6 +345,9 @@ body#login:target footer {
 
 .login-fail {
     border-color: red;
+}
+
+.login-text-fail {
     color: red;
-    align-content: flex-start;
+    margin-top: -8px;
 }

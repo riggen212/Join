@@ -21,7 +21,7 @@
 
 <body id="login" class="login-page">
     <header class="login-header">
-        <div class="sign-up-wrapper">
+        <div class="sign-up-wrapper sing-up-position">
             <span>
                 Not a Join user?
             </span>
@@ -34,7 +34,7 @@
         <div class="landing-page-content">
             <img class="logo-bright" src="./assets/icons/logo_bright.svg" alt="">
             <img class="logo-dark" src="./assets/icons/logo_dark.svg" alt="">
-            <section class="main-wrapper">
+            <section class="main-wrapper main-margin-bottom">
                 <h1>Log in</h1>
 
                 <form>
@@ -51,13 +51,15 @@
                             <img id="augeIcon" src="./assets/icons/show_password.svg" alt="show password">
                         </button>
                     </div>
-                    <div id="loginTextError"></div>
+                    
+                        <p id="loginTextError"></p>
+                    
 
                     <div class="login-button-area">
-                        <button class="button button-dark" type="button" onclick="login()">
+                        <button class="button button-dark button-width button-login-desktop" type="button" onclick="login()">
                             Log in
                         </button>
-                        <button class="button button-bright" type="button" onclick="guestLogin()">
+                        <button class="button button-bright button-width button-questlogin-desktop" type="button" onclick="guestLogin()">
                             Guest Log in
                         </button>
                     </div>
