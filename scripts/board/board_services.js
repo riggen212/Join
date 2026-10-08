@@ -115,22 +115,43 @@ function getDraggingTask(taskId, taskStatus) {
 }
 
 /**
- * Moves task between columns and renders the appropriate columns.
- * Checks whether the new status is equal to the old status and returns early if it is.
+ * Moves a task between columns, saves the updated task to Firebase,
+ * and renders the affected columns.
+ * Returns early if the task status has not changed.
  *
  * @param {Task["status"]} destinationStatus - Status of the column where the task should be moved.
- * @returns {void}
+ * @returns {Promise<void>} Resolves after the database update attempt and rendering.
  */
-function moveTask(destinationStatus) {
+async function moveTask(destinationStatus) {
     const draggingTaskData = getDataToMoveTask(destinationStatus);
 
     if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
         return;
     }
 
-    moveTaskBetweenColumns(draggingTaskData);
+    moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
+
+    try {
+        await updateTaskInDatabase(draggingTaskData);
+    } catch (error) {
+        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
+        console.error(`Updating the database has failed:\n${error}`);
+    }
 
     renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+}
+
+/**
+ * Moves a task from a source column to a destination column and updates its status.
+ *
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
+ * @param {Task["status"]} destinationColumn - Status of the destination column.
+ * @param {Task["status"]} sourceColumn - Status of the source column.
+ */
+function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColumn) {
+    draggingTaskData.task.status = destinationColumn;
+    board[destinationColumn].tasks[draggingTaskData.id] = draggingTaskData.task;
+    delete board[sourceColumn].tasks[draggingTaskData.id];
 }
 
 /**
@@ -138,10 +159,10 @@ function moveTask(destinationStatus) {
  *
  * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task..
  */
-function moveTaskBetweenColumns(draggingTaskData) {
-    draggingTaskData.task.status = draggingTaskData.newStatus;
-    board[draggingTaskData.newStatus].tasks[draggingTaskData.id] = draggingTaskData.task;
-    delete board[draggingTaskData.oldStatus].tasks[draggingTaskData.id];
+function undoMoveTaskBetweenColumns(draggingTaskData) {
+    draggingTaskData.task.status = draggingTaskData.oldStatus;
+    board[draggingTaskData.oldStatus].tasks[draggingTaskData.id] = draggingTaskData.task;
+    delete board[draggingTaskData.newStatus].tasks[draggingTaskData.id];
 }
 
 /**
@@ -157,6 +178,22 @@ function getDataToMoveTask(destinationStatus) {
         oldStatus: draggingTask.status,
         newStatus: destinationStatus,
     };
+}
+
+/**
+ * Updates a specific task in the Firebase Realtime Database.
+ *
+ * @param {Object} draggingTaskData - Data of the moved task.
+ * @param {TaskId} draggingTaskData.id - ID of the task.
+ * @param {Task} draggingTaskData.task - Updated task object.
+ * @returns {Promise<Object|null>} The saved Firebase data.
+ * @throws {Error} If the HTTP response is not successful.
+ */
+async function updateTaskInDatabase(draggingTaskData) {
+    const dataToPatch = {
+        [draggingTaskData.id]: draggingTaskData.task,
+    };
+    return patchData(DB_USERS + DB_GUEST_USER_ID + DB_TASKS, dataToPatch);
 }
 
 /**
