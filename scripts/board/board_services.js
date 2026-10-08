@@ -132,7 +132,9 @@ async function moveTask(destinationStatus) {
     moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
 
     try {
-        await updateTaskInDatabase(draggingTaskData);
+        await updateTaskInDatabase(draggingTaskData.id, {
+            status: draggingTaskData.newStatus,
+        });
     } catch (error) {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
         console.error(`Updating the database has failed:\n${error}`);
@@ -155,17 +157,6 @@ function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColum
 }
 
 /**
- * Updates the task's new status, add the task to the new columns and removes it from the old column.
- *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task..
- */
-function undoMoveTaskBetweenColumns(draggingTaskData) {
-    draggingTaskData.task.status = draggingTaskData.oldStatus;
-    board[draggingTaskData.oldStatus].tasks[draggingTaskData.id] = draggingTaskData.task;
-    delete board[draggingTaskData.newStatus].tasks[draggingTaskData.id];
-}
-
-/**
  * Builds and returns an object containing the data to move a task.
  *
  * @param {Task["status"]} destinationStatus - Status of the destination column.
@@ -181,19 +172,33 @@ function getDataToMoveTask(destinationStatus) {
 }
 
 /**
- * Updates a specific task in the Firebase Realtime Database.
+ * Partially updates a specific task in the Firebase Realtime Database.
+ * Preserves properties that are not included in the update.
  *
- * @param {Object} draggingTaskData - Data of the moved task.
- * @param {TaskId} draggingTaskData.id - ID of the task.
- * @param {Task} draggingTaskData.task - Updated task object.
- * @returns {Promise<Object|null>} The saved Firebase data.
+ * @param {TaskId} taskId - ID of the task to update.
+ * @param {Partial<Task>} taskData - Task properties to update.
+ * @returns {Promise<Object|null>} The updated task data returned by Firebase.
  * @throws {Error} If the HTTP response is not successful.
  */
-async function updateTaskInDatabase(draggingTaskData) {
-    const dataToPatch = {
-        [draggingTaskData.id]: draggingTaskData.task,
-    };
-    return patchData(DB_USERS + DB_GUEST_USER_ID + DB_TASKS, dataToPatch);
+function updateTaskInDatabase(taskId, taskData) {
+    return patchData(DB_USERS + DB_GUEST_USER_ID + DB_TASKS + "/" + taskId, taskData);
+}
+
+/**
+ * Partially updates a specific subtask in the Firebase Realtime Database.
+ * Preserves properties that are not included in the update.
+ *
+ * @param {TaskId} taskId - ID of the task whose subtask should be updated.
+ * @param {SubtaskId} subtaskId - ID of the subtask to update.
+ * @param {Partial<Subtask>} subtaskData - Subtask properties to update.
+ * @returns {Promise<Object|null>} The updated subtask data returned by Firebase.
+ * @throws {Error} If the HTTP response is not successful.
+ */
+function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
+    return patchData(
+        DB_USERS + DB_GUEST_USER_ID + DB_TASKS + "/" + taskId + DB_SUBTASKS + "/" + subtaskId,
+        subtaskData,
+    );
 }
 
 /**

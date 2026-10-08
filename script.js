@@ -2,6 +2,7 @@ const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedataba
 const DB_USERS = "users/";
 const DB_GUEST_USER_ID = "0";
 const DB_TASKS = "/tasks";
+const DB_SUBTASKS = "/subtasks";
 
 /**
  * Loads data from Firebase at the requested database path.

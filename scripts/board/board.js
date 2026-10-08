@@ -165,15 +165,20 @@ function getTaskOverlaySubtasksHtml(subtasks) {
  * @param {SubtaskId} subtaskId - ID of the subtask being toggled.
  */
 function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
+    const task = getTaskById(taskId, taskStatus);
+    const subtask = task.subtasks[subtaskId];
+
+    subtask.completed = !subtask.completed;
+    updateTaskCardSubtasksState(taskId, task);
+
     try {
-        const task = getTaskById(taskId, taskStatus);
-        const subtask = task.subtasks[subtaskId];
-
-        subtask.completed = !subtask.completed;
-
-        updateTaskCardSubtasksState(taskId, task);
+        updateSubtaskInDatabase(taskId, subtaskId, {
+            completed: subtask.completed,
+        });
     } catch (error) {
-        console.error(error);
+        subtask.completed = !subtask.completed;
+        updateTaskCardSubtasksState(taskId, task);
+        console.error(`Updating the database has failed:\n${error}`);
     }
 }
 
