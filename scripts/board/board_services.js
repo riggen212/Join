@@ -115,33 +115,45 @@ function getDraggingTask(taskId, taskStatus) {
 }
 
 /**
- * Moves task between columns and renders the appropriate columns.
- * Checks whether the new status is equal to the old status and returns early if it is.
+ * Moves a task between columns, saves the updated task to Firebase,
+ * and renders the affected columns.
+ * Returns early if the task status has not changed.
  *
  * @param {Task["status"]} destinationStatus - Status of the column where the task should be moved.
- * @returns {void}
+ * @returns {Promise<void>} Resolves after the database update attempt and rendering.
  */
-function moveTask(destinationStatus) {
+async function moveTask(destinationStatus) {
     const draggingTaskData = getDataToMoveTask(destinationStatus);
 
     if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
         return;
     }
 
-    moveTaskBetweenColumns(draggingTaskData);
+    moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
+
+    try {
+        await updateTaskInDatabase(draggingTaskData.id, {
+            status: draggingTaskData.newStatus,
+        });
+    } catch (error) {
+        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
+        console.error(`Updating the database has failed:\n${error}`);
+    }
 
     renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
 }
 
 /**
- * Updates the task's new status, add the task to the new columns and removes it from the old column.
+ * Moves a task from a source column to a destination column and updates its status.
  *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task..
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
+ * @param {Task["status"]} destinationColumn - Status of the destination column.
+ * @param {Task["status"]} sourceColumn - Status of the source column.
  */
-function moveTaskBetweenColumns(draggingTaskData) {
-    draggingTaskData.task.status = draggingTaskData.newStatus;
-    board[draggingTaskData.newStatus].tasks[draggingTaskData.id] = draggingTaskData.task;
-    delete board[draggingTaskData.oldStatus].tasks[draggingTaskData.id];
+function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColumn) {
+    draggingTaskData.task.status = destinationColumn;
+    board[destinationColumn].tasks[draggingTaskData.id] = draggingTaskData.task;
+    delete board[sourceColumn].tasks[draggingTaskData.id];
 }
 
 /**
@@ -249,4 +261,74 @@ function getFilteredTasks(tasks) {
         }
     });
     return filteredTasks;
+}
+
+/**
+ * Partially updates a specific task in the Firebase Realtime Database.
+ * Preserves properties that are not included in the update.
+ *
+ * @param {TaskId} taskId - ID of the task to update.
+ * @param {Partial<Task>} taskData - Task properties to update.
+ * @returns {Promise<Object|null>} The updated task data returned by Firebase.
+ * @throws {Error} If the HTTP response is not successful.
+ */
+function updateTaskInDatabase(taskId, taskData) {
+    return patchData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId, taskData);
+}
+
+/**
+ * Partially updates a specific subtask in the Firebase Realtime Database.
+ * Preserves properties that are not included in the update.
+ *
+ * @param {TaskId} taskId - ID of the task whose subtask should be updated.
+ * @param {SubtaskId} subtaskId - ID of the subtask to update.
+ * @param {Partial<Subtask>} subtaskData - Subtask properties to update.
+ * @returns {Promise<Object|null>} The updated subtask data returned by Firebase.
+ * @throws {Error} If the HTTP response is not successful.
+ */
+function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
+    return patchData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
+}
+
+/**
+ * Deletes a task from Firebase and, on success, removes it from the local board,
+ * closes the dialog, and renders the affected column.
+ *
+ * @param {TaskId} taskId - ID of the task that should be deleted.
+ * @param {Task["status"]} taskStatus - Column of the Task that should be deleted.
+ * @param {HTMLButtonElement} button - The clicked delete button.
+ * @returns {Promise<void>} Resolves after the deletion attempt and any subsequent UI updates.
+ */
+async function deleteTask(taskId, taskStatus, button) {
+    if (button.disabled) return;
+
+    button.disabled = true;
+
+    try {
+        await deleteData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId);
+    } catch (error) {
+        button.disabled = false;
+        console.error("Deleting Task has failed:", error);
+        return;
+    }
+
+    updateBoardAfterTaskDeletion(taskId, taskStatus, button.closest("dialog"));
+}
+
+/**
+ * Removes a task from the local board,
+ * closes the dialog, and renders the affected column.
+ *
+ * @param {TaskId} taskId - ID of the task that should be deleted.
+ * @param {Task["status"]} taskStatus - Column of the Task that should be deleted.
+ * @param {HTMLDialogElement} dialog - The dialog displaying the task.
+ */
+function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
+    try {
+        delete board[taskStatus].tasks[taskId];
+        closeTaskDialogImmediately(dialog);
+        renderBoard([board[taskStatus]]);
+    } catch (error) {
+        console.error("Updating the board after deletion failed:", error);
+    }
 }

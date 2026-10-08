@@ -33,6 +33,8 @@ const board = {
     },
 };
 
+let loggedUserId = null;
+
 /**
  * ID and Status of the currently dragged task.
  *
@@ -52,10 +54,10 @@ let activeSearchTerm = "";
  * Starts the board page, loads the tasks and contacts based on the users ID and starts rendering the board.
  */
 async function initBoard() {
-    const userId = DB_GUEST_USER_ID;
+    loggedUserId = DB_GUEST_USER_ID;
 
     try {
-        await loadUserBoardData(userId);
+        await loadUserBoardData(loggedUserId);
         renderBoard(Object.values(board));
     } catch (error) {
         console.error(error);
@@ -165,15 +167,20 @@ function getTaskOverlaySubtasksHtml(subtasks) {
  * @param {SubtaskId} subtaskId - ID of the subtask being toggled.
  */
 function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
+    const task = getTaskById(taskId, taskStatus);
+    const subtask = task.subtasks[subtaskId];
+
+    subtask.completed = !subtask.completed;
+    updateTaskCardSubtasksState(taskId, task);
+
     try {
-        const task = getTaskById(taskId, taskStatus);
-        const subtask = task.subtasks[subtaskId];
-
-        subtask.completed = !subtask.completed;
-
-        updateTaskCardSubtasksState(taskId, task);
+        updateSubtaskInDatabase(taskId, subtaskId, {
+            completed: subtask.completed,
+        });
     } catch (error) {
-        console.error(error);
+        subtask.completed = !subtask.completed;
+        updateTaskCardSubtasksState(taskId, task);
+        console.error(`Updating the database has failed:\n${error}`);
     }
 }
 
@@ -256,10 +263,7 @@ function closeTaskDialog(event) {
         return;
     }
 
-    dialog.classList.remove("dialog-task-closing");
     dialog.dataset.taskId = "";
     dialog.dataset.taskStatus = "";
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
     closeAnimatedDialog(event, "dialog-task-closing");
 }
