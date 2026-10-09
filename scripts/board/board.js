@@ -1,35 +1,38 @@
+// Reads the current user key from the URL.
 function getUserBoardKey() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('user');
 }
 
+// Loads the current user data from Firebase for the Board page.
 async function loadCurrentUserBoard() {
     const userKey = getUserBoardKey();
     const user = await getData(DB_USERS, userKey);
 
-    console.log(userKey);
-    
+    console.log(user);
 }
 
 loadCurrentUserBoard();
 
+// Opens the Summary page and keeps the current user key.
 function openSummaryPage() {
     const userKey = getUserBoardKey();
 
     window.location.href = `./summary_page.html?user=${userKey}`;
 }
 
+// Opens the Add Task page and keeps the current user key.
 function openAddTask() {
     const userKey = getUserBoardKey();
 
     window.location.href = `./add_task.html?user=${userKey}`;
 }
 
+// Opens the Contacts page and keeps the current user key.
 function openContacts() {
     const userKey = getUserBoardKey();
 
-    window.location.href =`./contacts.html?user=${userKey}`;
-
+    window.location.href = `./contacts.html?user=${userKey}`;
 }
 
 /**
