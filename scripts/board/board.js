@@ -1,3 +1,37 @@
+function getUserBoardKey() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('user');
+}
+
+async function loadCurrentUserBoard() {
+    const userKey = getUserBoardKey();
+    const user = await getData(DB_USERS, userKey);
+
+    console.log(userKey);
+    
+}
+
+loadCurrentUserBoard();
+
+function openSummaryPage() {
+    const userKey = getUserBoardKey();
+
+    window.location.href = `./summary_page.html?user=${userKey}`;
+}
+
+function openAddTask() {
+    const userKey = getUserBoardKey();
+
+    window.location.href = `./add_task.html?user=${userKey}`;
+}
+
+function openContacts() {
+    const userKey = getUserBoardKey();
+
+    window.location.href =`./contacts.html?user=${userKey}`;
+
+}
+
 /**
  * Includes all contacts of the user
  *

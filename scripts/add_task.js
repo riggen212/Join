@@ -1,3 +1,38 @@
+function getUserAddTaskKey() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('user');
+}
+
+async function loadCurrentUserAddTask() {
+    const userKey = getUserAddTaskKey();
+    const user = await getData(DB_USERS, userKey);
+
+    console.log(userKey, user);
+    
+}
+
+loadCurrentUserAddTask();
+
+function openSummaryPage() {
+    const userKey = getUserAddTaskKey();
+
+    window.location.href = `./summary_page.html?user=${userKey}`;
+}
+
+function openBoard() {
+    const userKey = getUserAddTaskKey();
+
+    window.location.href = `./board.html?user=${userKey}`;
+}
+
+function openContacts() {
+    const userKey = getUserAddTaskKey();
+
+    window.location.href =`./contacts.html?user=${userKey}`;
+
+}
+
+
 /**
  * Bootstraps the Add Task page: renders the template into the page's
  * container and wires the auxiliary form behaviors (custom validation

@@ -1,5 +1,5 @@
+// Loads all users from Firebase and starts the login check.
 async function login() {
-
     const users = await getData(DB_USERS);
     let email = document.getElementById('emailField').value;
     let password = document.getElementById('passwortField').value;
@@ -7,8 +7,8 @@ async function login() {
     checkLoginData(users, email, password);
 }
 
+// Checks email and password against the stored Firebase users.
 function checkLoginData(users, email, password) {
-
     let loginSuccessful = false;
 
     for (let key in users) {
@@ -20,20 +20,21 @@ function checkLoginData(users, email, password) {
             window.location.href = `./pages/summary_page.html?user=${key}`;
         }
     }
-        if (!loginSuccessful) showLoginError();   
+
+    if (!loginSuccessful) showLoginError();
 }
 
+// Displays the error message and marks the login fields as invalid.
 function showLoginError() {
-
     document.getElementById('loginTextError').innerText =
-            'Check your email and password. Please try again.';
+        'Check your email and password. Please try again.';
 
     document.getElementById('loginEmailRed').classList.add('login-fail');
     document.getElementById('loginPasswordRed').classList.add('login-fail');
     document.getElementById('loginTextError').classList.add('login-text-fail');
 }
 
+// Opens the summary page as guest.
 function guestLogin() {
-
     window.location.href = "./pages/summary_page.html";
 }

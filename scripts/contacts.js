@@ -1,3 +1,37 @@
+function getUserContactKey() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('user');
+}
+
+async function loadCurrentUserConcact() {
+    const userKey = getUserContactKey();
+    const user = await getData(DB_USERS, userKey);
+
+    console.log(userKey, user);
+    
+}
+
+loadCurrentUserConcact();
+
+function openSummaryPage() {
+    const userKey = getUserContactKey();
+
+    window.location.href = `./summary_page.html?user=${userKey}`;
+}
+
+function openAddTask() {
+    const userKey = getUserContactKey();
+
+    window.location.href = `./add_task.html?user=${userKey}`;
+}
+
+function openBoard() {
+    const userKey = getUserContactKey();
+
+    window.location.href = `./board.html?user=${userKey}`;
+}
+
+
 /** @type {ContactDirectory} */
 const contacts = {};
 /** @type {ContactColorClass[]} */
