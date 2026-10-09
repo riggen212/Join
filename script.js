@@ -1,8 +1,10 @@
 const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedatabase.app/";
 const DB_USERS = "users/";
-const DB_GUEST_USER_ID = "0";
+const DB_PROFILE = "/profile";
 const DB_TASKS = "/tasks";
 const DB_SUBTASKS = "/subtasks";
+const DB_GUEST_USER_ID = "0";
+let loggedUserId = null;
 
 /**
  * Loads data from Firebase at the requested database path.
@@ -290,4 +292,26 @@ function closeTaskDialogImmediately(dialog) {
     dialog.dataset.taskStatus = "";
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+}
+
+function getUserKey() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('user');
+}
+
+function setUserIdsToNavLinks(userId) {
+    document.querySelectorAll("[data-nav-link]").forEach(link => {
+        const url = new URL(link.href);
+        
+        url.searchParams.set("user", userId);
+        link.href = url.href;
+    })
+}
+
+async function setInitialsToProfileButton(userId) {
+    const button = document.querySelector(".header-profile-initials-button");
+    const userProfile = await getData(DB_USERS + userId + DB_PROFILE);
+    const userInitials = userProfile.initials;
+    
+    button.innerText = userInitials;
 }

@@ -17,10 +17,10 @@
         <link rel="stylesheet" href="../styles/fonts.css" />
         <link rel="stylesheet" href="../styles/board.css" />
         <link rel="stylesheet" href="../styles/board-task.css" />
-        <link rel="stylesheet" href="../styles/add_task.css" />
+        <!-- <link rel="stylesheet" href="../styles/add_task.css" /> -->
         <title>Join</title>
     </head>
-    <body onload="initBoard()">
+    <body>
         <header class="header">
             <div class="header-wrapper">
                 <div>
@@ -28,10 +28,10 @@
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" class="header-link">
+                    <a href="../pages/help.html" data-nav-link class="header-link">
                         <img src="../assets/icons/help.svg" alt="Help" />
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
                 </div>
             </div>
             <dialog
@@ -46,6 +46,7 @@
                             <a
                                 id="link-help-profile-dialog"
                                 href="../pages/help.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Help</a
@@ -54,6 +55,7 @@
                         <li>
                             <a
                                 href="../pages/legal_notice.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Legal Notice</a
@@ -62,6 +64,7 @@
                         <li>
                             <a
                                 href="../pages/privacy_policy.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Privacy Policy</a
@@ -81,25 +84,25 @@
                     <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/summary_page.html" class="link-navbar">
+                            <a href="../pages/summary_page.html" data-nav-link class="link-navbar">
                                 <img src="../assets/icons/summary.svg" alt="Summary icon" />
                                 <span>Summary</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/add_task.html" class="link-navbar">
+                            <a href="../pages/add_task.html" data-nav-link class="link-navbar">
                                 <img src="../assets/icons/add_task.svg" alt="Add task icon" />
                                 <span>Add Task</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/board.html" class="link-navbar active">
+                            <a href="../pages/board.html" data-nav-link class="link-navbar active">
                                 <img src="../assets/icons/board.svg" alt="Board icon" />
                                 <span>Board</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/contacts.html" class="link-navbar">
+                            <a href="../pages/contacts.html" data-nav-link class="link-navbar">
                                 <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
                                 <span>Contacts</span>
                             </a>
@@ -109,12 +112,12 @@
                 <footer>
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar">
+                            <a href="../pages/privacy_policy.html" data-nav-link class="link-navbar">
                                 <span>Privacy Policy</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar">
+                            <a href="../pages/legal_notice.html" data-nav-link class="link-navbar">
                                 <span>Legal notice</span>
                             </a>
                         </li>
