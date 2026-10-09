@@ -121,7 +121,7 @@ function getTaskOverlayTemplate(taskData) {
                     </dl>
                 </div>
                 <footer class="task-overlay-footer">
-                    <button class="button button-task-overlay" onclick="deleteTask('${taskData.id}')">
+                    <button class="button button-task-overlay" onclick="deleteTask('${taskData.id}', '${taskData.task.status}', this)">
                         <img src="../assets/icons/delete.svg" alt="Delete" />
                         <span>Delete</span>
                     </button>

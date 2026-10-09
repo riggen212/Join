@@ -1,6 +1,8 @@
 const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedatabase.app/";
 const DB_USERS = "users/";
 const DB_GUEST_USER_ID = "0";
+const DB_TASKS = "/tasks";
+const DB_SUBTASKS = "/subtasks";
 
 /**
  * Loads data from Firebase at the requested database path.
@@ -8,15 +10,16 @@ const DB_GUEST_USER_ID = "0";
  * @param {string} [path=""] - The Firebase path to load.
  * @param {string} [id=""] - An optional additional path segment.
  * @returns {Promise<Object|null>} The data returned by Firebase.
+ * @throws {Error} If the HTTP response is not successful.
  */
 async function getData(path = "", id = "") {
-        const response = await fetch(DB_BASE_URL + path + id + ".json");
+    const response = await fetch(DB_BASE_URL + path + id + ".json");
 
-        if (!response.ok) {
-            throw new Error(`HTTP-Fehler: ${response.status}`);
-        }
+    if (!response.ok) {
+        throw new Error(`HTTP-Fehler: ${response.status}`);
+    }
 
-        return await response.json();
+    return await response.json();
 }
 
 /**
@@ -25,10 +28,33 @@ async function getData(path = "", id = "") {
  * @param {string} path - The database path without the `.json` suffix.
  * @param {Object|null} value - The data written to Firebase.
  * @returns {Promise<Object|null>} The saved Firebase data.
+ * @throws {Error} If the HTTP response is not successful.
  */
 async function putData(path, value) {
     const response = await fetch(DB_BASE_URL + path + ".json", {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(value),
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP-Fehler: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+/**
+ * Updates specific data to a fixed Firebase database path.
+ *
+ * @param {string} path - The database path without the `.json` suffix.
+ * @param {Object|null} value - The data overwritten to Firebase.
+ * @returns {Promise<Object|null>} The saved Firebase data.
+ * @throws {Error} If the HTTP response is not successful.
+ */
+async function patchData(path = "", value = {}) {
+    const response = await fetch(DB_BASE_URL + path + ".json", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(value),
     });
@@ -99,8 +125,7 @@ function hideContactDetails() {
     contactDetails.classList.remove("is-open");
     document.documentElement.classList.remove("contact-details-open");
     document.body.classList.remove("contact-details-open");
-    document.querySelector(".contact-card.is-selected")
-        ?.classList.remove("is-selected");
+    document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
 
     hideContactActions();
     delete contactDetails.dataset.contactId;
@@ -114,9 +139,7 @@ function hideContactDetails() {
  */
 function hideContactActions() {
     const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(
-        ".contact-details > .contact-add"
-    );
+    const menuButton = document.querySelector(".contact-details > .contact-add");
 
     actions?.classList.remove("is-open");
     menuButton?.setAttribute("aria-expanded", "false");
@@ -253,4 +276,18 @@ function closeDialogAfterContactDeletion() {
     }
 
     if (contactDialog.open) contactDialog.requestClose();
+}
+
+/**
+ * Closes the task dialog immediately and clears its state.
+ *
+ * @param {HTMLDialogElement} dialog - The task dialog to close.
+ * @returns {void}
+ */
+function closeTaskDialogImmediately(dialog) {
+    dialog.classList.remove("dialog-task-closing");
+    dialog.dataset.taskId = "";
+    dialog.dataset.taskStatus = "";
+    document.body.classList.remove("overflow-hidden");
+    dialog.close();
 }
