@@ -4,9 +4,7 @@
  * override and subtask Enter-key guard).
  */
 async function initAddTaskPage() {
-    loggedUserId = getUserKey();
-    setUserIdsToNavLinks(loggedUserId);
-    await setInitialsToProfileButton(loggedUserId);
+    loggedUserId = await loadCurrentUser();
     const container = document.querySelector(".board-inner.add-task-inner");
     if (!container) return;
     container.innerHTML = renderAddTask();

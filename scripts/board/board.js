@@ -52,12 +52,9 @@ let activeSearchTerm = "";
  * Starts the board page, loads the tasks and contacts based on the users ID and starts rendering the board.
  */
 async function initBoard() {
-    loggedUserId = getUserKey();
-    setUserIdsToNavLinks(loggedUserId);
-    
     try {
+        loggedUserId = await loadCurrentUser();
         await loadUserBoardData(loggedUserId);
-        await setInitialsToProfileButton(loggedUserId);
         renderBoard(Object.values(board));
     } catch (error) {
         console.error(error);
