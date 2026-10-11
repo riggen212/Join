@@ -294,6 +294,12 @@ function closeTaskDialogImmediately(dialog) {
     dialog.close();
 }
 
+/**
+ * Updates the nav links and the profile button with die logged user's ID,
+ * returns the logged user's ID.
+ *
+ * @returns The ID of the user that logged is currently logged.
+ */
 async function loadCurrentUser() {
     const userId = getUserId();
 
@@ -303,24 +309,39 @@ async function loadCurrentUser() {
     return userId;
 }
 
+/**
+ * Extract the user's ID from the URL and returns it.
+ *
+ * @returns The ID of the user that logged is currently logged.
+ */
 function getUserId() {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('user');
+    return urlParams.get("user");
 }
 
+/**
+ * Updates the nav links with the currently logged user.
+ *
+ * @param {UserId} userId - The ID of the currently logged user.
+ */
 function setUserIdsToNavLinks(userId) {
-    document.querySelectorAll("[data-nav-link]").forEach(link => {
+    document.querySelectorAll("[data-nav-link]").forEach((link) => {
         const url = new URL(link.href);
-        
+
         url.searchParams.set("user", userId);
         link.href = url.href;
-    })
+    });
 }
 
+/**
+ * Updates the profile button's label with the user's initials retrieved from the database.
+ *
+ * @param {UserId} userId - The ID of the currently logged user.
+ */
 async function setInitialsToProfileButton(userId) {
     const button = document.querySelector(".header-profile-initials-button");
     const userProfile = await getData(DB_USERS + userId + DB_PROFILE);
     const userInitials = userProfile.initials;
-    
-    button.innerText = userInitials;
+
+    button.textContent = userInitials;
 }
