@@ -295,16 +295,15 @@ function closeTaskDialogImmediately(dialog) {
 }
 
 async function loadCurrentUser() {
-    const userKey = getUserKey();
-    const user = await getData(DB_USERS, userKey);
+    const userId = getUserId();
 
-    setUserIdsToNavLinks(userKey);
-    await setInitialsToProfileButton(userKey);
+    setUserIdsToNavLinks(userId);
+    await setInitialsToProfileButton(userId);
 
-    return user;
+    return userId;
 }
 
-function getUserKey() {
+function getUserId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('user');
 }
