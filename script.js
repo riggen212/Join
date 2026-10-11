@@ -343,5 +343,9 @@ async function setInitialsToProfileButton(userId) {
     const userProfile = await getData(DB_USERS + userId + DB_PROFILE);
     const userInitials = userProfile.initials;
 
+    if (userProfile.type === "guest") {
+        button.classList.add(userProfile.type);
+    }
+
     button.textContent = userInitials;
 }
