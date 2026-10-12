@@ -1,7 +1,5 @@
 async function initMeta() {
-    loggedUserId = getUserKey();
-    setUserIdsToNavLinks(loggedUserId);
-    await setInitialsToProfileButton(loggedUserId);
+    loggedUserId = await loadCurrentUser();
 }
 
 initMeta();

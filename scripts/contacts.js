@@ -20,9 +20,7 @@ const CONTACT_COLOR_CLASSES = [
  */
 async function initContacts() {
     try {
-        loggedUserId = getUserKey();
-        setUserIdsToNavLinks(loggedUserId);
-        await setInitialsToProfileButton(loggedUserId);
+        loggedUserId = await loadCurrentUser();
         const firebaseContacts = await getData(getContactPath(null, loggedUserId));
 
         Object.assign(contacts, firebaseContacts ?? {});
