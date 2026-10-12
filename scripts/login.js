@@ -36,5 +36,6 @@ function showLoginError() {
 
 // Opens the summary page as guest.
 function guestLogin() {
+
     window.location.href = "./pages/summary_page.html";
 }

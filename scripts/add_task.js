@@ -41,7 +41,8 @@ function openContacts() {
  * container and wires the auxiliary form behaviors (custom validation
  * override and subtask Enter-key guard).
  */
-function initAddTaskPage() {
+async function initAddTaskPage() {
+    loggedUserId = await loadCurrentUser();
     const container = document.querySelector(".board-inner.add-task-inner");
     if (!container) return;
     container.innerHTML = renderAddTask();
@@ -51,7 +52,6 @@ function initAddTaskPage() {
 }
 
 initAddTaskPage();
-
 
 /**
  * Disables the browser's built-in HTML5 form validation so the
@@ -64,7 +64,6 @@ function disableHtml5Validation(form) {
     form.setAttribute("novalidate", "novalidate");
     form.noValidate = true;
 }
-
 
 /**
  * Prevents the Enter key from submitting the form while the user is
@@ -80,7 +79,6 @@ function preventEnterOnSubtask(form) {
     });
 }
 
-
 /**
  * Reflects the selected category in the field's display text and
  * closes the dropdown by removing focus from the controls.
@@ -93,7 +91,6 @@ function selectTaskCategory(event) {
     event.target.blur();
     field.querySelector("button").blur();
 }
-
 
 /**
  * Activates the clicked priority button and deactivates the others,
@@ -110,7 +107,6 @@ function selectTaskPriority(selectedButton, priority) {
     });
     selectedButton.classList.add(priority);
 }
-
 
 /**
  * Restores the form's custom UI state (priority button highlight and

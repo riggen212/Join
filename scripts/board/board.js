@@ -70,8 +70,6 @@ const board = {
     },
 };
 
-let loggedUserId = null;
-
 /**
  * ID and Status of the currently dragged task.
  *
@@ -88,18 +86,20 @@ let draggingTask = null;
 let activeSearchTerm = "";
 
 /**
- * Starts the board page, loads the tasks and contacts based on the users ID and starts rendering the board.
+ * Starts the board page, loads the tasks, contacts and the user,
+ * caches the users ID globally and starts rendering the board.
  */
 async function initBoard() {
-    loggedUserId = DB_GUEST_USER_ID;
-
     try {
+        loggedUserId = await loadCurrentUser();
         await loadUserBoardData(loggedUserId);
         renderBoard(Object.values(board));
     } catch (error) {
         console.error(error);
     }
 }
+
+initBoard();
 
 /**
  * Renders columns with filterd or unfilterd tasks, based on the search terms value.

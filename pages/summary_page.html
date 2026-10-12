@@ -26,10 +26,10 @@
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" class="header-link">
+                    <a href="../pages/help.html" data-nav-link class="header-link">
                         <img src="../assets/icons/help.svg" alt="Help" />
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
                 </div>
             </div>
             <dialog
@@ -44,6 +44,7 @@
                             <a
                                 id="link-help-profile-dialog"
                                 href="../pages/help.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Help</a
@@ -52,6 +53,7 @@
                         <li>
                             <a
                                 href="../pages/legal_notice.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Legal Notice</a
@@ -60,6 +62,7 @@
                         <li>
                             <a
                                 href="../pages/privacy_policy.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Privacy Policy</a
@@ -84,19 +87,19 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="link-navbar" onclick="openAddTask(); return false;">
+                        <a href="../pages/add_task.html" class="link-navbar">
                             <img src="../assets/icons/add_task.svg" alt="Add task icon" />
                             <span>Add Task</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="link-navbar" onclick="openBoard(); return false;">
+                        <a href="../pages/board.html" class="link-navbar">
                             <img src="../assets/icons/board.svg" alt="Board icon" />
                             <span>Board</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="link-navbar" onclick="openContacts(); return false">
+                        <a href="../pages/contacts.html" class="link-navbar">
                             <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
                             <span>Contacts</span>
                         </a>
@@ -106,12 +109,12 @@
             <footer>
                 <ul class="navbar-links">
                     <li>
-                        <a href="../pages/privacy_policy.html" class="link-navbar">
+                        <a href="../pages/privacy_policy.html" data-nav-link class="link-navbar">
                             <span>Privacy Policy</span>
                         </a>
                     </li>
                     <li>
-                        <a href="../pages/legal_notice.html" class="link-navbar">
+                        <a href="../pages/legal_notice.html" data-nav-link class="link-navbar">
                             <span>Legal notice</span>
                         </a>
                     </li>

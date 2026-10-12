@@ -1,8 +1,10 @@
 const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedatabase.app/";
 const DB_USERS = "users/";
-const DB_GUEST_USER_ID = "0";
+const DB_PROFILE = "/profile";
 const DB_TASKS = "/tasks";
 const DB_SUBTASKS = "/subtasks";
+const DB_GUEST_USER_ID = "0";
+let loggedUserId = null;
 
 /**
  * Loads data from Firebase at the requested database path.
@@ -290,4 +292,60 @@ function closeTaskDialogImmediately(dialog) {
     dialog.dataset.taskStatus = "";
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+}
+
+/**
+ * Updates the nav links and the profile button with die logged user's ID,
+ * returns the logged user's ID.
+ *
+ * @returns The ID of the user that logged is currently logged.
+ */
+async function loadCurrentUser() {
+    const userId = getUserId();
+
+    setUserIdsToNavLinks(userId);
+    await setInitialsToProfileButton(userId);
+
+    return userId;
+}
+
+/**
+ * Extract the user's ID from the URL and returns it.
+ *
+ * @returns The ID of the user that logged is currently logged.
+ */
+function getUserId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("user");
+}
+
+/**
+ * Updates the nav links with the currently logged user.
+ *
+ * @param {UserId} userId - The ID of the currently logged user.
+ */
+function setUserIdsToNavLinks(userId) {
+    document.querySelectorAll("[data-nav-link]").forEach((link) => {
+        const url = new URL(link.href);
+
+        url.searchParams.set("user", userId);
+        link.href = url.href;
+    });
+}
+
+/**
+ * Updates the profile button's label with the user's initials retrieved from the database.
+ *
+ * @param {UserId} userId - The ID of the currently logged user.
+ */
+async function setInitialsToProfileButton(userId) {
+    const button = document.querySelector(".header-profile-initials-button");
+    const userProfile = await getData(DB_USERS + userId + DB_PROFILE);
+    const userInitials = userProfile.initials;
+
+    if (userProfile.type === "guest") {
+        button.classList.add(userProfile.type);
+    }
+
+    button.textContent = userInitials;
 }

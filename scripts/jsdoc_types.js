@@ -1,4 +1,21 @@
 /**
+ * @typedef {Object} User
+ * @property {string} name - The name of the User.
+ * @property {string} initials - The initials of the User.
+ * @property {string} type - The type of the User.
+ */
+
+/**
+ * @typedef {string} UserId - The unique ID of a user.
+ */
+
+/**
+ * @typedef {Object} UserDirectory
+ * @property {UserId} - The ID of a User.
+ * @property {User} - The user data.
+ */
+
+/**
  * @typedef {Object} Contact
  * @property {string} name - The name of the contact.
  * @property {string} initials - The initials of the contact.

@@ -58,7 +58,8 @@ const CONTACT_COLOR_CLASSES = [
  */
 async function initContacts() {
     try {
-        const firebaseContacts = await getData(getContactPath());
+        loggedUserId = await loadCurrentUser();
+        const firebaseContacts = await getData(getContactPath(null, loggedUserId));
 
         Object.assign(contacts, firebaseContacts ?? {});
         renderContactList(contacts);
@@ -286,8 +287,8 @@ function showContactById(contactId) {
  * @param {ContactId} [contactId] - The optional ID of one contact.
  * @returns {string} The contacts collection or contact path.
  */
-function getContactPath(contactId) {
-    const path = `${DB_USERS}${DB_GUEST_USER_ID}/contacts`;
+function getContactPath(contactId, userId) {
+    const path = `${DB_USERS}${userId}/contacts`;
     return contactId ? `${path}/${contactId}` : path;
 }
 
