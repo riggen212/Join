@@ -109,6 +109,19 @@
  */
 
 /**
+ * Aggregated task counts and upcoming urgent deadline displayed on the summary page.
+ *
+ * @typedef {Object} TaskSummaryData
+ * @property {number} [toDo] - Number of tasks with status "toDo".
+ * @property {number} [inProgress] - Number of tasks with status "inProgress".
+ * @property {number} [awaitFeedback] - Number of tasks with status "awaitFeedback".
+ * @property {number} [done] - Number of tasks with status "done".
+ * @property {number} [board] - Total number of tasks.
+ * @property {number} [urgent] - Number of urgent tasks.
+ * @property {string} [upcomingDeadline] - Earliest urgent deadline on or after today in YYYY-MM-DD format.
+ */
+
+/**
  * @typedef {Object} SubtasksData
  * @property {number} amount - Amount of all subtasks of a single task.
  * @property {number} completedAmount - Amount of all completed subtasks of a single task.
