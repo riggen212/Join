@@ -89,6 +89,26 @@
  */
 
 /**
+ * Data needed to render a task card.
+ *
+ * @typedef {Object} TaskCardData
+ * @property {TaskId} id - ID of the task.
+ * @property {Task} task - The task data.
+ * @property {SubtasksData} subtasksData - Subtask summary and progress.
+ * @property {string} assigneesHtml - HTML for the assigned contacts.
+ */
+
+/**
+ * Data needed to render a task overlay.
+ *
+ * @typedef {Object} TaskOverlayData
+ * @property {TaskId} id - ID of the task.
+ * @property {Task} task - The task data.
+ * @property {string} assigneesHtml - HTML for the assigned contacts.
+ * @property {string} subtasksHtml - HTML for the subtask checkboxes and titles.
+ */
+
+/**
  * @typedef {Object} SubtasksData
  * @property {number} amount - Amount of all subtasks of a single task.
  * @property {number} completedAmount - Amount of all completed subtasks of a single task.

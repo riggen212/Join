@@ -49,6 +49,38 @@ function getTaskById(taskId, taskStatus) {
 }
 
 /**
+ * Builds the data needed to render a task card.
+ *
+ * @param {TaskId} taskId - ID of the task.
+ * @param {Task} task - The task to prepare for rendering.
+ * @returns {TaskCardData} Task data with subtask summary and assignee HTML.
+ */
+function getTaskCardData(taskId, task) {
+    return {
+        id: taskId,
+        task: task,
+        subtasksData: getSubtasksCardData(task),
+        assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
+    };
+}
+
+/**
+ * Builds the data needed to render a task overlay.
+ *
+ * @param {TaskId} taskId - ID of the task.
+ * @param {Task} task - The task to prepare for rendering.
+ * @returns {TaskOverlayData} Task data with assignee and subtask HTML.
+ */
+function getTaskOverlayData(taskId, task) {
+    return {
+        id: taskId,
+        task: task,
+        assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
+        subtasksHtml: getTaskOverlaySubtasksHtml(task.subtasks),
+    };
+}
+
+/**
  * Calculates summary for the subtasks of a single task.
  *
  * @param {Task} task - A single task.
@@ -121,12 +153,21 @@ function getDraggingTask(taskId, taskStatus) {
 async function moveTask(destinationStatus) {
     const draggingTaskData = getDataToMoveTask(destinationStatus);
 
-    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
-        return;
-    }
+    if (!hasTaskStatusChanged(draggingTaskData)) return;
 
     moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
+    await saveTaskMove(draggingTaskData);
 
+    renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+}
+
+/**
+ * Saves the new task status and reverts the local move if the database update fails.
+ *
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
+ * @returns {Promise<void>} Resolves after saving or reverting the task move.
+ */
+async function saveTaskMove(draggingTaskData) {
     try {
         await updateTaskInDatabase(draggingTaskData.id, {
             status: draggingTaskData.newStatus,
@@ -135,8 +176,6 @@ async function moveTask(destinationStatus) {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
         console.error(`Updating the database has failed:\n${error}`);
     }
-
-    renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
 }
 
 /**
@@ -165,6 +204,12 @@ function getDataToMoveTask(destinationStatus) {
         oldStatus: draggingTask.status,
         newStatus: destinationStatus,
     };
+}
+
+function hasTaskStatusChanged(draggingTaskData) {
+    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
+        return false;
+    } else return true;
 }
 
 /**
@@ -300,15 +345,30 @@ async function deleteTask(taskId, taskStatus, button) {
 
     button.disabled = true;
 
-    try {
-        await deleteData(DB_TASKS + taskId);
-    } catch (error) {
-        button.disabled = false;
-        console.error("Deleting Task has failed:", error);
+    if (!(await tryDeleteTaskFromDatabase(button, taskId))) {
         return;
     }
 
     updateBoardAfterTaskDeletion(taskId, taskStatus, button.closest("dialog"));
+}
+
+/**
+ * Attempts to delete a task from the database.
+ * Re-enables the delete button and logs the error if deletion fails.
+ *
+ * @param {HTMLButtonElement} button - The clicked delete button.
+ * @param {TaskId} taskId - ID of the task to delete.
+ * @returns {Promise<boolean>} Whether the task was successfully deleted.
+ */
+async function tryDeleteTaskFromDatabase(button, taskId) {
+    try {
+        await deleteData(DB_TASKS + taskId);
+        return true;
+    } catch (error) {
+        button.disabled = false;
+        console.error("Deleting Task has failed:", error);
+        return false;
+    }
 }
 
 /**
