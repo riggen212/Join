@@ -1,7 +1,7 @@
 const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedatabase.app/";
 const DB_USERS = "users/";
-const DB_PROFILE = "/profile";
-const DB_TASKS = "/tasks";
+const DB_TASKS = "tasks/";
+const DB_CONTACTS = "contacts/";
 const DB_SUBTASKS = "/subtasks";
 const DB_GUEST_USER_ID = "0";
 let loggedUserId = null;
@@ -340,11 +340,11 @@ function setUserIdsToNavLinks(userId) {
  */
 async function setInitialsToProfileButton(userId) {
     const button = document.querySelector(".header-profile-initials-button");
-    const userProfile = await getData(DB_USERS + userId + DB_PROFILE);
-    const userInitials = userProfile.initials;
+    const user = await getData(DB_USERS + userId);
+    const userInitials = user.initials;
 
-    if (userProfile.type === "guest") {
-        button.classList.add(userProfile.type);
+    if (user.type === "guest") {
+        button.classList.add(user.type);
     }
 
     button.textContent = userInitials;

@@ -1,20 +1,16 @@
 /**
- * Loads a user's tasks and contacts from the database.
+ * Loads tasks and contacts from the database.
  * Assigns the tasks to the corresponding columns of the global board
  * and adds the contacts to the global contact directory.
  *
- * @param {string} userId - The database ID of the user.
  * @returns {Promise<void>} Resolves after the user data has been processed.
  */
-async function loadUserBoardData(userId) {
-    const data = await getData(DB_USERS + userId);
+async function loadBoardData() {
+    const tasks = await getData(DB_TASKS);
+    const contacts = await getData(DB_CONTACTS);
 
-    if (!data) {
-        throw new Error(`User "${userId}" was not found.`);
-    }
-
-    assignTasks(board, data.tasks ?? {});
-    Object.assign(contacts, data.contacts ?? {});
+    assignTasks(board, tasks ?? {});
+    Object.assign(localContacts, contacts ?? {});
 }
 
 /**
@@ -273,7 +269,7 @@ function getFilteredTasks(tasks) {
  * @throws {Error} If the HTTP response is not successful.
  */
 function updateTaskInDatabase(taskId, taskData) {
-    return patchData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId, taskData);
+    return patchData(DB_TASKS + taskId, taskData);
 }
 
 /**
@@ -287,7 +283,7 @@ function updateTaskInDatabase(taskId, taskData) {
  * @throws {Error} If the HTTP response is not successful.
  */
 function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
-    return patchData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
+    return patchData(DB_TASKS + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
 }
 
 /**
@@ -305,7 +301,7 @@ async function deleteTask(taskId, taskStatus, button) {
     button.disabled = true;
 
     try {
-        await deleteData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId);
+        await deleteData(DB_TASKS + taskId);
     } catch (error) {
         button.disabled = false;
         console.error("Deleting Task has failed:", error);

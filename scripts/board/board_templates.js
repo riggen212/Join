@@ -157,7 +157,7 @@ function getTaskOverlayUserBadgeTemplate(contact) {
 function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
     return `<li>
             <input type="checkbox" ${isCompleted}
-            onchange="handleSubtaskCheckboxChange(this.closest('dialog').dataset.taskId, this.closest('dialog').dataset.taskStatus, '${subtaskId}')"
+            onchange="handleSubtaskCheckboxChange(this, this.closest('dialog').dataset.taskId, this.closest('dialog').dataset.taskStatus, '${subtaskId}')"
             aria-label="Check Task" />
             ${subtask.title}
         </li>`;

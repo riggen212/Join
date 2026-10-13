@@ -3,7 +3,7 @@
  *
  * @type {ContactDirectory}
  */
-const contacts = {};
+const localContacts = {};
 
 /**
  * The board including the users tasks in separate columns based on each task's status.
@@ -55,7 +55,7 @@ let activeSearchTerm = "";
 async function initBoard() {
     try {
         loggedUserId = await loadCurrentUser();
-        await loadUserBoardData(loggedUserId);
+        await loadBoardData();
         renderBoard(Object.values(board));
     } catch (error) {
         console.error(error);
@@ -132,11 +132,11 @@ function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
     let assigneesHtml = "";
 
     assignees.forEach((contact) => {
-        if (!contacts[contact]) {
+        if (!localContacts[contact]) {
             return;
         }
 
-        assigneesHtml += getUserBadgeTemplateFunction(contacts[contact]);
+        assigneesHtml += getUserBadgeTemplateFunction(localContacts[contact]);
     });
 
     return assigneesHtml;
@@ -162,11 +162,12 @@ function getTaskOverlaySubtasksHtml(subtasks) {
 /**
  * Updates the subtask's completion status and refreshes the task card.
  *
+ * @param {HTMLInputElement} checkbox - The changed checkbox.
  * @param {TaskId} taskId - ID of the task containing the subtask.
  * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
  * @param {SubtaskId} subtaskId - ID of the subtask being toggled.
  */
-function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
+async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtaskId) {
     const task = getTaskById(taskId, taskStatus);
     const subtask = task.subtasks[subtaskId];
 
@@ -174,12 +175,13 @@ function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
     updateTaskCardSubtasksState(taskId, task);
 
     try {
-        updateSubtaskInDatabase(taskId, subtaskId, {
+        await updateSubtaskInDatabase(taskId, subtaskId, {
             completed: subtask.completed,
         });
     } catch (error) {
         subtask.completed = !subtask.completed;
         updateTaskCardSubtasksState(taskId, task);
+        checkbox.checked = subtask.completed;
         console.error(`Updating the database has failed:\n${error}`);
     }
 }
