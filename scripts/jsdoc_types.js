@@ -33,6 +33,13 @@
  */
 
 /**
+ * @typedef {Object} ContactValidationErrors
+ * @property {string} [name] - The error message for the name field.
+ * @property {string} [email] - The error message for the email field.
+ * @property {string} [phone] - The error message for the phone field.
+ */
+
+/**
  * @typedef {string} ContactId - The unique ID of a contact.
  */
 

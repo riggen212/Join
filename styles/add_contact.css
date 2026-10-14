@@ -111,9 +111,26 @@
     background-color: #fff;
 }
 
-#contact > form > .input-wrapper {
+#contact > form > .contact-form-field {
     width: 100%;
     max-width: 452px;
+}
+
+#contact .contact-form-error {
+    display: none;
+    margin: 4px 0 0;
+    color: #ff3d00;
+    font-size: 16px;
+}
+
+#contact .contact-form-error:not(:empty) {
+    display: block;
+}
+
+#contact .input-wrapper.has-error,
+#contact .input-wrapper.has-error:focus-within {
+    border-color: #ff3d00;
+    box-shadow: 0 0 0 1px #ff3d00;
 }
 
 #contact .input-wrapper {

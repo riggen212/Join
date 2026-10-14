@@ -6,6 +6,7 @@ const DB_SUBTASKS = "/subtasks";
 const DB_GUEST_USER_ID = "0";
 let loggedUserId = null;
 
+
 /**
  * Loads data from Firebase at the requested database path.
  *
@@ -23,6 +24,7 @@ async function getData(path = "", id = "") {
 
     return await response.json();
 }
+
 
 /**
  * Writes data to a fixed Firebase database path.
@@ -46,6 +48,7 @@ async function putData(path, value) {
     return await response.json();
 }
 
+
 /**
  * Updates specific data to a fixed Firebase database path.
  *
@@ -68,6 +71,7 @@ async function patchData(path = "", value = {}) {
     return await response.json();
 }
 
+
 /**
  * Deletes data from a Firebase database path.
  *
@@ -77,6 +81,7 @@ async function patchData(path = "", value = {}) {
 function deleteData(path) {
     return putData(path, null);
 }
+
 
 /**
  * Selects a contact card and opens its detail view.
@@ -97,6 +102,7 @@ function showContactDetails(card) {
     document.body.classList.add("contact-details-open");
 }
 
+
 /**
  * Plays the contact details slide-in animation again if it already exists.
  * On the first click, the CSS class starts the animation instead.
@@ -116,6 +122,7 @@ function restartContactDetailsAnimation(contactDetails) {
     animation.play();
 }
 
+
 /**
  * Hides the contact details and clears the current selection.
  *
@@ -134,6 +141,7 @@ function hideContactDetails() {
     document.getElementById("contact-details-info").innerHTML = "";
 }
 
+
 /**
  * Hides the contact actions and resets the mobile menu button.
  *
@@ -146,6 +154,7 @@ function hideContactActions() {
     actions?.classList.remove("is-open");
     menuButton?.setAttribute("aria-expanded", "false");
 }
+
 
 /**
  * Opens a modal dialog and prevents background scrolling.
@@ -161,6 +170,7 @@ function openDialog(dialogId) {
     dialog.showModal();
 }
 
+
 /**
  * Finishes the closing animation of the contact form dialog.
  *
@@ -171,6 +181,7 @@ function closeContactDialog(event) {
     closeAnimatedDialog(event, "contact-closing");
 }
 
+
 /**
  * Finishes the closing animation of a profile-style dialog.
  *
@@ -180,6 +191,7 @@ function closeContactDialog(event) {
 function closeProfileDialog(event) {
     closeAnimatedDialog(event, "dialog-profile-closing");
 }
+
 
 /**
  * Starts the closing animation of a dialog.
@@ -192,6 +204,7 @@ function dialogSlideOut(event, closingClass) {
     event.preventDefault();
     event.currentTarget.classList.add(closingClass);
 }
+
 
 /**
  * Opens the dialog for creating a new contact.
@@ -207,6 +220,7 @@ function addNewContact() {
         openDialog("contact");
     }
 }
+
 
 /**
  * Opens the edit dialog with the currently selected contact's data.
@@ -227,6 +241,7 @@ function editContact() {
     openDialog("contact");
 }
 
+
 /**
  * Deletes the currently selected contact.
  *
@@ -242,6 +257,7 @@ async function deleteContact() {
         console.error("Contact could not be deleted:", error);
     }
 }
+
 
 /**
  * Closes a dialog after its closing animation has finished.
@@ -260,15 +276,17 @@ function closeAnimatedDialog(event, closingClass) {
     dialog.classList.remove(closingClass);
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+    showDialogNotification(dialog);
 }
 
+
 /**
- * Closes the dialog from which a contact was deleted.
- * The mobile actions dialog closes immediately to release its backdrop.
+ * Closes the dialog from which a contact was deleted and shows a confirmation.
  *
+ * @param {string} message - The success message to show after closing.
  * @returns {void}
  */
-function closeDialogAfterContactDeletion() {
+function closeDialogAfterContactDeletion(message) {
     const contactDialog = document.getElementById("contact");
     const actionsDialog = document.getElementById("dialog-edit-contact");
 
@@ -277,8 +295,11 @@ function closeDialogAfterContactDeletion() {
         document.body.classList.remove("overflow-hidden");
     }
 
-    if (contactDialog.open) contactDialog.requestClose();
+    if (!contactDialog.open) return showNotification(message);
+    contactDialog.dataset.notification = message;
+    contactDialog.requestClose();
 }
+
 
 /**
  * Closes the task dialog immediately and clears its state.
@@ -293,6 +314,7 @@ function closeTaskDialogImmediately(dialog) {
     document.body.classList.remove("overflow-hidden");
     dialog.close();
 }
+
 
 /**
  * Updates the nav links and the profile button with die logged user's ID,
@@ -309,6 +331,7 @@ async function loadCurrentUser() {
     return userId;
 }
 
+
 /**
  * Extract the user's ID from the URL and returns it.
  *
@@ -318,6 +341,7 @@ function getUserId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("user");
 }
+
 
 /**
  * Updates the nav links with the currently logged user.
@@ -332,6 +356,7 @@ function setUserIdsToNavLinks(userId) {
         link.href = url.href;
     });
 }
+
 
 /**
  * Updates the profile button's label with the user's initials retrieved from the database.
@@ -348,4 +373,17 @@ async function setInitialsToProfileButton(userId) {
     }
 
     button.textContent = userInitials;
+}
+
+
+/**
+ * Returns the notification container for the active screen size.
+ *
+ * @returns {HTMLElement} The element that contains the notification.
+ */
+function getNotificationContainer() {
+    const contactDetails = document.getElementById("show-details");
+    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+
+    return isDesktop && contactDetails ? contactDetails : document.body;
 }
