@@ -237,6 +237,24 @@ body.contact-details-open {
     aspect-ratio: 1;
 }
 
+body:has(.contacts-content) #notification {
+    top: auto;
+    bottom: calc(96px + clamp(48px, 14vw, 64px) + 16px);
+    left: 50%;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    text-align: center;
+    transform: translateX(-50%);
+}
+
+body:has(.contacts-content) #notification.is-visible {
+    animation: notification-slide-in-mobile 256ms linear forwards;
+}
+
+body:has(.contacts-content) #notification.is-closing {
+    animation: notification-slide-out-mobile 256ms linear forwards;
+}
+
 @media (min-width: 1280px) {
     .board { overflow: visible; }
 
@@ -354,6 +372,21 @@ body.contact-details-open {
     }
 
     #contact-actions > .button { font-size: 16px; }
+
+    body:has(.contacts-content) #show-details > #notification {
+        position: static;
+        width: fit-content;
+        margin-top: var(--space-lg);
+        transform: none;
+    }
+
+    body:has(.contacts-content) #show-details > #notification.is-visible {
+        animation: notification-slide-in-desktop 160ms linear forwards;
+    }
+
+    body:has(.contacts-content) #show-details > #notification.is-closing {
+        animation: notification-slide-out-desktop 160ms linear forwards;
+    }
 }
 
 @keyframes contact-details-slide-in {
@@ -364,4 +397,24 @@ body.contact-details-open {
     to {
         transform: translateX(0);
     }
+}
+
+@keyframes notification-slide-in-mobile {
+    from { transform: translate(-50%, 100dvh); }
+    to { transform: translate(-50%, 0); }
+}
+
+@keyframes notification-slide-out-mobile {
+    from { transform: translate(-50%, 0); }
+    to { transform: translate(-50%, 100dvh); }
+}
+
+@keyframes notification-slide-in-desktop {
+    from { transform: translateX(100vw); }
+    to { transform: translateX(0); }
+}
+
+@keyframes notification-slide-out-desktop {
+    from { transform: translateX(0); }
+    to { transform: translateX(100vw); }
 }
