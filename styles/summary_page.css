@@ -16,16 +16,8 @@
 
 .main {
     min-height: calc(100vh - 160px);
-    margin-top: 80px;
-    margin-bottom: 80px;
-    padding-left: 16px;
-    padding-right: 8px;
-
-    /*
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    */
+    padding: 0 8px;
+    padding-top: 80px;
     
     display: flex;
     justify-content: flex-start;
@@ -40,11 +32,23 @@
 }
 
 .headline-h2 {
-    display: none;
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 8;
+    background-color: #f6f7f8;
+
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: var(--font-heading-h2);
+
+    animation: greetingFadeOut 4s ease forwards;
 }
 
 .headline-strong {
@@ -104,7 +108,14 @@
     gap: 12px;
 }
 
-.flexbox-container {
+.flexbox-container-left {
+    width: var(--todo-card-width);
+    border: 1px solid #d1d1d1;
+    border-radius: 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.flexbox-container-right {
     width: var(--todo-card-width);
     border: 1px solid #d1d1d1;
     border-radius: 24px;
@@ -125,6 +136,16 @@
 .section-img {
     width: var(--image-to-do-size);
     height: var(--image-to-do-size);
+    background-color: #2A3647;
+    border-radius: 50%;
+}
+
+.section-img-right {
+    width: var(--image-to-do-size);
+    height: var(--image-to-do-size);
+    background-color: #2A3647;
+    border-radius: 50%;
+    padding: 10px;
 }
 
 .flexbox-inner {
@@ -168,7 +189,7 @@
 }
 
 .deadline-hr {
-    height: 60px;
+    height: 100px;
     align-self: center;
 }
 
@@ -201,6 +222,31 @@
     padding: var(--space-xs);
 }
 
+@keyframes greetingFadeOut {
+    0%, 75% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes summaryFadeIn {
+    0%, 75% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.headline-container,
+.section-container {
+    animation: summaryFadeIn 4s ease forwards;
+}
 /* ==== Desktop ==== */
 
 @media (min-width: 1280px) {
@@ -236,6 +282,10 @@
         width: 100%;
     }
 
+    .desktop-wrapper:has(.deadline-container:hover) .headline-h2 {
+        transform: translateY(12px);
+    }
+
     .headline-container {
         display: flex;
         flex-direction: row;
@@ -269,12 +319,67 @@
         gap: 16px;
     }
 
+    .flexbox-container-left {
+        width: var(--todo-card-desktop-width);
+        transform-origin: left center;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .flexbox-container-left:hover {
+        transform: scaleX(1.05) scaleY(1.10);
+        background-color: #2A3647;
+    }
+
+    .flexbox-container-left:hover .section-img {
+        background-color: white;
+        content: url("../assets/icons/summary-pencil-hover.svg");
+    }
+    
+    .flexbox-container-left:hover .section-headline,
+    .flexbox-container-left:hover .section-span {
+        color: white;
+    }
+
+    .flexbox-container-right {
+    width: var(--todo-card-desktop-width);
+    transform-origin: right center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .flexbox-container-right:hover {
+        transform: scaleX(1.05) scaleY(1.10);
+        background-color: #2A3647;
+    }
+
+    .flexbox-container-right:hover .section-img-right{
+        background-color: white;
+        content: url("../assets/icons/check-button-hover.svg");
+    }
+
+    .flexbox-container-right:hover .section-headline,
+    .flexbox-container-right:hover .section-span {
+        color: white;
+    }
+
     .flexbox-container {
         width: var(--todo-card-desktop-width);
     }
 
     .deadline-container {
+        transition: height 0.2s ease;
         height: 168px;
+    }
+
+    .deadline-container:hover {
+        background-color: #2A3647;
+        height: 180px;
+    }
+
+    .deadline-container:hover .section-headline,
+    .deadline-container:hover .section-span,
+    .deadline-container:hover .deadline-hr,
+    .deadline-container:hover .deadline-date {
+        color: white;
     }
 
     .flexbox {
@@ -284,6 +389,9 @@
     .section-img {
         height: 69px;
         width: 69px;
+        content: url(../assets/icons/summary-pencil.svg);
+        background-color: #2A3647;;
+        padding: 10px;
     }
 
     .deadline-inner {
@@ -297,5 +405,39 @@
 
     .taks-inner {
         padding: 16px 12px;
+    }
+
+    .task-container-left {
+    transform-origin: left center;
+    }
+
+    .task-container-middle {
+        transform-origin: center center;
+    }
+
+    .task-container-right {
+        transform-origin: right center;
+    }
+
+    .task-container-left,
+    .task-container-middle,
+    .task-container-right {
+        transition: transform 0.2s ease;
+    }
+
+    .task-container-left:hover,
+    .task-container-middle:hover,
+    .task-container-right:hover {
+        transform: scale(1.05);
+        background-color: #2A3647;
+    }
+
+    .task-container-left:hover h3,
+    .task-container-left:hover span,
+    .task-container-middle:hover h3,
+    .task-container-middle:hover span,
+    .task-container-right:hover h3,
+    .task-container-right:hover span {
+        color: white;
     }
 }
