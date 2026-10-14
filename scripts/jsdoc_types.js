@@ -116,16 +116,28 @@
  */
 
 /**
- * Aggregated task counts and upcoming urgent deadline displayed on the summary page.
+ * Task counts and deadline information displayed on the summary page.
  *
- * @typedef {Object} TaskSummaryData
+ * @typedef {TaskSummaryCounts & {
+ *   upcomingDeadline: string,
+ *   upcomingDeadlineWritten: string
+ * }} TaskSummaryData
+ *
+ * @property {string} upcomingDeadline - Earliest due date of an unfinished task on or after the reference date, in YYYY-MM-DD format. Empty if no task qualifies.
+ * @property {string} upcomingDeadlineWritten - The deadline formatted with an English month name, day and year, or "-" if no deadline exists.
+ */
+
+/**
+ * Task counts used by the summary page.
+ * Missing count properties represent zero tasks.
+ *
+ * @typedef {Object} TaskSummaryCounts
  * @property {number} [toDo] - Number of tasks with status "toDo".
  * @property {number} [inProgress] - Number of tasks with status "inProgress".
  * @property {number} [awaitFeedback] - Number of tasks with status "awaitFeedback".
  * @property {number} [done] - Number of tasks with status "done".
- * @property {number} [board] - Total number of tasks.
- * @property {number} [urgent] - Number of urgent tasks.
- * @property {string} [upcomingDeadline] - Earliest urgent deadline on or after today in YYYY-MM-DD format.
+ * @property {number} [board] - Total number of tasks, including completed tasks.
+ * @property {number} [urgent] - Number of unfinished tasks that are overdue or due on or before the upcoming deadline, regardless of priority.
  */
 
 /**
