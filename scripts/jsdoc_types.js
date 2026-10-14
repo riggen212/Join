@@ -89,6 +89,51 @@
  */
 
 /**
+ * Data needed to render a task card.
+ *
+ * @typedef {Object} TaskCardData
+ * @property {TaskId} id - ID of the task.
+ * @property {Task} task - The task data.
+ * @property {SubtasksData} subtasksData - Subtask summary and progress.
+ * @property {string} assigneesHtml - HTML for the assigned contacts.
+ */
+
+/**
+ * Data needed to render a task overlay.
+ *
+ * @typedef {Object} TaskOverlayData
+ * @property {TaskId} id - ID of the task.
+ * @property {Task} task - The task data.
+ * @property {string} assigneesHtml - HTML for the assigned contacts.
+ * @property {string} subtasksHtml - HTML for the subtask checkboxes and titles.
+ */
+
+/**
+ * Task counts and deadline information displayed on the summary page.
+ *
+ * @typedef {TaskSummaryCounts & {
+ *   upcomingDeadline: string,
+ *   upcomingDeadlineWritten: string
+ * }} TaskSummaryData
+ *
+ * @property {string} upcomingDeadline - Earliest due date of an unfinished task on or after the reference date, in YYYY-MM-DD format. Empty if no task qualifies.
+ * @property {string} upcomingDeadlineWritten - The deadline formatted with an English month name, day and year, or "-" if no deadline exists.
+ */
+
+/**
+ * Task counts used by the summary page.
+ * Missing count properties represent zero tasks.
+ *
+ * @typedef {Object} TaskSummaryCounts
+ * @property {number} [toDo] - Number of tasks with status "toDo".
+ * @property {number} [inProgress] - Number of tasks with status "inProgress".
+ * @property {number} [awaitFeedback] - Number of tasks with status "awaitFeedback".
+ * @property {number} [done] - Number of tasks with status "done".
+ * @property {number} [board] - Total number of tasks, including completed tasks.
+ * @property {number} [urgent] - Number of unfinished tasks that are overdue or due on or before the upcoming deadline, regardless of priority.
+ */
+
+/**
  * @typedef {Object} SubtasksData
  * @property {number} amount - Amount of all subtasks of a single task.
  * @property {number} completedAmount - Amount of all completed subtasks of a single task.

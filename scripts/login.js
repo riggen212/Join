@@ -13,8 +13,8 @@ function checkLoginData(users, email, password) {
 
     for (let key in users) {
         if (
-            users[key].profile.email === email &&
-            users[key].profile.password === password
+            users[key].email === email &&
+            users[key].password === password
         ) {
             loginSuccessful = true;
             window.location.href = `./pages/summary_page.html?user=${key}`;

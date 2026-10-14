@@ -40,7 +40,7 @@ function openContacts() {
  *
  * @type {ContactDirectory}
  */
-const contacts = {};
+const localContacts = {};
 
 /**
  * The board including the users tasks in separate columns based on each task's status.
@@ -92,7 +92,7 @@ let activeSearchTerm = "";
 async function initBoard() {
     try {
         loggedUserId = await loadCurrentUser();
-        await loadUserBoardData(loggedUserId);
+        await loadBoardData();
         renderBoard(Object.values(board));
     } catch (error) {
         console.error(error);
@@ -144,12 +144,7 @@ function getColumnContentHtml(columnTasksObject) {
     let columnContentHtml = "";
 
     tasksArray.forEach(([taskId, task]) => {
-        const taskData = {
-            id: taskId,
-            task: task,
-            subtasksData: getSubtasksCardData(task),
-            assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
-        };
+        const taskData = getTaskCardData(taskId, task);
 
         columnContentHtml += getTaskCardTemplate(taskData);
     });
@@ -169,11 +164,11 @@ function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
     let assigneesHtml = "";
 
     assignees.forEach((contact) => {
-        if (!contacts[contact]) {
+        if (!localContacts[contact]) {
             return;
         }
 
-        assigneesHtml += getUserBadgeTemplateFunction(contacts[contact]);
+        assigneesHtml += getUserBadgeTemplateFunction(localContacts[contact]);
     });
 
     return assigneesHtml;
@@ -197,28 +192,70 @@ function getTaskOverlaySubtasksHtml(subtasks) {
 }
 
 /**
- * Updates the subtask's completion status and refreshes the task card.
+ * Toggles a subtask's completion status, refreshes the task card,
+ * and saves the change. Reverts the change if saving fails.
  *
+ * @param {HTMLInputElement} checkbox - The changed checkbox.
  * @param {TaskId} taskId - ID of the task containing the subtask.
- * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
+ * @param {Task["status"]} taskStatus - Current board column of the task.
  * @param {SubtaskId} subtaskId - ID of the subtask being toggled.
+ * @returns {Promise<void>} Resolves after saving or reverting the change.
  */
-function handleSubtaskCheckboxChange(taskId, taskStatus, subtaskId) {
+async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtaskId) {
     const task = getTaskById(taskId, taskStatus);
     const subtask = task.subtasks[subtaskId];
 
-    subtask.completed = !subtask.completed;
-    updateTaskCardSubtasksState(taskId, task);
+    toggleSubtaskCompletion(taskId, task, subtask);
 
+    await saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask);
+}
+
+/**
+ * Saves the subtask's completion status to the database.
+ * Reverts the local state and checkbox if saving fails.
+ *
+ * @param {HTMLInputElement} checkbox - The changed checkbox.
+ * @param {TaskId} taskId - ID of the task containing the subtask.
+ * @param {Task} task - The task containing the subtask.
+ * @param {SubtaskId} subtaskId - ID of the subtask to update.
+ * @param {Subtask} subtask - The subtask with the updated completion status.
+ * @returns {Promise<void>} Resolves after saving or reverting the change.
+ */
+async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask) {
     try {
-        updateSubtaskInDatabase(taskId, subtaskId, {
+        await updateSubtaskInDatabase(taskId, subtaskId, {
             completed: subtask.completed,
         });
     } catch (error) {
-        subtask.completed = !subtask.completed;
-        updateTaskCardSubtasksState(taskId, task);
+        revertSubtaskCompletion(checkbox, taskId, task, subtask);
         console.error(`Updating the database has failed:\n${error}`);
     }
+}
+
+/**
+ * Inverts the subtask's completion status and refreshes the task card.
+ *
+ * @param {TaskId} taskId - ID of the task containing the subtask.
+ * @param {Task} task - The task whose card is refreshed.
+ * @param {Subtask} subtask - The subtask to toggle.
+ */
+function toggleSubtaskCompletion(taskId, task, subtask) {
+    subtask.completed = !subtask.completed;
+    updateTaskCardSubtasksState(taskId, task);
+}
+
+/**
+ * Reverts a subtask completion toggle, refreshes the task card,
+ * and restores the checkbox state.
+ *
+ * @param {HTMLInputElement} checkbox - The checkbox to restore.
+ * @param {TaskId} taskId - ID of the task containing the subtask.
+ * @param {Task} task - The task whose card is refreshed.
+ * @param {Subtask} subtask - The subtask whose toggle is reverted.
+ */
+function revertSubtaskCompletion(checkbox, taskId, task, subtask) {
+    toggleSubtaskCompletion(taskId, task, subtask);
+    checkbox.checked = subtask.completed;
 }
 
 /**
@@ -263,21 +300,25 @@ function openTaskDialog(taskId, taskStatus) {
 
     try {
         const task = getTaskById(taskId, taskStatus);
+        const taskData = getTaskOverlayData(taskId, task);
 
-        const taskData = {
-            id: taskId,
-            task: task,
-            assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
-            subtasksHtml: getTaskOverlaySubtasksHtml(task.subtasks),
-        };
-
-        dialog.dataset.taskId = taskId;
-        dialog.dataset.taskStatus = taskStatus;
-        dialog.innerHTML = getTaskOverlayTemplate(taskData);
+        updateTaskDialog(dialog, taskData);
         openDialog("dialog-task");
     } catch (error) {
         console.error(error);
     }
+}
+
+/**
+ * Updates the task dialog's task ID, status, and HTML content.
+ *
+ * @param {HTMLDialogElement} dialog - The task dialog to update.
+ * @param {TaskOverlayData} taskData - The prepared task overlay data.
+ */
+function updateTaskDialog(dialog, taskData) {
+    dialog.dataset.taskId = taskData.id;
+    dialog.dataset.taskStatus = taskData.task.status;
+    dialog.innerHTML = getTaskOverlayTemplate(taskData);
 }
 
 function openAddTaskDialog() {
