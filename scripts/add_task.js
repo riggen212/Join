@@ -28,9 +28,12 @@ function initAddTaskForm(form, status = "toDo") {
     initializeTaskDate(form);
     initializeAssignedContacts(form);
     initializeAssignedSearch(form);
+    initializeDropdownToggles(form);
+    initializeFieldValidation(form);
 
     updateCreateTaskButton(form);
 
+    form.addEventListener("keydown", preventEnterSubmit);
     form.addEventListener("input", () => updateCreateTaskButton(form));
     form.addEventListener("change", () => updateCreateTaskButton(form));
 
@@ -57,6 +60,155 @@ function disableHtml5Validation(form) {
 }
 
 /**
+ * Prevents Enter inside an input from submitting the form.
+ * The task is only created via the Create Task button.
+ *
+ * @param {KeyboardEvent} event - The keydown event.
+ */
+function preventEnterSubmit(event) {
+    if (event.key === "Enter" && event.target.matches("input")) {
+        event.preventDefault();
+    }
+}
+
+/**
+ * Lets the dropdown fields open and close by clicking anywhere on them,
+ * including the arrow icon.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function initializeDropdownToggles(form) {
+    const assignedField = form.querySelector(".assigned-dropdown");
+    const searchInput = form.querySelector("#task-assigned");
+    const categoryField = form.querySelector("#task-category");
+    const categoryButton = categoryField?.querySelector("button");
+
+    assignedField?.querySelector(".input-wrapper").addEventListener("mousedown", (event) => {
+        if (event.target === searchInput) return;
+        toggleDropdown(event, assignedField, searchInput);
+    });
+
+    categoryButton?.addEventListener("mousedown", (event) => {
+        toggleDropdown(event, categoryField, categoryButton);
+    });
+}
+
+/**
+ * Opens a dropdown by focusing it or closes it by removing the focus.
+ *
+ * @param {MouseEvent} event - The mousedown event.
+ * @param {HTMLElement} field - The dropdown field.
+ * @param {HTMLElement} focusTarget - The element that opens the dropdown when focused.
+ */
+function toggleDropdown(event, field, focusTarget) {
+    event.preventDefault();
+
+    if (field.contains(document.activeElement)) {
+        document.activeElement.blur();
+    } else {
+        focusTarget.focus();
+    }
+}
+
+/**
+ * Shows error messages for required fields once the user leaves them.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function initializeFieldValidation(form) {
+    const titleInput = form.querySelector("#task-title");
+    const dueDateInput = form.querySelector("#task-due-date");
+    const categoryField = form.querySelector("#task-category");
+
+    titleInput?.addEventListener("blur", () => validateTitle(form));
+    dueDateInput?.addEventListener("blur", () => validateDueDate(form));
+    categoryField?.addEventListener("focusout", (event) => {
+        if (!categoryField.contains(event.relatedTarget)) validateCategory(form);
+    });
+
+    form.addEventListener("input", () => revalidateInvalidFields(form));
+    form.addEventListener("change", () => revalidateInvalidFields(form));
+}
+
+/**
+ * Updates the error messages of fields that are already marked as invalid,
+ * so the error disappears as soon as the input is corrected.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function revalidateInvalidFields(form) {
+    if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
+    if (form.querySelector("#task-due-date.is-invalid")) validateDueDate(form);
+    if (form.querySelector("#task-category > button.is-invalid")) validateCategory(form);
+}
+
+/**
+ * Shows an error if the title is empty.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function validateTitle(form) {
+    const titleInput = form.querySelector("#task-title");
+    const message = titleInput.value.trim() ? "" : "This field is required";
+
+    setFieldError(titleInput, form.querySelector("#task-title-error"), message);
+}
+
+/**
+ * Shows an error if the due date is empty or in the past.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function validateDueDate(form) {
+    const dueDateInput = form.querySelector("#task-due-date");
+    const message = dueDateInput.value
+        ? getPastDueDateError(dueDateInput.value)
+        : "This field is required";
+
+    setFieldError(dueDateInput, form.querySelector("#task-due-date-error"), message);
+}
+
+/**
+ * Shows an error if no category is selected.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function validateCategory(form) {
+    const selectedCategory = form.querySelector('input[name="category"]:checked');
+    const message = selectedCategory ? "" : "This field is required";
+
+    setFieldError(
+        form.querySelector("#task-category > button"),
+        form.querySelector("#task-category-error"),
+        message
+    );
+}
+
+/**
+ * Marks a field as invalid and shows the message, or clears both.
+ *
+ * @param {HTMLElement} field - The field to mark.
+ * @param {HTMLElement} errorElement - The element showing the message.
+ * @param {string} message - The error message, empty if the field is valid.
+ */
+function setFieldError(field, errorElement, message) {
+    if (!field || !errorElement) return;
+
+    field.classList.toggle("is-invalid", message !== "");
+    errorElement.textContent = message;
+}
+
+/**
+ * Removes all error messages from the form.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function clearFieldErrors(form) {
+    form.querySelectorAll(".is-invalid").forEach((field) => field.classList.remove("is-invalid"));
+    form.querySelectorAll(".field-error").forEach((error) => (error.textContent = ""));
+}
+
+/**
  * Loads contacts and creates the assignment options.
  *
  * @param {HTMLFormElement} form - The Add Task form.
@@ -72,7 +224,9 @@ async function initializeAssignedContacts(form) {
 
         options.replaceChildren();
 
-        Object.entries(contactDirectory ?? {}).forEach(([contactId, contact]) => {
+        Object.entries(contactDirectory ?? {})
+            .sort(([, a], [, b]) => (a.name ?? "").localeCompare(b.name ?? ""))
+            .forEach(([contactId, contact]) => {
             const name = contact.name?.trim();
             if (!name) return;
 
@@ -138,7 +292,13 @@ function filterAssignedOptions(form, searchTerm) {
 }
 
 /**
+ * Maximum number of badges shown for assigned contacts before "+N" is shown.
+ */
+const MAX_VISIBLE_ASSIGNED_BADGES = 5;
+
+/**
  * Renders a badge for every checked contact.
+ * If more contacts are checked than fit, the rest is summarized as "+N".
  *
  * @param {HTMLFormElement} form - The Add Task form.
  */
@@ -148,7 +308,10 @@ function renderAssignedBadges(form) {
 
     badges.replaceChildren();
 
-    form.querySelectorAll('input[name="assignedTo"]:checked').forEach((checkbox) => {
+    const checkedContacts = [...form.querySelectorAll('input[name="assignedTo"]:checked')];
+    const hiddenCount = checkedContacts.length - MAX_VISIBLE_ASSIGNED_BADGES;
+
+    checkedContacts.slice(0, MAX_VISIBLE_ASSIGNED_BADGES).forEach((checkbox) => {
         const option = checkbox.closest(".assigned-option");
         const sourceBadge = option?.querySelector(".badge-user");
 
@@ -163,6 +326,16 @@ function renderAssignedBadges(form) {
 
         badges.append(badge);
     });
+
+    if (hiddenCount > 0) {
+        const moreBadge = document.createElement("li");
+
+        moreBadge.className = "badge-user badge-user-more";
+        moreBadge.textContent = `+${hiddenCount}`;
+        moreBadge.setAttribute("aria-label", `${hiddenCount} more contacts`);
+
+        badges.append(moreBadge);
+    }
 }
 
 /**
@@ -359,6 +532,7 @@ function resetTaskForm(form) {
     form.querySelector("#task-category button span").textContent = "Select task category";
     form.querySelector("#subtask-list")?.replaceChildren();
     filterAssignedOptions(form, "");
+    clearFieldErrors(form);
 }
 
 /**
@@ -386,21 +560,35 @@ function updateCreateTaskButton(form) {
 
     if (!button || !titleInput || !dueDateInput) return;
 
-    const dueDate = dueDateInput.value;
-    const today = getTodayAsIsoDate();
-
-    dueDateInput.setCustomValidity(
-        dueDate && dueDate < today
-            ? "The due date cannot be in the past."
-            : ""
-    );
+    applyDueDateValidity(dueDateInput);
 
     const requiredFieldsFilled =
         titleInput.value.trim() !== "" &&
-        dueDate !== "" &&
+        dueDateInput.value !== "" &&
         selectedCategory !== null;
 
     button.disabled = !requiredFieldsFilled || !form.checkValidity();
+}
+
+/**
+ * Returns an error message if the due date lies in the past.
+ *
+ * @param {string} dueDate - The due date as YYYY-MM-DD.
+ * @returns {string} The error message, or an empty string if the date is valid.
+ */
+function getPastDueDateError(dueDate) {
+    return dueDate && dueDate < getTodayAsIsoDate()
+        ? "The due date cannot be in the past."
+        : "";
+}
+
+/**
+ * Marks the due date input as invalid if its date lies in the past.
+ *
+ * @param {HTMLInputElement} dueDateInput - The due date input.
+ */
+function applyDueDateValidity(dueDateInput) {
+    dueDateInput.setCustomValidity(getPastDueDateError(dueDateInput.value));
 }
 
 /**
@@ -427,18 +615,13 @@ async function createTask(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
-    const dueDateInput = form.querySelector("#task-due-date");
-    const today = getTodayAsIsoDate();
-    const dueDate = dueDateInput.value;
 
-    dueDateInput.setCustomValidity(
-        dueDate && dueDate < today
-            ? "The due date cannot be in the past."
-            : ""
-    );
+    applyDueDateValidity(form.querySelector("#task-due-date"));
 
     if (!form.checkValidity()) {
-        form.reportValidity();
+        validateTitle(form);
+        validateDueDate(form);
+        validateCategory(form);
         updateCreateTaskButton(form);
         return;
     }
@@ -456,6 +639,7 @@ async function createTask(event) {
         finishTaskCreation(form, taskId, task);
     } catch (error) {
         console.error("Creating Task has failed:", error);
+        showNotification("Task could not be created. Please try again.");
         updateCreateTaskButton(form);
     }
 }

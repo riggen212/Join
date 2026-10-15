@@ -377,7 +377,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
     top: 50%;
     right: var(--space-sm);
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     width: 32px;
@@ -389,17 +389,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
 
-.subtask-add-button span,
-.subtask-add-button span::before {
-    position: absolute;
-    width: 18px;
-    height: 2px;
-    background-color: currentColor;
-    content: "";
-}
-
-.subtask-add-button span::before {
-    transform: rotate(90deg);
+.subtask-add-button img {
+    width: 14px;
+    height: 14px;
 }
 
 .assigned-badges {
@@ -602,4 +594,34 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .assigned-options > li[hidden] {
     display: none;
+}
+
+.assigned-dropdown > .input-wrapper {
+    cursor: pointer;
+}
+
+.badge-user-more {
+    background-color: var(--background-dark-color);
+}
+
+.subtask-add-button {
+    border-radius: 50%;
+}
+
+.subtask-add-button:hover {
+    background-color: #eeeeee;
+}
+
+.field-error {
+    margin: var(--space-xxs) 0 0;
+    color: #ff8190;
+    font-size: 12px;
+}
+
+.field-error:empty {
+    display: none;
+}
+
+.input-wrapper.is-invalid {
+    border-color: #ff8190;
 }

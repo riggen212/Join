@@ -9,7 +9,8 @@ function renderAddTask() {
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
                                 <input class="input-wrapper" id="task-title" name="title" type="text"
-                                    placeholder="Enter a title" required />
+                                    placeholder="Enter a title" aria-describedby="task-title-error" required />
+                                <p class="field-error" id="task-title-error" aria-live="polite"></p>
 
                                 <label for="task-description"> Description </label>
                                 <div class="textarea-wrapper">
@@ -19,14 +20,16 @@ function renderAddTask() {
                                 </div>
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
-                                <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date" required />
+                                <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
+                                    aria-describedby="task-due-date-error" required />
+                                <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 
                             <!-- Right column -->
                             <div class="task-form">
-                                <span>Priority</span>
+                                <span id="task-priority-label">Priority</span>
 
-                                <div class="task-priority">
+                                <div class="task-priority" role="group" aria-labelledby="task-priority-label">
                                     <div>
                                         <button class="button" type="button" onclick="selectTaskPriority(this, 'urgent')" aria-pressed="false">
                                             Urgent
@@ -84,6 +87,7 @@ function renderAddTask() {
                                             </label>
                                         </li>
                                     </ul>
+                                    <p class="field-error" id="task-category-error" aria-live="polite"></p>
                                 </fieldset>
 
                                 <label for="subtask"> Subtasks </label>
@@ -93,7 +97,7 @@ function renderAddTask() {
                                         placeholder="Add new subtask" autocomplete="off" />
                                     <button class="subtask-add-button" type="button" id="add-subtask"
                                         aria-label="Add subtask" onclick="addSubtask(this.form)">
-                                        <span aria-hidden="true">+</span>
+                                        <img src="../assets/icons/add_mobile_blue.svg" alt="" />
                                     </button>
                                 </div>
                                 <ul class="subtask-list" id="subtask-list" aria-label="Subtasks"></ul>
