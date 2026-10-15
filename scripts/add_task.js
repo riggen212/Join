@@ -1,6 +1,7 @@
+const MAX_VISIBLE_BADGES = 5;
+
 /**
- * Bootstraps the Add Task page: renders the template into the page's
- * container and wires the form behaviors.
+ * Starts the Add Task page and renders the form.
  */
 async function initAddTaskPage() {
     const container = document.querySelector(".board-inner.add-task-inner");
@@ -12,604 +13,301 @@ async function initAddTaskPage() {
 }
 
 initAddTaskPage();
+document.addEventListener("mousedown", closeDropdownsOnOutsideClick);
 
 /**
- * Wires all behaviors of a rendered Add Task form.
- * Can be used by the Add Task page and by an Add Task dialog.
+ * Prepares a rendered task form. If a task is given, the form is filled with its data.
  *
- * @param {HTMLFormElement} form - The Add Task form.
- * @param {Task["status"]} [status="toDo"] - The status the new task receives.
- * @param {Task|null} [task=null] - A task whose values prefill the form (edit mode).
+ * @param {HTMLFormElement} form - The task form.
+ * @param {string} status - The status the new task gets.
+ * @param {Task} task - Optional task whose data is shown in the form.
  */
 function initAddTaskForm(form, status = "toDo", task = null) {
     form.dataset.taskStatus = status;
+    setMinDueDate(form);
+    loadAssignedContacts(form, task);
 
-    disableHtml5Validation(form);
-    initializeSubtasks(form);
-    initializeTaskDate(form);
-    initializeAssignedContacts(form, Object.keys(task?.assignedTo ?? {}));
-    initializeAssignedSearch(form);
-    initializeDropdownToggles(form);
-    initializeFieldValidation(form);
-
-    if (task) fillTaskForm(form, task);
+    if (task) {
+        fillTaskForm(form, task);
+    }
 
     updateCreateTaskButton(form);
-
-    form.addEventListener("keydown", preventEnterSubmit);
-    form.addEventListener("input", () => updateCreateTaskButton(form));
-    form.addEventListener("change", () => updateCreateTaskButton(form));
-
-    form.addEventListener("reset", () => {
-        requestAnimationFrame(() => {
-            renderAssignedBadges(form);
-            updateCreateTaskButton(form);
-        });
-    });
-
-    form.addEventListener("submit", form.dataset.taskId ? updateTask : createTask);
 }
 
 /**
- * Wires a task form rendered with `renderAddTask(true)` for editing an existing task.
- * After saving, a "taskupdated" event is dispatched on `document`
- * with `detail: { taskId, task }`.
+ * Prepares the task form for editing an existing task.
  *
- * @example
- * dialog.innerHTML = renderAddTask(true);
- * initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
- *
- * @param {HTMLFormElement} form - The task form.
- * @param {string} taskId - The key of the task to edit.
+ * @param {HTMLFormElement} form - The task form rendered with renderAddTask(true).
+ * @param {string} taskId - The ID of the task.
  * @param {Task} task - The task to edit.
  */
 function initEditTaskForm(form, taskId, task) {
     form.dataset.taskId = taskId;
-    form.dataset.originalDueDate = task.dueDate ?? "";
+    form.dataset.originalDueDate = task.dueDate || "";
     initAddTaskForm(form, task.status, task);
 }
 
 /**
- * Prefills the form with the values of an existing task.
- * Assigned contacts are checked when the contacts have been loaded.
+ * Is called on every input or change in the form and updates the form.
  *
  * @param {HTMLFormElement} form - The task form.
- * @param {Task} task - The task whose values are shown.
  */
-function fillTaskForm(form, task) {
-    form.querySelector("#task-title").value = task.title ?? "";
-    form.querySelector("#task-description").value = task.description ?? "";
-    form.querySelector("#task-due-date").value = task.dueDate ?? "";
-
-    fillTaskPriority(form, task.priority);
-    fillTaskCategory(form, task.category);
-    fillTaskSubtasks(form, task.subtasks);
+function updateTaskForm(form) {
+    renderAssignedBadges(form);
+    filterAssignedOptions(form);
+    updateCreateTaskButton(form);
+    revalidateInvalidFields(form);
 }
 
 /**
- * Activates the priority button that matches the task's priority.
- *
- * @param {HTMLFormElement} form - The task form.
- * @param {string} [priority] - The stored priority ("high", "medium" or "low").
- */
-function fillTaskPriority(form, priority = "medium") {
-    const priorityClass = { high: "urgent", medium: "medium", low: "low" }[priority.toLowerCase()] ?? "medium";
-
-    selectTaskPriority(form.querySelector(`#priority-${priorityClass}`), priorityClass);
-}
-
-/**
- * Selects the task's category and shows it in the category field.
- *
- * @param {HTMLFormElement} form - The task form.
- * @param {string} [category] - The stored category.
- */
-function fillTaskCategory(form, category) {
-    const radio = [...form.querySelectorAll('input[name="category"]')].find((input) => input.value === category);
-    if (!radio) return;
-
-    radio.checked = true;
-    form.querySelector("#task-category button span").textContent = category;
-}
-
-/**
- * Shows the task's subtasks in the subtask list, keeping their completion state.
- *
- * @param {HTMLFormElement} form - The task form.
- * @param {Object<string, Subtask>} [subtasks] - The stored subtasks.
- */
-function fillTaskSubtasks(form, subtasks = {}) {
-    const list = form.querySelector("#subtask-list");
-
-    Object.entries(subtasks)
-        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB, undefined, { numeric: true }))
-        .forEach(([, subtask]) => list.append(createSubtaskItem(subtask.title, subtask.completed)));
-}
-
-/**
- * Disables the browser's built-in HTML5 form validation.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- */
-function disableHtml5Validation(form) {
-    if (!form) return;
-
-    form.setAttribute("novalidate", "novalidate");
-    form.noValidate = true;
-}
-
-/**
- * Prevents Enter inside an input from submitting the form.
- * The task is only created via the Create Task button.
+ * Stops the form from being sent when Enter is pressed in an input.
  *
  * @param {KeyboardEvent} event - The keydown event.
  */
 function preventEnterSubmit(event) {
-    if (event.key === "Enter" && event.target.matches("input")) {
+    if (event.key === "Enter" && event.target.tagName === "INPUT") {
         event.preventDefault();
     }
 }
 
+// ---------- Fill form (edit mode) ----------
+
 /**
- * Lets the dropdown fields open and close by clicking anywhere on them,
- * including the arrow icon. A click outside or Escape closes them.
- * A click into the search field only closes the contact list while nothing is typed,
- * so the cursor can still be placed inside a search term.
+ * Fills the form with the data of an existing task.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {HTMLFormElement} form - The task form.
+ * @param {Task} task - The task.
  */
-function initializeDropdownToggles(form) {
-    const assignedField = form.querySelector(".assigned-dropdown");
-    const searchInput = form.querySelector("#task-assigned");
-    const categoryField = form.querySelector("#task-category");
-    const categoryButton = categoryField?.querySelector("button");
-
-    assignedField?.querySelector(".input-wrapper").addEventListener("mousedown", (event) => {
-        if (event.target === searchInput && searchInput.value !== "") return;
-        toggleDropdown(event, assignedField, searchInput);
-    });
-
-    searchInput?.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && searchInput.value === "") {
-            event.preventDefault();
-            searchInput.blur();
-        }
-    });
-
-    categoryButton?.addEventListener("mousedown", (event) => {
-        toggleDropdown(event, categoryField, categoryButton);
-    });
-
-    closeDropdownsOnOutsideClick(form, [assignedField, categoryField]);
+function fillTaskForm(form, task) {
+    form.querySelector("#task-title").value = task.title;
+    form.querySelector("#task-description").value = task.description || "";
+    form.querySelector("#task-due-date").value = task.dueDate;
+    fillPriority(form, task.priority);
+    fillCategory(form, task.category);
+    fillSubtasks(form, task.subtasks);
 }
 
 /**
- * Closes an open dropdown when the user clicks anywhere outside of it.
- * The listener removes itself once the form is no longer part of the page
- * (e.g. after the board dialog was re-rendered).
+ * Selects the priority button of the task.
  *
- * @param {HTMLFormElement} form - The Add Task form.
- * @param {(HTMLElement|null)[]} fields - The dropdown fields.
+ * @param {HTMLFormElement} form - The task form.
+ * @param {string} priority - "high", "medium" or "low".
  */
-function closeDropdownsOnOutsideClick(form, fields) {
-    function handleOutsideClick(event) {
-        if (!form.isConnected) {
-            document.removeEventListener("mousedown", handleOutsideClick);
-            return;
-        }
+function fillPriority(form, priority) {
+    let buttonName = "medium";
 
-        fields.forEach((field) => {
-            if (field && !field.contains(event.target) && field.contains(document.activeElement)) {
-                document.activeElement.blur();
-            }
-        });
-    }
+    if (priority === "high") buttonName = "urgent";
+    if (priority === "low") buttonName = "low";
 
-    document.addEventListener("mousedown", handleOutsideClick);
+    selectTaskPriority(form.querySelector("#priority-" + buttonName), buttonName);
 }
 
 /**
- * Opens a dropdown by focusing it or closes it by removing the focus.
+ * Selects the category of the task.
  *
- * @param {MouseEvent} event - The mousedown event.
- * @param {HTMLElement} field - The dropdown field.
- * @param {HTMLElement} focusTarget - The element that opens the dropdown when focused.
+ * @param {HTMLFormElement} form - The task form.
+ * @param {string} category - The category of the task.
  */
-function toggleDropdown(event, field, focusTarget) {
-    event.preventDefault();
+function fillCategory(form, category) {
+    const radios = form.querySelectorAll('input[name="category"]');
 
-    if (field.contains(document.activeElement)) {
-        document.activeElement.blur();
-    } else {
-        focusTarget.focus();
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].value === category) {
+            radios[i].checked = true;
+            form.querySelector("#task-category button span").textContent = category;
+        }
     }
 }
 
 /**
- * Shows error messages for required fields once the user leaves them.
+ * Shows the subtasks of the task in the subtask list.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {HTMLFormElement} form - The task form.
+ * @param {Object} subtasks - The subtasks of the task.
  */
-function initializeFieldValidation(form) {
-    const titleInput = form.querySelector("#task-title");
-    const dueDateInput = form.querySelector("#task-due-date");
-    const categoryField = form.querySelector("#task-category");
+function fillSubtasks(form, subtasks) {
+    if (!subtasks) return;
 
-    titleInput?.addEventListener("blur", () => validateTitle(form));
-    dueDateInput?.addEventListener("blur", () => validateDueDate(form));
-    categoryField?.addEventListener("focusout", (event) => {
-        if (!categoryField.contains(event.relatedTarget)) validateCategory(form);
-    });
+    const list = form.querySelector("#subtask-list");
+    const keys = Object.keys(subtasks).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
-    form.addEventListener("input", () => revalidateInvalidFields(form));
-    form.addEventListener("change", () => revalidateInvalidFields(form));
+    for (let i = 0; i < keys.length; i++) {
+        const subtask = subtasks[keys[i]];
+        list.insertAdjacentHTML("beforeend", getSubtaskTemplate(subtask.title, subtask.completed));
+    }
 }
 
-/**
- * Updates the error messages of fields that are already marked as invalid,
- * so the error disappears as soon as the input is corrected.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- */
-function revalidateInvalidFields(form) {
-    if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
-    if (form.querySelector("#task-due-date.is-invalid")) validateDueDate(form);
-    if (form.querySelector("#task-category > button.is-invalid")) validateCategory(form);
-}
+// ---------- Assigned contacts ----------
 
 /**
- * Shows an error if the title is empty.
+ * Loads the contacts from the database and shows them in the "Assigned to" list.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {HTMLFormElement} form - The task form.
+ * @param {Task} task - Optional task whose contacts are checked.
  */
-function validateTitle(form) {
-    const titleInput = form.querySelector("#task-title");
-    const message = titleInput.value.trim() ? "" : "This field is required";
-
-    setFieldError(titleInput, form.querySelector("#task-title-error"), message);
-}
-
-/**
- * Shows an error if the due date is empty or in the past.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- */
-function validateDueDate(form) {
-    const dueDateInput = form.querySelector("#task-due-date");
-    const message = dueDateInput.value
-        ? getPastDueDateError(dueDateInput.value, form.dataset.originalDueDate)
-        : "This field is required";
-
-    setFieldError(dueDateInput, form.querySelector("#task-due-date-error"), message);
-}
-
-/**
- * Shows an error if no category is selected.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- */
-function validateCategory(form) {
-    const selectedCategory = form.querySelector('input[name="category"]:checked');
-    const message = selectedCategory ? "" : "This field is required";
-
-    setFieldError(
-        form.querySelector("#task-category > button"),
-        form.querySelector("#task-category-error"),
-        message
-    );
-}
-
-/**
- * Marks a field as invalid and shows the message, or clears both.
- *
- * @param {HTMLElement} field - The field to mark.
- * @param {HTMLElement} errorElement - The element showing the message.
- * @param {string} message - The error message, empty if the field is valid.
- */
-function setFieldError(field, errorElement, message) {
-    if (!field || !errorElement) return;
-
-    field.classList.toggle("is-invalid", message !== "");
-    errorElement.textContent = message;
-}
-
-/**
- * Removes all error messages from the form.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- */
-function clearFieldErrors(form) {
-    form.querySelectorAll(".is-invalid").forEach((field) => field.classList.remove("is-invalid"));
-    form.querySelectorAll(".field-error").forEach((error) => (error.textContent = ""));
-}
-
-/**
- * Loads contacts and creates the assignment options.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- * @param {string[]} [assignedContactIds=[]] - IDs of contacts that are checked initially.
- * @returns {Promise<void>}
- */
-async function initializeAssignedContacts(form, assignedContactIds = []) {
-    const options = form.querySelector("#assigned-options");
-
-    if (!options) return;
-
+async function loadAssignedContacts(form, task) {
     try {
-        const contactDirectory = await getData(DB_CONTACTS);
-
-        options.replaceChildren();
-
-        Object.entries(contactDirectory ?? {})
-            .sort(([, a], [, b]) => (a.name ?? "").localeCompare(b.name ?? ""))
-            .forEach(([contactId, contact]) => {
-            const name = contact.name?.trim();
-            if (!name) return;
-
-            const initials = contact.initials || getInitialsFromName(name);
-
-            const item = document.createElement("li");
-            const label = document.createElement("label");
-            const badge = document.createElement("span");
-            const nameLabel = document.createElement("span");
-            const checkbox = document.createElement("input");
-
-            label.className = "assigned-option";
-
-            badge.className = `badge-user ${contact.colorClass || ""}`.trim();
-            badge.textContent = initials;
-
-            nameLabel.textContent = name;
-
-            checkbox.type = "checkbox";
-            checkbox.name = "assignedTo";
-            checkbox.value = contactId;
-            checkbox.checked = assignedContactIds.includes(contactId);
-
-            checkbox.addEventListener("change", () => {
-                renderAssignedBadges(form);
-                updateCreateTaskButton(form);
-            });
-
-            label.append(badge, nameLabel, checkbox);
-            item.append(label);
-            options.append(item);
-        });
-
-        renderAssignedBadges(form);
+        const contacts = await getData(DB_CONTACTS);
+        renderAssignedOptions(form, contacts || {}, task);
     } catch (error) {
-        console.error("Contacts for task assignment could not be loaded:", error);
+        console.error("Contacts could not be loaded:", error);
     }
 }
 
 /**
- * Filters the contact options while typing into the assignment search field.
+ * Renders the contacts sorted by name.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {HTMLFormElement} form - The task form.
+ * @param {Object} contacts - All contacts.
+ * @param {Task} task - Optional task whose contacts are checked.
  */
-function initializeAssignedSearch(form) {
-    const searchInput = form.querySelector("#task-assigned");
-    if (!searchInput) return;
+function renderAssignedOptions(form, contacts, task) {
+    const assignedTo = task && task.assignedTo ? task.assignedTo : {};
+    const contactIds = Object.keys(contacts).filter((id) => contacts[id].name);
+    let html = "";
 
-    searchInput.addEventListener("input", () => filterAssignedOptions(form, searchInput.value));
+    contactIds.sort((a, b) => contacts[a].name.localeCompare(contacts[b].name));
+
+    for (let i = 0; i < contactIds.length; i++) {
+        const contact = contacts[contactIds[i]];
+        const initials = contact.initials || getInitialsFromName(contact.name);
+        html += getAssignedOptionTemplate(contactIds[i], contact, initials, assignedTo[contactIds[i]] === true);
+    }
+
+    form.querySelector("#assigned-options").innerHTML = html;
+    renderAssignedBadges(form);
 }
 
 /**
- * Shows only the contact options whose name contains the search term.
+ * Shows a badge for every checked contact. If there are too many, "+N" is shown.
  *
- * @param {HTMLFormElement} form - The Add Task form.
- * @param {string} searchTerm - The text entered into the search field.
- */
-function filterAssignedOptions(form, searchTerm) {
-    const term = searchTerm.trim().toLowerCase();
-
-    form.querySelectorAll("#assigned-options > li").forEach((item) => {
-        item.hidden = !item.textContent.toLowerCase().includes(term);
-    });
-}
-
-/**
- * Maximum number of badges shown for assigned contacts before "+N" is shown.
- */
-const MAX_VISIBLE_ASSIGNED_BADGES = 5;
-
-/**
- * Renders a badge for every checked contact.
- * If more contacts are checked than fit, the rest is summarized as "+N".
- *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {HTMLFormElement} form - The task form.
  */
 function renderAssignedBadges(form) {
-    const badges = form.querySelector("#assigned-badges");
-    if (!badges) return;
+    const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
+    let html = "";
 
-    badges.replaceChildren();
+    for (let i = 0; i < checkedBoxes.length && i < MAX_VISIBLE_BADGES; i++) {
+        const option = checkedBoxes[i].closest(".assigned-option");
+        const badge = option.querySelector(".badge-user");
+        const name = option.querySelectorAll("span")[1].textContent;
+        html += getAssignedBadgeTemplate(badge.className, badge.textContent, name);
+    }
 
-    const checkedContacts = [...form.querySelectorAll('input[name="assignedTo"]:checked')];
-    const hiddenCount = checkedContacts.length - MAX_VISIBLE_ASSIGNED_BADGES;
+    if (checkedBoxes.length > MAX_VISIBLE_BADGES) {
+        html += getMoreBadgeTemplate(checkedBoxes.length - MAX_VISIBLE_BADGES);
+    }
 
-    checkedContacts.slice(0, MAX_VISIBLE_ASSIGNED_BADGES).forEach((checkbox) => {
-        const option = checkbox.closest(".assigned-option");
-        const sourceBadge = option?.querySelector(".badge-user");
+    form.querySelector("#assigned-badges").innerHTML = html;
+}
 
-        if (!sourceBadge) return;
+/**
+ * Shows only the contacts whose name contains the search text.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+function filterAssignedOptions(form) {
+    const searchText = form.querySelector("#task-assigned").value.trim().toLowerCase();
+    const options = form.querySelectorAll("#assigned-options > li");
 
-        const badge = document.createElement("li");
-        const name = option.querySelectorAll("span")[1]?.textContent || "Assigned contact";
-
-        badge.className = sourceBadge.className;
-        badge.textContent = sourceBadge.textContent;
-        badge.setAttribute("aria-label", name);
-
-        badges.append(badge);
-    });
-
-    if (hiddenCount > 0) {
-        const moreBadge = document.createElement("li");
-
-        moreBadge.className = "badge-user badge-user-more";
-        moreBadge.textContent = `+${hiddenCount}`;
-        moreBadge.setAttribute("aria-label", `${hiddenCount} more contacts`);
-
-        badges.append(moreBadge);
+    for (let i = 0; i < options.length; i++) {
+        const name = options[i].textContent.toLowerCase();
+        options[i].hidden = !name.includes(searchText);
     }
 }
 
 /**
  * Creates initials from the first two parts of a name.
  *
- * @param {string} name - The complete name.
- * @returns {string} The generated initials.
+ * @param {string} name - The full name.
+ * @returns {string} The initials, e.g. "AM" for "Anton Mayer".
  */
 function getInitialsFromName(name) {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((part) => part.charAt(0))
-        .join("")
-        .toUpperCase();
+    const parts = name.trim().split(" ");
+    let initials = parts[0].charAt(0);
+
+    if (parts.length > 1) {
+        initials += parts[1].charAt(0);
+    }
+
+    return initials.toUpperCase();
+}
+
+// ---------- Dropdowns ----------
+
+/**
+ * Opens or closes the "Assigned to" list when the field or arrow is clicked.
+ * A click into the search field only closes the list if nothing is typed.
+ *
+ * @param {MouseEvent} event - The mousedown event.
+ */
+function toggleAssignedDropdown(event) {
+    const searchInput = event.currentTarget.querySelector("#task-assigned");
+
+    if (event.target === searchInput && searchInput.value !== "") return;
+
+    toggleDropdown(event, searchInput);
 }
 
 /**
- * Enables adding subtasks with Enter as well as the adjacent add button.
+ * Opens or closes the category list when the field is clicked.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {MouseEvent} event - The mousedown event.
  */
-function initializeSubtasks(form) {
-    const subtaskInput = form?.querySelector("#subtask");
-    if (!subtaskInput) return;
+function toggleCategoryDropdown(event) {
+    toggleDropdown(event, event.currentTarget);
+}
 
-    subtaskInput.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") return;
+/**
+ * A dropdown is open while something inside it has the focus.
+ * So it is opened by setting the focus and closed by removing it.
+ *
+ * @param {MouseEvent} event - The mousedown event.
+ * @param {HTMLElement} focusElement - The element that gets the focus to open the dropdown.
+ */
+function toggleDropdown(event, focusElement) {
+    const dropdown = focusElement.closest("fieldset");
 
+    event.preventDefault();
+
+    if (dropdown.contains(document.activeElement)) {
+        document.activeElement.blur();
+    } else {
+        focusElement.focus();
+    }
+}
+
+/**
+ * Closes the "Assigned to" list with Escape when the search field is empty.
+ *
+ * @param {KeyboardEvent} event - The keydown event.
+ */
+function closeAssignedOnEscape(event) {
+    if (event.key === "Escape" && event.target.value === "") {
         event.preventDefault();
-        addSubtask(form);
-    });
+        event.target.blur();
+    }
 }
 
 /**
- * Adds a subtask to the current task form.
+ * Closes an open dropdown when the user clicks somewhere outside of it.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {MouseEvent} event - The mousedown event.
  */
-function addSubtask(form) {
-    const input = form?.querySelector("#subtask");
-    const list = form?.querySelector("#subtask-list");
-    const title = input?.value.trim();
+function closeDropdownsOnOutsideClick(event) {
+    const dropdowns = document.querySelectorAll(".assigned-dropdown, .category-field");
 
-    if (!input || !list || !title) return;
-
-    list.append(createSubtaskItem(title));
-    input.value = "";
-    input.focus();
+    for (let i = 0; i < dropdowns.length; i++) {
+        if (dropdowns[i].contains(document.activeElement) && !dropdowns[i].contains(event.target)) {
+            document.activeElement.blur();
+        }
+    }
 }
 
 /**
- * Creates a subtask list item with edit and delete actions.
+ * Shows the selected category in the field and closes the list.
  *
- * @param {string} title - The subtask title.
- * @param {boolean} [completed=false] - Whether the subtask is already done.
- * @returns {HTMLLIElement} The subtask list item.
- */
-function createSubtaskItem(title, completed = false) {
-    const item = document.createElement("li");
-    item.className = "subtask-item";
-    item.dataset.completed = String(Boolean(completed));
-    item.innerHTML = `
-        <span class="subtask-title"></span>
-        <div class="subtask-actions">
-            <button type="button" class="subtask-edit-button" aria-label="Edit subtask">
-                <img src="../assets/icons/edit.svg" alt="">
-            </button>
-            <span class="subtask-actions-divider" aria-hidden="true"></span>
-            <button type="button" class="subtask-remove-button" aria-label="Delete subtask">
-                <img src="../assets/icons/delete.svg" alt="">
-            </button>
-        </div>
-    `;
-
-    const titleElement = item.querySelector(".subtask-title");
-    titleElement.textContent = title;
-    titleElement.addEventListener("dblclick", () => editSubtask(item));
-    item.querySelector(".subtask-edit-button").addEventListener("click", () => editSubtask(item));
-    item.querySelector(".subtask-remove-button").addEventListener("click", () => item.remove());
-
-    return item;
-}
-
-/**
- * Replaces the subtask title with an input to edit it.
- * Enter or leaving the field saves, Escape discards the change.
- *
- * @param {HTMLLIElement} item - The subtask list item.
- */
-function editSubtask(item) {
-    if (item.querySelector(".subtask-edit-input")) return;
-
-    const titleElement = item.querySelector(".subtask-title");
-    const input = document.createElement("input");
-
-    input.type = "text";
-    input.className = "subtask-edit-input";
-    input.value = titleElement.textContent;
-    input.setAttribute("aria-label", "Edit subtask");
-
-    input.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter" && event.key !== "Escape") return;
-
-        event.preventDefault();
-        if (event.key === "Escape") input.value = titleElement.textContent;
-        input.blur();
-    });
-    input.addEventListener("blur", () => saveSubtaskEdit(item, input));
-
-    titleElement.hidden = true;
-    titleElement.after(input);
-    item.classList.add("is-editing");
-    input.focus();
-}
-
-/**
- * Applies the edited title, removing the subtask if the title is empty.
- *
- * @param {HTMLLIElement} item - The subtask list item.
- * @param {HTMLInputElement} input - The edit input.
- */
-function saveSubtaskEdit(item, input) {
-    const titleElement = item.querySelector(".subtask-title");
-    const newTitle = input.value.trim();
-
-    input.remove();
-    item.classList.remove("is-editing");
-    if (!newTitle) return item.remove();
-
-    titleElement.textContent = newTitle;
-    titleElement.hidden = false;
-}
-
-/**
- * Creates an object containing the task's subtasks.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- * @returns {Object} The task's subtasks.
- */
-function getTaskSubtasks(form) {
-    return Object.fromEntries(
-        [...form.querySelectorAll("#subtask-list .subtask-item")].map((item, index) => [
-            `subtask${index + 1}`,
-            {
-                title: item.querySelector(".subtask-title").textContent,
-                completed: item.dataset.completed === "true",
-            },
-        ])
-    );
-}
-
-/**
- * Updates the category field and closes its dropdown.
- *
- * @param {Event} event - The category change event.
+ * @param {Event} event - The change event of the category field.
  */
 function selectTaskCategory(event) {
     const field = event.currentTarget;
@@ -626,101 +324,326 @@ function selectTaskCategory(event) {
  * Activates the clicked priority button.
  *
  * @param {HTMLButtonElement} selectedButton - The clicked button.
- * @param {string} priority - The selected priority.
+ * @param {string} priority - "urgent", "medium" or "low".
  */
 function selectTaskPriority(selectedButton, priority) {
-    const buttons = selectedButton
-        .closest(".task-priority")
-        .querySelectorAll("button");
+    const buttons = selectedButton.closest(".task-priority").querySelectorAll("button");
 
-    buttons.forEach((button) => {
-        button.classList.remove("urgent", "medium", "low");
-        button.setAttribute("aria-pressed", button === selectedButton);
-    });
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("urgent", "medium", "low");
+        buttons[i].setAttribute("aria-pressed", buttons[i] === selectedButton);
+    }
 
     selectedButton.classList.add(priority);
 }
 
+// ---------- Subtasks ----------
+
 /**
- * Restores the form's custom UI state when it is cleared.
+ * Adds a subtask when Enter is pressed in the subtask field.
  *
- * @param {HTMLFormElement} form - The form being reset.
+ * @param {KeyboardEvent} event - The keydown event.
  */
-function resetTaskForm(form) {
-    selectTaskPriority(form.querySelector("#priority-medium"), "medium");
-    form.querySelector("#task-category button span").textContent = "Select task category";
-    form.querySelector("#subtask-list")?.replaceChildren();
-    filterAssignedOptions(form, "");
-    clearFieldErrors(form);
+function addSubtaskOnEnter(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addSubtask(event.target.form);
+    }
 }
 
 /**
- * Sets today's date as the earliest selectable due date.
- * When editing, an already past due date of the task stays selectable.
+ * Adds the text of the subtask field as a new subtask.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {HTMLFormElement} form - The task form.
  */
-function initializeTaskDate(form) {
-    const dueDateInput = form.querySelector("#task-due-date");
-    if (!dueDateInput) return;
+function addSubtask(form) {
+    const input = form.querySelector("#subtask");
+    const title = input.value.trim();
 
+    if (title === "") return;
+
+    form.querySelector("#subtask-list").insertAdjacentHTML("beforeend", getSubtaskTemplate(title, false));
+    input.value = "";
+    input.focus();
+}
+
+/**
+ * Deletes a subtask.
+ *
+ * @param {HTMLButtonElement} button - The clicked delete button.
+ */
+function deleteSubtask(button) {
+    button.closest(".subtask-item").remove();
+}
+
+/**
+ * Shows an input to edit the title of a subtask.
+ *
+ * @param {HTMLElement} element - The clicked edit button or subtask title.
+ */
+function editSubtask(element) {
+    const item = element.closest(".subtask-item");
+    const title = item.querySelector(".subtask-title");
+
+    if (item.classList.contains("is-editing")) return;
+
+    title.insertAdjacentHTML("afterend", getSubtaskEditTemplate());
+    const input = item.querySelector(".subtask-edit-input");
+    input.value = title.textContent;
+
+    title.hidden = true;
+    item.classList.add("is-editing");
+    input.focus();
+}
+
+/**
+ * Enter saves the edited subtask, Escape discards the change.
+ *
+ * @param {KeyboardEvent} event - The keydown event.
+ */
+function handleSubtaskEditKeydown(event) {
+    const input = event.target;
+
+    if (event.key === "Escape") {
+        event.preventDefault();
+        input.value = input.previousElementSibling.textContent;
+        input.blur();
+    }
+
+    if (event.key === "Enter") {
+        event.preventDefault();
+        input.blur();
+    }
+}
+
+/**
+ * Saves the edited title. An empty title deletes the subtask.
+ *
+ * @param {HTMLInputElement} input - The edit input.
+ */
+function saveSubtaskEdit(input) {
+    const item = input.closest(".subtask-item");
+    if (!item) return;
+
+    const title = item.querySelector(".subtask-title");
+    const newTitle = input.value.trim();
+
+    input.remove();
+    item.classList.remove("is-editing");
+
+    if (newTitle === "") {
+        item.remove();
+        return;
+    }
+
+    title.textContent = newTitle;
+    title.hidden = false;
+}
+
+/**
+ * Collects all subtasks of the form for the database.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {Object} The subtasks, e.g. { subtask1: { title, completed } }.
+ */
+function getTaskSubtasks(form) {
+    const items = form.querySelectorAll("#subtask-list .subtask-item");
+    const subtasks = {};
+
+    for (let i = 0; i < items.length; i++) {
+        subtasks["subtask" + (i + 1)] = {
+            title: items[i].querySelector(".subtask-title").textContent,
+            completed: items[i].dataset.completed === "true",
+        };
+    }
+
+    return subtasks;
+}
+
+// ---------- Validation ----------
+
+/**
+ * Sets the earliest selectable due date to today.
+ * When editing, an old due date of the task can still be kept.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+function setMinDueDate(form) {
     const today = getTodayAsIsoDate();
-    const originalDueDate = form.dataset.originalDueDate;
+    const originalDate = form.dataset.originalDueDate;
+    let minDate = today;
 
-    dueDateInput.min = originalDueDate && originalDueDate < today ? originalDueDate : today;
+    if (originalDate && originalDate < today) {
+        minDate = originalDate;
+    }
+
+    form.querySelector("#task-due-date").min = minDate;
 }
 
 /**
- * Enables Create Task only when required fields are filled and valid.
+ * Returns an error message if the due date is in the past.
  *
- * @param {HTMLFormElement} form - The Add Task form.
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {string} The error message or an empty string.
+ */
+function getPastDateError(form) {
+    const dueDate = form.querySelector("#task-due-date").value;
+    const isPast = dueDate !== "" && dueDate < getTodayAsIsoDate();
+    const isOriginalDate = dueDate === form.dataset.originalDueDate;
+
+    if (isPast && !isOriginalDate) {
+        return "The due date cannot be in the past.";
+    }
+
+    return "";
+}
+
+/**
+ * Checks if all required fields are filled correctly.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {boolean} True if the task can be saved.
+ */
+function isTaskFormValid(form) {
+    const title = form.querySelector("#task-title").value.trim();
+    const dueDate = form.querySelector("#task-due-date").value;
+    const category = form.querySelector('input[name="category"]:checked');
+
+    return title !== "" && dueDate !== "" && category !== null && getPastDateError(form) === "";
+}
+
+/**
+ * Enables the submit button only if the form is valid.
+ *
+ * @param {HTMLFormElement} form - The task form.
  */
 function updateCreateTaskButton(form) {
-    const button = form.querySelector('button[type="submit"]');
-    const titleInput = form.querySelector("#task-title");
-    const dueDateInput = form.querySelector("#task-due-date");
-    const selectedCategory = form.querySelector('input[name="category"]:checked');
-
-    if (!button || !titleInput || !dueDateInput) return;
-
-    applyDueDateValidity(dueDateInput);
-
-    const requiredFieldsFilled =
-        titleInput.value.trim() !== "" &&
-        dueDateInput.value !== "" &&
-        selectedCategory !== null;
-
-    button.disabled = !requiredFieldsFilled || !form.checkValidity();
+    form.querySelector('button[type="submit"]').disabled = !isTaskFormValid(form);
 }
 
 /**
- * Returns an error message if the due date lies in the past.
+ * Shows an error if the title is empty.
  *
- * @param {string} dueDate - The due date as YYYY-MM-DD.
- * @param {string} [allowedDate=""] - A past date that is still accepted (the original date when editing).
- * @returns {string} The error message, or an empty string if the date is valid.
+ * @param {HTMLFormElement} form - The task form.
  */
-function getPastDueDateError(dueDate, allowedDate = "") {
-    return dueDate && dueDate < getTodayAsIsoDate() && dueDate !== allowedDate
-        ? "The due date cannot be in the past."
-        : "";
+function validateTitle(form) {
+    const input = form.querySelector("#task-title");
+    let message = "";
+
+    if (input.value.trim() === "") {
+        message = "This field is required";
+    }
+
+    showFieldError(input, form.querySelector("#task-title-error"), message);
 }
 
 /**
- * Marks the due date input as invalid if its date lies in the past.
+ * Shows an error if the due date is empty or in the past.
  *
- * @param {HTMLInputElement} dueDateInput - The due date input.
+ * @param {HTMLFormElement} form - The task form.
  */
-function applyDueDateValidity(dueDateInput) {
-    const allowedDate = dueDateInput.form?.dataset.originalDueDate;
+function validateDueDate(form) {
+    const input = form.querySelector("#task-due-date");
+    let message = getPastDateError(form);
 
-    dueDateInput.setCustomValidity(getPastDueDateError(dueDateInput.value, allowedDate));
+    if (input.value === "") {
+        message = "This field is required";
+    }
+
+    showFieldError(input, form.querySelector("#task-due-date-error"), message);
 }
 
 /**
- * Returns today's local date as YYYY-MM-DD.
+ * Shows an error if no category is selected.
  *
- * @returns {string}
+ * @param {HTMLFormElement} form - The task form.
+ */
+function validateCategory(form) {
+    const category = form.querySelector('input[name="category"]:checked');
+    let message = "";
+
+    if (category === null) {
+        message = "This field is required";
+    }
+
+    showFieldError(form.querySelector("#task-category > button"), form.querySelector("#task-category-error"), message);
+}
+
+/**
+ * Checks the category when the user leaves the category field.
+ *
+ * @param {FocusEvent} event - The focusout event.
+ */
+function checkCategoryOnLeave(event) {
+    const field = event.currentTarget;
+
+    if (!field.contains(event.relatedTarget)) {
+        validateCategory(field.form);
+    }
+}
+
+/**
+ * Checks fields that already show an error again,
+ * so the error disappears as soon as the field is correct.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+function revalidateInvalidFields(form) {
+    if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
+    if (form.querySelector("#task-due-date.is-invalid")) validateDueDate(form);
+    if (form.querySelector("#task-category > button.is-invalid")) validateCategory(form);
+}
+
+/**
+ * Shows all error messages at once.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+function showAllFieldErrors(form) {
+    validateTitle(form);
+    validateDueDate(form);
+    validateCategory(form);
+}
+
+/**
+ * Shows or hides the error message of a field.
+ *
+ * @param {HTMLElement} field - The field with the red border.
+ * @param {HTMLElement} errorElement - The element for the message.
+ * @param {string} message - The error message, empty if there is no error.
+ */
+function showFieldError(field, errorElement, message) {
+    if (message === "") {
+        field.classList.remove("is-invalid");
+    } else {
+        field.classList.add("is-invalid");
+    }
+
+    errorElement.textContent = message;
+}
+
+/**
+ * Removes all error messages from the form.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+function clearFieldErrors(form) {
+    const invalidFields = form.querySelectorAll(".is-invalid");
+    const errorMessages = form.querySelectorAll(".field-error");
+
+    for (let i = 0; i < invalidFields.length; i++) {
+        invalidFields[i].classList.remove("is-invalid");
+    }
+
+    for (let i = 0; i < errorMessages.length; i++) {
+        errorMessages[i].textContent = "";
+    }
+}
+
+/**
+ * Returns today's date as YYYY-MM-DD.
+ *
+ * @returns {string} The date of today.
  */
 function getTodayAsIsoDate() {
     const today = new Date();
@@ -728,63 +651,115 @@ function getTodayAsIsoDate() {
     const month = String(today.getMonth() + 1).padStart(2, "0");
     const day = String(today.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+    return year + "-" + month + "-" + day;
+}
+
+// ---------- Reset ----------
+
+/**
+ * Resets the parts of the form that are not reset by the browser.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+function resetTaskForm(form) {
+    selectTaskPriority(form.querySelector("#priority-medium"), "medium");
+    form.querySelector("#task-category button span").textContent = "Select task category";
+    form.querySelector("#subtask-list").innerHTML = "";
+    clearFieldErrors(form);
+
+    // The browser resets the inputs after this function, so the form is updated afterwards
+    setTimeout(() => updateTaskForm(form), 0);
+}
+
+// ---------- Save ----------
+
+/**
+ * Is called when the form is sent. Creates a new task or saves the edited task.
+ *
+ * @param {SubmitEvent} event - The submit event.
+ */
+function submitTaskForm(event) {
+    const form = event.target;
+    event.preventDefault();
+
+    if (!isTaskFormValid(form)) {
+        showAllFieldErrors(form);
+        return;
+    }
+
+    if (form.dataset.taskId) {
+        updateTask(form);
+    } else {
+        createTask(form);
+    }
 }
 
 /**
- * Validates and stores a new task.
+ * Saves a new task in the database.
  *
- * @param {SubmitEvent} event - The form submit event.
- * @returns {Promise<void>}
+ * @param {HTMLFormElement} form - The task form.
  */
-async function createTask(event) {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    if (!validateTaskForm(form)) return;
-
+async function createTask(form) {
     const task = getTaskFromForm(form);
-    const submitButton = form.querySelector('button[type="submit"]');
-
-    submitButton.disabled = true;
+    form.querySelector('button[type="submit"]').disabled = true;
 
     try {
-        const tasks = (await getData(DB_TASKS)) ?? {};
-        const taskId = getNextTaskId(tasks);
+        const tasks = await getData(DB_TASKS);
+        const taskId = getNextTaskId(tasks || {});
 
         await putData(DB_TASKS + taskId, task);
         finishTaskCreation(form, taskId, task);
     } catch (error) {
-        console.error("Creating Task has failed:", error);
+        console.error("Creating task has failed:", error);
         showNotification("Task could not be created. Please try again.");
         updateCreateTaskButton(form);
     }
 }
 
 /**
- * Validates and saves the changes of an edited task.
- * Dispatches "taskupdated" on `document` with `detail: { taskId, task }` afterwards.
+ * Shows a message after a new task was saved.
+ * In the board dialog the dialog closes and the board is informed with the event "taskcreated".
+ * On the Add Task page the user is sent to the board.
  *
- * @param {SubmitEvent} event - The form submit event.
- * @returns {Promise<void>}
+ * @param {HTMLFormElement} form - The task form.
+ * @param {string} taskId - The ID of the new task.
+ * @param {Task} task - The new task.
  */
-async function updateTask(event) {
-    event.preventDefault();
+function finishTaskCreation(form, taskId, task) {
+    const dialog = form.closest("dialog");
 
-    const form = event.currentTarget;
-    if (!validateTaskForm(form)) return;
+    if (dialog) {
+        document.dispatchEvent(new CustomEvent("taskcreated", { detail: { taskId: taskId, task: task } }));
+        dialog.dataset.notification = "Task added to board";
+        dialog.classList.add("dialog-task-closing");
+    } else {
+        showNotification("Task added to board");
+        setTimeout(goToBoard, 1200);
+    }
+}
 
+/**
+ * Opens the board page.
+ */
+function goToBoard() {
+    window.location.href = "./board.html?user=" + loggedUserId;
+}
+
+/**
+ * Saves the edited task in the database and informs the board with the event "taskupdated".
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+async function updateTask(form) {
     const taskId = form.dataset.taskId;
     const task = getTaskFromForm(form);
-    const submitButton = form.querySelector('button[type="submit"]');
-
-    submitButton.disabled = true;
+    form.querySelector('button[type="submit"]').disabled = true;
 
     try {
         await putData(DB_TASKS + taskId, task);
-        document.dispatchEvent(new CustomEvent("taskupdated", { detail: { taskId, task } }));
+        document.dispatchEvent(new CustomEvent("taskupdated", { detail: { taskId: taskId, task: task } }));
     } catch (error) {
-        console.error("Updating Task has failed:", error);
+        console.error("Updating task has failed:", error);
         showNotification("Task could not be saved. Please try again.");
     }
 
@@ -792,101 +767,70 @@ async function updateTask(event) {
 }
 
 /**
- * Checks all required fields and shows their error messages if invalid.
+ * Creates the task object for the database from the form.
  *
  * @param {HTMLFormElement} form - The task form.
- * @returns {boolean} True if the form is valid.
- */
-function validateTaskForm(form) {
-    applyDueDateValidity(form.querySelector("#task-due-date"));
-
-    if (form.checkValidity()) return true;
-
-    validateTitle(form);
-    validateDueDate(form);
-    validateCategory(form);
-    updateCreateTaskButton(form);
-    return false;
-}
-
-/**
- * Gives feedback after a task was saved.
- * In a dialog the dialog closes and a "taskcreated" event is dispatched
- * (detail: { taskId, task }) so the board can show the new task,
- * on the Add Task page the user is forwarded to the board.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- * @param {string} taskId - The key of the saved task.
- * @param {Task} task - The saved task.
- */
-function finishTaskCreation(form, taskId, task) {
-    const message = "Task added to board";
-    const dialog = form.closest("dialog");
-
-    if (dialog) {
-        document.dispatchEvent(new CustomEvent("taskcreated", { detail: { taskId, task } }));
-        dialog.dataset.notification = message;
-        dialog.classList.add("dialog-task-closing");
-        return;
-    }
-
-    showNotification(message);
-    window.setTimeout(() => {
-        window.location.href = `./board.html?user=${encodeURIComponent(loggedUserId ?? DB_GUEST_USER_ID)}`;
-    }, 1200);
-}
-
-/**
- * Creates the Firebase task object from the form values.
- *
- * @param {HTMLFormElement} form - The Add Task form.
- * @returns {Task} The task to store.
+ * @returns {Task} The task.
  */
 function getTaskFromForm(form) {
-    const selectedPriority = form.querySelector(
-        ".task-priority button.medium, " +
-        ".task-priority button.urgent, " +
-        ".task-priority button.low"
-    );
-
-    const priority = selectedPriority?.classList.contains("urgent")
-        ? "high"
-        : selectedPriority?.classList.contains("low")
-            ? "low"
-            : "medium";
-
-    const assignedTo = {};
-
-    form.querySelectorAll('input[name="assignedTo"]:checked').forEach((input) => {
-        assignedTo[input.value] = true;
-    });
-
     return {
         title: form.querySelector("#task-title").value.trim(),
         description: form.querySelector("#task-description").value.trim(),
         dueDate: form.querySelector("#task-due-date").value,
-        priority,
+        priority: getSelectedPriority(form),
         category: form.querySelector('input[name="category"]:checked').value,
-        status: form.dataset.taskStatus || "toDo",
-        assignedTo,
+        status: form.dataset.taskStatus,
+        assignedTo: getAssignedContacts(form),
         subtasks: getTaskSubtasks(form),
     };
 }
 
 /**
- * Generates the next task key without overwriting an existing task.
+ * Returns the selected priority in the format of the database.
  *
- * @param {TaskDirectory} tasks - Existing tasks for the user.
- * @returns {string} A new task key.
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {string} "high", "medium" or "low".
+ */
+function getSelectedPriority(form) {
+    if (form.querySelector("#priority-urgent").classList.contains("urgent")) return "high";
+    if (form.querySelector("#priority-low").classList.contains("low")) return "low";
+    return "medium";
+}
+
+/**
+ * Returns the checked contacts, e.g. { contact1: true, contact3: true }.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {Object} The assigned contacts.
+ */
+function getAssignedContacts(form) {
+    const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
+    const assignedTo = {};
+
+    for (let i = 0; i < checkedBoxes.length; i++) {
+        assignedTo[checkedBoxes[i].value] = true;
+    }
+
+    return assignedTo;
+}
+
+/**
+ * Finds the highest task number and returns the next free task ID.
+ *
+ * @param {Object} tasks - All existing tasks.
+ * @returns {string} The new task ID, e.g. "task11".
  */
 function getNextTaskId(tasks) {
-    const highestTaskNumber = Object.keys(tasks).reduce((highest, taskId) => {
-        const match = /^task(\d+)$/.exec(taskId);
+    const taskIds = Object.keys(tasks);
+    let highestNumber = 0;
 
-        return match
-            ? Math.max(highest, Number(match[1]))
-            : highest;
-    }, 0);
+    for (let i = 0; i < taskIds.length; i++) {
+        const number = Number(taskIds[i].replace("task", ""));
 
-    return `task${highestTaskNumber + 1}`;
+        if (number > highestNumber) {
+            highestNumber = number;
+        }
+    }
+
+    return "task" + (highestNumber + 1);
 }

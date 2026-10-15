@@ -10,13 +10,15 @@
 function renderAddTask(isEditMode = false) {
     return `${isEditMode ? "" : "<h1>Add Task</h1>"}
                 <section class="add-task${isEditMode ? " edit-task" : ""}">
-                    <form class="task-form-wrapper" onreset="resetTaskForm(this)">
+                    <form class="task-form-wrapper" novalidate onsubmit="submitTaskForm(event)" onreset="resetTaskForm(this)"
+                        oninput="updateTaskForm(this)" onchange="updateTaskForm(this)" onkeydown="preventEnterSubmit(event)">
                         <div class="add-task-form">
                             <!-- Left column -->
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
                                 <input class="input-wrapper" id="task-title" name="title" type="text"
-                                    placeholder="Enter a title" aria-describedby="task-title-error" required />
+                                    placeholder="Enter a title" aria-describedby="task-title-error" required
+                                    onblur="validateTitle(this.form)" />
                                 <p class="field-error" id="task-title-error" aria-live="polite"></p>
 
                                 <label for="task-description"> Description </label>
@@ -28,7 +30,7 @@ function renderAddTask(isEditMode = false) {
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
                                 <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
-                                    aria-describedby="task-due-date-error" required />
+                                    aria-describedby="task-due-date-error" required onblur="validateDueDate(this.form)" />
                                 <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 
@@ -62,9 +64,9 @@ function renderAddTask(isEditMode = false) {
                                 <fieldset class="assigned-dropdown">
                                     <legend>Assigned to</legend>
 
-                                    <div class="input-wrapper">
+                                    <div class="input-wrapper" onmousedown="toggleAssignedDropdown(event)">
                                         <input type="search" id="task-assigned" placeholder="Select contacts to assign"
-                                            aria-label="Search contacts">
+                                            aria-label="Search contacts" onkeydown="closeAssignedOnEscape(event)">
                                         <img src="../assets/icons/arrow_drop_down.svg" alt="">
                                     </div>
 
@@ -72,10 +74,11 @@ function renderAddTask(isEditMode = false) {
                                     <ul class="assigned-badges" id="assigned-badges" aria-label="Selected contacts"></ul>
                                 </fieldset>
 
-                                <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)">
+                                <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)"
+                                    onfocusout="checkCategoryOnLeave(event)">
                                     <legend>Category<span class="required">*</span></legend>
 
-                                    <button class="input-wrapper" type="button">
+                                    <button class="input-wrapper" type="button" onmousedown="toggleCategoryDropdown(event)">
                                         <span>Select task category</span>
                                         <img src="../assets/icons/arrow_drop_down.svg" alt="">
                                     </button>
@@ -101,7 +104,7 @@ function renderAddTask(isEditMode = false) {
 
                                 <div class="subtask-input-wrapper">
                                     <input class="input-wrapper" id="subtask" name="subtask" type="text"
-                                        placeholder="Add new subtask" autocomplete="off" />
+                                        placeholder="Add new subtask" autocomplete="off" onkeydown="addSubtaskOnEnter(event)" />
                                     <button class="subtask-add-button" type="button" id="add-subtask"
                                         aria-label="Add subtask" onclick="addSubtask(this.form)">
                                         <img src="../assets/icons/add_mobile_blue.svg" alt="" />
@@ -132,6 +135,83 @@ function renderAddTask(isEditMode = false) {
                     </form>
                 </section>
     `;
+}
+
+/**
+ * Returns the HTML for one contact in the "Assigned to" list.
+ *
+ * @param {string} contactId - The ID of the contact.
+ * @param {Contact} contact - The contact.
+ * @param {string} initials - The initials shown in the badge.
+ * @param {boolean} isChecked - True if the contact is already assigned.
+ * @returns {string} The HTML of the list entry.
+ */
+function getAssignedOptionTemplate(contactId, contact, initials, isChecked) {
+    return `
+        <li>
+            <label class="assigned-option">
+                <span class="badge-user ${contact.colorClass || ""}">${initials}</span>
+                <span>${contact.name}</span>
+                <input type="checkbox" name="assignedTo" value="${contactId}" ${isChecked ? "checked" : ""}>
+            </label>
+        </li>
+    `;
+}
+
+/**
+ * Returns the HTML for the badge of an assigned contact.
+ *
+ * @param {string} badgeClass - The CSS classes of the badge.
+ * @param {string} initials - The initials of the contact.
+ * @param {string} name - The name of the contact.
+ * @returns {string} The HTML of the badge.
+ */
+function getAssignedBadgeTemplate(badgeClass, initials, name) {
+    return `<li class="${badgeClass}" aria-label="${name}">${initials}</li>`;
+}
+
+/**
+ * Returns the HTML for the "+N" badge.
+ *
+ * @param {number} count - The number of contacts that are not shown.
+ * @returns {string} The HTML of the badge.
+ */
+function getMoreBadgeTemplate(count) {
+    return `<li class="badge-user badge-user-more" aria-label="${count} more contacts">+${count}</li>`;
+}
+
+/**
+ * Returns the HTML for one subtask in the subtask list.
+ *
+ * @param {string} title - The title of the subtask.
+ * @param {boolean} completed - True if the subtask is already done.
+ * @returns {string} The HTML of the subtask.
+ */
+function getSubtaskTemplate(title, completed) {
+    return `
+        <li class="subtask-item" data-completed="${completed}">
+            <span class="subtask-title" ondblclick="editSubtask(this)">${title}</span>
+            <div class="subtask-actions">
+                <button type="button" class="subtask-edit-button" aria-label="Edit subtask" onclick="editSubtask(this)">
+                    <img src="../assets/icons/edit.svg" alt="">
+                </button>
+                <span class="subtask-actions-divider" aria-hidden="true"></span>
+                <button type="button" class="subtask-remove-button" aria-label="Delete subtask" onclick="deleteSubtask(this)">
+                    <img src="../assets/icons/delete.svg" alt="">
+                </button>
+            </div>
+        </li>
+    `;
+}
+
+/**
+ * Returns the HTML for the input that is shown while a subtask is edited.
+ *
+ * @returns {string} The HTML of the input.
+ */
+function getSubtaskEditTemplate() {
+    return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
+                onkeydown="handleSubtaskEditKeydown(event)" onblur="saveSubtaskEdit(this)">`;
 }
 
 /**
