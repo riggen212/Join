@@ -2,7 +2,8 @@
  * Bootstraps the Add Task page: renders the template into the page's
  * container and wires the form behaviors.
  */
-function initAddTaskPage() {
+async function initAddTaskPage() {
+    loggedUserId = await loadCurrentUser();
     const container = document.querySelector(".board-inner.add-task-inner");
     if (!container) return;
 

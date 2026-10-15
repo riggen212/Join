@@ -13,13 +13,15 @@ const CONTACT_COLOR_CLASSES = [
     "badge-user-blue-dark",
 ];
 
+
 /**
- * Loads the guest user's contacts from Firebase and renders the list.
+ * Loads the shared contacts from Firebase and renders the list.
  *
  * @returns {Promise<void>} Resolves after the contact list has been rendered.
  */
 async function initContacts() {
     try {
+        await loadCurrentUser();
         const firebaseContacts = await getData(getContactPath());
 
         Object.assign(contacts, firebaseContacts ?? {});
@@ -28,6 +30,7 @@ async function initContacts() {
         console.error("Contacts could not be loaded:", error);
     }
 }
+
 
 /**
  * Sorts contacts by name and groups them by their first letter.
@@ -49,6 +52,7 @@ function groupContactsByInitial(contactDirectory) {
     }, {});
 }
 
+
 /**
  * Creates the HTML for the contact cards of one group.
  *
@@ -59,6 +63,7 @@ function getContactCardsHtml(contactEntries) {
     return contactEntries.map(([contactId, contact]) =>
         getContactCardTemplate(contactId, contact)).join("");
 }
+
 
 /**
  * Creates the HTML for all grouped contacts.
@@ -75,6 +80,7 @@ function getContactGroupsHtml(contactGroups) {
         .join("");
 }
 
+
 /**
  * Renders all contacts inside the contact list.
  *
@@ -86,6 +92,7 @@ function renderContactList(contactDirectory) {
     const groups = groupContactsByInitial(contactDirectory);
     container.innerHTML = getContactGroupsHtml(groups);
 }
+
 
 /**
  * Renders the selected contact and stores its ID on the detail view.
@@ -104,6 +111,7 @@ function renderContactDetails(contactId) {
         getContactDetailsTemplate(contact);
 }
 
+
 /**
  * Returns the currently selected contact together with its ID.
  *
@@ -117,39 +125,6 @@ function getSelectedContactEntry() {
     return contact ? { id: contactId, contact } : null;
 }
 
-/**
- * Creates initials from the first two parts of a name.
- *
- * @param {string} name - The complete contact name.
- * @returns {string} The generated initials.
- */
-function getContactInitials(name) {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((namePart) => namePart.charAt(0))
-        .join("")
-        .toUpperCase();
-}
-
-/**
- * Reads and returns the values of a contact form.
- *
- * @param {HTMLFormElement} form - The submitted contact form.
- * @returns {ContactFormValues} The entered contact information.
- */
-function getContactFormValues(form) {
-    const formData = new FormData(form);
-    const name = String(formData.get("name")).trim();
-
-    return {
-        name,
-        email: String(formData.get("email")).trim(),
-        phone: String(formData.get("phone")).trim(),
-        initials: getContactInitials(name),
-    };
-}
 
 /**
  * Marks the corresponding contact card as selected after rerendering.
@@ -162,8 +137,24 @@ function markContactCardSelected(contactId) {
     card?.classList.add("is-selected");
 }
 
+
 /**
- * Saves the submitted changes of the selected contact.
+ * Closes a contact form dialog and schedules its success notification.
+ *
+ * @param {HTMLFormElement} form - The submitted contact form.
+ * @param {string} message - The success message to show after closing.
+ * @returns {void}
+ */
+function closeContactFormWithNotification(form, message) {
+    const dialog = form.closest("dialog");
+
+    dialog.dataset.notification = message;
+    dialog.requestClose();
+}
+
+
+/**
+ * Validates, saves, and confirms the submitted changes of the selected contact.
  *
  * @param {SubmitEvent} event - The Edit Contact form submit event.
  * @returns {Promise<void>}
@@ -172,15 +163,18 @@ async function saveContact(event) {
     event.preventDefault();
     const form = /** @type {HTMLFormElement} */ (event.currentTarget);
     const selectedContact = getSelectedContactEntry();
-    if (!selectedContact) return;
-    const contact = { ...selectedContact.contact, ...getContactFormValues(form) };
+    const formValues = getValidContactFormValues(form);
+
+    if (!selectedContact || !formValues) return;
+    const contact = { ...selectedContact.contact, ...formValues };
     try {
         await saveEditedContact(selectedContact.id, contact);
-        form.closest("dialog").requestClose();
+        closeContactFormWithNotification(form, "Contact successfully updated");
     } catch (error) {
         console.error("Contact could not be updated:", error);
     }
 }
+
 
 /**
  * Creates the next available contact ID.
@@ -195,6 +189,7 @@ function getNextContactId() {
     return `contact${Math.max(0, ...contactNumbers) + 1}`;
 }
 
+
 /**
  * Selects the next badge color for a new contact.
  *
@@ -207,26 +202,29 @@ function getNextContactColorClass() {
     return CONTACT_COLOR_CLASSES[colorIndex];
 }
 
+
 /**
- * Creates and saves a contact from the submitted form.
- *
+ * Validates, creates, saves, and confirms a contact from the submitted form.
+ * 
  * @param {SubmitEvent} event - The Add Contact form submit event.
  * @returns {Promise<void>}
  */
 async function createContact(event) {
     event.preventDefault();
     const form = /** @type {HTMLFormElement} */ (event.currentTarget);
+    const formValues = getValidContactFormValues(form);
+
+    if (!formValues) return;
     const contactId = getNextContactId();
-    const formValues = getContactFormValues(form);
-    /** @type {Contact} */
     const contact = { ...formValues, colorClass: getNextContactColorClass() };
     try {
         await saveNewContact(contactId, contact);
-        form.closest("dialog").requestClose();
+        closeContactFormWithNotification(form, "Contact successfully created");
     } catch (error) {
         console.error("Contact could not be created:", error);
     }
 }
+
 
 /**
  * Selects a contact card and opens its detail view.
@@ -242,6 +240,7 @@ function showContactById(contactId) {
     if (contactCard) showContactDetails(contactCard);
 }
 
+
 /**
  * Returns the Firebase path for the guest user's contacts.
  *
@@ -249,9 +248,9 @@ function showContactById(contactId) {
  * @returns {string} The contacts collection or contact path.
  */
 function getContactPath(contactId) {
-    const path = `${DB_USERS}${DB_GUEST_USER_ID}/contacts`;
-    return contactId ? `${path}/${contactId}` : path;
+    return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
 }
+
 
 /**
  * Saves a new contact in Firebase and updates the local view.
@@ -266,6 +265,7 @@ async function saveNewContact(contactId, contact) {
     renderContactList(contacts);
     showContactById(contactId);
 }
+
 
 /**
  * Saves an edited contact in Firebase and refreshes its views.
@@ -282,6 +282,7 @@ async function saveEditedContact(contactId, contact) {
     markContactCardSelected(contactId);
 }
 
+
 /**
  * Deletes a contact from Firebase and updates the local view.
  *
@@ -293,7 +294,8 @@ async function removeContact(contactId) {
     delete contacts[contactId];
     renderContactList(contacts);
     hideContactDetails();
-    closeDialogAfterContactDeletion();
+    closeDialogAfterContactDeletion("Contact successfully deleted");
 }
+
 
 initContacts();

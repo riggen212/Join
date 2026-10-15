@@ -1,4 +1,21 @@
 /**
+ * @typedef {Object} User
+ * @property {string} name - The name of the User.
+ * @property {string} initials - The initials of the User.
+ * @property {string} type - The type of the User.
+ */
+
+/**
+ * @typedef {string} UserId - The unique ID of a user.
+ */
+
+/**
+ * @typedef {Object} UserDirectory
+ * @property {UserId} - The ID of a User.
+ * @property {User} - The user data.
+ */
+
+/**
  * @typedef {Object} Contact
  * @property {string} name - The name of the contact.
  * @property {string} initials - The initials of the contact.
@@ -13,6 +30,13 @@
  * @property {string} email - The entered email address.
  * @property {string} phone - The entered phone number.
  * @property {string} initials - The initials created from the name.
+ */
+
+/**
+ * @typedef {Object} ContactValidationErrors
+ * @property {string} [name] - The error message for the name field.
+ * @property {string} [email] - The error message for the email field.
+ * @property {string} [phone] - The error message for the phone field.
  */
 
 /**
@@ -69,6 +93,51 @@
  * @typedef {Object} Subtask
  * @property {string} title - The title of the subtask.
  * @property {boolean} completed - Indicates whether the subtask is completed.
+ */
+
+/**
+ * Data needed to render a task card.
+ *
+ * @typedef {Object} TaskCardData
+ * @property {TaskId} id - ID of the task.
+ * @property {Task} task - The task data.
+ * @property {SubtasksData} subtasksData - Subtask summary and progress.
+ * @property {string} assigneesHtml - HTML for the assigned contacts.
+ */
+
+/**
+ * Data needed to render a task overlay.
+ *
+ * @typedef {Object} TaskOverlayData
+ * @property {TaskId} id - ID of the task.
+ * @property {Task} task - The task data.
+ * @property {string} assigneesHtml - HTML for the assigned contacts.
+ * @property {string} subtasksHtml - HTML for the subtask checkboxes and titles.
+ */
+
+/**
+ * Task counts and deadline information displayed on the summary page.
+ *
+ * @typedef {TaskSummaryCounts & {
+ *   upcomingDeadline: string,
+ *   upcomingDeadlineWritten: string
+ * }} TaskSummaryData
+ *
+ * @property {string} upcomingDeadline - Earliest due date of an unfinished task on or after the reference date, in YYYY-MM-DD format. Empty if no task qualifies.
+ * @property {string} upcomingDeadlineWritten - The deadline formatted with an English month name, day and year, or "-" if no deadline exists.
+ */
+
+/**
+ * Task counts used by the summary page.
+ * Missing count properties represent zero tasks.
+ *
+ * @typedef {Object} TaskSummaryCounts
+ * @property {number} [toDo] - Number of tasks with status "toDo".
+ * @property {number} [inProgress] - Number of tasks with status "inProgress".
+ * @property {number} [awaitFeedback] - Number of tasks with status "awaitFeedback".
+ * @property {number} [done] - Number of tasks with status "done".
+ * @property {number} [board] - Total number of tasks, including completed tasks.
+ * @property {number} [urgent] - Number of unfinished tasks that are overdue or due on or before the upcoming deadline, regardless of priority.
  */
 
 /**

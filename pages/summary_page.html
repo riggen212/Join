@@ -26,10 +26,10 @@
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" class="header-link">
+                    <a href="../pages/help.html" data-nav-link class="header-link">
                         <img src="../assets/icons/help.svg" alt="Help" />
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
                 </div>
             </div>
             <dialog
@@ -44,6 +44,7 @@
                             <a
                                 id="link-help-profile-dialog"
                                 href="../pages/help.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Help</a
@@ -52,6 +53,7 @@
                         <li>
                             <a
                                 href="../pages/legal_notice.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Legal Notice</a
@@ -60,6 +62,7 @@
                         <li>
                             <a
                                 href="../pages/privacy_policy.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Privacy Policy</a
@@ -77,41 +80,41 @@
             <div class="navbar-wrapper">
                 <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
                 <ul class="navbar-links">
-                    <li>
-                        <a href="#" class="link-navbar active">
-                            <img src="../assets/icons/summary.svg" alt="Summary icon" />
-                            <span>Summary</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/add_task.html" class="link-navbar">
-                            <img src="../assets/icons/add_task.svg" alt="Add task icon" />
-                            <span>Add Task</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/board.html" class="link-navbar">
-                            <img src="../assets/icons/board.svg" alt="Board icon" />
-                            <span>Board</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/contacts.html" class="link-navbar">
-                            <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
-                            <span>Contacts</span>
-                        </a>
-                    </li>
-                </ul>
+                        <li>
+                            <a href="../pages/summary_page.html" data-nav-link class="link-navbar active">
+                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                                <span>Summary</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/add_task.html" data-nav-link class="link-navbar">
+                                <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                                <span>Add Task</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/board.html" data-nav-link class="link-navbar">
+                                <img src="../assets/icons/board.svg" alt="Board icon" />
+                                <span>Board</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../pages/contacts.html" data-nav-link class="link-navbar">
+                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                                <span>Contacts</span>
+                            </a>
+                        </li>
+                    </ul>
             </div>
             <footer>
                 <ul class="navbar-links">
                     <li>
-                        <a href="../pages/privacy_policy.html" class="link-navbar">
+                        <a href="../pages/privacy_policy.html" data-nav-link class="link-navbar">
                             <span>Privacy Policy</span>
                         </a>
                     </li>
                     <li>
-                        <a href="../pages/legal_notice.html" class="link-navbar">
+                        <a href="../pages/legal_notice.html" data-nav-link class="link-navbar">
                             <span>Legal notice</span>
                         </a>
                     </li>
@@ -134,7 +137,7 @@
             <!--Switch later with js is this pic-->
             <div class="desktop-wrapper">
                 <h2 class="headline-h2">
-                Good morning,<br><strong class="headline-strong" id="userNames"></strong>
+                <p id="greeting">Good morning,</p><strong class="headline-strong" id="userNames"></strong>
                 </h2>
                 <section class="section-container">
                     <div class="section-inner">
@@ -142,7 +145,7 @@
                             <div class="flexbox">
                                 <img class="section-img" src="../assets/icons/pencel.svg" alt="">
                                 <div class="flexbox-inner">
-                                    <h3 class="section-headline">1</h3>
+                                    <h3 class="section-headline" data-summary="toDo"></h3>
                                     <span class="section-span">To-do</span>
                                 </div>
                             </div>
@@ -151,7 +154,7 @@
                             <div class="flexbox">
                                 <img class="section-img" src="../assets/icons/pencel.svg" alt="">
                                 <div class="flexbox-inner">
-                                    <h3 class="section-headline">1</h3>
+                                    <h3 class="section-headline" data-summary="done"></h3>
                                     <span class="section-span">Done</span>
                                 </div>
                             </div>
@@ -161,12 +164,12 @@
                         <div class="deadline-inner">
                             <img class="deadline-img" src="../assets/icons/deadline.svg" alt="">
                             <div class="flexbox-inner">
-                                <h3 class="section-headline">1</h3>
+                                <h3 class="section-headline" data-summary="urgent"></h3>
                                 <span class="section-span">Urgent</span>
                             </div>
                             <hr class="deadline-hr">
                             <div class="flexbox-deadline">
-                                <time class="deadline-date" datetime="09-02-2026">September 02, 2026</time>
+                                <time class="deadline-date" data-summary="upcomingDeadline" datetime></time>
                                 <span class="section-span">Upcoming Deadline</span>
                             </div>
                         </div>
@@ -174,19 +177,19 @@
                     <div class="section-inner">
                         <div class="task-container">
                             <div class="taks-inner">
-                                <h3 class="section-headline">5</h3>
+                                <h3 class="section-headline" data-summary="board"></h3>
                                 <span class="section-span">Tasks in <br>Board</span>
                             </div>
                         </div>
                         <div class="task-container">
                             <div class="taks-inner">
-                                <h3 class="section-headline">2</h3>
+                                <h3 class="section-headline" data-summary="inProgress"></h3>
                                 <span class="section-span">Tasks in <br>Progress</span>
                             </div>
                         </div>
                         <div class="task-container">
                             <div class="taks-inner">
-                                <h3 class="section-headline">1</h3>
+                                <h3 class="section-headline" data-summary="awaitFeedback"></h3>
                                 <span class="section-span">Awaiting <br>feedback</span>
                             </div>
                         </div>

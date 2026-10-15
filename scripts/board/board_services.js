@@ -1,20 +1,16 @@
 /**
- * Loads a user's tasks and contacts from the database.
+ * Loads tasks and contacts from the database.
  * Assigns the tasks to the corresponding columns of the global board
  * and adds the contacts to the global contact directory.
  *
- * @param {string} userId - The database ID of the user.
  * @returns {Promise<void>} Resolves after the user data has been processed.
  */
-async function loadUserBoardData(userId) {
-    const data = await getData(DB_USERS + userId);
+async function loadBoardData() {
+    const tasks = await getData(DB_TASKS);
+    const contacts = await getData(DB_CONTACTS);
 
-    if (!data) {
-        throw new Error(`User "${userId}" was not found.`);
-    }
-
-    assignTasks(board, data.tasks ?? {});
-    Object.assign(contacts, data.contacts ?? {});
+    assignTasks(board, tasks ?? {});
+    Object.assign(localContacts, contacts ?? {});
 }
 
 /**
@@ -50,6 +46,38 @@ function getTaskById(taskId, taskStatus) {
     } else {
         return task;
     }
+}
+
+/**
+ * Builds the data needed to render a task card.
+ *
+ * @param {TaskId} taskId - ID of the task.
+ * @param {Task} task - The task to prepare for rendering.
+ * @returns {TaskCardData} Task data with subtask summary and assignee HTML.
+ */
+function getTaskCardData(taskId, task) {
+    return {
+        id: taskId,
+        task: task,
+        subtasksData: getSubtasksCardData(task),
+        assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
+    };
+}
+
+/**
+ * Builds the data needed to render a task overlay.
+ *
+ * @param {TaskId} taskId - ID of the task.
+ * @param {Task} task - The task to prepare for rendering.
+ * @returns {TaskOverlayData} Task data with assignee and subtask HTML.
+ */
+function getTaskOverlayData(taskId, task) {
+    return {
+        id: taskId,
+        task: task,
+        assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
+        subtasksHtml: getTaskOverlaySubtasksHtml(task.subtasks),
+    };
 }
 
 /**
@@ -125,12 +153,21 @@ function getDraggingTask(taskId, taskStatus) {
 async function moveTask(destinationStatus) {
     const draggingTaskData = getDataToMoveTask(destinationStatus);
 
-    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
-        return;
-    }
+    if (!hasTaskStatusChanged(draggingTaskData)) return;
 
     moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
+    await saveTaskMove(draggingTaskData);
 
+    renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+}
+
+/**
+ * Saves the new task status and reverts the local move if the database update fails.
+ *
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
+ * @returns {Promise<void>} Resolves after saving or reverting the task move.
+ */
+async function saveTaskMove(draggingTaskData) {
     try {
         await updateTaskInDatabase(draggingTaskData.id, {
             status: draggingTaskData.newStatus,
@@ -139,8 +176,6 @@ async function moveTask(destinationStatus) {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
         console.error(`Updating the database has failed:\n${error}`);
     }
-
-    renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
 }
 
 /**
@@ -169,6 +204,12 @@ function getDataToMoveTask(destinationStatus) {
         oldStatus: draggingTask.status,
         newStatus: destinationStatus,
     };
+}
+
+function hasTaskStatusChanged(draggingTaskData) {
+    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
+        return false;
+    } else return true;
 }
 
 /**
@@ -273,7 +314,7 @@ function getFilteredTasks(tasks) {
  * @throws {Error} If the HTTP response is not successful.
  */
 function updateTaskInDatabase(taskId, taskData) {
-    return patchData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId, taskData);
+    return patchData(DB_TASKS + taskId, taskData);
 }
 
 /**
@@ -287,7 +328,7 @@ function updateTaskInDatabase(taskId, taskData) {
  * @throws {Error} If the HTTP response is not successful.
  */
 function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
-    return patchData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
+    return patchData(DB_TASKS + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
 }
 
 /**
@@ -304,15 +345,30 @@ async function deleteTask(taskId, taskStatus, button) {
 
     button.disabled = true;
 
-    try {
-        await deleteData(DB_USERS + loggedUserId + DB_TASKS + "/" + taskId);
-    } catch (error) {
-        button.disabled = false;
-        console.error("Deleting Task has failed:", error);
+    if (!(await tryDeleteTaskFromDatabase(button, taskId))) {
         return;
     }
 
     updateBoardAfterTaskDeletion(taskId, taskStatus, button.closest("dialog"));
+}
+
+/**
+ * Attempts to delete a task from the database.
+ * Re-enables the delete button and logs the error if deletion fails.
+ *
+ * @param {HTMLButtonElement} button - The clicked delete button.
+ * @param {TaskId} taskId - ID of the task to delete.
+ * @returns {Promise<boolean>} Whether the task was successfully deleted.
+ */
+async function tryDeleteTaskFromDatabase(button, taskId) {
+    try {
+        await deleteData(DB_TASKS + taskId);
+        return true;
+    } catch (error) {
+        button.disabled = false;
+        console.error("Deleting Task has failed:", error);
+        return false;
+    }
 }
 
 /**
