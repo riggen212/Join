@@ -248,8 +248,15 @@ function renderAddTask() {
 
                                 <label for="subtask"> Subtasks </label>
 
-                                <input class="input-wrapper" id="subtask" name="subtask" type="text"
-                                    placeholder="Add new subtask" />
+                                <div class="subtask-input-wrapper">
+                                    <input class="input-wrapper" id="subtask" name="subtask" type="text"
+                                        placeholder="Add new subtask" autocomplete="off" />
+                                    <button class="subtask-add-button" type="button" id="add-subtask"
+                                        aria-label="Add subtask" onclick="addSubtask(this.form)">
+                                        <span aria-hidden="true">+</span>
+                                    </button>
+                                </div>
+                                <ul class="subtask-list" id="subtask-list" aria-label="Subtasks"></ul>
                             </div>
                         </div>
 
@@ -348,7 +355,7 @@ function getContactActionsTemplate() {
                 <span>Edit</span>
             </button>
             <button class="button button-task-overlay" onclick="deleteContact()">
-                <img src="../assets/icons/delete.svg" alt="">
+                <img src="../assets/icons/cancel.svg" alt="">
                 <span>Delete</span>
             </button>
         </div>
