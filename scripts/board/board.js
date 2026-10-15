@@ -284,12 +284,53 @@ function updateTaskDialog(dialog, taskData) {
     dialog.innerHTML = getTaskOverlayTemplate(taskData);
 }
 
+/**
+ * Switches the task dialog to the edit form of the given task.
+ *
+ * @param {TaskId} taskId - ID of the task to edit.
+ */
+function editTask(taskId) {
+    const dialog = document.getElementById("dialog-task");
+
+    try {
+        const task = getTaskById(taskId, dialog.dataset.taskStatus);
+
+        dialog.innerHTML = renderAddTask(true);
+        initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+/**
+ * Updates the board and the task dialog after a task was edited.
+ */
+document.addEventListener("taskupdated", (event) => {
+    const { taskId, task } = event.detail;
+    const dialog = document.getElementById("dialog-task");
+
+    board[task.status].tasks[taskId] = task;
+    renderBoard(Object.values(board));
+    updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
+});
+
 function openAddTaskDialog() {
     const dialog = document.getElementById("dialog-add-task");
 
     dialog.innerHTML = renderAddTask();
+    initAddTaskForm(dialog.querySelector(".task-form-wrapper"));
     openDialog("dialog-add-task");
 }
+
+/**
+ * Adds a task created in the Add Task dialog to the board.
+ */
+document.addEventListener("taskcreated", (event) => {
+    const { taskId, task } = event.detail;
+
+    board[task.status].tasks[taskId] = task;
+    renderBoard(Object.values(board));
+});
 
 /**
  * Finishes the closing animation of the task dialog.
