@@ -3,18 +3,31 @@
  * container and wires the form behaviors.
  */
 async function initAddTaskPage() {
-    loggedUserId = await loadCurrentUser();
     const container = document.querySelector(".board-inner.add-task-inner");
     if (!container) return;
 
+    loggedUserId = await loadCurrentUser();
     container.innerHTML = renderAddTask();
+    initAddTaskForm(container.querySelector(".task-form-wrapper"));
+}
 
-    const form = container.querySelector(".task-form-wrapper");
+initAddTaskPage();
+
+/**
+ * Wires all behaviors of a rendered Add Task form.
+ * Can be used by the Add Task page and by an Add Task dialog.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ * @param {Task["status"]} [status="toDo"] - The status the new task receives.
+ */
+function initAddTaskForm(form, status = "toDo") {
+    form.dataset.taskStatus = status;
 
     disableHtml5Validation(form);
     initializeSubtasks(form);
     initializeTaskDate(form);
     initializeAssignedContacts(form);
+    initializeAssignedSearch(form);
 
     updateCreateTaskButton(form);
 
@@ -30,8 +43,6 @@ async function initAddTaskPage() {
 
     form.addEventListener("submit", createTask);
 }
-
-initAddTaskPage();
 
 /**
  * Disables the browser's built-in HTML5 form validation.
@@ -57,7 +68,7 @@ async function initializeAssignedContacts(form) {
     if (!options) return;
 
     try {
-        const contactDirectory = await getData(getContactPath());
+        const contactDirectory = await getData(DB_CONTACTS);
 
         options.replaceChildren();
 
@@ -98,6 +109,32 @@ async function initializeAssignedContacts(form) {
     } catch (error) {
         console.error("Contacts for task assignment could not be loaded:", error);
     }
+}
+
+/**
+ * Filters the contact options while typing into the assignment search field.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ */
+function initializeAssignedSearch(form) {
+    const searchInput = form.querySelector("#task-assigned");
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", () => filterAssignedOptions(form, searchInput.value));
+}
+
+/**
+ * Shows only the contact options whose name contains the search term.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ * @param {string} searchTerm - The text entered into the search field.
+ */
+function filterAssignedOptions(form, searchTerm) {
+    const term = searchTerm.trim().toLowerCase();
+
+    form.querySelectorAll("#assigned-options > li").forEach((item) => {
+        item.hidden = !item.textContent.toLowerCase().includes(term);
+    });
 }
 
 /**
@@ -173,21 +210,90 @@ function addSubtask(form) {
 
     if (!input || !list || !title) return;
 
+    list.append(createSubtaskItem(title));
+    input.value = "";
+    input.focus();
+}
+
+/**
+ * Creates a subtask list item with edit and delete actions.
+ *
+ * @param {string} title - The subtask title.
+ * @returns {HTMLLIElement} The subtask list item.
+ */
+function createSubtaskItem(title) {
     const item = document.createElement("li");
     item.className = "subtask-item";
     item.innerHTML = `
-        <span></span>
-        <button type="button" class="subtask-remove-button" aria-label="Delete subtask">
-            Delete
-        </button>
+        <span class="subtask-title"></span>
+        <div class="subtask-actions">
+            <button type="button" class="subtask-edit-button" aria-label="Edit subtask">
+                <img src="../assets/icons/edit.svg" alt="">
+            </button>
+            <span class="subtask-actions-divider" aria-hidden="true"></span>
+            <button type="button" class="subtask-remove-button" aria-label="Delete subtask">
+                <img src="../assets/icons/delete.svg" alt="">
+            </button>
+        </div>
     `;
 
-    item.querySelector("span").textContent = title;
-    item.querySelector("button").addEventListener("click", () => item.remove());
+    const titleElement = item.querySelector(".subtask-title");
+    titleElement.textContent = title;
+    titleElement.addEventListener("dblclick", () => editSubtask(item));
+    item.querySelector(".subtask-edit-button").addEventListener("click", () => editSubtask(item));
+    item.querySelector(".subtask-remove-button").addEventListener("click", () => item.remove());
 
-    list.append(item);
-    input.value = "";
+    return item;
+}
+
+/**
+ * Replaces the subtask title with an input to edit it.
+ * Enter or leaving the field saves, Escape discards the change.
+ *
+ * @param {HTMLLIElement} item - The subtask list item.
+ */
+function editSubtask(item) {
+    if (item.querySelector(".subtask-edit-input")) return;
+
+    const titleElement = item.querySelector(".subtask-title");
+    const input = document.createElement("input");
+
+    input.type = "text";
+    input.className = "subtask-edit-input";
+    input.value = titleElement.textContent;
+    input.setAttribute("aria-label", "Edit subtask");
+
+    input.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== "Escape") return;
+
+        event.preventDefault();
+        if (event.key === "Escape") input.value = titleElement.textContent;
+        input.blur();
+    });
+    input.addEventListener("blur", () => saveSubtaskEdit(item, input));
+
+    titleElement.hidden = true;
+    titleElement.after(input);
+    item.classList.add("is-editing");
     input.focus();
+}
+
+/**
+ * Applies the edited title, removing the subtask if the title is empty.
+ *
+ * @param {HTMLLIElement} item - The subtask list item.
+ * @param {HTMLInputElement} input - The edit input.
+ */
+function saveSubtaskEdit(item, input) {
+    const titleElement = item.querySelector(".subtask-title");
+    const newTitle = input.value.trim();
+
+    input.remove();
+    item.classList.remove("is-editing");
+    if (!newTitle) return item.remove();
+
+    titleElement.textContent = newTitle;
+    titleElement.hidden = false;
 }
 
 /**
@@ -201,7 +307,7 @@ function getTaskSubtasks(form) {
         [...form.querySelectorAll("#subtask-list .subtask-item")].map((item, index) => [
             `subtask${index + 1}`,
             {
-                title: item.querySelector("span").textContent,
+                title: item.querySelector(".subtask-title").textContent,
                 completed: false,
             },
         ])
@@ -252,6 +358,7 @@ function resetTaskForm(form) {
     selectTaskPriority(form.querySelector("#priority-medium"), "medium");
     form.querySelector("#task-category button span").textContent = "Select task category";
     form.querySelector("#subtask-list")?.replaceChildren();
+    filterAssignedOptions(form, "");
 }
 
 /**
@@ -337,22 +444,47 @@ async function createTask(event) {
     }
 
     const task = getTaskFromForm(form);
-    const userId = getTaskUserId();
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    submitButton.disabled = true;
 
     try {
-        const tasks = (await getData(DB_USERS + userId + DB_TASKS)) ?? {};
+        const tasks = (await getData(DB_TASKS)) ?? {};
         const taskId = getNextTaskId(tasks);
 
-        await putData(DB_USERS + userId + DB_TASKS + "/" + taskId, task);
-
-        form.reset();
-        resetTaskForm(form);
-        initializeTaskDate(form);
-        renderAssignedBadges(form);
-        updateCreateTaskButton(form);
+        await putData(DB_TASKS + taskId, task);
+        finishTaskCreation(form, taskId, task);
     } catch (error) {
         console.error("Creating Task has failed:", error);
+        updateCreateTaskButton(form);
     }
+}
+
+/**
+ * Gives feedback after a task was saved.
+ * In a dialog the dialog closes and a "taskcreated" event is dispatched
+ * (detail: { taskId, task }) so the board can show the new task,
+ * on the Add Task page the user is forwarded to the board.
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ * @param {string} taskId - The key of the saved task.
+ * @param {Task} task - The saved task.
+ */
+function finishTaskCreation(form, taskId, task) {
+    const message = "Task added to board";
+    const dialog = form.closest("dialog");
+
+    if (dialog) {
+        document.dispatchEvent(new CustomEvent("taskcreated", { detail: { taskId, task } }));
+        dialog.dataset.notification = message;
+        dialog.classList.add("dialog-task-closing");
+        return;
+    }
+
+    showNotification(message);
+    window.setTimeout(() => {
+        window.location.href = `./board.html?user=${encodeURIComponent(loggedUserId ?? DB_GUEST_USER_ID)}`;
+    }, 1200);
 }
 
 /**
@@ -368,11 +500,11 @@ function getTaskFromForm(form) {
         ".task-priority button.low"
     );
 
-    const priorityClass = selectedPriority?.classList.contains("urgent")
-        ? "High"
+    const priority = selectedPriority?.classList.contains("urgent")
+        ? "high"
         : selectedPriority?.classList.contains("low")
-            ? "Low"
-            : "Medium";
+            ? "low"
+            : "medium";
 
     const assignedTo = {};
 
@@ -384,21 +516,12 @@ function getTaskFromForm(form) {
         title: form.querySelector("#task-title").value.trim(),
         description: form.querySelector("#task-description").value.trim(),
         dueDate: form.querySelector("#task-due-date").value,
-        priority: priorityClass,
+        priority,
         category: form.querySelector('input[name="category"]:checked').value,
-        status: "toDo",
+        status: form.dataset.taskStatus || "toDo",
         assignedTo,
         subtasks: getTaskSubtasks(form),
     };
-}
-
-/**
- * Resolves the user whose task collection receives the new task.
- *
- * @returns {string} Firebase user key.
- */
-function getTaskUserId() {
-    return new URLSearchParams(window.location.search).get("user") || DB_GUEST_USER_ID;
 }
 
 /**

@@ -19,7 +19,7 @@ function renderAddTask() {
                                 </div>
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
-                                <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate"type="date" required />
+                                <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date" required />
                             </div>
 
                             <!-- Right column -->
@@ -58,62 +58,8 @@ function renderAddTask() {
                                         <img src="../assets/icons/arrow_drop_down.svg" alt="">
                                     </div>
 
-                                    <!-- Preview data: JavaScript will create these entries from the contacts JSON. -->
-                                    <ul class="assigned-options" id="assigned-options" onmousedown="event.preventDefault()">
-                                        <li>
-                                            <label class="assigned-option">
-                                                <span class="badge-user badge-user-blue-light">SM</span>
-                                                <span>Sofia Müller (You)</span>
-                                                <input type="checkbox" name="assignedTo" value="user">
-                                            </label>
-                                        </li>
-
-                                        <li>
-                                            <label class="assigned-option">
-                                                <span class="badge-user badge-user-orange">AM</span>
-                                                <span>Anton Mayer</span>
-                                                <input type="checkbox" name="assignedTo" value="contact1">
-                                            </label>
-                                        </li>
-
-                                        <li>
-                                            <label class="assigned-option">
-                                                <span class="badge-user badge-user-purple">AS</span>
-                                                <span>Anja Schulz</span>
-                                                <input type="checkbox" name="assignedTo" value="contact2" checked>
-                                            </label>
-                                        </li>
-
-                                        <li>
-                                            <label class="assigned-option">
-                                                <span class="badge-user badge-user-blue-medium">BZ</span>
-                                                <span>Benedikt Ziegler</span>
-                                                <input type="checkbox" name="assignedTo" value="contact3">
-                                            </label>
-                                        </li>
-
-                                        <li>
-                                            <label class="assigned-option">
-                                                <span class="badge-user badge-user-pink">DE</span>
-                                                <span>David Eisenberg</span>
-                                                <input type="checkbox" name="assignedTo" value="contact4" checked>
-                                            </label>
-                                        </li>
-                                        <li>
-                                            <label class="assigned-option">
-                                                <span class="badge-user badge-user-yellow">EF</span>
-                                                <span>Eva Fischer</span>
-                                                <input type="checkbox" name="assignedTo" value="contact5" checked>
-                                            </label>
-                                        </li>
-                                    </ul>
-
-                                    <!-- Preview badges: JavaScript will create these from the selected contact IDs. -->
-                                    <ul class="assigned-badges" id="assigned-badges" aria-label="Selected contacts">
-                                        <li class="badge-user badge-user-blue-light">SM</li>
-                                        <li class="badge-user badge-user-pink">DE</li>
-                                        <li class="badge-user badge-user-yellow">EF</li>
-                                    </ul>
+                                    <ul class="assigned-options" id="assigned-options" onmousedown="event.preventDefault()"></ul>
+                                    <ul class="assigned-badges" id="assigned-badges" aria-label="Selected contacts"></ul>
                                 </fieldset>
 
                                 <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)">
