@@ -19,17 +19,20 @@ initAddTaskPage();
  *
  * @param {HTMLFormElement} form - The Add Task form.
  * @param {Task["status"]} [status="toDo"] - The status the new task receives.
+ * @param {Task|null} [task=null] - A task whose values prefill the form (edit mode).
  */
-function initAddTaskForm(form, status = "toDo") {
+function initAddTaskForm(form, status = "toDo", task = null) {
     form.dataset.taskStatus = status;
 
     disableHtml5Validation(form);
     initializeSubtasks(form);
     initializeTaskDate(form);
-    initializeAssignedContacts(form);
+    initializeAssignedContacts(form, Object.keys(task?.assignedTo ?? {}));
     initializeAssignedSearch(form);
     initializeDropdownToggles(form);
     initializeFieldValidation(form);
+
+    if (task) fillTaskForm(form, task);
 
     updateCreateTaskButton(form);
 
@@ -44,7 +47,83 @@ function initAddTaskForm(form, status = "toDo") {
         });
     });
 
-    form.addEventListener("submit", createTask);
+    form.addEventListener("submit", form.dataset.taskId ? updateTask : createTask);
+}
+
+/**
+ * Wires a task form rendered with `renderAddTask(true)` for editing an existing task.
+ * After saving, a "taskupdated" event is dispatched on `document`
+ * with `detail: { taskId, task }`.
+ *
+ * @example
+ * dialog.innerHTML = renderAddTask(true);
+ * initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @param {string} taskId - The key of the task to edit.
+ * @param {Task} task - The task to edit.
+ */
+function initEditTaskForm(form, taskId, task) {
+    form.dataset.taskId = taskId;
+    form.dataset.originalDueDate = task.dueDate ?? "";
+    initAddTaskForm(form, task.status, task);
+}
+
+/**
+ * Prefills the form with the values of an existing task.
+ * Assigned contacts are checked when the contacts have been loaded.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @param {Task} task - The task whose values are shown.
+ */
+function fillTaskForm(form, task) {
+    form.querySelector("#task-title").value = task.title ?? "";
+    form.querySelector("#task-description").value = task.description ?? "";
+    form.querySelector("#task-due-date").value = task.dueDate ?? "";
+
+    fillTaskPriority(form, task.priority);
+    fillTaskCategory(form, task.category);
+    fillTaskSubtasks(form, task.subtasks);
+}
+
+/**
+ * Activates the priority button that matches the task's priority.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @param {string} [priority] - The stored priority ("high", "medium" or "low").
+ */
+function fillTaskPriority(form, priority = "medium") {
+    const priorityClass = { high: "urgent", medium: "medium", low: "low" }[priority.toLowerCase()] ?? "medium";
+
+    selectTaskPriority(form.querySelector(`#priority-${priorityClass}`), priorityClass);
+}
+
+/**
+ * Selects the task's category and shows it in the category field.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @param {string} [category] - The stored category.
+ */
+function fillTaskCategory(form, category) {
+    const radio = [...form.querySelectorAll('input[name="category"]')].find((input) => input.value === category);
+    if (!radio) return;
+
+    radio.checked = true;
+    form.querySelector("#task-category button span").textContent = category;
+}
+
+/**
+ * Shows the task's subtasks in the subtask list, keeping their completion state.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @param {Object<string, Subtask>} [subtasks] - The stored subtasks.
+ */
+function fillTaskSubtasks(form, subtasks = {}) {
+    const list = form.querySelector("#subtask-list");
+
+    Object.entries(subtasks)
+        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB, undefined, { numeric: true }))
+        .forEach(([, subtask]) => list.append(createSubtaskItem(subtask.title, subtask.completed)));
 }
 
 /**
@@ -73,7 +152,9 @@ function preventEnterSubmit(event) {
 
 /**
  * Lets the dropdown fields open and close by clicking anywhere on them,
- * including the arrow icon.
+ * including the arrow icon. A click outside or Escape closes them.
+ * A click into the search field only closes the contact list while nothing is typed,
+ * so the cursor can still be placed inside a search term.
  *
  * @param {HTMLFormElement} form - The Add Task form.
  */
@@ -84,13 +165,47 @@ function initializeDropdownToggles(form) {
     const categoryButton = categoryField?.querySelector("button");
 
     assignedField?.querySelector(".input-wrapper").addEventListener("mousedown", (event) => {
-        if (event.target === searchInput) return;
+        if (event.target === searchInput && searchInput.value !== "") return;
         toggleDropdown(event, assignedField, searchInput);
+    });
+
+    searchInput?.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && searchInput.value === "") {
+            event.preventDefault();
+            searchInput.blur();
+        }
     });
 
     categoryButton?.addEventListener("mousedown", (event) => {
         toggleDropdown(event, categoryField, categoryButton);
     });
+
+    closeDropdownsOnOutsideClick(form, [assignedField, categoryField]);
+}
+
+/**
+ * Closes an open dropdown when the user clicks anywhere outside of it.
+ * The listener removes itself once the form is no longer part of the page
+ * (e.g. after the board dialog was re-rendered).
+ *
+ * @param {HTMLFormElement} form - The Add Task form.
+ * @param {(HTMLElement|null)[]} fields - The dropdown fields.
+ */
+function closeDropdownsOnOutsideClick(form, fields) {
+    function handleOutsideClick(event) {
+        if (!form.isConnected) {
+            document.removeEventListener("mousedown", handleOutsideClick);
+            return;
+        }
+
+        fields.forEach((field) => {
+            if (field && !field.contains(event.target) && field.contains(document.activeElement)) {
+                document.activeElement.blur();
+            }
+        });
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
 }
 
 /**
@@ -162,7 +277,7 @@ function validateTitle(form) {
 function validateDueDate(form) {
     const dueDateInput = form.querySelector("#task-due-date");
     const message = dueDateInput.value
-        ? getPastDueDateError(dueDateInput.value)
+        ? getPastDueDateError(dueDateInput.value, form.dataset.originalDueDate)
         : "This field is required";
 
     setFieldError(dueDateInput, form.querySelector("#task-due-date-error"), message);
@@ -212,9 +327,10 @@ function clearFieldErrors(form) {
  * Loads contacts and creates the assignment options.
  *
  * @param {HTMLFormElement} form - The Add Task form.
+ * @param {string[]} [assignedContactIds=[]] - IDs of contacts that are checked initially.
  * @returns {Promise<void>}
  */
-async function initializeAssignedContacts(form) {
+async function initializeAssignedContacts(form, assignedContactIds = []) {
     const options = form.querySelector("#assigned-options");
 
     if (!options) return;
@@ -248,6 +364,7 @@ async function initializeAssignedContacts(form) {
             checkbox.type = "checkbox";
             checkbox.name = "assignedTo";
             checkbox.value = contactId;
+            checkbox.checked = assignedContactIds.includes(contactId);
 
             checkbox.addEventListener("change", () => {
                 renderAssignedBadges(form);
@@ -392,11 +509,13 @@ function addSubtask(form) {
  * Creates a subtask list item with edit and delete actions.
  *
  * @param {string} title - The subtask title.
+ * @param {boolean} [completed=false] - Whether the subtask is already done.
  * @returns {HTMLLIElement} The subtask list item.
  */
-function createSubtaskItem(title) {
+function createSubtaskItem(title, completed = false) {
     const item = document.createElement("li");
     item.className = "subtask-item";
+    item.dataset.completed = String(Boolean(completed));
     item.innerHTML = `
         <span class="subtask-title"></span>
         <div class="subtask-actions">
@@ -481,7 +600,7 @@ function getTaskSubtasks(form) {
             `subtask${index + 1}`,
             {
                 title: item.querySelector(".subtask-title").textContent,
-                completed: false,
+                completed: item.dataset.completed === "true",
             },
         ])
     );
@@ -537,6 +656,7 @@ function resetTaskForm(form) {
 
 /**
  * Sets today's date as the earliest selectable due date.
+ * When editing, an already past due date of the task stays selectable.
  *
  * @param {HTMLFormElement} form - The Add Task form.
  */
@@ -544,7 +664,10 @@ function initializeTaskDate(form) {
     const dueDateInput = form.querySelector("#task-due-date");
     if (!dueDateInput) return;
 
-    dueDateInput.min = getTodayAsIsoDate();
+    const today = getTodayAsIsoDate();
+    const originalDueDate = form.dataset.originalDueDate;
+
+    dueDateInput.min = originalDueDate && originalDueDate < today ? originalDueDate : today;
 }
 
 /**
@@ -574,10 +697,11 @@ function updateCreateTaskButton(form) {
  * Returns an error message if the due date lies in the past.
  *
  * @param {string} dueDate - The due date as YYYY-MM-DD.
+ * @param {string} [allowedDate=""] - A past date that is still accepted (the original date when editing).
  * @returns {string} The error message, or an empty string if the date is valid.
  */
-function getPastDueDateError(dueDate) {
-    return dueDate && dueDate < getTodayAsIsoDate()
+function getPastDueDateError(dueDate, allowedDate = "") {
+    return dueDate && dueDate < getTodayAsIsoDate() && dueDate !== allowedDate
         ? "The due date cannot be in the past."
         : "";
 }
@@ -588,7 +712,9 @@ function getPastDueDateError(dueDate) {
  * @param {HTMLInputElement} dueDateInput - The due date input.
  */
 function applyDueDateValidity(dueDateInput) {
-    dueDateInput.setCustomValidity(getPastDueDateError(dueDateInput.value));
+    const allowedDate = dueDateInput.form?.dataset.originalDueDate;
+
+    dueDateInput.setCustomValidity(getPastDueDateError(dueDateInput.value, allowedDate));
 }
 
 /**
@@ -615,16 +741,7 @@ async function createTask(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
-
-    applyDueDateValidity(form.querySelector("#task-due-date"));
-
-    if (!form.checkValidity()) {
-        validateTitle(form);
-        validateDueDate(form);
-        validateCategory(form);
-        updateCreateTaskButton(form);
-        return;
-    }
+    if (!validateTaskForm(form)) return;
 
     const task = getTaskFromForm(form);
     const submitButton = form.querySelector('button[type="submit"]');
@@ -642,6 +759,54 @@ async function createTask(event) {
         showNotification("Task could not be created. Please try again.");
         updateCreateTaskButton(form);
     }
+}
+
+/**
+ * Validates and saves the changes of an edited task.
+ * Dispatches "taskupdated" on `document` with `detail: { taskId, task }` afterwards.
+ *
+ * @param {SubmitEvent} event - The form submit event.
+ * @returns {Promise<void>}
+ */
+async function updateTask(event) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    if (!validateTaskForm(form)) return;
+
+    const taskId = form.dataset.taskId;
+    const task = getTaskFromForm(form);
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    submitButton.disabled = true;
+
+    try {
+        await putData(DB_TASKS + taskId, task);
+        document.dispatchEvent(new CustomEvent("taskupdated", { detail: { taskId, task } }));
+    } catch (error) {
+        console.error("Updating Task has failed:", error);
+        showNotification("Task could not be saved. Please try again.");
+    }
+
+    updateCreateTaskButton(form);
+}
+
+/**
+ * Checks all required fields and shows their error messages if invalid.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {boolean} True if the form is valid.
+ */
+function validateTaskForm(form) {
+    applyDueDateValidity(form.querySelector("#task-due-date"));
+
+    if (form.checkValidity()) return true;
+
+    validateTitle(form);
+    validateDueDate(form);
+    validateCategory(form);
+    updateCreateTaskButton(form);
+    return false;
 }
 
 /**

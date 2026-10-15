@@ -1,8 +1,15 @@
 
 
-function renderAddTask() {
-    return `<h1>Add Task</h1>
-                <section class="add-task">
+/**
+ * Returns the HTML of the task form.
+ *
+ * @param {boolean} [isEditMode=false] - True renders the form for editing an existing task
+ *   (no heading, no Clear button, "Ok" instead of "Create Task").
+ * @returns {string} The task form HTML.
+ */
+function renderAddTask(isEditMode = false) {
+    return `${isEditMode ? "" : "<h1>Add Task</h1>"}
+                <section class="add-task${isEditMode ? " edit-task" : ""}">
                     <form class="task-form-wrapper" onreset="resetTaskForm(this)">
                         <div class="add-task-form">
                             <!-- Left column -->
@@ -31,7 +38,7 @@ function renderAddTask() {
 
                                 <div class="task-priority" role="group" aria-labelledby="task-priority-label">
                                     <div>
-                                        <button class="button" type="button" onclick="selectTaskPriority(this, 'urgent')" aria-pressed="false">
+                                        <button class="button" type="button" id="priority-urgent" onclick="selectTaskPriority(this, 'urgent')" aria-pressed="false">
                                             Urgent
                                             <img src="../assets/icons/priority_arrows_up.svg" alt="" />
                                         </button>
@@ -45,7 +52,7 @@ function renderAddTask() {
                                     </div>
 
                                     <div>
-                                        <button class="button" type="button" onclick="selectTaskPriority(this, 'low')" aria-pressed="false">
+                                        <button class="button" type="button" id="priority-low" onclick="selectTaskPriority(this, 'low')" aria-pressed="false">
                                             Low
                                             <img src="../assets/icons/priority_arrows_down.svg" alt="" />
                                         </button>
@@ -111,13 +118,13 @@ function renderAddTask() {
                             </p>
 
                             <div class="submit-task-send">
-                                <button class="button button-bright" type="reset">
+                                ${isEditMode ? "" : `<button class="button button-bright" type="reset">
                                     <span>Clear</span>
                                     <img src="../assets/icons/cancel.svg" alt="">
-                                </button>
+                                </button>`}
 
                                 <button class="button button-dark" type="submit">
-                                    <span>Create Task</span>
+                                    <span>${isEditMode ? "Ok" : "Create Task"}</span>
                                     <img src="../assets/icons/check.svg" alt="">
                                 </button>
                             </div>

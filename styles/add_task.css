@@ -180,7 +180,8 @@ html:has(.add-task-page),
     font-size: var(--font-input);
 }
 
-h1 {
+.add-task-inner > h1,
+#dialog-add-task > h1 {
     padding-bottom: var(--space-xs);
 }
 
@@ -624,4 +625,37 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .input-wrapper.is-invalid {
     border-color: #ff8190;
+}
+
+/* Edit form inside the board's task dialog */
+.add-task.edit-task {
+    max-height: 90dvh;
+    padding: 32px 24px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    background-color: #fff;
+    border-radius: var(--border-radius-high);
+    box-sizing: border-box;
+}
+
+.edit-task .task-form-wrapper {
+    gap: var(--space-lg);
+}
+
+.edit-task .task-form > label:not(:first-child) {
+    margin-top: 12px;
+}
+
+.edit-task .submit-task {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.edit-task .submit-task p {
+    display: none;
+}
+
+.edit-task .submit-task-send {
+    position: static;
+    padding: 0;
 }
