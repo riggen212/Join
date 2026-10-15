@@ -48,7 +48,8 @@
     line-height: 1.2;
 }
 
-#contact > div:first-child p::after {
+#contact > div:first-child p::after,
+#contact.contact-edit > div:first-child h1::after {
     content: "";
     display: block;
     width: 115px;
@@ -64,14 +65,10 @@
     right: 48px;
     width: 32px;
     height: 32px;
-    padding: 8px;
-    background-color: transparent;
-    border: none;
 }
 
 #contact > div:first-child > .button-close:hover {
     background-color: #f5f5f5;
-    border-radius: 50%;
 }
 
 #contact > div:first-child > .button-close img {
@@ -134,43 +131,15 @@
 }
 
 #contact .input-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
     min-height: 52px;
     padding: 0 16px;
-    background-color: #fff;
     border: 1px solid #2a3647;
-    border-radius: var(--border-radius-middle);
-    box-shadow: none;
 }
 
 #contact .input-wrapper input {
-    flex: 1;
-    min-width: 0;
     height: 50px;
-    padding: 0;
     color: #000;
     font-size: 20px;
-    background-color: transparent;
-    border: none;
-    outline: none;
-}
-
-#contact .input-wrapper .input-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 0 0 32px;
-    width: 32px;
-    height: 32px;
-    margin-left: var(--space-xs);
-    padding: 4px;
-}
-
-#contact .input-wrapper .input-icon img {
-    width: 22px;
-    height: 22px;
 }
 
 #contact .input-wrapper:focus-within {
@@ -178,24 +147,10 @@
     box-shadow: 0 0 0 1px #29abe2;
 }
 
-body:has(#contact[open]) .contact-lis > .detail-view {
-    display: none;
-}
-
 /* for edit contact dialog */
 
 #contact > .badge-user.badge-user-orange {
     background-color: var(--color-badge-user-orange);
-}
-
-#contact.contact-edit > div:first-child h1::after {
-    content: "";
-    display: block;
-    width: 115px;
-    height: 3px;
-    margin-top: var(--space-lg);
-    background-color: #29abe2;
-    border-radius: 999px;
 }
 
 #contact .contact-form-actions {

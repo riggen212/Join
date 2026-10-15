@@ -116,7 +116,6 @@ h2 {
 .board-content {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    /* grid-template-columns: fit-content(var(--breakpoint-mobile-to-desktop)); */
     grid-template-rows: auto;
 
     gap: var(--space-md);

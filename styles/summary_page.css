@@ -21,14 +21,7 @@
     padding-left: 16px;
     padding-right: 8px;
 
-    /*
     display: flex;
-    justify-content: center;
-    align-items: center;
-    */
-    
-    display: flex;
-    justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
     gap: 24px;
@@ -36,20 +29,15 @@
 
 .desktop-wrapper {
     display: contents;
-    margin-top: 16px;
 }
 
 .headline-h2 {
     display: none;
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 400;
     font-size: var(--font-heading-h2);
 }
 
 .headline-strong {
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 700;
     font-size: var(--font-heading-strong);
     color: #124658;
@@ -74,49 +62,50 @@
 }
 
 .headline-strong2 {
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 700;
     font-size: var(--font-heading-h2);
 }
 
 .headline-span {
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 400;
-    font-size: var(--space-lg);    
+    font-size: var(--space-lg);
 }
-
 
 .section-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    flex-wrap: nowrap;
     gap: 32px;
 }
 
 .section-inner {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
 }
 
-.flexbox-container {
-    width: var(--todo-card-width);
+/* Shared card style for To-Do/Done, deadline and task counters */
+.flexbox-container,
+.deadline-container,
+.task-container {
     border: 1px solid #d1d1d1;
     border-radius: 24px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
+.flexbox-container {
+    width: var(--todo-card-width);
+}
+
+.task-container {
+    width: var(--task-container-width);
+}
+
 .flexbox {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    flex-wrap: nowrap;
     gap: 16px;
     height: 100%;
     padding: var(--space-xs);
@@ -127,35 +116,30 @@
     height: var(--image-to-do-size);
 }
 
-.flexbox-inner {
+.flexbox-inner,
+.taks-inner {
     display: flex;
     flex-direction: column;
-    align-content: center;
     justify-content: center;
     text-align: center;
 }
 
+.taks-inner {
+    padding: var(--space-xs);
+}
+
 .section-headline {
-    font-family: 'Inter';
     font-weight: 600;
     font-size: var(--font-heading-h2);
 }
 
 .section-span {
-    font-family: 'Inter';
     font-weight: 400;
     font-size: var(--space-lg);
 }
 
-.deadline-container {
-    border: 1px solid #d1d1d1;
-    border-radius: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
 .deadline-inner {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
     gap: 8px;
@@ -180,39 +164,16 @@
 }
 
 .deadline-date {
-    font-family: 'Inter';
     font-weight: 600;
-    font-size: var(--space-lg);  
-}
-
-.task-container {
-    width: var(--task-container-width);
-    border: 1px solid #d1d1d1;
-    border-radius: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
-.taks-inner {
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    text-align: center;
-    padding: var(--space-xs);
+    font-size: var(--space-lg);
 }
 
 /* ==== Desktop ==== */
 
 @media (min-width: 1280px) {
-    
+
     .main {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-items: flex-start;
-        justify-content: flex-start;
-        margin: 0;
-        margin-left: 48px;
+        margin: 0 0 0 48px;
     }
 
     .headline-h2 {
@@ -237,18 +198,16 @@
     }
 
     .headline-container {
-        display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
         margin-top: 180px;
         gap: 24px;
-        
     }
 
     .headline-container::after {
         display: none;
-    } 
+    }
 
     .headline-container h2::after {
         content: "";
@@ -258,7 +217,7 @@
         background-color: #29abe2;
         border-radius: 2px;
         vertical-align: top;
-          margin-left: clamp( 48px, calc(20vw - 208px), 80px);
+        margin-left: clamp( 48px, calc(20vw - 208px), 80px);
     }
 
     .headline-span {

@@ -1,0 +1,147 @@
+/* "Assigned to" and "Category" dropdowns. A list is open while something inside it has the focus. */
+
+.assigned-dropdown,
+.category-field {
+    position: relative;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+}
+
+.assigned-dropdown {
+    margin-top: var(--space-xl);
+}
+
+.assigned-dropdown > .input-wrapper {
+    cursor: pointer;
+}
+
+#task-assigned:focus::placeholder {
+    color: transparent;
+}
+
+.assigned-options,
+.category-options,
+.assigned-badges {
+    padding: 0;
+    list-style: none;
+}
+
+.assigned-options,
+.category-options {
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    display: none;
+    width: 100%;
+    max-height: 280px;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: var(--border-radius-middle);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+}
+
+.assigned-dropdown:focus-within .assigned-options,
+.category-field:focus-within .category-options {
+    display: block;
+}
+
+.assigned-dropdown .input-wrapper img,
+.category-field .input-wrapper img {
+    width: 8px;
+}
+
+.assigned-dropdown:focus-within .input-wrapper img,
+.category-field:focus-within .input-wrapper img {
+    transform: rotate(180deg);
+}
+
+.category-options label:hover,
+.category-options label:focus-within,
+.assigned-option:hover,
+.assigned-option:focus-within {
+    background-color: #f5f5f5;
+}
+
+/* Category */
+
+.category-field > .input-wrapper {
+    justify-content: space-between;
+    color: #757575;
+    cursor: pointer;
+}
+
+.category-field:has(input:checked) > .input-wrapper {
+    color: #000;
+}
+
+.category-options label {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    cursor: pointer;
+}
+
+.category-options input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+/* Assigned contacts */
+
+.assigned-options > li {
+    padding-block: 2px;
+}
+
+.assigned-option {
+    display: grid;
+    grid-template-columns: var(--size-badge-user) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-md);
+    min-height: 56px;
+    padding-inline: var(--space-md);
+    cursor: pointer;
+}
+
+.assigned-option:has(input:checked) {
+    color: #fff;
+    background-color: var(--background-dark-color);
+    border-radius: var(--border-radius-middle);
+}
+
+.assigned-option input:checked {
+    filter: brightness(0) invert(1);
+}
+
+.assigned-option input:focus-visible {
+    outline: 2px solid #29abe2;
+    outline-offset: 2px;
+}
+
+.assigned-badges {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-xs);
+    height: calc(var(--size-badge-user) + var(--space-lg));
+    margin-top: var(--space-xs);
+    overflow-x: auto;
+}
+
+.assigned-badges > .badge-user {
+    flex: 0 0 var(--size-badge-user);
+}
+
+.badge-user-more {
+    background-color: var(--background-dark-color);
+}
+
+@media screen and (min-width: 1280px) {
+    .category-field {
+        margin-bottom: var(--space-sm);
+    }
+
+    .assigned-dropdown {
+        margin-top: var(--space-lg);
+    }
+}

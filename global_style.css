@@ -14,7 +14,7 @@
 
     --link-color: #124658;
 
-    --input-focus-color: rgba(41 171 226 0.5);
+    --input-focus-color: rgb(41 171 226 / 0.5);
 
     /* root settings for login screen */
     --space-xxs: 4px;
@@ -156,10 +156,6 @@ input[type="checkbox"]:checked {
 
     width: 100%;
     padding: var(--space-lg) var(--space-md);
-}
-
-.header-wrapper > button {
-    cursor: pointer;
 }
 
 .header-logo {
@@ -348,7 +344,6 @@ input[type="checkbox"]:checked {
         flex-direction: column;
         justify-content: center;
 
-        width: min(100%, var(--content-max-width));
         height: 100%;
 
         gap: 16px;

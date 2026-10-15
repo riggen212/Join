@@ -12,11 +12,13 @@ body#login:target footer {
     animation: none;
 }
 
-body#login:target .landing-page {
+body#login:target .landing-page,
+.sign-up-page .landing-page {
     background-color: var(--background-bright-color);
 }
 
-body#login:target .logo-dark {
+body#login:target .logo-dark,
+.sign-up-page .logo-dark {
     top: var(--space-lg);
     left: var(--space-lg);
 
@@ -26,7 +28,8 @@ body#login:target .logo-dark {
     transform: none;
 }
 
-body#login:target .logo-bright {
+body#login:target .logo-bright,
+.sign-up-page .logo-bright {
     opacity: 0;
 }
 
@@ -83,10 +86,6 @@ body#login:target footer {
     gap: var(--space-lg);
 
     opacity: 0;
-}
-
-.sign-up-wrapper a {
-    text-decoration: none;
 }
 
 .sing-up-position {
@@ -156,19 +155,6 @@ body#login:target footer {
     width: min(100%, var(--form-max-width));
 }
 
-.login-input-mail,
-.login-input-password {
-    width: 100%;
-    min-height: clamp(48px, 45.71px + 0.71vw, 56px);
-    padding-inline: var(--space-md);
-
-    font-size: var(--font-input);
-    font-weight: 400;
-
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius-middle);
-}
-
 .login-button-area {
     display: flex;
     flex-wrap: wrap;
@@ -181,7 +167,8 @@ body#login:target footer {
     width: 100%;
 }
 
-.login-page footer {
+.login-page footer,
+.sign-up-page footer {
     position: fixed;
     bottom: 32px;
     left: 0;
@@ -191,15 +178,16 @@ body#login:target footer {
     justify-content: center;
     gap: var(--space-xl);
 
-    opacity: 0;
-
     a {
-        text-decoration: none;
         font-size: 16px;
         font-weight: 400;
 
         color: #000000;
     }
+}
+
+.login-page footer {
+    opacity: 0;
 }
 
 @media (min-width: 1280px) {

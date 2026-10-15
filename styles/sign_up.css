@@ -2,28 +2,6 @@
     opacity: 1;
 }
 
-.sign-up-page .landing-page {
-    background-color: var(--background-bright-color);
-}
-
-.sign-up-page .logo-bright {
-    opacity: 0;
-}
-
-.sign-up-page .logo-dark {
-    top: var(--space-lg);
-    left: var(--space-lg);
-
-    height: var(--logo-end-size);
-    opacity: 1;
-
-    transform: none;
-}
-
-.sign-up-page .login {
-    opacity: 1;
-}
-
 .sign-up-headline {
     position: relative;
     width: 100%;
@@ -41,9 +19,6 @@
     padding: 0;
 
     transform: translateY(-50%);
-
-    background-color: transparent;
-    border: none;
 }
 
 .back-to-login > img {
@@ -64,23 +39,7 @@
     text-align: center;
 }
 
-.sign-up-page footer {
-    position: fixed;
-    bottom: 32px;
-    left: 0;
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    gap: var(--space-xl);
-
-    opacity: 1;
-
-    a {
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: 400;
-
-        color: #686868;
-    }
+/* Logo, background and footer layout come from login.css */
+.sign-up-page footer a {
+    color: #686868;
 }

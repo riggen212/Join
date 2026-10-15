@@ -1,185 +1,3 @@
-/* dialog */
-#dialog-task[open],
-#dialog-add-task[open] {
-    top: 50%;
-    left: 50%;
-
-    max-height: 90dvh;
-    max-width: 530px;
-    width: 90dvw;
-
-    padding: 0;
-
-    background-color: unset;
-    border: unset;
-    border-radius: var(--border-radius-high);
-
-    &:not(.dialog-task-closing) {
-        animation: slide-in-from-right-to-center 256ms linear forwards;
-    }
-}
-
-#dialog-add-task[open] {
-    max-width: unset;
-    /* width: 1000px; */
-
-    padding: 64px;
-    background-color: #fff;
-}
-
-#contact[open] {
-    top: 50%;
-    left: 50%;
-
-    &:not(.contact-closing) {
-        animation: slide-in-from-bottom-to-center 256ms linear forwards;
-    }
-}
-
-#dialog-profile[open],
-#dialog-edit-contact[open] {
-    position: fixed;
-    right: var(--space-xs);
-    left: auto;
-
-    margin: 0;
-
-    padding: var(--space-xs);
-
-    border: unset;
-    border-radius: 20px 0 20px 20px;
-    box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 50%);
-
-    &:not(.dialog-profile-closing) {
-        animation: slide-in-from-right 256ms linear forwards;
-    }
-
-    & ul {
-        padding: var(--space-xs);
-        list-style-type: none;
-    }
-}
-
-#dialog-profile[open] {
-    top: var(--mobile-header-footer-height);
-    bottom: auto;
-
-    background-color: var(--background-dark-color);
-
-    & .link-navbar {
-        align-items: unset;
-        height: unset;
-        width: unset;
-
-        padding-block: 16px;
-        padding-inline: var(--space-xs);
-    }
-}
-
-#dialog-edit-contact[open] {
-    top: auto;
-    bottom: calc(var(--mobile-header-footer-height) + 16px);
-
-    & .button-task-overlay {
-        padding-block: 16px;
-    }
-
-    & .button-task-overlay:hover {
-        text-shadow: unset;
-    }
-}
-
-.dialog-task-closing {
-    animation: slide-out-from-center-to-right 256ms linear forwards;
-}
-
-.contact-closing {
-    animation: slide-out-from-center-to-bottom 256ms linear forwards;
-}
-
-.dialog-profile-closing {
-    animation: slide-out-to-right 256ms linear forwards;
-}
-
-@keyframes slide-in-from-right-to-center {
-    from {
-        transform: translate(50vw, -50%);
-    }
-    to {
-        transform: translate(-50%, -50%);
-    }
-}
-
-@keyframes slide-out-from-center-to-right {
-    from {
-        transform: translate(-50%, -50%);
-    }
-    to {
-        transform: translate(50vw, -50%);
-    }
-}
-
-@keyframes slide-in-from-bottom-to-center {
-    from {
-        transform: translate(-50%, 50dvh);
-    }
-    to {
-        transform: translate(-50%, -50%);
-    }
-}
-
-@keyframes slide-out-from-center-to-bottom {
-    from {
-        transform: translate(-50%, -50%);
-    }
-    to {
-        transform: translate(-50%, 50dvh);
-    }
-}
-
-@keyframes slide-in-from-right {
-    from {
-        transform: translateX(100%);
-    }
-    to {
-        transform: translateX(0);
-    }
-}
-
-@keyframes slide-out-to-right {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(100%);
-    }
-}
-
-#notification {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 1000;
-    display: none;
-    padding: 20px 24px;
-    color: #fff;
-    font-size: 16px;
-    background-color: var(--background-dark-color);
-    border-radius: var(--border-radius-middle);
-    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-}
-
-#notification.is-visible {
-    display: block;
-    animation: slide-in-from-right-to-center 160ms linear forwards;
-}
-
-#notification.is-closing {
-    animation: slide-out-from-center-to-right 160ms linear forwards;
-}
-
 /* buttons */
 .button {
     min-height: 48px;
@@ -400,8 +218,7 @@
 /* input components */
 
 .input-wrapper button,
-.input-icon,
-.button-show-password {
+.input-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -444,9 +261,7 @@
     height: auto;
 }
 
-button:focus-visible,
-.login-input-mail:focus-visible,
-.login-input-password:focus-visible {
+button:focus-visible {
     outline: 3px solid var(--input-focus-color);
     outline-offset: 2px;
 }
@@ -523,15 +338,4 @@ button:focus-visible,
 
 .badge-type-technical {
     background-color: var(--color-badge-type-green);
-}
-
-@media screen and (min-width: 1280px) {
-    #contact[open] {
-        &:not(.contact-closing) {
-            animation: slide-in-from-right-to-center 256ms linear forwards;
-        }
-    }
-    .contact-closing {
-        animation: slide-out-from-center-to-right 256ms linear forwards;
-    }
 }

@@ -4,7 +4,6 @@
     flex-direction: column;
 
     flex: 0 0 var(--size-task-card-width);
-    /* max-width: var(--size-task-card-width); */
 
     margin: var(--space-xxs);
     padding: var(--space-task);
