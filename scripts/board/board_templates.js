@@ -80,34 +80,44 @@ function getTaskOverlayTemplate(taskData) {
                             <img src="../assets/icons/cancel.svg" alt="Close" />
                         </button>
                     </div>
-                    <h2>${taskData.task.title}</h2>
+                    <h2 class="scrollbar">${taskData.task.title}</h2>
                 </header>
+
                 <div class="task-overlay-body">
-                    <p class="task-overlay-description">${taskData.task.description}</p>
+                    <p class="task-overlay-description scrollbar">${taskData.task.description}</p>
+
                     <dl class="task-overlay-details">
-                        <dt>Due Date:</dt>
-                        <dd>${taskData.task.dueDate}</dd>
-                        <dt>Priority:</dt>
-                        <dd>
-                            <div class="d-flex-align-center gap-xs">
-                                <span>${taskData.task.priority}</span>
-                                <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg">
-                            </div>
-                        </dd>
-                        <dt class="task-overlay-assignees">Assigned To:</dt>
-                        <dd>
-                            <ul class="task-overlay-assignees-list scrollbar">
-                                ${taskData.assigneesHtml}
-                            </ul>
-                        </dd>
-                        <dt class="task-overlay-subtasks">Subtasks</dt>
-                        <dd>
-                            <ul class="task-overlay-subtasks-list scrollbar">
-                                ${taskData.subtasksHtml}
-                            </ul>
-                        </dd>
+                        <div class="task-overlay-property">
+                            <dt>Due Date:</dt>
+                            <dd>${taskData.task.dueDate}</dd>
+                        </div>
+
+                        <div class="task-overlay-property">
+                            <dt>Priority:</dt>
+                            <dd>
+                                <div class="d-flex-align-center gap-xs">
+                                    <span>${taskData.task.priority}</span>
+                                    <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg">
+                                </div>
+                            </dd>
+                        </div>
+
+                        <div class="task-overlay-section">
+                            <dt>Assigned To:</dt>
+                            <dd>
+                                <ul class="task-overlay-assignees-list scrollbar">${taskData.assigneesHtml}</ul>
+                            </dd>
+                        </div>
+
+                        <div class="task-overlay-section">
+                            <dt>Subtasks</dt>
+                            <dd>
+                                <ul class="task-overlay-subtasks-list scrollbar">${taskData.subtasksHtml}</ul>
+                            </dd>
+                        </div>
                     </dl>
                 </div>
+
                 <footer class="task-overlay-footer">
                     <button class="button button-task-overlay" onclick="deleteTask('${taskData.id}', '${taskData.task.status}', this)">
                         <img src="../assets/icons/delete.svg" alt="Delete" />
