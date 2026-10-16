@@ -525,6 +525,12 @@ button:focus-visible,
     background-color: var(--color-badge-type-green);
 }
 
+/* Scrollbar */
+.scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #a8a8a8 transparent;
+}
+
 @media screen and (min-width: 1280px) {
     #contact[open] {
         &:not(.contact-closing) {

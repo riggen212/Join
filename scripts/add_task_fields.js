@@ -1,4 +1,4 @@
-const MAX_VISIBLE_BADGES = 5;
+const MAX_VISIBLE_BADGES = 4;
 
 document.addEventListener("mousedown", closeDropdownsOnOutsideClick);
 

@@ -138,12 +138,18 @@
         color: var(--color-overlay-task-details-term);
     }
 
-    & .task-overlay-assignees ~ dd > ul {
+    & .task-overlay-assignees-list,
+    & .task-overlay-subtasks-list {
+        max-height: min(18dvh, 200px);
+        overflow-y: auto;
+    }
+
+    & .task-overlay-assignees-list {
         padding-inline-start: 16px;
         list-style-type: none;
     }
 
-    & .task-overlay-subtasks ~ dd > ul {
+    & .task-overlay-subtasks-list {
         padding-inline-start: 0;
     }
 

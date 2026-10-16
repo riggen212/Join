@@ -43,9 +43,7 @@ function getTaskCardTemplate(taskData) {
  * @returns {string}
  */
 function getTaskCardUserBadgeTemplate(contact) {
-    return `<li class="badge-user ${contact.colorClass}">
-            <span>${contact.initials}</span>
-        </li>`;
+    return `<li class="badge-user ${contact.colorClass}">${contact.initials}</li>`;
 }
 
 /**
@@ -98,13 +96,13 @@ function getTaskOverlayTemplate(taskData) {
                         </dd>
                         <dt class="task-overlay-assignees">Assigned To:</dt>
                         <dd>
-                            <ul>
+                            <ul class="task-overlay-assignees-list scrollbar">
                                 ${taskData.assigneesHtml}
                             </ul>
                         </dd>
                         <dt class="task-overlay-subtasks">Subtasks</dt>
                         <dd>
-                            <ul>
+                            <ul class="task-overlay-subtasks-list scrollbar">
                                 ${taskData.subtasksHtml}
                             </ul>
                         </dd>
