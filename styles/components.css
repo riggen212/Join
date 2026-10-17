@@ -155,7 +155,51 @@
     }
 }
 
+@keyframes notification-slide-in-mobile {
+    from {
+        transform: translateY(100dvh) var(--notification-transform);
+    }
+
+    to {
+        transform: var(--notification-transform);
+    }
+}
+
+
+@keyframes notification-slide-out-mobile {
+    from {
+        transform: var(--notification-transform);
+    }
+
+    to {
+        transform: translateY(100dvh) var(--notification-transform);
+    }
+}
+
+@keyframes notification-slide-in-desktop {
+    from {
+        transform: translateX(100vw) var(--notification-transform);
+    }
+
+    to {
+        transform: var(--notification-transform);
+    }
+}
+
+
+@keyframes notification-slide-out-desktop {
+    from {
+        transform: var(--notification-transform);
+    }
+
+    to {
+        transform: translateX(100vw) var(--notification-transform);
+    }
+}
+
 #notification {
+    --notification-transform: translate(-50%, -50%);
+
     position: fixed;
     top: 50%;
     left: 50%;
@@ -167,17 +211,21 @@
     background-color: var(--background-dark-color);
     border-radius: var(--border-radius-middle);
     box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
-    transform: translate(-50%, -50%);
+    transform: var(--notification-transform);
     pointer-events: none;
+}
+
+#notification.is-error {
+    background-color: #b3261e;
 }
 
 #notification.is-visible {
     display: block;
-    animation: slide-in-from-right-to-center 160ms linear forwards;
+    animation: notification-slide-in-mobile 160ms linear forwards;
 }
 
 #notification.is-closing {
-    animation: slide-out-from-center-to-right 160ms linear forwards;
+    animation: notification-slide-out-mobile 160ms linear forwards;
 }
 
 /* buttons */
@@ -533,5 +581,13 @@ button:focus-visible,
     }
     .contact-closing {
         animation: slide-out-from-center-to-right 256ms linear forwards;
+    }
+
+    #notification.is-visible {
+        animation: notification-slide-in-desktop 160ms linear forwards;
+    }
+
+    #notification.is-closing {
+        animation: notification-slide-out-desktop 160ms linear forwards;
     }
 }
