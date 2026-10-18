@@ -27,7 +27,7 @@ async function initContacts() {
         Object.assign(contacts, firebaseContacts ?? {});
         renderContactList(contacts);
     } catch (error) {
-        console.error("Contacts could not be loaded:", error);
+        showNotification("Contacts could not be loaded.", "error");
     }
 }
 
@@ -149,7 +149,19 @@ function closeContactFormWithNotification(form, message) {
     const dialog = form.closest("dialog");
 
     dialog.dataset.notification = message;
+    dialog.dataset.notificationContainer = "show-details";
     dialog.requestClose();
+}
+
+
+/**
+ * Finishes the closing animation of the contact form dialog.
+ *
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @returns {void}
+ */
+function closeContactDialog(event) {
+    closeAnimatedDialog(event, "contact-closing");
 }
 
 
@@ -171,7 +183,7 @@ async function saveContact(event) {
         await saveEditedContact(selectedContact.id, contact);
         closeContactFormWithNotification(form, "Contact successfully updated");
     } catch (error) {
-        console.error("Contact could not be updated:", error);
+        showNotification("Contact could not be updated. Please try again.", "error");
     }
 }
 
@@ -221,7 +233,7 @@ async function createContact(event) {
         await saveNewContact(contactId, contact);
         closeContactFormWithNotification(form, "Contact successfully created");
     } catch (error) {
-        console.error("Contact could not be created:", error);
+        showNotification("Contact could not be created. Please try again.", "error");
     }
 }
 
@@ -295,6 +307,45 @@ async function removeContact(contactId) {
     renderContactList(contacts);
     hideContactDetails();
     closeDialogAfterContactDeletion("Contact successfully deleted");
+}
+
+
+/**
+ * Closes the contact dialog and shows a notification afterwards.
+ *
+ * @param {string} message - The text displayed in the notification.
+ * @param {"success" | "error"} [type="success"] - The notification type.
+ * @returns {void}
+ */
+function closeDialogAfterContactDeletion(message) {
+    const contactDialog = document.getElementById("contact");
+    const actionsDialog = document.getElementById("dialog-edit-contact");
+
+    if (actionsDialog.open) {
+        actionsDialog.close();
+        document.body.classList.remove("overflow-hidden");
+    }
+
+    if (!contactDialog.open) return showNotification(message, "show-details");
+    contactDialog.dataset.notification = message;
+    contactDialog.dataset.notificationContainer = "show-details";
+    contactDialog.requestClose();
+}
+
+/**
+ * Deletes the currently selected contact.
+ *
+ * @returns {Promise<void>}
+ */
+async function deleteContact() {
+    const selectedContact = getSelectedContactEntry();
+    if (!selectedContact) return;
+
+    try {
+        await removeContact(selectedContact.id);
+    } catch (error) {
+        showNotification("Contact could not be deleted. Please try again.", "error");
+    }
 }
 
 

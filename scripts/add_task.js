@@ -166,8 +166,7 @@ async function createTask(form) {
         const taskId = await saveNewTask(task);
         finishTaskCreation(form, taskId, task);
     } catch (error) {
-        console.error("Creating task has failed:", error);
-        showNotification("Task could not be created. Please try again.");
+        showNotification("Task could not be created. Please try again.", "error");
         updateCreateTaskButton(form);
     }
 }
@@ -229,8 +228,7 @@ async function updateTask(form) {
         await putData(DB_TASKS + taskId, task);
         document.dispatchEvent(new CustomEvent("taskupdated", { detail: { taskId: taskId, task: task } }));
     } catch (error) {
-        console.error("Updating task has failed:", error);
-        showNotification("Task could not be saved. Please try again.");
+        showNotification("Updating task has failed.", "error");
     }
     updateCreateTaskButton(form);
 }

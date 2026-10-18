@@ -172,17 +172,6 @@ function openDialog(dialogId) {
 
 
 /**
- * Finishes the closing animation of the contact form dialog.
- *
- * @param {AnimationEvent} event - The dialog animation event.
- * @returns {void}
- */
-function closeContactDialog(event) {
-    closeAnimatedDialog(event, "contact-closing");
-}
-
-
-/**
  * Finishes the closing animation of a profile-style dialog.
  *
  * @param {AnimationEvent} event - The dialog animation event.
@@ -243,23 +232,6 @@ function editContact() {
 
 
 /**
- * Deletes the currently selected contact.
- *
- * @returns {Promise<void>}
- */
-async function deleteContact() {
-    const selectedContact = getSelectedContactEntry();
-    if (!selectedContact) return;
-
-    try {
-        await removeContact(selectedContact.id);
-    } catch (error) {
-        console.error("Contact could not be deleted:", error);
-    }
-}
-
-
-/**
  * Closes a dialog after its closing animation has finished.
  *
  * @param {AnimationEvent} event - The dialog animation event.
@@ -277,27 +249,6 @@ function closeAnimatedDialog(event, closingClass) {
     document.body.classList.remove("overflow-hidden");
     dialog.close();
     showDialogNotification(dialog);
-}
-
-
-/**
- * Closes the dialog from which a contact was deleted and shows a confirmation.
- *
- * @param {string} message - The success message to show after closing.
- * @returns {void}
- */
-function closeDialogAfterContactDeletion(message) {
-    const contactDialog = document.getElementById("contact");
-    const actionsDialog = document.getElementById("dialog-edit-contact");
-
-    if (actionsDialog.open) {
-        actionsDialog.close();
-        document.body.classList.remove("overflow-hidden");
-    }
-
-    if (!contactDialog.open) return showNotification(message);
-    contactDialog.dataset.notification = message;
-    contactDialog.requestClose();
 }
 
 
@@ -373,17 +324,4 @@ async function setInitialsToProfileButton(userId) {
     }
 
     button.textContent = userInitials;
-}
-
-
-/**
- * Returns the notification container for the active screen size.
- *
- * @returns {HTMLElement} The element that contains the notification.
- */
-function getNotificationContainer() {
-    const contactDetails = document.getElementById("show-details");
-    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
-
-    return isDesktop && contactDetails ? contactDetails : document.body;
 }
