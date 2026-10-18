@@ -336,7 +336,7 @@ document.addEventListener("taskcreated", (event) => {
 });
 
 /**
- * Finishes the closing animation of the task dialog.
+ * Clears the task dialog's state and finishes its animated closing.
  *
  * @param {AnimationEvent} event - The dialog animation event.
  * @returns {void}

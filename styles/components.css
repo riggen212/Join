@@ -14,6 +14,8 @@
     border: unset;
     border-radius: var(--border-radius-high);
 
+    overflow: hidden;
+
     &:not(.dialog-task-closing) {
         animation: slide-in-from-right-to-center 256ms linear forwards;
     }
