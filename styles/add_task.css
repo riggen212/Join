@@ -412,6 +412,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: var(--space-xl);
 }
 
+body:has(.add-task-inner) #notification {
+    top: auto;
+    bottom: calc(96px + clamp(48px, 14vw, 64px) + 16px);
+    left: 50%;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    text-align: center;
+    --notification-transform: translateX(-50%);
+}
+
+
 @container (min-width: 850px) {
     .task-priority,
     .assigned-dropdown,
@@ -432,6 +443,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @media screen and (min-width: 1280px) {
+    body:has(.add-task-inner) #notification {
+        top: 50%;
+        bottom: auto;
+        width: auto;
+        max-width: none;
+        text-align: left;
+        --notification-transform: translate(-50%, -50%);
+    }
+
     html:has(.add-task-page),
     .add-task-page :is(.assigned-options, .assigned-badges, .category-options, textarea) {
         scrollbar-width: auto;
@@ -494,6 +514,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .assigned-dropdown {
         margin-top: var(--space-lg);
     }
+
+    
 }
 
 .subtask-list {
