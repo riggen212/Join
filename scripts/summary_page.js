@@ -6,6 +6,7 @@
  */
 async function initSummary() {
     try {
+        showAnimationLogin();
         loggedUserId = await loadCurrentUser();
         const user = await getData(DB_USERS, loggedUserId);
         const tasks = await loadTasks();
@@ -18,6 +19,16 @@ async function initSummary() {
 }
 
 initSummary();
+
+function showAnimationLogin() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const animation = urlParams.get('animation');
+
+    if (animation === 'true') {
+        document.getElementById('login-animation-on').classList.add('animation-in');
+        document.getElementById('login-animation-out').classList.add('animation-out');
+    }
+}
 
 /**
  * Loads all tasks, returning an empty object if no tasks exist.
