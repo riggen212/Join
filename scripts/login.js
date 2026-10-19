@@ -17,7 +17,7 @@ function checkLoginData(users, email, password) {
             users[key].password === password
         ) {
             loginSuccessful = true;
-            window.location.href = `./pages/summary_page.html?user=${key}`;
+            window.location.href = `./pages/summary_page.html?user=${key}&animation=true`;
         }
     }
         if (!loginSuccessful) showLoginError();   
