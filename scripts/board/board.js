@@ -317,13 +317,28 @@ document.addEventListener("taskupdated", (event) => {
     updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
 });
 
+
+/**
+ * Opens the Add Task dialog on desktop screens.
+ * On smaller screens, it opens the standalone Add Task page instead.
+ *
+ * @returns {void}
+ */
 function openAddTaskDialog() {
+    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+
+    if (!isDesktop) {
+        window.location.href = "./add_task.html?user=" + loggedUserId;
+        return;
+    }
+
     const dialog = document.getElementById("dialog-add-task");
 
-    dialog.innerHTML = renderAddTask();
+    dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
     initAddTaskForm(dialog.querySelector(".task-form-wrapper"));
     openDialog("dialog-add-task");
 }
+
 
 /**
  * Adds a task created in the Add Task dialog to the board.
