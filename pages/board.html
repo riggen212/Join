@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <script src="../scripts/templates.js" defer></script>
+        <script src="../scripts/notifications.js" defer></script>
         <script src="../script.js" defer></script>
         <script src="../scripts/board/board_templates.js" defer></script>
         <script src="../scripts/board/board_services.js" defer></script>
@@ -13,7 +14,6 @@
         <script src="../scripts/add_task_subtasks.js" defer></script>
         <script src="../scripts/add_task_validation.js" defer></script>
         <script src="../scripts/add_task.js" defer></script>
-        <script src="../scripts/notifications.js" defer></script>
 
         <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
         <link rel="stylesheet" href="../global_style.css" />
@@ -130,7 +130,7 @@
             </nav>
             <main class="board">
                 <div class="board-inner">
-                    <header class="board-header">
+                    <header id="board-header">
                         <h1>Board</h1>
                         <button
                             class="button button-dark button-add button-add-dark-mobile"
@@ -155,7 +155,7 @@
                             </button>
                         </div>
                     </header>
-                    <div class="board-content">
+                    <div id="board-content">
                         <section data-column-id="toDo" class="board-column">
                             <header class="board-column-header">
                                 <h2>To do</h2>

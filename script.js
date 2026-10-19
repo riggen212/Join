@@ -248,22 +248,8 @@ function closeAnimatedDialog(event, closingClass) {
     dialog.classList.remove(closingClass);
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+    dialog.querySelector("#notification")?.classList.remove("is-visible", "is-closing");
     showDialogNotification(dialog);
-}
-
-
-/**
- * Closes the task dialog immediately and clears its state.
- *
- * @param {HTMLDialogElement} dialog - The task dialog to close.
- * @returns {void}
- */
-function closeTaskDialogImmediately(dialog) {
-    dialog.classList.remove("dialog-task-closing");
-    dialog.dataset.taskId = "";
-    dialog.dataset.taskStatus = "";
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
 }
 
 

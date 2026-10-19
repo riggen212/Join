@@ -14,6 +14,8 @@
     border: unset;
     border-radius: var(--border-radius-high);
 
+    overflow: hidden;
+
     &:not(.dialog-task-closing) {
         animation: slide-in-from-right-to-center 256ms linear forwards;
     }
@@ -571,6 +573,12 @@ button:focus-visible,
 
 .badge-type-technical {
     background-color: var(--color-badge-type-green);
+}
+
+/* Scrollbar */
+.scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #a8a8a8 transparent;
 }
 
 @media screen and (min-width: 1280px) {

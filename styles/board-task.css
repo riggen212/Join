@@ -4,7 +4,6 @@
     flex-direction: column;
 
     flex: 0 0 var(--size-task-card-width);
-    /* max-width: var(--size-task-card-width); */
 
     margin: var(--space-xxs);
     padding: var(--space-task);
@@ -92,6 +91,7 @@
     flex-direction: column;
 
     max-width: 525px;
+    max-height: 90dvh;
 
     padding-inline: 24px;
     padding-block: 32px;
@@ -104,6 +104,11 @@
 
     overflow-y: scroll;
     scrollbar-width: none;
+
+    & .task-overlay-header,
+    & .task-overlay-footer {
+        flex-shrink: 0;
+    }
 }
 
 .task-overlay-header {
@@ -112,7 +117,13 @@
     gap: var(--space-task);
 
     & h2 {
+        max-height: 3.6em;
+        min-width: 0;
+        overflow-y: auto;
+        overflow-wrap: anywhere;
+
         font-size: var(--font-size-task-overlay-heading-two);
+        line-height: 1.2;
     }
 }
 
@@ -125,26 +136,72 @@
 .task-overlay-body {
     display: flex;
     flex-direction: column;
+    flex: 0 1 auto;
+    min-height: 0;
 
     gap: var(--space-task);
 }
 
+.task-overlay-description {
+    max-height: 12dvh;
+    min-height: 0;
+
+    flex-shrink: 0;
+
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+}
+
 .task-overlay-details {
-    display: grid;
-    grid-template-columns: max-content 1fr;
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 auto;
+    min-height: 0;
     gap: var(--space-task);
 
     & dt {
         color: var(--color-overlay-task-details-term);
     }
+}
 
-    & .task-overlay-assignees ~ dd > ul {
+.task-overlay-property {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: var(--space-task);
+    flex-shrink: 0;
+}
+
+.task-overlay-section {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 auto;
+    min-height: 0;
+    gap: var(--space-task);
+
+    & > dt {
+        flex-shrink: 0;
+    }
+
+    & .task-overlay-assignees-list {
         padding-inline-start: 16px;
         list-style-type: none;
     }
 
-    & .task-overlay-subtasks ~ dd > ul {
+    & .task-overlay-subtasks-list {
         padding-inline-start: 0;
+    }
+
+    & > dd {
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 auto;
+        min-height: 0;
+    }
+
+    & > dd > ul {
+        flex: 0 1 auto;
+        min-height: 0;
+        overflow-y: auto;
     }
 
     & li {
@@ -156,11 +213,6 @@
 
     & li ~ li {
         margin-block-start: var(--space-task);
-    }
-
-    & .task-overlay-assignees ~ dd,
-    & .task-overlay-subtasks ~ dd {
-        grid-column: 1/-1;
     }
 }
 

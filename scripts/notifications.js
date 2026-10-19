@@ -2,19 +2,20 @@ let notificationTimeout;
 
 
 /**
- * Shows a temporary notification.
+ * Shows a temporary notification, optionally closing it together with a dialog.
  *
  * @param {string} message - The text displayed in the notification.
  * @param {string} [containerIdOrType] - A desktop container ID or "error".
  * @param {"success" | "error"} [type="success"] - The notification type.
+ * @param {() => void} [closeNotificationWithDialog] - Optional callback that starts closing the dialog while the notification remains visible.
  * @returns {void}
  */
-function showNotification(message, containerIdOrType, type = "success") {
+function showNotification(message, containerIdOrType, type = "success", closeNotificationWithDialog) {
     const options = getNotificationOptions(containerIdOrType, type);
     const notification = getNotificationElement(options.containerId);
 
     prepareNotification(notification, message, options.type);
-    displayNotification(notification);
+    displayNotification(notification, closeNotificationWithDialog);
 }
 
 
@@ -97,29 +98,38 @@ function prepareNotification(notification, message, type) {
 
 
 /**
- * Displays a notification and starts its automatic closing timer.
+ * Displays a notification and starts its automatic dismissal timer.
  *
  * @param {HTMLElement} notification - The notification element.
+ * @param {() => void} [closeNotificationWithDialog] - Optional callback that starts closing the dialog while the notification remains visible.
  * @returns {void}
  */
-function displayNotification(notification) {
+function displayNotification(notification, closeNotificationWithDialog) {
     window.clearTimeout(notificationTimeout);
     notification.onanimationend = null;
     notification.classList.remove("is-visible", "is-closing");
     void notification.offsetWidth;
     notification.classList.add("is-visible");
-    notificationTimeout = window.setTimeout(() => closeNotification(notification), 1200);
+    notificationTimeout = window.setTimeout(() => closeNotification(notification, closeNotificationWithDialog), 1200);
 }
 
 
 /**
- * Starts the closing animation of the current notification.
+ * Starts the notification's closing animation or delegates closing to the dialog callback.
+ * When a callback is provided, the notification stays visible until
+ * the dialog closes and resets its notification.
  *
  * @param {HTMLElement} [notification] - The notification that should close.
+ * @param {() => void} [closeNotificationWithDialog] - Optional callback that starts closing the dialog while the notification remains visible.
  * @returns {void}
  */
-function closeNotification(notification = document.getElementById("notification")) {
+function closeNotification(notification = document.getElementById("notification"), closeNotificationWithDialog) {
     if (!notification?.classList.contains("is-visible")) return;
+
+    if (closeNotificationWithDialog) {
+        closeNotificationWithDialog();
+        return;
+    }
 
     notification.classList.add("is-closing");
     notification.onanimationend = () => {
