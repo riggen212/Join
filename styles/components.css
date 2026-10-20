@@ -22,11 +22,25 @@
 }
 
 #dialog-add-task[open] {
-    max-width: unset;
-    /* width: 1000px; */
+    max-width: 1000px;
+    height: min(90dvh, 940px);
 
     padding: 64px;
+    display: flex;
+    flex-direction: column;
+
     background-color: #fff;
+}
+
+#dialog-add-task > .add-task {
+    flex: 1;
+    min-height: 0;
+
+    margin-right: -64px;
+    padding-right: 64px;
+
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 #contact[open] {

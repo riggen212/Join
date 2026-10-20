@@ -44,6 +44,7 @@ function initEditTaskForm(form, taskId, task) {
     initAddTaskForm(form, task.status, task);
 }
 
+
 /**
  * Is called on every input or change in the form and updates the form.
  *

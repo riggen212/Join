@@ -160,3 +160,16 @@ function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
             ${subtask.title}
         </li>`;
 }
+
+
+/**
+ * Returns the close button for the Add Task dialog.
+ *
+ * @returns {string} HTML for the close button.
+ */
+function getAddTaskDialogCloseButtonTemplate() {
+    return `<button class="button button-close add-task-dialog-close" type="button"
+                onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
+                <img src="../assets/icons/cancel.svg" alt="">
+            </button>`;
+}

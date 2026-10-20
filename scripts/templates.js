@@ -17,7 +17,7 @@ function renderAddTask(isEditMode = false) {
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
                                 <input class="input-wrapper" id="task-title" name="title" type="text"
-                                    placeholder="Enter a title" aria-describedby="task-title-error" required
+                                    placeholder="Enter a title" aria-describedby="task-title-error"
                                     onblur="validateTitle(this.form)" />
                                 <p class="field-error" id="task-title-error" aria-live="polite"></p>
 
@@ -29,8 +29,8 @@ function renderAddTask(isEditMode = false) {
                                 </div>
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
-                                <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
-                                    aria-describedby="task-due-date-error" required onblur="validateDueDate(this.form)" />
+                                    <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
+                                        aria-describedby="task-due-date-error" onblur="validateDueDate(this.form)">
                                 <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 
@@ -86,13 +86,13 @@ function renderAddTask(isEditMode = false) {
                                     <ul class="category-options" onmousedown="event.preventDefault()">
                                         <li>
                                             <label>
-                                                <input type="radio" name="category" value="Technical Task" required>
+                                                <input type="radio" name="category" value="Technical Task">
                                                 Technical Task
                                             </label>
                                         </li>
                                         <li>
                                             <label>
-                                                <input type="radio" name="category" value="User Story" required>
+                                                <input type="radio" name="category" value="User Story">
                                                 User Story
                                             </label>
                                         </li>
