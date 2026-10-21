@@ -117,14 +117,16 @@
 }
 
 #contact .contact-form-error {
-    display: none;
+    min-height: 20px;
     margin: 4px 0 0;
     color: #ff3d00;
     font-size: 16px;
+    line-height: 20px;
+    visibility: hidden;
 }
 
 #contact .contact-form-error:not(:empty) {
-    display: block;
+    visibility: visible;
 }
 
 #contact .input-wrapper.has-error,

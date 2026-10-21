@@ -369,7 +369,7 @@ body:has(.contacts-content) #notification {
         position: static;
         width: fit-content;
         margin-top: var(--space-lg);
-        --notification-transform: none;
+        --notification-transform: translateX(0);
     }
 }
 

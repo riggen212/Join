@@ -1,6 +1,7 @@
 :root {
     --task-fields-max-width: calc(405px + var(--space-md) + var(--space-md));
     --task-column-gap-half: clamp(12px, 8.57px + 1.07vw, 24px);
+    --task-label-input-gap: 12px;
 }
 
 html:has(.add-task-page),
@@ -30,17 +31,18 @@ html:has(.add-task-page),
     width: 100%;
 }
 
-.task-form > label:not(:first-child) {
-    margin-top: calc(12px + var(--space-xl));
-}
-
 .task-form > label,
 .task-form > span,
 .assigned-dropdown > legend,
 .category-field > legend {
-    margin: 12px 0;
+    margin-top: 12px;
+    margin-bottom: var(--task-label-input-gap);
     color: var(--color-overlay-task-details-term);
     font-size: var(--font-input);
+}
+
+.task-form > .textarea-wrapper + label:not(:first-child) {
+    margin-top: calc(var(--task-label-input-gap) + 16px + var(--space-xxs));
 }
 
 .assigned-dropdown,
@@ -155,7 +157,7 @@ html:has(.add-task-page),
 .add-task-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xl);
+    gap: 0;
     width: 100%;
 }
 
@@ -166,6 +168,7 @@ html:has(.add-task-page),
     width: 100%;
     min-width: 0;
 }
+
 
 .task-form:last-child {
     position: relative;
@@ -306,11 +309,46 @@ html:has(.add-task-page),
     filter: brightness(0) invert(1);
 }
 
-@media (max-width: 340px) {
+@media (max-width: 380px) {
     .task-priority button img {
         flex: 0 0 16px;
         width: 16px;
         height: auto;
+    }
+
+    .task-priority {
+        gap: var(--space-xs);
+    }
+
+    .task-priority > div:not(:nth-child(2)) {
+        flex: 0.9 1 0;
+    }
+
+    .task-priority > div:nth-child(2) {
+        flex: 1.2 1 0;
+    }
+
+    .task-priority button {
+        gap: 4px;
+        padding-inline: 4px;
+        white-space: nowrap;
+    }
+
+    .task-priority button img {
+        flex: 0 0 16px;
+        width: 16px;
+        height: auto;
+    }
+
+    .submit-task-send {
+        justify-content: space-between;
+        gap: var(--space-sm);
+    }
+
+    .submit-task-send .button {
+        min-height: 48px;
+        padding-inline: var(--space-sm);
+        font-size: 16px;
     }
 }
 
@@ -349,18 +387,6 @@ html:has(.add-task-page),
     min-height: 56px;
     font-size: 20px;
     white-space: nowrap;
-}
-
-.submit-task-send .button:disabled {
-    background-color: #bdbdbd;
-    color: #fff;
-    box-shadow: none;
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-
-.submit-task-send .button:disabled:hover {
-    box-shadow: none;
 }
 
 .submit-task-send .button-bright {
@@ -438,7 +464,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: flex;
     align-items: flex-start;
     gap: var(--space-xs);
-    height: calc(var(--size-badge-user) + var(--space-lg));
+    height: calc(var(--size-badge-user) + var(--space-xs));
     margin-top: var(--space-xs);
     overflow-x: auto;
 }
@@ -510,7 +536,7 @@ body:has(.add-task-inner) #notification {
     }
 
     .task-form textarea {
-        max-height: 350px;
+        max-height: 340px;
         overflow-y: auto;
         resize: vertical;
     }

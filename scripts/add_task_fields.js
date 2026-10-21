@@ -5,19 +5,25 @@ document.addEventListener("mousedown", closeDropdownsOnOutsideClick);
 // ---------- Assigned contacts ----------
 
 /**
- * Loads the contacts from the database and shows them in the "Assigned to" list.
+ * Loads contacts and shows them in the "Assigned to" list.
  *
  * @param {HTMLFormElement} form - The task form.
  * @param {Task} task - Optional task whose contacts are checked.
+ * @returns {Promise<void>}
  */
 async function loadAssignedContacts(form, task) {
     try {
-        const contacts = await getData(DB_CONTACTS);
-        renderAssignedOptions(form, contacts || {}, task);
+        const [contacts, loggedUserEmail] = await Promise.all([
+            getData(DB_CONTACTS),
+            getLoggedInUserEmail(),
+        ]);
+
+        renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
     } catch (error) {
         console.error("Contacts could not be loaded:", error);
     }
 }
+
 
 /**
  * Renders the contacts in the "Assigned to" list.
@@ -25,8 +31,9 @@ async function loadAssignedContacts(form, task) {
  * @param {HTMLFormElement} form - The task form.
  * @param {Object} contacts - All contacts.
  * @param {Task} task - Optional task whose contacts are checked.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
  */
-function renderAssignedOptions(form, contacts, task) {
+function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
     const assignedTo = task && task.assignedTo ? task.assignedTo : {};
     const contactIds = getSortedContactIds(contacts);
     let html = "";
@@ -34,7 +41,7 @@ function renderAssignedOptions(form, contacts, task) {
     for (let i = 0; i < contactIds.length; i++) {
         const contact = contacts[contactIds[i]];
         const initials = contact.initials || getInitialsFromName(contact.name);
-        html += getAssignedOptionTemplate(contactIds[i], contact, initials, assignedTo[contactIds[i]] === true);
+        html += getAssignedOptionTemplate(contactIds[i], contact, initials, assignedTo[contactIds[i]] === true, loggedUserEmail);
     }
 
     form.querySelector("#assigned-options").innerHTML = html;

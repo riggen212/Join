@@ -261,6 +261,7 @@ function closeAnimatedDialog(event, closingClass) {
  */
 async function loadCurrentUser() {
     const userId = getUserId();
+    console.log(userId);
 
     setUserIdsToNavLinks(userId);
     await setInitialsToProfileButton(userId);
@@ -277,6 +278,36 @@ async function loadCurrentUser() {
 function getUserId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("user");
+}
+
+
+/**
+ * Returns the email address of the logged-in account.
+ * Guest access deliberately has no email for UI markers.
+ *
+ * @returns {Promise<string|null>} Email address or null for guest access.
+ */
+async function getLoggedInUserEmail() {
+    const userId = getUserId();
+
+    if (userId === DB_GUEST_USER_ID) return null;
+
+    return getData(DB_USERS + userId + "/email");
+}
+
+
+/**
+ * Returns the UI suffix for the logged-in user's matching contact.
+ *
+ * @param {string} contactEmail Email address of the displayed contact.
+ * @param {string|null} loggedUserEmail Email address of the logged-in user.
+ * @returns {string} The "(you)" suffix or an empty string.
+ */
+function getCurrentUserSuffix(contactEmail, loggedUserEmail) {
+    const isCurrentUser = contactEmail?.toLowerCase() ===
+        loggedUserEmail?.toLowerCase();
+
+    return isCurrentUser ? " (you)" : "";
 }
 
 
