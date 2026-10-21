@@ -110,7 +110,7 @@ function displayNotification(notification, closeNotificationWithDialog) {
     notification.classList.remove("is-visible", "is-closing");
     void notification.offsetWidth;
     notification.classList.add("is-visible");
-    notificationTimeout = window.setTimeout(() => closeNotification(notification, closeNotificationWithDialog), 1200);
+    notificationTimeout = window.setTimeout(() => closeNotification(notification, closeNotificationWithDialog), 1800);
 }
 
 

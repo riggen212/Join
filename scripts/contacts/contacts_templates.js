@@ -127,9 +127,15 @@ function renderEditContactTemplate(contact) {
  *
  * @param {ContactId} contactId - The unique ID of the contact.
  * @param {Contact} contact - The contact displayed in the card.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The contact card HTML.
  */
-function getContactCardTemplate(contactId, contact) {
+function getContactCardTemplate(contactId, contact, loggedUserEmail) {
+    const currentUserSuffix = getCurrentUserSuffix(
+        contact.email,
+        loggedUserEmail
+    );
+
     return `
         <article class="contact-card" data-contact-id="${contactId}"
             onclick="showContactDetails(this)">
@@ -137,7 +143,7 @@ function getContactCardTemplate(contactId, contact) {
                 <span>${contact.initials}</span>
             </div>
             <div>
-                <p class="hover-bright">${contact.name}</p>
+                <p class="hover-bright">${contact.name}${currentUserSuffix}</p>
                 <p class="adress">${contact.email}</p>
             </div>
         </article>
@@ -166,13 +172,21 @@ function getContactGroupTemplate(initial, contactCardsHtml) {
  * Creates the detail view for the selected contact.
  *
  * @param {Contact} contact - The contact whose information is displayed.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The contact details HTML.
  */
-function getContactDetailsTemplate(contact) {
+function getContactDetailsTemplate(contact, loggedUserEmail) {
+    const currentUserSuffix = getCurrentUserSuffix(
+        contact.email,
+        loggedUserEmail
+    );
+
     return `
         <div>
-            <div class="badge-user ${contact.colorClass}"><span>${contact.initials}</span></div>
-            <h3>${contact.name}</h3>
+            <div class="badge-user ${contact.colorClass}">
+                <span>${contact.initials}</span>
+            </div>
+            <h3>${contact.name}${currentUserSuffix}</h3>
             ${getContactActionsTemplate()}
         </div>
         <p>Contact Information</p>

@@ -138,25 +138,33 @@ function renderAddTask(isEditMode = false) {
 }
 
 /**
- * Returns the HTML for one contact in the "Assigned to" list.
+ * Creates one contact option for the "Assigned to" list.
  *
- * @param {string} contactId - The ID of the contact.
+ * @param {ContactId} contactId - The unique ID of the contact.
  * @param {Contact} contact - The contact.
  * @param {string} initials - The initials shown in the badge.
  * @param {boolean} isChecked - True if the contact is already assigned.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The HTML of the list entry.
  */
-function getAssignedOptionTemplate(contactId, contact, initials, isChecked) {
+function getAssignedOptionTemplate( contactId, contact, initials, isChecked, loggedUserEmail) {
+    const currentUserSuffix = getCurrentUserSuffix(
+        contact.email,
+        loggedUserEmail
+    );
+
     return `
         <li>
             <label class="assigned-option">
                 <span class="badge-user ${contact.colorClass || ""}">${initials}</span>
-                <span>${contact.name}</span>
-                <input type="checkbox" name="assignedTo" value="${contactId}" ${isChecked ? "checked" : ""}>
+                <span>${contact.name}${currentUserSuffix}</span>
+                <input type="checkbox" name="assignedTo" value="${contactId}"
+                    ${isChecked ? "checked" : ""}>
             </label>
         </li>
     `;
 }
+
 
 /**
  * Returns the HTML for the badge of an assigned contact.
