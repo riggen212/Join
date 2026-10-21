@@ -35,5 +35,5 @@ function showLoginError() {
 
 function guestLogin() {
 
-    window.location.href = "./pages/summary_page.html?user=0";
+    window.location.href = "./pages/summary_page.html?user=0&animation=true";
 }

@@ -75,8 +75,11 @@ function updateSummaryHtml(user, taskSummaryData, greeting) {
         }
     });
 
-    document.getElementById("greeting").textContent = greeting;
-    document.getElementById("userNames").textContent = user.name;
+    document.getElementById("greeting").textContent =
+        user.type === "guest" ? `${greeting}!` : `${greeting},`;
+
+    document.getElementById("userNames").textContent =
+        user.type === "guest" ? "" : user.name;
 }
 
 /**
@@ -130,12 +133,12 @@ function getGreetingByTime() {
     const date = new Date();
 
     if (date.getHours() >= 5 && date.getHours() < 12) {
-        return "Good morning,";
+        return "Good morning";
     } else if (date.getHours() >= 12 && date.getHours() < 18) {
-        return "Good afternoon,";
+        return "Good afternoon";
     }
 
-    return "Good evening,";
+    return "Good evening";
 }
 
 /**
