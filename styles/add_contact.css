@@ -236,8 +236,7 @@
     font-weight: 400;
 }
 
-#contact:not(.contact-edit) .button-cancel,
-#contact-actions {
+#contact:not(.contact-edit) .button-cancel {
     display: none;
 }
 
