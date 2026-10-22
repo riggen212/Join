@@ -69,14 +69,6 @@ h2 {
     & > button {
         grid-area: button;
     }
-
-    & .button-dark:hover {
-        background-color: var(--button-dark-hover-bright-background-color);
-    }
-
-    & .button-dark:active {
-        background-color: var(--button-dark-active-background-color);
-    }
 }
 
 .board-search {
@@ -119,17 +111,6 @@ h2 {
     &::placeholder {
         color: var(--color-input-placeholder);
     }
-}
-
-.board-search-icon {
-    display: block;
-
-    margin-inline: var(--space-sm);
-    padding: calc(var(--size-button-search) * 0.2);
-
-    height: var(--size-button-search);
-    width: var(--size-button-search);
-    object-fit: contain;
 }
 
 #board-content {

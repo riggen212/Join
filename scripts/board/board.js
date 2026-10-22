@@ -125,7 +125,7 @@ function getColumnContentHtml(columnTasksObject) {
 function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
     const assignees = Object.keys(task.assignedTo ?? {}).filter((id) => localContacts[id]);
     const isTaskCard = getUserBadgeTemplateFunction === getTaskCardUserBadgeTemplate;
-    const visibleAssignees = isTaskCard ? assignees.slice(0, 3) : assignees;
+    const visibleAssignees = isTaskCard ? assignees.slice(0, MAX_VISIBLE_BADGES) : assignees;
     const remainingCount = assignees.length - visibleAssignees.length;
     let assigneesHtml = "";
 

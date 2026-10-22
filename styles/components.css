@@ -387,6 +387,28 @@
     max-width: var(--size-button-add-mobile-bright);
 }
 
+.button-search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-inline: var(--space-sm);
+    padding: 0;
+
+    min-height: unset;
+    height: var(--size-button-search);
+    width: var(--size-button-search);
+
+    border: unset;
+    background-color: inherit;
+}
+
+.button-search img {
+    display: block;
+    height: 60%;
+    aspect-ratio: 1/1;
+}
+
 .button-task-overlay {
     display: flex;
     justify-content: center;

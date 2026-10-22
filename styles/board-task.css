@@ -40,14 +40,11 @@
 .task-card-subtasks {
     display: flex;
     align-items: center;
-    gap: var(--space-xs);
-    min-width: 0;
 }
 
 .task-card-subtasks-progress {
-    flex: 0 1 50%;
-    min-width: 0;
     height: var(--space-xs);
+    width: 50%;
 
     background-color: var(--color-card-task-progress-grey);
     border-radius: var(--border-radius-small);
@@ -61,7 +58,7 @@
 }
 
 .task-card-subtasks-summary {
-    flex: 1 0 auto;
+    width: 50%;
 
     text-align: center;
     text-wrap: nowrap;
