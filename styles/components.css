@@ -511,9 +511,12 @@
     height: auto;
 }
 
+a:focus-visible,
 button:focus-visible,
-.login-input-mail:focus-visible,
-.login-input-password:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
     outline: 3px solid var(--input-focus-color);
     outline-offset: 2px;
 }
