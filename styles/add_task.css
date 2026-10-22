@@ -27,7 +27,6 @@ html:has(.add-task-page),
 .task-form-wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
     width: 100%;
 }
 
@@ -35,7 +34,7 @@ html:has(.add-task-page),
 .task-form > span,
 .assigned-dropdown > legend,
 .category-field > legend {
-    margin-top: 12px;
+    /* margin-top: 12px; */
     margin-bottom: var(--task-label-input-gap);
     color: var(--color-overlay-task-details-term);
     font-size: var(--font-input);
@@ -270,7 +269,7 @@ html:has(.add-task-page),
     gap: var(--space-xs);
     width: 100%;
     min-height: 42px;
-    height: 42px;
+    height: 56px;
     padding-inline: var(--space-xs);
     color: inherit;
     background-color: #fff;
@@ -321,11 +320,11 @@ html:has(.add-task-page),
     }
 
     .task-priority > div:not(:nth-child(2)) {
-        flex: 0.9 1 0;
+        flex: 0.95 1 0;
     }
 
     .task-priority > div:nth-child(2) {
-        flex: 1.2 1 0;
+        flex: 1.1 1 0;
     }
 
     .task-priority button {
@@ -335,9 +334,10 @@ html:has(.add-task-page),
     }
 
     .task-priority button img {
-        flex: 0 0 16px;
-        width: 16px;
-        height: auto;
+        flex: 0 0 12px;
+
+        width: 14px;
+        height: 14px;
     }
 
     .submit-task-send {
@@ -550,12 +550,7 @@ body:has(.add-task-inner) #notification {
 
     .submit-task-send {
         position: static;
-        gap: var(--space-md);
         padding: 0;
-    }
-
-    .task-form-wrapper {
-        gap: 120px;
     }
 
     .task-form textarea {
@@ -567,15 +562,12 @@ body:has(.add-task-inner) #notification {
     }
 
     .task-priority {
-        gap: var(--space-md);
+        justify-content: space-between;
+        padding-inline: 4px;
     }
 
     .task-priority > div {
         max-width: 135px;
-    }
-
-    .task-priority button {
-        height: 56px;
     }
 
     .board-inner.add-task-inner {
@@ -756,10 +748,6 @@ body:has(.add-task-inner) #notification {
     box-sizing: border-box;
 }
 
-.edit-task .task-form-wrapper {
-    gap: var(--space-lg);
-}
-
 .edit-task .task-form>label:not(:first-child) {
     margin-top: 12px;
 }
@@ -774,6 +762,75 @@ body:has(.add-task-inner) #notification {
 }
 
 .edit-task .submit-task-send {
+    position: static;
+    padding: 0;
+}
+
+/* Edit form inside the board's task dialog */
+
+#dialog-task > .add-task-dialog-close {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 2;
+}
+
+#dialog-task[open]:has(.edit-task)::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+
+    height: 60px;
+
+    background-color: #fff;
+    pointer-events: none;
+}
+
+#dialog-task[open]:has(.edit-task)::after {
+    content: "";
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+
+    height: 60px;
+
+    background-color: #fff;
+    pointer-events: none;
+}
+
+#dialog-task .add-task.edit-task {
+    height: 90dvh;
+    max-height: 90dvh;
+    padding: calc(52px + var(--space-xs)) 16px 16px;
+
+    overflow-y: auto;
+    scrollbar-width: none;
+
+    background-color: #fff;
+    border-radius: var(--border-radius-high);
+}
+
+#dialog-task .edit-task .submit-task {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+
+    padding-top: var(--space-md);
+    background-color: #fff;
+}
+
+#dialog-task .edit-task .submit-task p {
+    display: none;
+}
+
+#dialog-task .edit-task .submit-task-send {
     position: static;
     padding: 0;
 }

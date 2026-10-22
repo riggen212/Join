@@ -3,6 +3,8 @@
     display: flex;
     flex-direction: column;
 
+
+
     flex: 0 0 var(--size-task-card-width);
 
     margin: var(--space-xxs);
@@ -235,5 +237,63 @@
     .task-card,
     .board-column-feedback {
         flex: 0 1 auto;
+    }
+
+    /* Board task edit dialog */
+    #dialog-task[open]:has(.edit-task) {
+        height: 90dvh;
+        overflow: hidden;
+    }
+
+    #dialog-task .add-task.edit-task {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: none;
+        overflow: hidden;
+    }
+
+    #dialog-task .edit-task .task-form-wrapper {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    #dialog-task .edit-task .add-task-form {
+        flex-direction: column;
+        flex: 1 1 auto;
+        gap: 0;
+        min-height: 0;
+        margin-top: 44px;
+        width: calc(100% + 14px);
+        margin-bottom: 0;
+        padding-right: 6px;
+        overflow-y: scroll;
+        scrollbar-width: thin;
+        max-width: none;
+    }
+
+    #dialog-task .edit-task .submit-task {
+        position: static;
+        flex: 0 0 auto;
+    }
+
+    #dialog-task .edit-task .task-form {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    #dialog-task .edit-task .task-form:last-child::after {
+        content: none;
+    }
+
+    #dialog-task .edit-task .task-priority,
+    #dialog-task .edit-task .assigned-dropdown,
+    #dialog-task .edit-task #task-category,
+    #dialog-task .edit-task #subtask {
+        max-width: none;
+    }
+
+    .edit-task .task-form-wrapper {
+        justify-content: space-between;
     }
 }

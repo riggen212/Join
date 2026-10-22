@@ -298,7 +298,10 @@ function editTask(taskId) {
     try {
         const task = getTaskById(taskId, dialog.dataset.taskStatus);
 
-        dialog.innerHTML = renderAddTask(true);
+        dialog.innerHTML = `
+            ${getAddTaskDialogCloseButtonTemplate()}
+            ${renderAddTask(true)}
+        `;
         initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
     } catch (error) {
         console.error(error);
