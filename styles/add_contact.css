@@ -1,97 +1,125 @@
 #contact {
-    width: min(calc(100% - 64px), 1212px);
-    height: min(calc(100dvh - 64px), 592px);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    width: calc(100% - 32px);
+    max-width: 512px;
+    height: calc(100dvh - (var(--mobile-header-footer-height) * 2) - 16px);
+    min-height: 0;
+    max-height: none;
+    margin: 0;
     padding: 0;
+
     background-color: #fff;
     border: none;
     border-radius: var(--border-radius-high);
-    overflow: hidden;
+    transform: translate(-50%, -50%);
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+#contact::-webkit-scrollbar {
+    display: none;
 }
 
 #contact[open] {
+    --dialog-header-height: clamp(170px, calc(100% - 300px), 46%);
+    --badge-size: clamp(96px, min(30vw, 18dvh), 156px);
+
     display: grid;
-    grid-template-columns: 467px 280px minmax(0, 1fr);
-    grid-template-rows: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: var(--dialog-header-height) max-content;
 }
 
 #contact::backdrop {
     background-color: rgb(0 0 0 / 25%);
 }
 
-#contact .contact-dialog-logo {
-    width: 55px;
-    height: auto;
-    margin-bottom: 24px;
-}
-
 #contact > div:first-child {
-    position: static;
+    position: relative;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: clamp(260px, 38dvh, 440px);
+
+    height: 100%;
+    min-height: 0;
     padding: clamp(32px, 8vw, 48px);
+
     color: #fff;
     background-color: var(--background-dark-color);
 }
 
-#contact > div:first-child h1 {
-    padding: 0;
-    font-size: clamp(40px, 10vw, 60px);
-    line-height: 1.1;
-    white-space: nowrap;
-}
-
-#contact > div:first-child p {
-    margin-top: var(--space-md);
-    font-size: clamp(20px, 5vw, 27px);
-    line-height: 1.2;
-}
-
-#contact > div:first-child p::after {
-    content: "";
-    display: block;
-    width: 115px;
-    height: 3px;
-    margin-top: var(--space-lg);
-    background-color: #29abe2;
-    border-radius: 999px;
+#contact .contact-dialog-logo {
+    display: none;
 }
 
 #contact > div:first-child > .button-close {
     position: absolute;
-    top: 48px;
-    right: 48px;
+    top: 24px;
+    right: 24px;
+
     width: 32px;
     height: 32px;
-    padding: 8px;
-    background-color: transparent;
-    border: none;
-}
-
-#contact > div:first-child > .button-close:hover {
-    background-color: #f5f5f5;
-    border-radius: 50%;
 }
 
 #contact > div:first-child > .button-close img {
     width: 100%;
     height: 100%;
-    filter: none;
+    filter: brightness(0) invert(1);
+}
+
+#contact > div:first-child h1 {
+    padding: 0;
+
+    font-size: clamp(32px, min(10vw, 7dvh), 60px);
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+#contact.contact-edit > div:first-child h1 {
+    font-size: clamp(40px, 12vw, 60px);
+}
+
+#contact > div:first-child p {
+    margin-top: clamp(8px, 1.8dvh, 16px);
+
+    font-size: clamp(18px, min(5vw, 3.2dvh), 27px);
+    line-height: 1.2;
+}
+
+#contact > div:first-child p::after,
+#contact.contact-edit > div:first-child h1::after {
+    content: "";
+    display: block;
+
+    width: 115px;
+    height: 3px;
+    margin-top: 12px;
+
+    background-color: #29abe2;
+    border-radius: 999px;
 }
 
 #contact > .badge-user {
-    position: relative;
+    position: absolute;
+    top: var(--dialog-header-height);
+    left: 50%;
     z-index: 2;
-    align-self: center;
-    width: 120px;
-    height: 120px;
-    margin: 0 auto;
-    transform: translateY(-32px);
-    background-color: #d1d1d1;
+
+    width: var(--badge-size);
+    height: var(--badge-size);
+    margin: 0;
+
     border: 3px solid #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 4px 2px rgba(209, 209, 209, 0.8);
+    box-shadow: 0 0 4px 2px rgb(209 209 209 / 80%);
+    transform: translate(-50%, -50%);
+}
+
+#contact > .badge-user:has(img) {
+    background-color: #d1d1d1;
 }
 
 #contact > .badge-user img {
@@ -100,14 +128,23 @@
     filter: brightness(0) invert(1);
 }
 
+#contact.contact-edit > .badge-user span {
+    color: #fff;
+    font-size: clamp(40px, 10vw, 56px);
+    font-weight: 400;
+    line-height: 1;
+}
+
 #contact > form {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 32px;
+
     width: 100%;
-    padding: 32px 48px 32px 0;
+    padding: calc(var(--badge-size) / 2 + clamp(16px, 2.5dvh, 24px)) 20px clamp(24px, 4dvh, 40px);
+    gap: clamp(8px, 1.8dvh, 18px);
+
     background-color: #fff;
 }
 
@@ -119,6 +156,7 @@
 #contact .contact-form-error {
     min-height: 20px;
     margin: 4px 0 0;
+
     color: #ff3d00;
     font-size: 16px;
     line-height: 20px;
@@ -129,41 +167,26 @@
     visibility: visible;
 }
 
-#contact .input-wrapper.has-error,
-#contact .input-wrapper.has-error:focus-within {
-    border-color: #ff3d00;
-    box-shadow: 0 0 0 1px #ff3d00;
-}
-
 #contact .input-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    min-height: 52px;
+    height: 40px;
+    min-height: 40px;
     padding: 0 16px;
-    background-color: #fff;
-    border: 1px solid #2a3647;
-    border-radius: var(--border-radius-middle);
+
+    border-color: var(--background-dark-color);
     box-shadow: none;
 }
 
 #contact .input-wrapper input {
-    flex: 1;
-    min-width: 0;
-    height: 50px;
-    padding: 0;
+    height: 100%;
+    min-height: 0;
+
     color: #000;
     font-size: 20px;
-    background-color: transparent;
-    border: none;
-    outline: none;
 }
 
 #contact .input-wrapper .input-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     flex: 0 0 32px;
+
     width: 32px;
     height: 32px;
     margin-left: var(--space-xs);
@@ -180,167 +203,135 @@
     box-shadow: 0 0 0 1px #29abe2;
 }
 
-body:has(#contact[open]) .contact-lis > .detail-view {
-    display: none;
-}
-
-/* for edit contact dialog */
-
-#contact > .badge-user.badge-user-orange {
-    background-color: var(--color-badge-user-orange);
-}
-
-#contact.contact-edit > div:first-child h1::after {
-    content: "";
-    display: block;
-    width: 115px;
-    height: 3px;
-    margin-top: var(--space-lg);
-    background-color: #29abe2;
-    border-radius: 999px;
+#contact .input-wrapper.has-error,
+#contact .input-wrapper.has-error:focus-within {
+    border-color: #ff3d00;
+    box-shadow: 0 0 0 1px #ff3d00;
 }
 
 #contact .contact-form-actions {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    gap: var(--space-lg);
-    width: 100%;
+
+    width: auto;
     margin-top: clamp(8px, 2dvh, 20px);
+    gap: var(--space-lg);
 }
 
 #contact .contact-form-actions > .button {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+
     min-height: clamp(48px, 7dvh, 64px);
+    gap: 10px;
+
     font-size: clamp(18px, 5vw, 21px);
     white-space: nowrap;
 }
 
-#contact .contact-form-actions > .button-dark img {
-    object-fit: contain;
-}
-
-#contact .contact-form-actions > .button-bright {
-    font-weight: 400;
-}
-
-#contact.contact-edit > .badge-user span {
-    color: #fff;
-    font-size: clamp(40px, 10vw, 56px);
-    font-weight: 400;
-    line-height: 1;
-}
-
+#contact .contact-form-actions > .button-bright,
 #contact.contact-edit .button-delete {
     font-weight: 400;
 }
 
-@media (max-width: 1279px) {
-    #contact[open] {
-        --dialog-header-height: clamp(170px, calc(100% - 300px), 46%);
-        --badge-size: clamp(96px, min(30vw, 18dvh), 156px);
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: var(--dialog-header-height) 1fr;
+#contact:not(.contact-edit) .button-cancel {
+    display: none;
+}
+
+@media screen and (min-width: 1280px) {
+    #contact {
+        width: min(calc(100% - 64px), 1212px);
+        max-width: none;
+        height: min(calc(100dvh - 64px), 592px);
+
+        overflow: hidden;
+        transform: translate(-50%, -50%);
     }
 
-    #contact {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        right: auto;
-        bottom: auto;
-        width: calc(100% - 32px);
-        max-width: 512px;
-        height: calc(100dvh - (var(--mobile-header-footer-height) * 2) - 16px);
-        min-height: 0;
-        max-height: none;
-        margin: 0;
-        transform: translate(-50%, -50%);
-        overflow: hidden;
+    #contact[open] {
+        grid-template-columns: 467px 280px minmax(0, 1fr);
+        grid-template-rows: 1fr;
     }
 
     #contact .contact-dialog-logo {
-        display: none;
-    }
+        display: block;
 
-    #contact .contact-form-actions {
-        justify-content: center;
-        width: auto;
+        width: 55px;
+        height: auto;
+        margin-bottom: 24px;
     }
 
     #contact > div:first-child {
-        position: relative;
-        height: 100%;
-        min-height: 0;
+        position: static;
+
+        height: auto;
+        min-height: clamp(260px, 38dvh, 440px);
+        padding: clamp(32px, 8vw, 48px);
     }
 
     #contact > div:first-child > .button-close {
-        top: 24px;
-        right: 24px;
+        top: 48px;
+        right: 48px;
     }
 
     #contact > div:first-child > .button-close img {
-        filter: brightness(0) invert(1);
+        filter: none;
     }
 
     #contact > div:first-child h1 {
-        font-size: clamp(32px, min(10vw, 7dvh), 60px);
+        font-size: clamp(40px, 10vw, 60px);
     }
 
     #contact > div:first-child p {
-        margin-top: clamp(8px, 1.8dvh, 16px);
-        font-size: clamp(18px, min(5vw, 3.2dvh), 27px);
+        margin-top: var(--space-md);
+
+        font-size: clamp(20px, 5vw, 27px);
     }
 
-    #contact > div:first-child p::after {
-        margin-top: 12px;
+    #contact > div:first-child p::after,
+    #contact.contact-edit > div:first-child h1::after {
+        margin-top: var(--space-lg);
     }
 
     #contact > .badge-user {
-        position: absolute;
-        top: var(--dialog-header-height);
-        left: 50%;
-        z-index: 2;
+        position: relative;
+        top: auto;
+        left: auto;
 
-        width: var(--badge-size);
-        height: var(--badge-size);
-        margin: 0;
+        align-self: center;
 
-        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+
+        transform: translateY(-32px);
     }
 
     #contact > form {
-        justify-content: flex-start;
-        height: 100%;
-        gap: clamp(8px, 1.8dvh, 18px);
-        padding: calc(var(--badge-size) / 2 + clamp(16px, 2.5dvh, 24px)) 20px clamp(24px, 4dvh, 40px);
+        justify-content: center;
+
+        padding: 32px 48px 32px 0;
+        gap: 32px;
     }
 
     #contact .input-wrapper {
-        height: 40px;
-        min-height: 40px;
+        height: auto;
+        min-height: 52px;
     }
 
     #contact .input-wrapper input {
-        height: 100%;
-        min-height: 0;
+        height: 50px;
     }
 
-    #contact-actions {
-        display: none;
+    #contact .contact-form-actions {
+        justify-content: flex-start;
+
+        width: 100%;
     }
 
     #contact:not(.contact-edit) .button-cancel {
-        display: none;
-    }
-
-    /* for edit contact dialog */
-
-    #contact.contact-edit > div:first-child h1 {
-        font-size: clamp(40px, 12vw, 60px);
-        line-height: 1.1;
+        display: flex;
     }
 }

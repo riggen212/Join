@@ -8,7 +8,7 @@
  * @returns {string} The task form HTML.
  */
 function renderAddTask(isEditMode = false) {
-    return `${isEditMode ? "" : "<h1>Add Task</h1>"}
+    return `${isEditMode ? "" : '<h1 id="add-task-dialog-title">Add Task</h1>'}
                 <section class="add-task${isEditMode ? " edit-task" : ""}">
                     <form class="task-form-wrapper" novalidate onsubmit="submitTaskForm(event)" onreset="resetTaskForm(this)"
                         oninput="updateTaskForm(this)" onchange="updateTaskForm(this)" onkeydown="preventEnterSubmit(event)">

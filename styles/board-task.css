@@ -2,7 +2,6 @@
 .task-card {
     display: flex;
     flex-direction: column;
-
     flex: 0 0 var(--size-task-card-width);
 
     margin: var(--space-xxs);
@@ -232,11 +231,171 @@
     }
 }
 
+#dialog-add-task > .add-task-dialog-close {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 1;
+}
+
+.add-task.edit-task {
+    max-height: 90dvh;
+    padding: 32px 24px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    background-color: #fff;
+    border-radius: var(--border-radius-high);
+    box-sizing: border-box;
+}
+
+.edit-task .task-form>label:not(:first-child) {
+    margin-top: 12px;
+}
+
+.edit-task .submit-task {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.edit-task .submit-task p {
+    display: none;
+}
+
+.edit-task .submit-task-send {
+    position: static;
+    padding: 0;
+}
+
+#dialog-task > .add-task-dialog-close {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 2;
+}
+
+#dialog-task[open]:has(.edit-task)::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+
+    height: 60px;
+
+    background-color: #fff;
+    pointer-events: none;
+}
+
+#dialog-task[open]:has(.edit-task)::after {
+    content: "";
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+
+    height: 60px;
+
+    background-color: #fff;
+    pointer-events: none;
+}
+
+#dialog-task .add-task.edit-task {
+    height: 90dvh;
+    max-height: 90dvh;
+    padding: calc(52px + var(--space-xs)) 16px 16px;
+
+    overflow-y: auto;
+    scrollbar-width: none;
+
+    background-color: #fff;
+    border-radius: var(--border-radius-high);
+}
+
+#dialog-task .edit-task .submit-task {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+
+    padding-top: var(--space-md);
+    background-color: #fff;
+}
+
+#dialog-task .edit-task .submit-task p {
+    display: none;
+}
+
+#dialog-task .edit-task .submit-task-send {
+    position: static;
+    padding: 0;
+}
+
 /* Media queries */
 @media screen and (min-width: 1280px) {
     /* Task cards */
     .task-card,
     .board-column-feedback {
         flex: 0 1 auto;
+    }
+
+    /* Board task edit dialog */
+    #dialog-task[open]:has(.edit-task) {
+        height: 90dvh;
+        overflow: hidden;
+    }
+
+    #dialog-task .add-task.edit-task {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: none;
+        overflow: hidden;
+    }
+
+    #dialog-task .edit-task .task-form-wrapper {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    #dialog-task .edit-task .add-task-form {
+        flex-direction: column;
+        flex: 1 1 auto;
+        gap: 0;
+        min-height: 0;
+        margin-top: 44px;
+        width: calc(100% + 14px);
+        margin-bottom: 0;
+        padding-right: 6px;
+        overflow-y: scroll;
+        scrollbar-width: thin;
+        max-width: none;
+    }
+
+    #dialog-task .edit-task .submit-task {
+        position: static;
+        flex: 0 0 auto;
+    }
+
+    #dialog-task .edit-task .task-form {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    #dialog-task .edit-task .task-form:last-child::after {
+        content: none;
+    }
+
+    #dialog-task .edit-task .task-priority,
+    #dialog-task .edit-task .assigned-dropdown,
+    #dialog-task .edit-task #task-category,
+    #dialog-task .edit-task #subtask {
+        max-width: none;
+    }
+
+    .edit-task .task-form-wrapper {
+        justify-content: space-between;
     }
 }

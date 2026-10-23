@@ -97,11 +97,26 @@
     bottom: calc(var(--mobile-header-footer-height) + 16px);
 
     & .button-task-overlay {
-        padding-block: 16px;
+        width: 100px;
+        padding-block: 16px
     }
 
     & .button-task-overlay:hover {
         text-shadow: unset;
+    }
+
+    & .button-task-overlay {
+        width: 100px;
+        justify-content: flex-start;
+        padding-block: 16px;
+        padding-inline: var(--space-md);
+    }
+
+    .button-task-overlay:active {
+        color: var(--background-dark-hover-color);
+        background-color: #eeeeee;
+        border-radius: var(--border-radius-middle);
+        text-shadow: 0.3px 0 currentColor, -0.3px 0 currentColor;
     }
 }
 
@@ -496,9 +511,12 @@
     height: auto;
 }
 
+a:focus-visible,
 button:focus-visible,
-.login-input-mail:focus-visible,
-.login-input-password:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
     outline: 3px solid var(--input-focus-color);
     outline-offset: 2px;
 }

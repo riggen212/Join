@@ -168,6 +168,7 @@ function openDialog(dialogId) {
     document.body.classList.add("overflow-hidden");
 
     dialog.showModal();
+    document.querySelector(`[aria-controls="${dialogId}"]`)?.setAttribute("aria-expanded", "true");
 }
 
 
@@ -248,6 +249,7 @@ function closeAnimatedDialog(event, closingClass) {
     dialog.classList.remove(closingClass);
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+    document.querySelector(`[aria-controls="${dialog.id}"]`)?.setAttribute("aria-expanded", "false");
     dialog.querySelector("#notification")?.classList.remove("is-visible", "is-closing");
     showDialogNotification(dialog);
 }
@@ -341,4 +343,5 @@ async function setInitialsToProfileButton(userId) {
     }
 
     button.textContent = userInitials;
+    button.setAttribute("aria-label", "Open service links and log out");
 }

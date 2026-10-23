@@ -251,3 +251,14 @@
 .animation-in {
     animation: summaryFadeIn 4s ease forwards;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .animation-out {
+        display: none;
+        animation: none;
+    }
+
+    .animation-in {
+        animation: none;
+    }
+}
