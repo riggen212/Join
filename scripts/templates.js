@@ -8,7 +8,7 @@
  * @returns {string} The task form HTML.
  */
 function renderAddTask(isEditMode = false) {
-    return `${isEditMode ? "" : "<h1>Add Task</h1>"}
+    return `${isEditMode ? "" : '<h1 id="add-task-dialog-title">Add Task</h1>'}
                 <section class="add-task${isEditMode ? " edit-task" : ""}">
                     <form class="task-form-wrapper" novalidate onsubmit="submitTaskForm(event)" onreset="resetTaskForm(this)"
                         oninput="updateTaskForm(this)" onchange="updateTaskForm(this)" onkeydown="preventEnterSubmit(event)">
@@ -17,7 +17,7 @@ function renderAddTask(isEditMode = false) {
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
                                 <input class="input-wrapper" id="task-title" name="title" type="text"
-                                    placeholder="Enter a title" aria-describedby="task-title-error" required
+                                    placeholder="Enter a title" aria-describedby="task-title-error"
                                     onblur="validateTitle(this.form)" />
                                 <p class="field-error" id="task-title-error" aria-live="polite"></p>
 
@@ -29,8 +29,8 @@ function renderAddTask(isEditMode = false) {
                                 </div>
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
-                                <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
-                                    aria-describedby="task-due-date-error" required onblur="validateDueDate(this.form)" />
+                                    <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
+                                        aria-describedby="task-due-date-error" onblur="validateDueDate(this.form)">
                                 <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 
@@ -86,13 +86,13 @@ function renderAddTask(isEditMode = false) {
                                     <ul class="category-options" onmousedown="event.preventDefault()">
                                         <li>
                                             <label>
-                                                <input type="radio" name="category" value="Technical Task" required>
+                                                <input type="radio" name="category" value="Technical Task">
                                                 Technical Task
                                             </label>
                                         </li>
                                         <li>
                                             <label>
-                                                <input type="radio" name="category" value="User Story" required>
+                                                <input type="radio" name="category" value="User Story">
                                                 User Story
                                             </label>
                                         </li>
@@ -143,25 +143,33 @@ function renderAddTask(isEditMode = false) {
 }
 
 /**
- * Returns the HTML for one contact in the "Assigned to" list.
+ * Creates one contact option for the "Assigned to" list.
  *
- * @param {string} contactId - The ID of the contact.
+ * @param {ContactId} contactId - The unique ID of the contact.
  * @param {Contact} contact - The contact.
  * @param {string} initials - The initials shown in the badge.
  * @param {boolean} isChecked - True if the contact is already assigned.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The HTML of the list entry.
  */
-function getAssignedOptionTemplate(contactId, contact, initials, isChecked) {
+function getAssignedOptionTemplate( contactId, contact, initials, isChecked, loggedUserEmail) {
+    const currentUserSuffix = getCurrentUserSuffix(
+        contact.email,
+        loggedUserEmail
+    );
+
     return `
         <li>
             <label class="assigned-option">
                 <span class="badge-user ${contact.colorClass || ""}">${initials}</span>
-                <span>${contact.name}</span>
-                <input type="checkbox" name="assignedTo" value="${contactId}" ${isChecked ? "checked" : ""}>
+                <span>${contact.name}${currentUserSuffix}</span>
+                <input type="checkbox" name="assignedTo" value="${contactId}"
+                    ${isChecked ? "checked" : ""}>
             </label>
         </li>
     `;
 }
+
 
 /**
  * Returns the HTML for the badge of an assigned contact.

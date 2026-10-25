@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <script src="../scripts/templates.js" defer></script>
+        <script src="../scripts/notifications.js" defer></script>
         <script src="../script.js" defer></script>
         <script src="../scripts/board/board_templates.js" defer></script>
         <script src="../scripts/board/board_services.js" defer></script>
@@ -13,15 +14,17 @@
         <script src="../scripts/add_task_subtasks.js" defer></script>
         <script src="../scripts/add_task_validation.js" defer></script>
         <script src="../scripts/add_task.js" defer></script>
-        <script src="../scripts/notifications.js" defer></script>
 
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
-        <link rel="stylesheet" href="../global_style.css" />
-        <link rel="stylesheet" href="../styles/components.css" />
-        <link rel="stylesheet" href="../styles/fonts.css" />
-        <link rel="stylesheet" href="../styles/board.css" />
-        <link rel="stylesheet" href="../styles/board-task.css" />
-        <link rel="stylesheet" href="../styles/add_task.css" />
+        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon"/>
+        <link rel="stylesheet" href="../global_style.css"/>
+        <link rel="stylesheet" href="../styles/components.css"/>
+        <link rel="stylesheet" href="../styles/fonts.css"/>
+        <link rel="stylesheet" href="../styles/task_form.css"/>
+        <link rel="stylesheet" href="../styles/task_controls.css"/>
+        <link rel="stylesheet" href="../styles/task_subtasks.css"/>
+        <link rel="stylesheet" href="../styles/add_task.css"/>
+        <link rel="stylesheet" href="../styles/board.css"/>
+        <link rel="stylesheet" href="../styles/board-task.css"/>
         <title>Join</title>
     </head>
     <body onmousedown="closeDropdownsOnOutsideClick(event)">
@@ -35,44 +38,26 @@
                     <a href="../pages/help.html" data-nav-link class="header-link">
                         <img src="../assets/icons/help.svg" alt="Help" />
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
+                    <button class="header-profile-initials-button" type="button" onclick="openDialog('dialog-profile')"
+                        aria-label="Open service links and log out"
+                        aria-haspopup="dialog"
+                        aria-controls="dialog-profile"
+                        aria-expanded="false"
+                    ></button>
                 </div>
             </div>
-            <dialog
-                id="dialog-profile"
-                closedby="any"
-                oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event)"
-            >
-                <nav>
+
+            <dialog id="dialog-profile" aria-label="Service links and log out" closedby="any" oncancel="dialogSlideOut(event, 'dialog-profile-closing')" onanimationend="closeProfileDialog(event)">
+                <nav aria-label="Service links">
                     <ul>
                         <li>
-                            <a
-                                id="link-help-profile-dialog"
-                                href="../pages/help.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Help</a
-                            >
+                            <a id="link-help-profile-dialog" href="../pages/help.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()">Help</a>
                         </li>
                         <li>
-                            <a
-                                href="../pages/legal_notice.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Legal Notice</a
-                            >
+                            <a href="../pages/legal_notice.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()">Legal Notice</a>
                         </li>
                         <li>
-                            <a
-                                href="../pages/privacy_policy.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Privacy Policy</a
-                            >
+                            <a href="../pages/privacy_policy.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()" >Privacy Policy</a>
                         </li>
                         <li>
                             <a href="../index.html" class="link-navbar">Log out</a>
@@ -83,36 +68,40 @@
         </header>
 
         <div class="app-wrapper">
-            <nav class="navbar">
+            <nav class="navbar" aria-label="Main navigation">
                 <div class="navbar-wrapper">
                     <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
                             <a href="../pages/summary_page.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                                <img src="../assets/icons/summary.svg" alt="" />
                                 <span>Summary</span>
                             </a>
                         </li>
+
                         <li>
                             <a href="../pages/add_task.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                                <img src="../assets/icons/add_task.svg" alt="" />
                                 <span>Add Task</span>
                             </a>
                         </li>
+
                         <li>
-                            <a href="../pages/board.html" data-nav-link class="link-navbar active">
-                                <img src="../assets/icons/board.svg" alt="Board icon" />
+                            <a href="../pages/board.html" data-nav-link class="link-navbar active" aria-current="page">
+                                <img src="../assets/icons/board.svg" alt="" />
                                 <span>Board</span>
                             </a>
                         </li>
+
                         <li>
                             <a href="../pages/contacts.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                                <img src="../assets/icons/contacts.svg" alt="" />
                                 <span>Contacts</span>
                             </a>
                         </li>
                     </ul>
                 </div>
+
                 <footer>
                     <ul class="navbar-links">
                         <li>
@@ -120,6 +109,7 @@
                                 <span>Privacy Policy</span>
                             </a>
                         </li>
+
                         <li>
                             <a href="../pages/legal_notice.html" data-nav-link class="link-navbar">
                                 <span>Legal notice</span>
@@ -128,139 +118,93 @@
                     </ul>
                 </footer>
             </nav>
+
             <main class="board">
                 <div class="board-inner">
-                    <header class="board-header">
+                    <header id="board-header">
                         <h1>Board</h1>
-                        <button
-                            class="button button-dark button-add button-add-dark-mobile"
-                            onclick="openAddTaskDialog()"
-                            aria-label="Create Task"
-                        >
+
+                        <button class="button button-dark button-add button-add-dark-mobile" onclick="openAddTaskDialog()" aria-label="Create Task">
                             <img class="button-add-icon-mobile" src="../assets/icons/add_mobile_white.svg" alt="Add" />
                             <span class="button-add-span-desktop">Add Task</span>
                             <img class="button-add-icon-desktop" src="../assets/icons/add.svg" alt="Add" />
                         </button>
+
                         <div class="board-search">
-                            <input
-                                id="search"
-                                class="board-search-input"
-                                type="search"
-                                oninput="searchTasks(this.value)"
-                                placeholder="Find Task"
-                                aria-label="Search Field"
-                            />
-                            <button type="button" class="button button-search" aria-label="Search Button">
-                                <img src="../assets/icons/search.svg" alt="Search" />
-                            </button>
+                            <input id="search" class="board-search-input" type="search" oninput="searchTasks(this.value)" placeholder="Find Task" aria-label="Search tasks"/>
+                            <img class="board-search-icon" src="../assets/icons/search.svg" alt="" />
                         </div>
                     </header>
-                    <div class="board-content">
+
+                    <div id="board-content">
                         <section data-column-id="toDo" class="board-column">
                             <header class="board-column-header">
                                 <h2>To do</h2>
-                                <button
-                                    class="button button-bright button-add button-add-bright-mobile"
-                                    onclick="openAddTaskDialog()"
-                                    aria-label="Create Task to to do"
-                                >
+
+                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog()" aria-label="Create task in To do">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
+
                             </header>
-                            <div
-                                id="toDo-content"
-                                class="board-column-content"
-                                ondragover="
-                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
+
+                            <div id="toDo-content" class="board-column-content"
+                                ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                                 ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
-                                ondrop="
-                                    (moveTask(this.parentElement.dataset.columnId),
-                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
-                            ></div>
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId))">
+                            </div>
                         </section>
+
                         <section data-column-id="inProgress" class="board-column">
                             <header class="board-column-header">
                                 <h2>In progress</h2>
-                                <button
-                                    class="button button-bright button-add button-add-bright-mobile"
-                                    onclick="openAddTaskDialog()"
-                                    aria-label="Create Task to in progress"
-                                >
+
+                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog()" aria-label="Create task in In progress">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div
-                                id="inProgress-content"
-                                class="board-column-content"
-                                ondragover="
-                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
+
+                            <div id="inProgress-content" class="board-column-content"
+                                ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                                 ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
-                                ondrop="
-                                    (moveTask(this.parentElement.dataset.columnId),
-                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
-                            ></div>
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId))">
+                            </div>
                         </section>
+
                         <section data-column-id="awaitFeedback" class="board-column">
                             <header class="board-column-header">
                                 <h2>Await feedback</h2>
-                                <button
-                                    class="button button-bright button-add button-add-bright-mobile"
-                                    onclick="openAddTaskDialog()"
-                                    aria-label="Create Task to await feedback"
-                                >
+
+                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog()" aria-label="Create task in Await feedback">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
-                            <div
-                                id="awaitFeedback-content"
-                                class="board-column-content"
-                                ondragover="
-                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
+
+                            <div id="awaitFeedback-content" class="board-column-content" 
+                                ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                                 ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
-                                ondrop="
-                                    (moveTask(this.parentElement.dataset.columnId),
-                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
-                            ></div>
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId))">
+                            </div>
                         </section>
+
                         <section data-column-id="done" class="board-column">
                             <header class="board-column-header">
                                 <h2>Done</h2>
                             </header>
-                            <div
-                                id="done-content"
-                                class="board-column-content"
-                                ondragover="
-                                    (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
+
+                            <div id="done-content" class="board-column-content"
+                                ondragover=" (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                                 ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId)"
-                                ondrop="
-                                    (moveTask(this.parentElement.dataset.columnId),
-                                        removeHighlightDroppableColumn(this.parentElement.dataset.columnId))
-                                "
-                            ></div>
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId))">
+                            </div>
                         </section>
                     </div>
                 </div>
-                <dialog
-                    id="dialog-task"
-                    data-task-id=""
-                    data-task-status=""
-                    closedby="any"
-                    oncancel="dialogSlideOut(event, 'dialog-task-closing')"
-                    onanimationend="closeTaskDialog(event)"
-                ></dialog>
-                <dialog
-                    id="dialog-add-task"
-                    closedby="any"
-                    oncancel="dialogSlideOut(event, 'dialog-task-closing')"
-                    onanimationend="closeTaskDialog(event)"
-                ></dialog>
+
+                <dialog id="dialog-task" aria-labelledby="task-dialog-title" data-task-id="" data-task-status="" closedby="any" oncancel="dialogSlideOut(event, 'dialog-task-closing')"onanimationend="closeTaskDialog(event)">
+                </dialog>
+                
+                <dialog id="dialog-add-task" closedby="any" oncancel="dialogSlideOut(event, 'dialog-task-closing')" onanimationend="closeTaskDialog(event)">
+                </dialog>
             </main>
         </div>
     </body>

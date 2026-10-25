@@ -14,17 +14,33 @@
     border: unset;
     border-radius: var(--border-radius-high);
 
+    overflow: hidden;
+
     &:not(.dialog-task-closing) {
         animation: slide-in-from-right-to-center 256ms linear forwards;
     }
 }
 
 #dialog-add-task[open] {
-    max-width: unset;
-    /* width: 1000px; */
+    max-width: 1000px;
+    height: min(90dvh, 940px);
 
     padding: 64px;
+    display: flex;
+    flex-direction: column;
+
     background-color: #fff;
+}
+
+#dialog-add-task > .add-task {
+    flex: 1;
+    min-height: 0;
+
+    margin-right: -64px;
+    padding-right: 64px;
+
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 #contact[open] {
@@ -81,11 +97,26 @@
     bottom: calc(var(--mobile-header-footer-height) + 16px);
 
     & .button-task-overlay {
-        padding-block: 16px;
+        width: 100px;
+        padding-block: 16px
     }
 
     & .button-task-overlay:hover {
         text-shadow: unset;
+    }
+
+    & .button-task-overlay {
+        width: 100px;
+        justify-content: flex-start;
+        padding-block: 16px;
+        padding-inline: var(--space-md);
+    }
+
+    .button-task-overlay:active {
+        color: var(--background-dark-hover-color);
+        background-color: #eeeeee;
+        border-radius: var(--border-radius-middle);
+        text-shadow: 0.3px 0 currentColor, -0.3px 0 currentColor;
     }
 }
 
@@ -155,7 +186,51 @@
     }
 }
 
+@keyframes notification-slide-in-mobile {
+    from {
+        transform: translateY(100dvh) var(--notification-transform);
+    }
+
+    to {
+        transform: var(--notification-transform);
+    }
+}
+
+
+@keyframes notification-slide-out-mobile {
+    from {
+        transform: var(--notification-transform);
+    }
+
+    to {
+        transform: translateY(100dvh) var(--notification-transform);
+    }
+}
+
+@keyframes notification-slide-in-desktop {
+    from {
+        transform: translateX(100vw) var(--notification-transform);
+    }
+
+    to {
+        transform: var(--notification-transform);
+    }
+}
+
+
+@keyframes notification-slide-out-desktop {
+    from {
+        transform: var(--notification-transform);
+    }
+
+    to {
+        transform: translateX(100vw) var(--notification-transform);
+    }
+}
+
 #notification {
+    --notification-transform: translate(-50%, -50%);
+
     position: fixed;
     top: 50%;
     left: 50%;
@@ -167,17 +242,21 @@
     background-color: var(--background-dark-color);
     border-radius: var(--border-radius-middle);
     box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
-    transform: translate(-50%, -50%);
+    transform: var(--notification-transform);
     pointer-events: none;
+}
+
+#notification.is-error {
+    background-color: #b3261e;
 }
 
 #notification.is-visible {
     display: block;
-    animation: slide-in-from-right-to-center 160ms linear forwards;
+    animation: notification-slide-in-mobile 160ms linear forwards;
 }
 
 #notification.is-closing {
-    animation: slide-out-from-center-to-right 160ms linear forwards;
+    animation: notification-slide-out-mobile 160ms linear forwards;
 }
 
 /* buttons */
@@ -190,6 +269,16 @@
 
     border-radius: var(--border-radius-middle);
     cursor: pointer;
+}
+
+.button:disabled,
+.button:disabled:hover {
+    color: #fff;
+    background-color: #bdbdbd;
+    border-color: transparent;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .button-dark {
@@ -296,28 +385,6 @@
 .button-add-bright-mobile {
     max-height: var(--size-button-add-mobile-bright);
     max-width: var(--size-button-add-mobile-bright);
-}
-
-.button-search {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-inline: var(--space-sm);
-    padding: 0;
-
-    min-height: unset;
-    height: var(--size-button-search);
-    width: var(--size-button-search);
-
-    border: unset;
-    background-color: inherit;
-}
-
-.button-search img {
-    display: block;
-    height: 60%;
-    aspect-ratio: 1/1;
 }
 
 .button-task-overlay {
@@ -444,9 +511,12 @@
     height: auto;
 }
 
+a:focus-visible,
 button:focus-visible,
-.login-input-mail:focus-visible,
-.login-input-password:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
     outline: 3px solid var(--input-focus-color);
     outline-offset: 2px;
 }
@@ -525,6 +595,12 @@ button:focus-visible,
     background-color: var(--color-badge-type-green);
 }
 
+/* Scrollbar */
+.scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #a8a8a8 transparent;
+}
+
 @media screen and (min-width: 1280px) {
     #contact[open] {
         &:not(.contact-closing) {
@@ -533,5 +609,13 @@ button:focus-visible,
     }
     .contact-closing {
         animation: slide-out-from-center-to-right 256ms linear forwards;
+    }
+
+    #notification.is-visible {
+        animation: notification-slide-in-desktop 160ms linear forwards;
+    }
+
+    #notification.is-closing {
+        animation: notification-slide-out-desktop 160ms linear forwards;
     }
 }

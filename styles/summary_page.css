@@ -16,16 +16,8 @@
 
 .main {
     min-height: calc(100vh - 160px);
-    margin-top: 80px;
-    margin-bottom: 80px;
-    padding-left: 16px;
-    padding-right: 8px;
-
-    /*
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    */
+    padding: 0 8px;
+    padding-top: 80px;
     
     display: flex;
     justify-content: flex-start;
@@ -40,7 +32,17 @@
 }
 
 .headline-h2 {
+    position: fixed;
+    inset: 0;
+    
     display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 8;
+    background-color: #f6f7f8;
+
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
@@ -104,7 +106,14 @@
     gap: 12px;
 }
 
-.flexbox-container {
+.flexbox-container-left {
+    width: var(--todo-card-width);
+    border: 1px solid #d1d1d1;
+    border-radius: 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.flexbox-container-right {
     width: var(--todo-card-width);
     border: 1px solid #d1d1d1;
     border-radius: 24px;
@@ -125,6 +134,16 @@
 .section-img {
     width: var(--image-to-do-size);
     height: var(--image-to-do-size);
+    background-color: #2A3647;
+    border-radius: 50%;
+}
+
+.section-img-right {
+    width: var(--image-to-do-size);
+    height: var(--image-to-do-size);
+    background-color: #2A3647;
+    border-radius: 50%;
+    padding: 10px;
 }
 
 .flexbox-inner {
@@ -169,7 +188,9 @@
 
 .deadline-hr {
     height: 60px;
+    width: 1px;
     align-self: center;
+    background-color: #2A3647;
 }
 
 .flexbox-deadline {
@@ -201,101 +222,43 @@
     padding: var(--space-xs);
 }
 
-/* ==== Desktop ==== */
-
-@media (min-width: 1280px) {
-    
-    .main {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-items: flex-start;
-        justify-content: flex-start;
-        margin: 0;
-        margin-left: 48px;
+@keyframes greetingFadeOut {
+    0%, 75% {
+        opacity: 1;
     }
 
-    .headline-h2 {
-        align-content: center;
-        display: block;
-        width: 80%;
-        margin-top: 200px;
-        font-size: 48px;
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes summaryFadeIn {
+    0%, 75% {
+        opacity: 0;
     }
 
-    .headline-strong {
-        font-size: 64px;
+    100% {
+        opacity: 1;
     }
+}
 
-    .desktop-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        flex-direction: row-reverse;
-        gap: 48px;
-        width: 100%;
-    }
+.animation-out {
+    display: flex;
+    animation: greetingFadeOut 4s ease forwards;
+}
 
-    .headline-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        margin-top: 180px;
-        gap: 24px;
-        
-    }
+.animation-in {
+    animation: summaryFadeIn 4s ease forwards;
+}
 
-    .headline-container::after {
+@media (prefers-reduced-motion: reduce) {
+    .animation-out {
         display: none;
-    } 
-
-    .headline-container h2::after {
-        content: "";
-        display: inline-block;
-        width: 3px;
-        height: 70px;
-        background-color: #29abe2;
-        border-radius: 2px;
-        vertical-align: top;
-          margin-left: clamp( 48px, calc(20vw - 208px), 80px);
+        animation: none;
     }
 
-    .headline-span {
-        font-size: 24px;
-    }
-
-    .section-container {
-        gap: 16px;
-    }
-
-    .flexbox-container {
-        width: var(--todo-card-desktop-width);
-    }
-
-    .deadline-container {
-        height: 168px;
-    }
-
-    .flexbox {
-        padding: 32px 16px;
-    }
-
-    .section-img {
-        height: 69px;
-        width: 69px;
-    }
-
-    .deadline-inner {
-        height: 100%;
-    }
-
-    .deadline-img {
-        height: 60px;
-        width: 60px;
-    }
-
-    .taks-inner {
-        padding: 16px 12px;
+    .animation-in {
+        animation: none;
     }
 }

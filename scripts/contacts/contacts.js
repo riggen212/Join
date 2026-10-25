@@ -13,6 +13,42 @@ const CONTACT_COLOR_CLASSES = [
     "badge-user-blue-dark",
 ];
 
+let loggedInUserEmail = null;
+
+
+/**
+ * Enables or disables all action buttons of the contacts page.
+ *
+ * @param {boolean} isDisabled - True while a database request is running.
+ * @returns {void}
+ */
+function setContactButtonsDisabled(isDisabled) {
+    const buttons = document.querySelectorAll(
+        ".contacts-content button, #contact button"
+    );
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = isDisabled;
+    }
+}
+
+
+/**
+ * Runs a database request while contact buttons are disabled.
+ *
+ * @param {() => Promise<void>} request - The database request to run.
+ * @returns {Promise<void>}
+ */
+async function runWithDisabledContactButtons(request) {
+    setContactButtonsDisabled(true);
+
+    try {
+        await request();
+    } finally {
+        setContactButtonsDisabled(false);
+    }
+}
+
 
 /**
  * Loads the shared contacts from Firebase and renders the list.
@@ -20,14 +56,19 @@ const CONTACT_COLOR_CLASSES = [
  * @returns {Promise<void>} Resolves after the contact list has been rendered.
  */
 async function initContacts() {
+    setContactButtonsDisabled(true);
+
     try {
         await loadCurrentUser();
-        const firebaseContacts = await getData(getContactPath());
+        loggedInUserEmail = await getLoggedInUserEmail();
 
+        const firebaseContacts = await getData(getContactPath());
         Object.assign(contacts, firebaseContacts ?? {});
         renderContactList(contacts);
     } catch (error) {
-        console.error("Contacts could not be loaded:", error);
+        showNotification("Contacts could not be loaded.", "error");
+    } finally {
+        setContactButtonsDisabled(false);
     }
 }
 
@@ -57,11 +98,12 @@ function groupContactsByInitial(contactDirectory) {
  * Creates the HTML for the contact cards of one group.
  *
  * @param {ContactListEntry[]} contactEntries - Contacts with their IDs.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The HTML for the contact cards.
  */
-function getContactCardsHtml(contactEntries) {
+function getContactCardsHtml(contactEntries, loggedUserEmail) {
     return contactEntries.map(([contactId, contact]) =>
-        getContactCardTemplate(contactId, contact)).join("");
+        getContactCardTemplate(contactId, contact, loggedUserEmail)).join("");
 }
 
 
@@ -69,12 +111,13 @@ function getContactCardsHtml(contactEntries) {
  * Creates the HTML for all grouped contacts.
  *
  * @param {ContactGroups} contactGroups - The grouped contacts.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The HTML for all contact groups.
  */
-function getContactGroupsHtml(contactGroups) {
+function getContactGroupsHtml(contactGroups, loggedUserEmail) {
     return Object.entries(contactGroups)
         .map(([initial, entries]) => {
-            const cardsHtml = getContactCardsHtml(entries);
+            const cardsHtml = getContactCardsHtml(entries, loggedUserEmail);
             return getContactGroupTemplate(initial, cardsHtml);
         })
         .join("");
@@ -90,7 +133,8 @@ function getContactGroupsHtml(contactGroups) {
 function renderContactList(contactDirectory) {
     const container = document.getElementById("contact-groups");
     const groups = groupContactsByInitial(contactDirectory);
-    container.innerHTML = getContactGroupsHtml(groups);
+
+    container.innerHTML = getContactGroupsHtml(groups, loggedInUserEmail);
 }
 
 
@@ -108,7 +152,7 @@ function renderContactDetails(contactId) {
 
     contactDetails.dataset.contactId = contactId;
     document.getElementById("contact-details-info").innerHTML =
-        getContactDetailsTemplate(contact);
+        getContactDetailsTemplate(contact, loggedInUserEmail);
 }
 
 
@@ -149,7 +193,19 @@ function closeContactFormWithNotification(form, message) {
     const dialog = form.closest("dialog");
 
     dialog.dataset.notification = message;
+    dialog.dataset.notificationContainer = "show-details";
     dialog.requestClose();
+}
+
+
+/**
+ * Finishes the closing animation of the contact form dialog.
+ *
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @returns {void}
+ */
+function closeContactDialog(event) {
+    closeAnimatedDialog(event, "contact-closing");
 }
 
 
@@ -164,14 +220,14 @@ async function saveContact(event) {
     const form = /** @type {HTMLFormElement} */ (event.currentTarget);
     const selectedContact = getSelectedContactEntry();
     const formValues = getValidContactFormValues(form);
-
     if (!selectedContact || !formValues) return;
+
     const contact = { ...selectedContact.contact, ...formValues };
     try {
-        await saveEditedContact(selectedContact.id, contact);
+        await runWithDisabledContactButtons(() => saveEditedContact(selectedContact.id, contact));
         closeContactFormWithNotification(form, "Contact successfully updated");
     } catch (error) {
-        console.error("Contact could not be updated:", error);
+        showNotification("Contact could not be updated. Please try again.", "error");
     }
 }
 
@@ -213,15 +269,15 @@ async function createContact(event) {
     event.preventDefault();
     const form = /** @type {HTMLFormElement} */ (event.currentTarget);
     const formValues = getValidContactFormValues(form);
-
     if (!formValues) return;
+
     const contactId = getNextContactId();
     const contact = { ...formValues, colorClass: getNextContactColorClass() };
     try {
-        await saveNewContact(contactId, contact);
+        await runWithDisabledContactButtons(() => saveNewContact(contactId, contact));
         closeContactFormWithNotification(form, "Contact successfully created");
     } catch (error) {
-        console.error("Contact could not be created:", error);
+        showNotification("Contact could not be created. Please try again.", "error");
     }
 }
 
@@ -295,6 +351,45 @@ async function removeContact(contactId) {
     renderContactList(contacts);
     hideContactDetails();
     closeDialogAfterContactDeletion("Contact successfully deleted");
+}
+
+
+/**
+ * Closes the contact dialog and shows a notification afterwards.
+ *
+ * @param {string} message - The text displayed in the notification.
+ * @param {"success" | "error"} [type="success"] - The notification type.
+ * @returns {void}
+ */
+function closeDialogAfterContactDeletion(message) {
+    const contactDialog = document.getElementById("contact");
+    const actionsDialog = document.getElementById("dialog-edit-contact");
+
+    if (actionsDialog.open) {
+        actionsDialog.close();
+        document.body.classList.remove("overflow-hidden");
+    }
+
+    if (!contactDialog.open) return showNotification(message, "show-details");
+    contactDialog.dataset.notification = message;
+    contactDialog.dataset.notificationContainer = "show-details";
+    contactDialog.requestClose();
+}
+
+/**
+ * Deletes the currently selected contact.
+ *
+ * @returns {Promise<void>}
+ */
+async function deleteContact() {
+    const selectedContact = getSelectedContactEntry();
+    if (!selectedContact) return;
+
+    try {
+        await runWithDisabledContactButtons(() => removeContact(selectedContact.id));
+    } catch (error) {
+        showNotification("Contact could not be deleted. Please try again.", "error");
+    }
 }
 
 

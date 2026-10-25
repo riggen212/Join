@@ -33,6 +33,7 @@ const board = {
     },
 };
 
+
 /**
  * ID and Status of the currently dragged task.
  *
@@ -47,6 +48,7 @@ let draggingTask = null;
  *
  */
 let activeSearchTerm = "";
+
 
 /**
  * Starts the board page, loads the tasks, contacts and the user,
@@ -79,6 +81,7 @@ function renderBoard(columns) {
     }
 }
 
+
 /**
  * Renders a single board column.
  *
@@ -95,6 +98,7 @@ function renderBoardColumn(column) {
         columnContent.innerHTML = columnContentHtml;
     }
 }
+
 
 /**
  * Iterates all tasks of a single column and creates the HTML string.
@@ -115,6 +119,7 @@ function getColumnContentHtml(columnTasksObject) {
     return columnContentHtml;
 }
 
+
 /**
  * Iterates all assignees of a single task and creates the HTML string.
  *
@@ -123,19 +128,23 @@ function getColumnContentHtml(columnTasksObject) {
  * @returns {string} HTML string containing the assignees of the task.
  */
 function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
-    const assignees = Object.keys(task.assignedTo ?? {});
+    const assignees = Object.keys(task.assignedTo ?? {}).filter((id) => localContacts[id]);
+    const isTaskCard = getUserBadgeTemplateFunction === getTaskCardUserBadgeTemplate;
+    const visibleAssignees = isTaskCard ? assignees.slice(0, 3) : assignees;
+    const remainingCount = assignees.length - visibleAssignees.length;
     let assigneesHtml = "";
 
-    assignees.forEach((contact) => {
-        if (!localContacts[contact]) {
-            return;
-        }
-
-        assigneesHtml += getUserBadgeTemplateFunction(localContacts[contact]);
+    visibleAssignees.forEach((id) => {
+        assigneesHtml += getUserBadgeTemplateFunction(localContacts[id]);
     });
+
+    if (remainingCount > 0) {
+        assigneesHtml += getMoreBadgeTemplate(remainingCount);
+    }
 
     return assigneesHtml;
 }
+
 
 /**
  * Iterates through the subtasks and creates the html.
@@ -153,6 +162,7 @@ function getTaskOverlaySubtasksHtml(subtasks) {
 
     return subtasksHtml;
 }
+
 
 /**
  * Toggles a subtask's completion status, refreshes the task card,
@@ -172,6 +182,7 @@ async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtask
 
     await saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask);
 }
+
 
 /**
  * Saves the subtask's completion status to the database.
@@ -195,6 +206,7 @@ async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask)
     }
 }
 
+
 /**
  * Inverts the subtask's completion status and refreshes the task card.
  *
@@ -206,6 +218,7 @@ function toggleSubtaskCompletion(taskId, task, subtask) {
     subtask.completed = !subtask.completed;
     updateTaskCardSubtasksState(taskId, task);
 }
+
 
 /**
  * Reverts a subtask completion toggle, refreshes the task card,
@@ -220,6 +233,7 @@ function revertSubtaskCompletion(checkbox, taskId, task, subtask) {
     toggleSubtaskCompletion(taskId, task, subtask);
     checkbox.checked = subtask.completed;
 }
+
 
 /**
  * Updates the subtask summary and progress bar of the specified task card.
@@ -237,6 +251,7 @@ function updateTaskCardSubtasksState(taskId, task) {
     subtasksProgressBarRef.style.width = `${subtaskData.progressInPercent}%`;
 }
 
+
 /**
  * Returns the subtask container of the specified task card.
  *
@@ -251,6 +266,7 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
 
     return subtaskRef;
 }
+
 
 /**
  * Opens the dialog and renders the selected task's data.
@@ -272,6 +288,7 @@ function openTaskDialog(taskId, taskStatus) {
     }
 }
 
+
 /**
  * Updates the task dialog's task ID, status, and HTML content.
  *
@@ -284,6 +301,7 @@ function updateTaskDialog(dialog, taskData) {
     dialog.innerHTML = getTaskOverlayTemplate(taskData);
 }
 
+
 /**
  * Switches the task dialog to the edit form of the given task.
  *
@@ -295,12 +313,16 @@ function editTask(taskId) {
     try {
         const task = getTaskById(taskId, dialog.dataset.taskStatus);
 
-        dialog.innerHTML = renderAddTask(true);
+        dialog.innerHTML = `
+            ${getAddTaskDialogCloseButtonTemplate()}
+            ${renderAddTask(true)}
+        `;
         initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
     } catch (error) {
         console.error(error);
     }
 }
+
 
 /**
  * Updates the board and the task dialog after a task was edited.
@@ -316,13 +338,28 @@ function updateBoardAfterTaskEdit(taskId, task) {
     updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
 }
 
+
+/**
+ * Opens the Add Task dialog on desktop screens.
+ * On smaller screens, it opens the standalone Add Task page instead.
+ *
+ * @returns {void}
+ */
 function openAddTaskDialog() {
+    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+
+    if (!isDesktop) {
+        window.location.href = "./add_task.html?user=" + loggedUserId;
+        return;
+    }
+
     const dialog = document.getElementById("dialog-add-task");
 
-    dialog.innerHTML = renderAddTask();
+    dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
     initAddTaskForm(dialog.querySelector(".task-form-wrapper"));
     openDialog("dialog-add-task");
 }
+
 
 /**
  * Adds a task created in the Add Task dialog to the board.
@@ -335,8 +372,9 @@ function updateBoardAfterTaskCreation(taskId, task) {
     renderBoard(Object.values(board));
 }
 
+
 /**
- * Finishes the closing animation of the task dialog.
+ * Clears the task dialog's state and finishes its animated closing.
  *
  * @param {AnimationEvent} event - The dialog animation event.
  * @returns {void}
@@ -351,4 +389,20 @@ function closeTaskDialog(event) {
     dialog.dataset.taskId = "";
     dialog.dataset.taskStatus = "";
     closeAnimatedDialog(event, "dialog-task-closing");
+}
+
+
+/**
+ * Opens a task dialog when a task card is activated with the keyboard.
+ *
+ * @param {KeyboardEvent} event - The key event from the task card.
+ * @param {string} taskId - The ID of the selected task.
+ * @param {string} taskStatus - The current status of the selected task.
+ * @returns {void}
+ */
+function openTaskCardOnKeydown(event, taskId, taskStatus) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+
+    event.preventDefault();
+    openTaskDialog(taskId, taskStatus);
 }

@@ -1,0 +1,155 @@
+.subtask-input-wrapper {
+    position: relative;
+}
+
+.subtask-input-wrapper .input-wrapper {
+    padding-right: 88px;
+    font-family: inherit;
+    font-size: var(--font-input);
+}
+
+/* While typing, clear | confirm is shown */
+
+.subtask-input-actions {
+    position: absolute;
+    top: 50%;
+    right: var(--space-sm);
+    display: none;
+    align-items: center;
+    gap: var(--space-xxs);
+    transform: translateY(-50%);
+}
+
+#subtask:not(:placeholder-shown) ~ .subtask-input-actions {
+    display: flex;
+}
+
+.subtask-input-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+}
+
+.subtask-input-actions button:hover {
+    background-color: #eeeeee;
+}
+
+.subtask-input-actions img {
+    width: 12px;
+    height: 12px;
+}
+
+.subtask-list {
+    margin: var(--space-xs) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.subtask-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: 32px;
+    padding: 2px var(--space-sm);
+    border-radius: var(--border-radius-small);
+    font-size: var(--font-input);
+}
+
+.subtask-item::before {
+    content: "•";
+}
+
+.subtask-item:hover,
+.subtask-item:focus-within {
+    background-color: #eeeeee;
+}
+
+.subtask-title {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    cursor: text;
+}
+
+.subtask-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xxs);
+    margin-left: auto;
+    opacity: 0;
+}
+
+.subtask-item:hover .subtask-actions,
+.subtask-item:focus-within .subtask-actions {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .subtask-actions {
+        opacity: 1;
+    }
+}
+
+.subtask-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+}
+
+.subtask-actions button:hover {
+    background-color: #d1d1d1;
+}
+
+.subtask-actions-divider {
+    width: 1px;
+    height: 20px;
+    background-color: var(--color-grey-bright);
+}
+
+.subtask-item.is-editing {
+    background-color: #fff;
+    border-radius: 0;
+    box-shadow: inset 0 -1px 0 #29abe2;
+}
+
+.subtask-item.is-editing::before,
+.subtask-item.is-editing .subtask-edit-button,
+.subtask-item.is-editing .subtask-view-divider,
+.subtask-item:not(.is-editing) .subtask-edit-divider,
+.subtask-item:not(.is-editing) .subtask-save-button {
+    display: none;
+}
+
+.subtask-item.is-editing .subtask-actions {
+    opacity: 1;
+}
+
+.subtask-save-button img {
+    width: 14px;
+    height: 11px;
+}
+
+.subtask-edit-input {
+    flex: 1;
+    min-width: 0;
+    padding: 2px 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    box-shadow: none;
+}

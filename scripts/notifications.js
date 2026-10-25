@@ -2,26 +2,51 @@ let notificationTimeout;
 
 
 /**
- * Returns the notification container for the active screen size.
+ * Shows a temporary notification, optionally closing it together with a dialog.
  *
- * @returns {HTMLElement} The element that contains the notification.
+ * @param {string} message - The text displayed in the notification.
+ * @param {string} [containerIdOrType] - A desktop container ID or "error".
+ * @param {"success" | "error"} [type="success"] - The notification type.
+ * @param {() => void} [closeNotificationWithDialog] - Optional callback that starts closing the dialog while the notification remains visible.
+ * @returns {void}
  */
-function getNotificationContainer() {
-    const contactDetails = document.getElementById("show-details");
-    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+function showNotification(message, containerIdOrType, type = "success", closeNotificationWithDialog) {
+    const options = getNotificationOptions(containerIdOrType, type);
+    const notification = getNotificationElement(options.containerId);
 
-    return isDesktop && contactDetails ? contactDetails : document.body;
+    prepareNotification(notification, message, options.type);
+    displayNotification(notification, closeNotificationWithDialog);
+}
+
+
+/**
+ * Normalizes the optional container and type arguments.
+ *
+ * @param {string} [containerIdOrType] - A desktop container ID or "error".
+ * @param {"success" | "error"} [type="success"] - The notification type.
+ * @returns {{containerId: string | undefined, type: "success" | "error"}}
+ */
+function getNotificationOptions(containerIdOrType, type) {
+    if (containerIdOrType === "error") {
+        return { containerId: undefined, type: "error" };
+    }
+
+    return {
+        containerId: containerIdOrType,
+        type: type === "error" ? "error" : "success",
+    };
 }
 
 
 /**
  * Returns the shared notification element and creates it when needed.
  *
+ * @param {string} [containerId] - The optional ID of the desktop container.
  * @returns {HTMLElement} The notification element.
  */
-function getNotificationElement() {
+function getNotificationElement(containerId) {
     let notification = document.getElementById("notification");
-    const container = getNotificationContainer();
+    const container = getNotificationContainer(containerId);
 
     if (notification) {
         container.append(notification);
@@ -30,40 +55,81 @@ function getNotificationElement() {
 
     notification = document.createElement("div");
     notification.id = "notification";
-    notification.setAttribute("role", "status");
-    notification.setAttribute("aria-live", "polite");
     container.append(notification);
     return notification;
 }
 
 
 /**
- * Shows a temporary notification with the given message.
+ * Returns the notification container for the current screen size.
  *
- * @param {string} message - The text displayed in the notification.
- * @returns {void}
+ * Uses an open dialog first so notifications stay visible above its content.
+ *
+ * @param {string} [containerId] - The optional ID of the desktop container.
+ * @returns {HTMLElement} The element that contains the notification.
  */
-function showNotification(message) {
-    const notification = getNotificationElement();
+function getNotificationContainer(containerId) {
+    const container = document.getElementById(containerId);
+    const openDialog = document.querySelector("dialog[open]");
+    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
 
-    window.clearTimeout(notificationTimeout);
-    notification.onanimationend = null;
-    notification.textContent = message;
-    notification.classList.remove("is-visible", "is-closing");
-    void notification.offsetWidth;
-    notification.classList.add("is-visible");
-    notificationTimeout = window.setTimeout(closeNotification, 1200);
+    if (openDialog) return openDialog;
+    if (!containerId || !isDesktop) return document.body;
+    return container ?? document.body;
 }
 
 
 /**
- * Starts the closing animation of the current notification.
+ * Sets the text, style, and accessibility attributes of a notification.
  *
+ * @param {HTMLElement} notification - The notification element.
+ * @param {string} message - The text displayed in the notification.
+ * @param {"success" | "error"} type - The notification type.
  * @returns {void}
  */
-function closeNotification() {
-    const notification = getNotificationElement();
-    if (!notification.classList.contains("is-visible")) return;
+function prepareNotification(notification, message, type) {
+    const isError = type === "error";
+
+    notification.textContent = message;
+    notification.classList.toggle("is-error", isError);
+    notification.setAttribute("role", isError ? "alert" : "status");
+    notification.setAttribute("aria-live", isError ? "assertive" : "polite");
+}
+
+
+/**
+ * Displays a notification and starts its automatic dismissal timer.
+ *
+ * @param {HTMLElement} notification - The notification element.
+ * @param {() => void} [closeNotificationWithDialog] - Optional callback that starts closing the dialog while the notification remains visible.
+ * @returns {void}
+ */
+function displayNotification(notification, closeNotificationWithDialog) {
+    window.clearTimeout(notificationTimeout);
+    notification.onanimationend = null;
+    notification.classList.remove("is-visible", "is-closing");
+    void notification.offsetWidth;
+    notification.classList.add("is-visible");
+    notificationTimeout = window.setTimeout(() => closeNotification(notification, closeNotificationWithDialog), 1800);
+}
+
+
+/**
+ * Starts the notification's closing animation or delegates closing to the dialog callback.
+ * When a callback is provided, the notification stays visible until
+ * the dialog closes and resets its notification.
+ *
+ * @param {HTMLElement} [notification] - The notification that should close.
+ * @param {() => void} [closeNotificationWithDialog] - Optional callback that starts closing the dialog while the notification remains visible.
+ * @returns {void}
+ */
+function closeNotification(notification = document.getElementById("notification"), closeNotificationWithDialog) {
+    if (!notification?.classList.contains("is-visible")) return;
+
+    if (closeNotificationWithDialog) {
+        closeNotificationWithDialog();
+        return;
+    }
 
     notification.classList.add("is-closing");
     notification.onanimationend = () => {
@@ -81,8 +147,12 @@ function closeNotification() {
  */
 function showDialogNotification(dialog) {
     const message = dialog.dataset.notification;
-    if (!message) return;
+    const containerId = dialog.dataset.notificationContainer;
+    const type = dialog.dataset.notificationType;
 
+    if (!message) return;
     delete dialog.dataset.notification;
-    showNotification(message);
+    delete dialog.dataset.notificationContainer;
+    delete dialog.dataset.notificationType;
+    showNotification(message, containerId, type);
 }

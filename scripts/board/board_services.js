@@ -332,59 +332,63 @@ function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
 }
 
 /**
- * Deletes a task from Firebase and, on success, removes it from the local board,
- * closes the dialog, and renders the affected column.
+ * Coordinates task deletion and prevents repeated clicks.
+ * Re-enables the button if database deletion fails.
+ * On success, updates the board and schedules dialog closing through a notification.
  *
- * @param {TaskId} taskId - ID of the task that should be deleted.
- * @param {Task["status"]} taskStatus - Column of the Task that should be deleted.
+ * @param {TaskId} taskId - ID of the task to delete.
+ * @param {Task["status"]} taskStatus - Column containing the task.
  * @param {HTMLButtonElement} button - The clicked delete button.
- * @returns {Promise<void>} Resolves after the deletion attempt and any subsequent UI updates.
+ * @returns {Promise<void>} Resolves after deletion handling, without waiting for notification or dialog animations.
  */
 async function deleteTask(taskId, taskStatus, button) {
+    const dialog = button.closest("dialog");
+
     if (button.disabled) return;
 
     button.disabled = true;
 
-    if (!(await tryDeleteTaskFromDatabase(button, taskId))) {
+    if (!(await deleteTaskFromDatabase(taskId))) {
+        button.disabled = false;
         return;
     }
 
-    updateBoardAfterTaskDeletion(taskId, taskStatus, button.closest("dialog"));
+    updateBoardAfterTaskDeletion(taskId, taskStatus,dialog);
 }
 
 /**
- * Attempts to delete a task from the database.
- * Re-enables the delete button and logs the error if deletion fails.
+ * Attempts to delete a task from Firebase.
+ * Shows an error notification if deletion fails.
  *
- * @param {HTMLButtonElement} button - The clicked delete button.
  * @param {TaskId} taskId - ID of the task to delete.
- * @returns {Promise<boolean>} Whether the task was successfully deleted.
+ * @returns {Promise<boolean>} Whether database deletion succeeded.
  */
-async function tryDeleteTaskFromDatabase(button, taskId) {
+async function deleteTaskFromDatabase(taskId) {
     try {
         await deleteData(DB_TASKS + taskId);
         return true;
     } catch (error) {
-        button.disabled = false;
-        console.error("Deleting Task has failed:", error);
+        showNotification("Deleting Task failed!", "error");
         return false;
     }
 }
 
 /**
- * Removes a task from the local board,
- * closes the dialog, and renders the affected column.
+ * Removes a deleted task from the local board and renders the affected column.
+ * Shows a success notification that triggers animated dialog closing after its display duration.
+ * Shows an error notification if the board update fails.
  *
- * @param {TaskId} taskId - ID of the task that should be deleted.
- * @param {Task["status"]} taskStatus - Column of the Task that should be deleted.
- * @param {HTMLDialogElement} dialog - The dialog displaying the task.
+ * @param {TaskId} taskId - ID of the task already deleted from Firebase.
+ * @param {Task["status"]} taskStatus - Column containing the task.
+ * @param {HTMLDialogElement} dialog - The task dialog to close after the success notification.
+ * @returns {void}
  */
 function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
     try {
         delete board[taskStatus].tasks[taskId];
-        closeTaskDialogImmediately(dialog);
         renderBoard([board[taskStatus]]);
+        showNotification("Task successfully deleted!", undefined, "success", () => dialog.requestClose());
     } catch (error) {
-        console.error("Updating the board after deletion failed:", error);
+        showNotification("Task successfully deleted!\nReload required!", "error");
     }
 }

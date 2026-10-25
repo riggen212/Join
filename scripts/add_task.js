@@ -44,6 +44,7 @@ function initEditTaskForm(form, taskId, task) {
     initAddTaskForm(form, task.status, task);
 }
 
+
 /**
  * Is called on every input or change in the form and updates the form.
  *
@@ -166,8 +167,7 @@ async function createTask(form) {
         const taskId = await saveNewTask(task);
         finishTaskCreation(form, taskId, task);
     } catch (error) {
-        console.error("Creating task has failed:", error);
-        showNotification("Task could not be created. Please try again.");
+        showNotification("Task could not be created. Please try again.", "error");
         updateCreateTaskButton(form);
     }
 }
@@ -229,8 +229,7 @@ async function updateTask(form) {
         await putData(DB_TASKS + taskId, task);
         updateBoardAfterTaskEdit(taskId, task);
     } catch (error) {
-        console.error("Updating task has failed:", error);
-        showNotification("Task could not be saved. Please try again.");
+        showNotification("Updating task has failed.", "error");
     }
     updateCreateTaskButton(form);
 }

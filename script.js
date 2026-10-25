@@ -168,17 +168,7 @@ function openDialog(dialogId) {
     document.body.classList.add("overflow-hidden");
 
     dialog.showModal();
-}
-
-
-/**
- * Finishes the closing animation of the contact form dialog.
- *
- * @param {AnimationEvent} event - The dialog animation event.
- * @returns {void}
- */
-function closeContactDialog(event) {
-    closeAnimatedDialog(event, "contact-closing");
+    document.querySelector(`[aria-controls="${dialogId}"]`)?.setAttribute("aria-expanded", "true");
 }
 
 
@@ -243,23 +233,6 @@ function editContact() {
 
 
 /**
- * Deletes the currently selected contact.
- *
- * @returns {Promise<void>}
- */
-async function deleteContact() {
-    const selectedContact = getSelectedContactEntry();
-    if (!selectedContact) return;
-
-    try {
-        await removeContact(selectedContact.id);
-    } catch (error) {
-        console.error("Contact could not be deleted:", error);
-    }
-}
-
-
-/**
  * Closes a dialog after its closing animation has finished.
  *
  * @param {AnimationEvent} event - The dialog animation event.
@@ -276,43 +249,9 @@ function closeAnimatedDialog(event, closingClass) {
     dialog.classList.remove(closingClass);
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+    document.querySelector(`[aria-controls="${dialog.id}"]`)?.setAttribute("aria-expanded", "false");
+    dialog.querySelector("#notification")?.classList.remove("is-visible", "is-closing");
     showDialogNotification(dialog);
-}
-
-
-/**
- * Closes the dialog from which a contact was deleted and shows a confirmation.
- *
- * @param {string} message - The success message to show after closing.
- * @returns {void}
- */
-function closeDialogAfterContactDeletion(message) {
-    const contactDialog = document.getElementById("contact");
-    const actionsDialog = document.getElementById("dialog-edit-contact");
-
-    if (actionsDialog.open) {
-        actionsDialog.close();
-        document.body.classList.remove("overflow-hidden");
-    }
-
-    if (!contactDialog.open) return showNotification(message);
-    contactDialog.dataset.notification = message;
-    contactDialog.requestClose();
-}
-
-
-/**
- * Closes the task dialog immediately and clears its state.
- *
- * @param {HTMLDialogElement} dialog - The task dialog to close.
- * @returns {void}
- */
-function closeTaskDialogImmediately(dialog) {
-    dialog.classList.remove("dialog-task-closing");
-    dialog.dataset.taskId = "";
-    dialog.dataset.taskStatus = "";
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
 }
 
 
@@ -324,6 +263,7 @@ function closeTaskDialogImmediately(dialog) {
  */
 async function loadCurrentUser() {
     const userId = getUserId();
+    console.log(userId);
 
     setUserIdsToNavLinks(userId);
     await setInitialsToProfileButton(userId);
@@ -340,6 +280,36 @@ async function loadCurrentUser() {
 function getUserId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("user");
+}
+
+
+/**
+ * Returns the email address of the logged-in account.
+ * Guest access deliberately has no email for UI markers.
+ *
+ * @returns {Promise<string|null>} Email address or null for guest access.
+ */
+async function getLoggedInUserEmail() {
+    const userId = getUserId();
+
+    if (userId === DB_GUEST_USER_ID) return null;
+
+    return getData(DB_USERS + userId + "/email");
+}
+
+
+/**
+ * Returns the UI suffix for the logged-in user's matching contact.
+ *
+ * @param {string} contactEmail Email address of the displayed contact.
+ * @param {string|null} loggedUserEmail Email address of the logged-in user.
+ * @returns {string} The "(you)" suffix or an empty string.
+ */
+function getCurrentUserSuffix(contactEmail, loggedUserEmail) {
+    const isCurrentUser = contactEmail?.toLowerCase() ===
+        loggedUserEmail?.toLowerCase();
+
+    return isCurrentUser ? " (you)" : "";
 }
 
 
@@ -373,17 +343,5 @@ async function setInitialsToProfileButton(userId) {
     }
 
     button.textContent = userInitials;
-}
-
-
-/**
- * Returns the notification container for the active screen size.
- *
- * @returns {HTMLElement} The element that contains the notification.
- */
-function getNotificationContainer() {
-    const contactDetails = document.getElementById("show-details");
-    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
-
-    return isDesktop && contactDetails ? contactDetails : document.body;
+    button.setAttribute("aria-label", "Open service links and log out");
 }
