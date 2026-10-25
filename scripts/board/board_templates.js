@@ -14,8 +14,8 @@ function getTaskCardTemplate(taskData) {
                 tabindex="0"
                 onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
                 onkeydown="openTaskCardOnKeydown(event, '${taskData.id}', '${taskData.task.status}')"
-                ondragstart="getDraggingTask('${taskData.id}', '${taskData.task.status}'), addFlipCard('${taskData.id}')"
-                ondragend="removeFlipCard('${taskData.id}')"
+                ondragstart="getDraggingTask(event, '${taskData.id}', '${taskData.task.status}')"
+                ondragend="endDraggingTask('${taskData.id}')"
                 aria-label="Open task: ${taskData.task.title}">
                     <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
                     <div class="task-card-body">

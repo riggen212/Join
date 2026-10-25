@@ -42,6 +42,14 @@ const board = {
 let draggingTask = null;
 
 /**
+ * Whether a task move is being saved and the affected columns are being rendered.
+ * Blocks new task drags and opening task dialogs until the move finishes.
+ *
+ * @type {boolean}
+ */
+let isTaskMovePending = false;
+
+/**
  * Current normalized search term.
  *
  * @type {SearchTerm}
@@ -247,7 +255,7 @@ function updateTaskCardSubtasksState(taskId, task) {
     const subtasksSummaryRef = subtasksRef.querySelector(".task-card-subtasks-summary");
     const subtasksProgressBarRef = subtasksRef.querySelector(".task-card-subtasks-progress-bar");
 
-    subtasksSummaryRef.innerHTML = `${subtaskData.completedAmount}/${subtaskData.amount} Subtasks`;
+    subtasksSummaryRef.textContent = `${subtaskData.completedAmount}/${subtaskData.amount} Subtasks`;
     subtasksProgressBarRef.style.width = `${subtaskData.progressInPercent}%`;
 }
 
@@ -269,12 +277,16 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
 
 
 /**
- * Opens the dialog and renders the selected task's data.
+ * Opens the task dialog and renders the selected task's data.
+ * Does nothing while a task move is pending.
  *
- * @param {TaskId} taskId - ID of the task to render.
- * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
+ * @param {TaskId} taskId - ID of the task to display.
+ * @param {Task["status"]} taskStatus - Current status identifying the task's column.
+ * @returns {void}
  */
 function openTaskDialog(taskId, taskStatus) {
+    if (isTaskMovePending) return;
+
     const dialog = document.getElementById("dialog-task");
 
     try {

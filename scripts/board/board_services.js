@@ -130,12 +130,22 @@ function allowDrop(event) {
 }
 
 /**
- * Sets the dragging task's id and status into the global variable for the current dragging task.
+ * Starts a task drag by storing its ID and status and rotating its card.
+ * Cancels the drag if another drag or task move is already active.
  *
- * @param {TaskId} taskId - ID of the dragging task.
- * @param {Task["status"]} taskStatus - Status of the dragging task.
+ * @param {DragEvent} event - The task card's dragstart event.
+ * @param {TaskId} taskId - ID of the task being dragged.
+ * @param {Task["status"]} taskStatus - Current status of the task.
+ * @returns {void}
  */
-function getDraggingTask(taskId, taskStatus) {
+function getDraggingTask(event, taskId, taskStatus) {
+    if (draggingTask || isTaskMovePending) {
+        event.preventDefault();
+        return;
+    }
+
+    addFlipCard(taskId);
+
     draggingTask = {
         id: taskId,
         status: taskStatus,
@@ -143,22 +153,42 @@ function getDraggingTask(taskId, taskStatus) {
 }
 
 /**
- * Moves a task between columns, saves the updated task to Firebase,
- * and renders the affected columns.
- * Returns early if the task status has not changed.
+ * Removes the task card's rotation and clears the current drag state.
  *
- * @param {Task["status"]} destinationStatus - Status of the column where the task should be moved.
- * @returns {Promise<void>} Resolves after the database update attempt and rendering.
+ * @param {TaskId} taskId - ID of the task whose drag ended.
+ * @returns {void}
+ */
+function endDraggingTask(taskId) {
+    removeFlipCard(taskId);
+    draggingTask = null;
+}
+
+/**
+ * Moves the dragged task to another column, saves its status,
+ * and renders the affected columns. Reverts the move if saving fails.
+ * Skips the move if no drag is active, another move is pending,
+ * or the destination matches the current status.
+ * Always releases the move lock when processing ends.
+ *
+ * @param {Task["status"]} destinationStatus - Status of the destination column.
+ * @returns {Promise<void>} Resolves after the move is skipped, saved, or reverted,
+ * and any affected columns have been rendered.
  */
 async function moveTask(destinationStatus) {
-    const draggingTaskData = getDataToMoveTask(destinationStatus);
+    if (!draggingTask || isTaskMovePending) return;
 
+    const draggingTaskData = getDataToMoveTask(destinationStatus);
     if (!hasTaskStatusChanged(draggingTaskData)) return;
 
-    moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
-    await saveTaskMove(draggingTaskData);
+    isTaskMovePending = true;
 
-    renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+    try {
+        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
+        await saveTaskMove(draggingTaskData);
+        renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+    } finally {
+        isTaskMovePending = false;
+    }
 }
 
 /**
@@ -213,23 +243,30 @@ function hasTaskStatusChanged(draggingTaskData) {
 }
 
 /**
- * Adds the CSS class to highlight the column.
+ * Adds the CSS class that highlights a column as a drop target.
  *
- * @param {Task["status"]} columnStatus - Status of the column that should be highlighted.
+ * @param {Task["status"]} columnStatus - Status identifying the column to highlight.
+ * @returns {void}
  */
-function addHighlightDroppableColumn(columnStatus) {
+function addHighlightDroppableColumn(columnStatus, event) {
     const column = document.getElementById(`${columnStatus}-content`);
     column.classList.add("board-column-highlight");
 }
 
 /**
- * Removes the CSS class to stop highlighting the column.
+ * Removes the column highlight after a drop or when the drag leaves the column.
+ * Keeps the highlight when dragging between elements within the same column.
+ * Ignores other event types.
  *
- * @param {Task["status"]} columnStatus - Status of the column that should no longer be highlighted.
+ * @param {Task["status"]} columnStatus - Status identifying the column to update.
+ * @param {DragEvent} event - The column's drop or dragleave event.
+ * @returns {void}
  */
-function removeHighlightDroppableColumn(columnStatus) {
-    const column = document.getElementById(`${columnStatus}-content`);
-    column.classList.remove("board-column-highlight");
+function removeHighlightDroppableColumn(columnStatus, event) {
+    if (event.type === "drop" || (event.type === "dragleave" && !event.currentTarget.contains(event.relatedTarget))) {
+        const column = document.getElementById(`${columnStatus}-content`);
+        column.classList.remove("board-column-highlight");
+    }
 }
 
 /**
@@ -353,7 +390,7 @@ async function deleteTask(taskId, taskStatus, button) {
         return;
     }
 
-    updateBoardAfterTaskDeletion(taskId, taskStatus,dialog);
+    updateBoardAfterTaskDeletion(taskId, taskStatus, dialog);
 }
 
 /**
