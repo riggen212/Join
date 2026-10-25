@@ -8,6 +8,7 @@
         <script src="../scripts/notifications.js" defer></script>
         <script src="../script.js" defer></script>
         <script src="../scripts/board/board_templates.js" defer></script>
+        <script src="../scripts/board/board_keyboardUsage.js" defer></script>
         <script src="../scripts/board/board_services.js" defer></script>
         <script src="../scripts/board/board.js" defer></script>
         <script src="../scripts/add_task_fields.js" defer></script>
@@ -150,8 +151,8 @@
 
                             <div id="toDo-content" class="board-column-content"
                                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
-                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event)"
-                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event))">
+                                ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event))">
                             </div>
                         </section>
 
@@ -166,8 +167,8 @@
 
                             <div id="inProgress-content" class="board-column-content"
                                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
-                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event)"
-                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event))">
+                                ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event))">
                             </div>
                         </section>
 
@@ -182,8 +183,8 @@
 
                             <div id="awaitFeedback-content" class="board-column-content" 
                                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
-                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event)"
-                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event))">
+                                ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event))">
                             </div>
                         </section>
 
@@ -194,8 +195,8 @@
 
                             <div id="done-content" class="board-column-content"
                                 ondragover=" (allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
-                                ondragleave="removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event)"
-                                ondrop="(moveTask(this.parentElement.dataset.columnId), removeHighlightDroppableColumn(this.parentElement.dataset.columnId, event))">
+                                ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
+                                ondrop="(moveTask(this.parentElement.dataset.columnId), handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event))">
                             </div>
                         </section>
                     </div>

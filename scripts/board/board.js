@@ -1,12 +1,12 @@
 /**
- * Includes all contacts of the user
+ * Contacts loaded from the database, indexed by contact ID.
  *
  * @type {ContactDirectory}
  */
 const localContacts = {};
 
 /**
- * The board including the users tasks in separate columns based on each task's status.
+ * Local board data with tasks grouped by status.
  *
  * @type {Board}
  */
@@ -33,13 +33,21 @@ const board = {
     },
 };
 
-
 /**
- * ID and Status of the currently dragged task.
+ * ID and original status of the task selected for mouse or keyboard movement.
  *
  * @type {{id: TaskId, status: Task["status"]}|null}
  */
 let draggingTask = null;
+
+/**
+ * Index of the selected destination in Object.keys(board).
+ * Retained while the confirmed move is pending and reset to null
+ * by finishMovingTaskWithKeyboard().
+ *
+ * @type {number|null}
+ */
+let highlightedColumnIndex = null;
 
 /**
  * Whether a task move is being saved and the affected columns are being rendered.
@@ -50,13 +58,20 @@ let draggingTask = null;
 let isTaskMovePending = false;
 
 /**
+ * Whether a task is being moved using the keyboard.
+ * Ends when the movement is confirmed or canceled.
+ *
+ * @type {boolean}
+ */
+let isKeyboardMoveActive = false;
+
+/**
  * Current normalized search term.
  *
  * @type {SearchTerm}
  *
  */
 let activeSearchTerm = "";
-
 
 /**
  * Starts the board page, loads the tasks, contacts and the user,
@@ -75,7 +90,7 @@ async function initBoard() {
 initBoard();
 
 /**
- * Renders columns with filterd or unfilterd tasks, based on the search terms value.
+ * Renders the supplied columns, applying activeSearchTerm when it is not empty.
  *
  * @param {BoardColumn[]} columns - Array of columns that should be rendered.
  */
@@ -89,9 +104,9 @@ function renderBoard(columns) {
     }
 }
 
-
 /**
- * Renders a single board column.
+ * Replaces the column container's contents with task cards
+ * or an empty-column message.
  *
  * @param {BoardColumn} column - A single board column including the tasks.
  */
@@ -106,7 +121,6 @@ function renderBoardColumn(column) {
         columnContent.innerHTML = columnContentHtml;
     }
 }
-
 
 /**
  * Iterates all tasks of a single column and creates the HTML string.
@@ -127,9 +141,10 @@ function getColumnContentHtml(columnTasksObject) {
     return columnContentHtml;
 }
 
-
 /**
- * Iterates all assignees of a single task and creates the HTML string.
+ * Builds assignee HTML for contacts present in localContacts.
+ * For task card badges, shows at most three contacts and adds
+ * a badge for the remaining count.
  *
  * @param {Task} task - A single task.
  * @param {(contact: Contact) => string} getUserBadgeTemplateFunction - Function that generates the HTML for one assignee.
@@ -153,7 +168,6 @@ function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
     return assigneesHtml;
 }
 
-
 /**
  * Iterates through the subtasks and creates the html.
  *
@@ -170,7 +184,6 @@ function getTaskOverlaySubtasksHtml(subtasks) {
 
     return subtasksHtml;
 }
-
 
 /**
  * Toggles a subtask's completion status, refreshes the task card,
@@ -190,7 +203,6 @@ async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtask
 
     await saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask);
 }
-
 
 /**
  * Saves the subtask's completion status to the database.
@@ -214,7 +226,6 @@ async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask)
     }
 }
 
-
 /**
  * Inverts the subtask's completion status and refreshes the task card.
  *
@@ -226,7 +237,6 @@ function toggleSubtaskCompletion(taskId, task, subtask) {
     subtask.completed = !subtask.completed;
     updateTaskCardSubtasksState(taskId, task);
 }
-
 
 /**
  * Reverts a subtask completion toggle, refreshes the task card,
@@ -241,7 +251,6 @@ function revertSubtaskCompletion(checkbox, taskId, task, subtask) {
     toggleSubtaskCompletion(taskId, task, subtask);
     checkbox.checked = subtask.completed;
 }
-
 
 /**
  * Updates the subtask summary and progress bar of the specified task card.
@@ -259,13 +268,14 @@ function updateTaskCardSubtasksState(taskId, task) {
     subtasksProgressBarRef.style.width = `${subtaskData.progressInPercent}%`;
 }
 
-
 /**
- * Returns the subtask container of the specified task card.
+ * Finds the subtask container within the specified task card.
+ * Requires the column and task card to exist in the DOM.
  *
  * @param {TaskId} taskId - ID of the task whose card is queried.
  * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
- * @returns {HTMLElement|null} The subtask container, or `null` if it does not exist.
+ * @returns {HTMLElement|null} The subtask container,
+ * or null if the card has no matching subtask element.
  */
 function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
     const columnRef = document.querySelector(`[data-column-id="${taskStatus}"]`);
@@ -274,7 +284,6 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
 
     return subtaskRef;
 }
-
 
 /**
  * Opens the task dialog and renders the selected task's data.
@@ -300,7 +309,6 @@ function openTaskDialog(taskId, taskStatus) {
     }
 }
 
-
 /**
  * Updates the task dialog's task ID, status, and HTML content.
  *
@@ -312,7 +320,6 @@ function updateTaskDialog(dialog, taskData) {
     dialog.dataset.taskStatus = taskData.task.status;
     dialog.innerHTML = getTaskOverlayTemplate(taskData);
 }
-
 
 /**
  * Switches the task dialog to the edit form of the given task.
@@ -335,7 +342,6 @@ function editTask(taskId) {
     }
 }
 
-
 /**
  * Updates the board and the task dialog after a task was edited.
  */
@@ -347,7 +353,6 @@ document.addEventListener("taskupdated", (event) => {
     renderBoard(Object.values(board));
     updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
 });
-
 
 /**
  * Opens the Add Task dialog on desktop screens.
@@ -370,7 +375,6 @@ function openAddTaskDialog() {
     openDialog("dialog-add-task");
 }
 
-
 /**
  * Adds a task created in the Add Task dialog to the board.
  */
@@ -381,9 +385,11 @@ document.addEventListener("taskcreated", (event) => {
     renderBoard(Object.values(board));
 });
 
-
 /**
- * Clears the task dialog's state and finishes its animated closing.
+ * Handles the dialog's closing animation end.
+ * Clears its taskId and taskStatus data attributes and calls
+ * closeAnimatedDialog() to finish closing it.
+ * Ignores child animation events and dialogs without the closing class.
  *
  * @param {AnimationEvent} event - The dialog animation event.
  * @returns {void}
@@ -398,20 +404,4 @@ function closeTaskDialog(event) {
     dialog.dataset.taskId = "";
     dialog.dataset.taskStatus = "";
     closeAnimatedDialog(event, "dialog-task-closing");
-}
-
-
-/**
- * Opens a task dialog when a task card is activated with the keyboard.
- *
- * @param {KeyboardEvent} event - The key event from the task card.
- * @param {string} taskId - The ID of the selected task.
- * @param {string} taskStatus - The current status of the selected task.
- * @returns {void}
- */
-function openTaskCardOnKeydown(event, taskId, taskStatus) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-
-    event.preventDefault();
-    openTaskDialog(taskId, taskStatus);
 }

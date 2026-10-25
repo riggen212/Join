@@ -1,9 +1,9 @@
 /**
  * Loads tasks and contacts from the database.
- * Assigns the tasks to the corresponding columns of the global board
- * and adds the contacts to the global contact directory.
+ * Assigns tasks to board columns by status and copies contacts
+ * into localContacts.
  *
- * @returns {Promise<void>} Resolves after the user data has been processed.
+ * @returns {Promise<void>} Resolves after tasks and contacts are stored locally.
  */
 async function loadBoardData() {
     const tasks = await getData(DB_TASKS);
@@ -14,11 +14,13 @@ async function loadBoardData() {
 }
 
 /**
- * Loads the tasks from the database and assigns each task in the appropriate board column based on its status.
- * Modifies the board.
+ * Assigns loaded tasks to board columns according to their status.
+ * Modifies the supplied board.
  *
- * @param {Board} board - The board including the tasks
- * @param {TaskDirectory} tasks - The tasks whose should be assigned.
+ * @param {Board} board - Board receiving the tasks.
+ * @param {TaskDirectory} tasks - Tasks to assign.
+ * @returns {void}
+ * @throws {Error} If a task has an unknown status.
  */
 function assignTasks(board, tasks) {
     Object.entries(tasks).forEach(([taskKey, taskEntry]) => {
@@ -130,15 +132,17 @@ function allowDrop(event) {
 }
 
 /**
- * Starts a task drag by storing its ID and status and rotating its card.
- * Cancels the drag if another drag or task move is already active.
+ * Selects a task for movement by storing its ID and original status
+ * and rotating its card.
+ * Prevents the triggering event's default action if another movement
+ * or save operation is already active.
  *
- * @param {DragEvent} event - The task card's dragstart event.
- * @param {TaskId} taskId - ID of the task being dragged.
+ * @param {TaskId} taskId - ID of the task to select.
  * @param {Task["status"]} taskStatus - Current status of the task.
+ * @param {DragEvent|KeyboardEvent} event - The event starting the movement.
  * @returns {void}
  */
-function getDraggingTask(event, taskId, taskStatus) {
+function getDraggingTask(taskId, taskStatus, event) {
     if (draggingTask || isTaskMovePending) {
         event.preventDefault();
         return;
@@ -153,9 +157,9 @@ function getDraggingTask(event, taskId, taskStatus) {
 }
 
 /**
- * Removes the task card's rotation and clears the current drag state.
+ * Removes the task card's rotation and resets draggingTask to null.
  *
- * @param {TaskId} taskId - ID of the task whose drag ended.
+ * @param {TaskId} taskId - ID of the task whose movement is ending.
  * @returns {void}
  */
 function endDraggingTask(taskId) {
@@ -168,11 +172,12 @@ function endDraggingTask(taskId) {
  * and renders the affected columns. Reverts the move if saving fails.
  * Skips the move if no drag is active, another move is pending,
  * or the destination matches the current status.
- * Always releases the move lock when processing ends.
+ * Sets isTaskMovePending while moving, saving, and rendering.
+ * Resets isTaskMovePending in finally.
  *
  * @param {Task["status"]} destinationStatus - Status of the destination column.
- * @returns {Promise<void>} Resolves after the move is skipped, saved, or reverted,
- * and any affected columns have been rendered.
+ * @returns {Promise<void>} Resolves when the move is skipped or the save
+ * attempt and rendering have finished.
  */
 async function moveTask(destinationStatus) {
     if (!draggingTask || isTaskMovePending) return;
@@ -209,7 +214,9 @@ async function saveTaskMove(draggingTaskData) {
 }
 
 /**
- * Moves a task from a source column to a destination column and updates its status.
+ * Updates the task's local status, adds it to the destination
+ * column's task directory, and removes it from the source column.
+ * Does not save or render the change.
  *
  * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
  * @param {Task["status"]} destinationColumn - Status of the destination column.
@@ -222,7 +229,10 @@ function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColum
 }
 
 /**
- * Builds and returns an object containing the data to move a task.
+ * Reads the selected task from board using draggingTask.
+ * Returns its ID, the task object, its original status,
+ * and the requested destination status.
+ * Requires draggingTask to be set.
  *
  * @param {Task["status"]} destinationStatus - Status of the destination column.
  * @returns {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} Data needed to move the task.
@@ -236,6 +246,12 @@ function getDataToMoveTask(destinationStatus) {
     };
 }
 
+/**
+ * Checks whether the destination differs from the task's original status.
+ *
+ * @param {{oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Original and destination statuses.
+ * @returns {boolean} Whether the task's status would change.
+ */
 function hasTaskStatusChanged(draggingTaskData) {
     if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
         return false;
@@ -248,31 +264,41 @@ function hasTaskStatusChanged(draggingTaskData) {
  * @param {Task["status"]} columnStatus - Status identifying the column to highlight.
  * @returns {void}
  */
-function addHighlightDroppableColumn(columnStatus, event) {
+function addHighlightDroppableColumn(columnStatus) {
     const column = document.getElementById(`${columnStatus}-content`);
     column.classList.add("board-column-highlight");
 }
 
 /**
- * Removes the column highlight after a drop or when the drag leaves the column.
+ * Removes the drop target highlight from a column.
+ *
+ * @param {Task["status"]} columnStatus - Status identifying the column.
+ * @returns {void}
+ */
+function removeHighlightDroppableColumn(columnStatus) {
+        const column = document.getElementById(`${columnStatus}-content`);
+        column.classList.remove("board-column-highlight");
+}
+
+/**
+ * Removes the column highlight after a drop or when a drag leaves the column.
  * Keeps the highlight when dragging between elements within the same column.
  * Ignores other event types.
  *
- * @param {Task["status"]} columnStatus - Status identifying the column to update.
+ * @param {Task["status"]} columnStatus - Status identifying the column.
  * @param {DragEvent} event - The column's drop or dragleave event.
  * @returns {void}
  */
-function removeHighlightDroppableColumn(columnStatus, event) {
+function handleColumnDragLeaveOrDrop(columnStatus, event) {
     if (event.type === "drop" || (event.type === "dragleave" && !event.currentTarget.contains(event.relatedTarget))) {
-        const column = document.getElementById(`${columnStatus}-content`);
-        column.classList.remove("board-column-highlight");
+        removeHighlightDroppableColumn(columnStatus);
     }
 }
 
 /**
- * Adds the CSS class to flip the task's card.
+ * Adds the CSS class that rotates the task card.
  *
- * @param {TaskId} taskId - ID of the task whose card should be flipped.
+ * @param {TaskId} taskId - ID of the task whose card should be rotated.
  */
 function addFlipCard(taskId) {
     const card = document.getElementById(taskId);
@@ -280,9 +306,9 @@ function addFlipCard(taskId) {
 }
 
 /**
- * Removes the CSS class to stop flipping the task's card.
+ * Removes the CSS class that rotates the task card.
  *
- * @param {TaskId} taskId - ID of the task whose card should no longer be flipped.
+ * @param {TaskId} taskId - ID of the task whose card rotation should be removed.
  */
 function removeFlipCard(taskId) {
     const card = document.getElementById(taskId);
@@ -290,7 +316,8 @@ function removeFlipCard(taskId) {
 }
 
 /**
- * Formats the search term and caches into the global variable `activeSearchTerm` and starts rendering the board.
+ * Converts the search term to lowercase, trims surrounding whitespace,
+ * stores it in activeSearchTerm, and renders all board columns.
  *
  * @param {SearchTerm} searchTerm - The search term getting from the HTML input element.
  */
@@ -300,12 +327,11 @@ function searchTasks(searchTerm) {
 }
 
 /**
- * Filters the columns containing tasks and returns it as a new array,
- * the columns contains the column's id, name and a tasks object,
- * id and name are references of the original column, tasks is a new object containing the filtered tasks.
+ * Creates column objects containing tasks matching the active search term.
+ * Preserves column IDs and names without modifying the original task directories.
  *
- * @param {BoardColumn[]} columns - Array of columns whose tasks should be filtered.
- * @returns {BoardColumn[]} The columns including its filtered tasks.
+ * @param {BoardColumn[]} columns - Columns to filter.
+ * @returns {BoardColumn[]} New column objects referencing matching tasks.
  */
 function getFilteredColumns(columns) {
     const filteredColumns = [];
@@ -321,11 +347,10 @@ function getFilteredColumns(columns) {
 }
 
 /**
- * Filters the tasks using the global search term `activeSearchTerm` and the task's title and description,
- * puts it in a new array an returns it.
+ * Returns tasks whose title or description contains the active search term.
  *
- * @param {TaskDirectory} tasks - Tasks that should be filterd.
- * @returns {TaskDirectory} The filtered tasks.
+ * @param {TaskDirectory} tasks - Tasks to filter.
+ * @returns {TaskDirectory} A new directory referencing the matching tasks.
  */
 function getFilteredTasks(tasks) {
     const filteredTasks = {};
@@ -347,8 +372,8 @@ function getFilteredTasks(tasks) {
  *
  * @param {TaskId} taskId - ID of the task to update.
  * @param {Partial<Task>} taskData - Task properties to update.
- * @returns {Promise<Object|null>} The updated task data returned by Firebase.
- * @throws {Error} If the HTTP response is not successful.
+ * @returns {Promise<Object|null>} Resolves with the PATCH response body;
+ * rejects if the request or response processing fails.
  */
 function updateTaskInDatabase(taskId, taskData) {
     return patchData(DB_TASKS + taskId, taskData);
@@ -361,8 +386,8 @@ function updateTaskInDatabase(taskId, taskData) {
  * @param {TaskId} taskId - ID of the task whose subtask should be updated.
  * @param {SubtaskId} subtaskId - ID of the subtask to update.
  * @param {Partial<Subtask>} subtaskData - Subtask properties to update.
- * @returns {Promise<Object|null>} The updated subtask data returned by Firebase.
- * @throws {Error} If the HTTP response is not successful.
+ * @returns {Promise<Object|null>} Resolves with the PATCH response body;
+ * rejects if the request or response processing fails.
  */
 function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
     return patchData(DB_TASKS + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
