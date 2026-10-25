@@ -105,10 +105,15 @@ function renderAddTask(isEditMode = false) {
                                 <div class="subtask-input-wrapper">
                                     <input class="input-wrapper" id="subtask" name="subtask" type="text"
                                         placeholder="Add new subtask" autocomplete="off" onkeydown="addSubtaskOnEnter(event)" />
-                                    <button class="subtask-add-button" type="button" id="add-subtask"
-                                        aria-label="Add subtask" onclick="addSubtask(this.form)">
-                                        <img src="../assets/icons/add_mobile_blue.svg" alt="" />
-                                    </button>
+                                    <div class="subtask-input-actions">
+                                        <button type="button" aria-label="Clear subtask" onclick="clearSubtaskInput(this.form)">
+                                            <img src="../assets/icons/cancel.svg" alt="" />
+                                        </button>
+                                        <span class="subtask-actions-divider" aria-hidden="true"></span>
+                                        <button type="button" aria-label="Add subtask" onclick="addSubtask(this.form)">
+                                            <img src="../assets/icons/check_dark.svg" alt="" />
+                                        </button>
+                                    </div>
                                 </div>
                                 <ul class="subtask-list" id="subtask-list" aria-label="Subtasks"></ul>
                             </div>
@@ -190,14 +195,20 @@ function getMoreBadgeTemplate(count) {
 function getSubtaskTemplate(title, completed) {
     return `
         <li class="subtask-item" data-completed="${completed}">
-            <span class="subtask-title" ondblclick="editSubtask(this)">${title}</span>
+            <span class="subtask-title" onclick="editSubtask(this)">${title}</span>
             <div class="subtask-actions">
                 <button type="button" class="subtask-edit-button" aria-label="Edit subtask" onclick="editSubtask(this)">
                     <img src="../assets/icons/edit.svg" alt="">
                 </button>
-                <span class="subtask-actions-divider" aria-hidden="true"></span>
-                <button type="button" class="subtask-remove-button" aria-label="Delete subtask" onclick="deleteSubtask(this)">
+                <span class="subtask-actions-divider subtask-view-divider" aria-hidden="true"></span>
+                <button type="button" class="subtask-remove-button" aria-label="Delete subtask"
+                    onmousedown="event.preventDefault()" onclick="deleteSubtask(this)">
                     <img src="../assets/icons/delete.svg" alt="">
+                </button>
+                <span class="subtask-actions-divider subtask-edit-divider" aria-hidden="true"></span>
+                <button type="button" class="subtask-save-button" aria-label="Save subtask"
+                    onmousedown="event.preventDefault()" onclick="finishSubtaskEdit(this)">
+                    <img src="../assets/icons/check_dark.svg" alt="">
                 </button>
             </div>
         </li>

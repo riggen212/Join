@@ -304,15 +304,17 @@ function editTask(taskId) {
 
 /**
  * Updates the board and the task dialog after a task was edited.
+ *
+ * @param {TaskId} taskId - ID of the edited task.
+ * @param {Task} task - The edited task.
  */
-document.addEventListener("taskupdated", (event) => {
-    const { taskId, task } = event.detail;
+function updateBoardAfterTaskEdit(taskId, task) {
     const dialog = document.getElementById("dialog-task");
 
     board[task.status].tasks[taskId] = task;
     renderBoard(Object.values(board));
     updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
-});
+}
 
 function openAddTaskDialog() {
     const dialog = document.getElementById("dialog-add-task");
@@ -324,13 +326,14 @@ function openAddTaskDialog() {
 
 /**
  * Adds a task created in the Add Task dialog to the board.
+ *
+ * @param {TaskId} taskId - ID of the new task.
+ * @param {Task} task - The new task.
  */
-document.addEventListener("taskcreated", (event) => {
-    const { taskId, task } = event.detail;
-
+function updateBoardAfterTaskCreation(taskId, task) {
     board[task.status].tasks[taskId] = task;
     renderBoard(Object.values(board));
-});
+}
 
 /**
  * Finishes the closing animation of the task dialog.
