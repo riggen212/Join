@@ -176,8 +176,7 @@ function endDraggingTask(taskId) {
  * Resets isTaskMovePending in finally.
  *
  * @param {Task["status"]} destinationStatus - Status of the destination column.
- * @returns {Promise<void>} Resolves when the move is skipped or the save
- * attempt and rendering have finished.
+ * @returns {Promise<boolean|undefined>} Whether saving succeeded, or undefined if no move was attempted.
  */
 async function moveTask(destinationStatus) {
     if (!draggingTask || isTaskMovePending) return;
@@ -189,8 +188,9 @@ async function moveTask(destinationStatus) {
 
     try {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
-        await saveTaskMove(draggingTaskData);
+        const wasSaved = await saveTaskMove(draggingTaskData);
         renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+        return wasSaved;
     } finally {
         isTaskMovePending = false;
     }
@@ -200,16 +200,18 @@ async function moveTask(destinationStatus) {
  * Saves the new task status and reverts the local move if the database update fails.
  *
  * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @returns {Promise<void>} Resolves after saving or reverting the task move.
+ * @returns {Promise<boolean>} Whether the task move was saved successfully.
  */
 async function saveTaskMove(draggingTaskData) {
     try {
         await updateTaskInDatabase(draggingTaskData.id, {
             status: draggingTaskData.newStatus,
         });
+        return true;
     } catch (error) {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
         console.error(`Updating the database has failed:\n${error}`);
+        return false;
     }
 }
 

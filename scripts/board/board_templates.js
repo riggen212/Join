@@ -16,7 +16,9 @@ function getTaskCardTemplate(taskData) {
                 onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
                 ondragstart="getDraggingTask('${taskData.id}', '${taskData.task.status}', event)"
                 ondragend="endDraggingTask('${taskData.id}')"
-                aria-label="Open task: ${taskData.task.title}">
+                aria-label="Open task: ${taskData.task.title}"
+                aria-describedby="${taskData.id}-move-result task-keyboard-help">
+                    <span class="task-move-result" id="${taskData.id}-move-result" hidden></span>
                     <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
                     <div class="task-card-body">
                         <h3 class="task-card-title">${taskData.task.title}</h3>

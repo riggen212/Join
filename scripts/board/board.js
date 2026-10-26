@@ -319,6 +319,11 @@ function updateTaskDialog(dialog, taskData) {
     dialog.dataset.taskId = taskData.id;
     dialog.dataset.taskStatus = taskData.task.status;
     dialog.innerHTML = getTaskOverlayTemplate(taskData);
+    dialog.removeAttribute("aria-label");
+    dialog.setAttribute("aria-labelledby", "task-dialog-title");
+    if (dialog.open) {
+        dialog.querySelector(".button-close").focus();
+    }
 }
 
 /**
@@ -328,18 +333,28 @@ function updateTaskDialog(dialog, taskData) {
  */
 function editTask(taskId) {
     const dialog = document.getElementById("dialog-task");
-
     try {
         const task = getTaskById(taskId, dialog.dataset.taskStatus);
-
-        dialog.innerHTML = `
-            ${getAddTaskDialogCloseButtonTemplate()}
-            ${renderAddTask(true)}
-        `;
-        initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+        prepareTaskEditDialog(dialog, taskId, task);
     } catch (error) {
         console.error(error);
     }
+}
+
+/**
+* Renders and names the task editing dialog, then focuses the title field.
+ *
+ * @param {HTMLDialogElement} dialog - The task dialog.
+ * @param {TaskId} taskId - ID of the task to edit.
+ * @param {Task} task - The selected task.
+ * @returns {void}
+ */
+function prepareTaskEditDialog(dialog, taskId, task) {
+    dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask(true);
+    initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+    dialog.removeAttribute("aria-labelledby");
+    dialog.setAttribute("aria-label", "Edit task");
+    dialog.querySelector("#task-title").focus();
 }
 
 /**
@@ -371,6 +386,7 @@ function openAddTaskDialog() {
     const dialog = document.getElementById("dialog-add-task");
 
     dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
+    dialog.setAttribute("aria-labelledby", "add-task-dialog-title");
     initAddTaskForm(dialog.querySelector(".task-form-wrapper"));
     openDialog("dialog-add-task");
 }
