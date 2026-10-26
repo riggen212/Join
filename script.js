@@ -263,7 +263,6 @@ function closeAnimatedDialog(event, closingClass) {
  */
 async function loadCurrentUser() {
     const userId = getUserId();
-    console.log(userId);
 
     setUserIdsToNavLinks(userId);
     await setInitialsToProfileButton(userId);

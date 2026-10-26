@@ -13,9 +13,9 @@ function getTaskCardTemplate(taskData) {
                 role="button"
                 tabindex="0"
                 onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
-                onkeydown="openTaskCardOnKeydown(event, '${taskData.id}', '${taskData.task.status}')"
-                ondragstart="getDraggingTask('${taskData.id}', '${taskData.task.status}'), addFlipCard('${taskData.id}')"
-                ondragend="removeFlipCard('${taskData.id}')"
+                onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
+                ondragstart="getDraggingTask('${taskData.id}', '${taskData.task.status}', event)"
+                ondragend="endDraggingTask('${taskData.id}')"
                 aria-label="Open task: ${taskData.task.title}">
                     <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
                     <div class="task-card-body">
@@ -50,7 +50,7 @@ function getTaskCardUserBadgeTemplate(contact) {
 }
 
 /**
- * Creates the HTML for a empty column badge.
+ * Creates the HTML message shown when a column contains no tasks.
  *
  * @param {BoardColumn["name"]} columnName
  * @returns {string}
@@ -60,7 +60,7 @@ function getTaskCardEmptyBadge(columnName) {
 }
 
 /**
- * Creates the HTML for a no matching task in column badge.
+ * Creates the HTML message shown when a column has no matching search results.
  *
  * @returns {string}
  */

@@ -40,6 +40,8 @@ h2 {
     padding-block: var(--mobile-header-footer-height);
 
     min-height: 100dvh;
+
+    background-color: var(--background-bright-color);
 }
 
 .board-inner {
@@ -156,6 +158,8 @@ h2 {
     align-items: center;
 
     height: var(--size-button-add-mobile-bright);
+
+    padding: 0 12px;
 }
 
 .board-column-content {
