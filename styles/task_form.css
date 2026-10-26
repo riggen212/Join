@@ -191,6 +191,7 @@
 
     .submit-task {
         max-width: calc(2 * var(--task-fields-max-width) + 2 * var(--space-xl));
+        margin-top: var(--space-xl);
         flex-direction: row;
         align-items: center;
         justify-content: space-between;

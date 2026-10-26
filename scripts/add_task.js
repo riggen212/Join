@@ -188,7 +188,7 @@ async function saveNewTask(task) {
 
 /**
  * Shows a message after a new task was saved.
- * In the board dialog the dialog closes and the board is informed with the event "taskcreated".
+ * In the board dialog the dialog closes and the task is added to the board.
  * On the Add Task page the user is sent to the board.
  *
  * @param {HTMLFormElement} form - The task form.
@@ -199,7 +199,7 @@ function finishTaskCreation(form, taskId, task) {
     const dialog = form.closest("dialog");
 
     if (dialog) {
-        document.dispatchEvent(new CustomEvent("taskcreated", { detail: { taskId: taskId, task: task } }));
+        updateBoardAfterTaskCreation(taskId, task);
         dialog.dataset.notification = "Task added to board";
         dialog.classList.add("dialog-task-closing");
     } else {
@@ -216,7 +216,7 @@ function goToBoard() {
 }
 
 /**
- * Saves the edited task in the database and informs the board with the event "taskupdated".
+ * Saves the edited task in the database and updates the board.
  *
  * @param {HTMLFormElement} form - The task form.
  */
@@ -227,7 +227,7 @@ async function updateTask(form) {
 
     try {
         await putData(DB_TASKS + taskId, task);
-        document.dispatchEvent(new CustomEvent("taskupdated", { detail: { taskId: taskId, task: task } }));
+        updateBoardAfterTaskEdit(taskId, task);
     } catch (error) {
         showNotification("Updating task has failed.", "error");
     }

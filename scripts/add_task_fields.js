@@ -1,7 +1,5 @@
 const MAX_VISIBLE_BADGES = 4;
 
-document.addEventListener("mousedown", closeDropdownsOnOutsideClick);
-
 // ---------- Assigned contacts ----------
 
 /**

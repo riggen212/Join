@@ -27,6 +27,17 @@ function addSubtask(form) {
 }
 
 /**
+ * Clears the subtask field.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ */
+function clearSubtaskInput(form) {
+    const input = form.querySelector("#subtask");
+    input.value = "";
+    input.focus();
+}
+
+/**
  * Shows the subtasks of an existing task in the subtask list.
  *
  * @param {HTMLFormElement} form - The task form.
@@ -91,6 +102,16 @@ function handleSubtaskEditKeydown(event) {
         event.preventDefault();
         input.blur();
     }
+}
+
+/**
+ * Finishes editing a subtask. Leaving the input saves the new title.
+ *
+ * @param {HTMLButtonElement} button - The clicked save button.
+ */
+function finishSubtaskEdit(button) {
+    const input = button.closest(".subtask-item").querySelector(".subtask-edit-input");
+    if (input) input.blur();
 }
 
 /**

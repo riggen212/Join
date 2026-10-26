@@ -3,30 +3,47 @@
 }
 
 .subtask-input-wrapper .input-wrapper {
-    padding-right: 52px;
+    padding-right: 88px;
     font-family: inherit;
     font-size: var(--font-input);
 }
 
-.subtask-add-button {
+/* While typing, clear | confirm is shown */
+
+.subtask-input-actions {
     position: absolute;
     top: 50%;
     right: var(--space-sm);
+    display: none;
+    align-items: center;
+    gap: var(--space-xxs);
+    transform: translateY(-50%);
+}
+
+#subtask:not(:placeholder-shown) ~ .subtask-input-actions {
+    display: flex;
+}
+
+.subtask-input-actions button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     padding: 0;
     border: 0;
+    border-radius: 50%;
     background: transparent;
-    transform: translateY(-50%);
     cursor: pointer;
 }
 
-.subtask-add-button img {
-    width: 14px;
-    height: 14px;
+.subtask-input-actions button:hover {
+    background-color: #eeeeee;
+}
+
+.subtask-input-actions img {
+    width: 12px;
+    height: 12px;
 }
 
 .subtask-list {
@@ -111,8 +128,19 @@
 
 .subtask-item.is-editing::before,
 .subtask-item.is-editing .subtask-edit-button,
-.subtask-item.is-editing .subtask-actions-divider {
+.subtask-item.is-editing .subtask-view-divider,
+.subtask-item:not(.is-editing) .subtask-edit-divider,
+.subtask-item:not(.is-editing) .subtask-save-button {
     display: none;
+}
+
+.subtask-item.is-editing .subtask-actions {
+    opacity: 1;
+}
+
+.subtask-save-button img {
+    width: 14px;
+    height: 11px;
 }
 
 .subtask-edit-input {
@@ -124,12 +152,4 @@
     background: transparent;
     font: inherit;
     box-shadow: none;
-}
-
-.subtask-add-button {
-    border-radius: 50%;
-}
-
-.subtask-add-button:hover {
-    background-color: #eeeeee;
 }
