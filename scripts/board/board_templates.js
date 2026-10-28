@@ -42,8 +42,8 @@ function getTaskCardTemplate(taskData) {
 /**
  * Creates the HTML for a task card user badge.
  *
- * @param {Contact} contact
- * @returns {string}
+ * @param {Contact} contact - Contact represented by the badge.
+ * @returns {string} The generated HTML markup.
  */
 function getTaskCardUserBadgeTemplate(contact) {
     return `<li class="badge-user ${contact.colorClass}" aria-label="${contact.name}">${contact.initials}</li>`;
@@ -52,8 +52,8 @@ function getTaskCardUserBadgeTemplate(contact) {
 /**
  * Creates the HTML message shown when a column contains no tasks.
  *
- * @param {BoardColumn["name"]} columnName
- * @returns {string}
+ * @param {BoardColumn["name"]} columnName - Display name of the empty column.
+ * @returns {string} The generated HTML markup.
  */
 function getTaskCardEmptyBadge(columnName) {
     return `<span class="board-column-feedback">No tasks ${columnName}</span>`;
@@ -62,7 +62,7 @@ function getTaskCardEmptyBadge(columnName) {
 /**
  * Creates the HTML message shown when a column has no matching search results.
  *
- * @returns {string}
+ * @returns {string} The generated HTML markup.
  */
 function getTaskCardMatchingBadge() {
     return `<span class="board-column-feedback">No matching tasks</span>`;
@@ -137,8 +137,8 @@ function getTaskOverlayTemplate(taskData) {
 /**
  * Creates the HTML for a task overlay user badge list item.
  *
- * @param {Contact} contact
- * @returns {string}
+ * @param {Contact} contact - Contact represented by the badge.
+ * @returns {string} The generated HTML markup.
  */
 function getTaskOverlayUserBadgeTemplate(contact) {
     return `<li>
@@ -150,10 +150,10 @@ function getTaskOverlayUserBadgeTemplate(contact) {
 /**
  * Creates the HTML for a task overlay subtask list item.
  *
- * @param {SubtaskId} subtaskId
- * @param {Subtask} subtask
- * @param {"checked"|""} isCompleted
- * @returns {string}
+ * @param {SubtaskId} subtaskId - ID used when saving checkbox changes.
+ * @param {Subtask} subtask - Subtask represented by the checkbox and title.
+ * @param {"checked"|""} isCompleted - Checked attribute or an empty string.
+ * @returns {string} The generated HTML markup.
  */
 function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
     return `<li>
@@ -163,7 +163,6 @@ function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
             ${subtask.title}
         </li>`;
 }
-
 
 /**
  * Returns the close button for the Add Task dialog.
@@ -175,4 +174,13 @@ function getAddTaskDialogCloseButtonTemplate() {
                 onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                 <img src="../assets/icons/cancel.svg" alt="">
             </button>`;
+}
+
+/**
+ * Returns the persistent alert markup displayed when board initialization fails.
+ *
+ * @returns {string} HTML paragraph with error styling and role="alert".
+ */
+function getBoardLoadingFailureTemplate() {
+    return `<p class="board-loading-error" role="alert">Board could not be loaded. Please reload the page.</p>`;
 }

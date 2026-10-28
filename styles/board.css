@@ -44,6 +44,17 @@ h2 {
     background-color: var(--background-bright-color);
 }
 
+.board-loading-error {
+    align-self: center;
+    margin: var(--space-xl);
+    padding: 20px 24px;
+    color: #fff;
+    font-size: 16px;
+    background-color: #b3261e;
+    border-radius: var(--border-radius-middle);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+}
+
 .board-inner {
     display: flex;
     flex-direction: column;
@@ -137,10 +148,7 @@ h2 {
 #board-content {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    /* grid-template-columns: fit-content(var(--breakpoint-mobile-to-desktop)); */
     grid-template-rows: auto;
-
-    gap: var(--space-md);
 }
 
 .board-column {
@@ -165,7 +173,8 @@ h2 {
 .board-column-content {
     display: flex;
 
-    padding: var(--space-xxs);
+    padding-block: var(--space-xxs);
+    padding-inline: var(--space-xs);
     gap: var(--space-lg);
     border: dashed 1px transparent;
 

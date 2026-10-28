@@ -1,35 +1,50 @@
+/**
+ * Maximum selected contact badges displayed before the overflow badge.
+ * @type {number}
+ */
 const MAX_VISIBLE_BADGES = 4;
 
 // ---------- Assigned contacts ----------
 
 /**
- * Loads contacts and shows them in the "Assigned to" list.
+ * Loads contacts and the current user's email concurrently, then renders assignment options.
+ * Propagates errors from either request or rendering without handling them locally.
  *
- * @param {HTMLFormElement} form - The task form.
- * @param {Task} task - Optional task whose contacts are checked.
- * @returns {Promise<void>}
+ * @param {HTMLFormElement} form - The task form receiving the options.
+ * @param {Task|null} [task] - Existing task whose assignees are checked, if supplied.
+ * @returns {Promise<void>} Resolves after options and badges render; rejects if loading or rendering fails.
  */
 async function loadAssignedContacts(form, task) {
-    try {
         const [contacts, loggedUserEmail] = await Promise.all([
             getData(DB_CONTACTS),
             getLoggedInUserEmail(),
         ]);
 
         renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
-    } catch (error) {
-        console.error("Contacts could not be loaded:", error);
-    }
 }
+// async function loadAssignedContacts(form, task) {
+//     try {
+//         const [contacts, loggedUserEmail] = await Promise.all([
+//             getData(DB_CONTACTS),
+//             getLoggedInUserEmail(),
+//         ]);
+
+//         renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
+//     }
+//     catch (error) {
+//         showNotification("Saving the assignees failed.", "error");
+//     }
+// }
 
 
 /**
  * Renders the contacts in the "Assigned to" list.
  *
  * @param {HTMLFormElement} form - The task form.
- * @param {Object} contacts - All contacts.
- * @param {Task} task - Optional task whose contacts are checked.
+ * @param {ContactDirectory} contacts - Contacts indexed by ID.
+ * @param {Task|null|undefined} task - Existing task whose assignees are checked, if supplied.
  * @param {string|null} loggedUserEmail - Email of the logged-in user.
+ * @returns {void}
  */
 function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
     const assignedTo = task && task.assignedTo ? task.assignedTo : {};
@@ -49,8 +64,8 @@ function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
 /**
  * Returns the IDs of all contacts with a name, sorted by name.
  *
- * @param {Object} contacts - All contacts.
- * @returns {string[]} The sorted contact IDs.
+ * @param {ContactDirectory} contacts - Contacts indexed by ID.
+ * @returns {ContactId[]} IDs of named contacts in alphabetical order.
  */
 function getSortedContactIds(contacts) {
     const contactIds = Object.keys(contacts).filter((id) => contacts[id].name);
@@ -58,9 +73,10 @@ function getSortedContactIds(contacts) {
 }
 
 /**
- * Shows a badge for every checked contact. If there are too many, "+N" is shown.
+ * Shows at most MAX_VISIBLE_BADGES selected contact badges and an overflow badge for the rest.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function renderAssignedBadges(form) {
     const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
@@ -92,9 +108,10 @@ function getBadgeHtmlFromCheckbox(checkbox) {
 }
 
 /**
- * Shows only the contacts whose name contains the search text.
+ * Filters contact options by their full displayed text, including the current-user suffix.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function filterAssignedOptions(form) {
     const searchText = form.querySelector("#task-assigned").value.trim().toLowerCase();
@@ -130,6 +147,7 @@ function getInitialsFromName(name) {
  * A click into the search field only closes the list if nothing is typed.
  *
  * @param {MouseEvent} event - The mousedown event.
+ * @returns {void}
  */
 function toggleAssignedDropdown(event) {
     const searchInput = event.currentTarget.querySelector("#task-assigned");
@@ -143,6 +161,7 @@ function toggleAssignedDropdown(event) {
  * Opens or closes the category list when the field is clicked.
  *
  * @param {MouseEvent} event - The mousedown event.
+ * @returns {void}
  */
 function toggleCategoryDropdown(event) {
     toggleDropdown(event, event.currentTarget);
@@ -154,6 +173,7 @@ function toggleCategoryDropdown(event) {
  *
  * @param {MouseEvent} event - The mousedown event.
  * @param {HTMLElement} focusElement - The element that gets the focus to open the dropdown.
+ * @returns {void}
  */
 function toggleDropdown(event, focusElement) {
     const dropdown = focusElement.closest("fieldset");
@@ -171,6 +191,7 @@ function toggleDropdown(event, focusElement) {
  * Closes the "Assigned to" list with Escape when the search field is empty.
  *
  * @param {KeyboardEvent} event - The keydown event.
+ * @returns {void}
  */
 function closeAssignedOnEscape(event) {
     if (event.key === "Escape" && event.target.value === "") {
@@ -183,6 +204,7 @@ function closeAssignedOnEscape(event) {
  * Closes an open dropdown when the user clicks somewhere outside of it.
  *
  * @param {MouseEvent} event - The mousedown event.
+ * @returns {void}
  */
 function closeDropdownsOnOutsideClick(event) {
     const dropdowns = document.querySelectorAll(".assigned-dropdown, .category-field");
@@ -200,6 +222,7 @@ function closeDropdownsOnOutsideClick(event) {
  * Shows the selected category in the field and closes the list.
  *
  * @param {Event} event - The change event of the category field.
+ * @returns {void}
  */
 function selectTaskCategory(event) {
     const field = event.currentTarget;
@@ -216,7 +239,8 @@ function selectTaskCategory(event) {
  * Activates the clicked priority button.
  *
  * @param {HTMLButtonElement} selectedButton - The clicked button.
- * @param {string} priority - "urgent", "medium" or "low".
+ * @param {"urgent"|"medium"|"low"} priority - CSS state to apply to the selected priority button.
+ * @returns {void}
  */
 function selectTaskPriority(selectedButton, priority) {
     const buttons = selectedButton.closest(".task-priority").querySelectorAll("button");

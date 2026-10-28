@@ -2,6 +2,7 @@
  * Adds a subtask when Enter is pressed in the subtask field.
  *
  * @param {KeyboardEvent} event - The keydown event.
+ * @returns {void}
  */
 function addSubtaskOnEnter(event) {
     if (event.key === "Enter") {
@@ -14,6 +15,7 @@ function addSubtaskOnEnter(event) {
  * Adds the text of the subtask field as a new subtask.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function addSubtask(form) {
     const input = form.querySelector("#subtask");
@@ -30,6 +32,7 @@ function addSubtask(form) {
  * Clears the subtask field.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function clearSubtaskInput(form) {
     const input = form.querySelector("#subtask");
@@ -41,7 +44,8 @@ function clearSubtaskInput(form) {
  * Shows the subtasks of an existing task in the subtask list.
  *
  * @param {HTMLFormElement} form - The task form.
- * @param {Object} subtasks - The subtasks of the task.
+ * @param {SubtaskDirectory|null} [subtasks] - Existing subtasks; null or omitted values leave the list unchanged.
+ * @returns {void}
  */
 function fillSubtasks(form, subtasks) {
     if (!subtasks) return;
@@ -56,9 +60,10 @@ function fillSubtasks(form, subtasks) {
 }
 
 /**
- * Deletes a subtask.
+ * Removes a subtask from the form only; the database changes when the task is saved.
  *
  * @param {HTMLButtonElement} button - The clicked delete button.
+ * @returns {void}
  */
 function deleteSubtask(button) {
     button.closest(".subtask-item").remove();
@@ -68,6 +73,7 @@ function deleteSubtask(button) {
  * Shows an input to edit the title of a subtask.
  *
  * @param {HTMLElement} element - The clicked edit button or subtask title.
+ * @returns {void}
  */
 function editSubtask(element) {
     const item = element.closest(".subtask-item");
@@ -88,6 +94,7 @@ function editSubtask(element) {
  * Enter saves the edited subtask, Escape discards the change.
  *
  * @param {KeyboardEvent} event - The keydown event.
+ * @returns {void}
  */
 function handleSubtaskEditKeydown(event) {
     const input = event.target;
@@ -108,6 +115,7 @@ function handleSubtaskEditKeydown(event) {
  * Finishes editing a subtask. Leaving the input saves the new title.
  *
  * @param {HTMLButtonElement} button - The clicked save button.
+ * @returns {void}
  */
 function finishSubtaskEdit(button) {
     const input = button.closest(".subtask-item").querySelector(".subtask-edit-input");
@@ -115,9 +123,10 @@ function finishSubtaskEdit(button) {
 }
 
 /**
- * Saves the edited title. An empty title deletes the subtask.
+ * Applies the edited title to the form only. An empty title removes the subtask from the form.
  *
  * @param {HTMLInputElement} input - The edit input.
+ * @returns {void}
  */
 function saveSubtaskEdit(input) {
     const item = input.closest(".subtask-item");
@@ -139,6 +148,7 @@ function saveSubtaskEdit(input) {
  *
  * @param {HTMLLIElement} item - The subtask list item.
  * @param {string} newTitle - The new title.
+ * @returns {void}
  */
 function showSubtaskTitle(item, newTitle) {
     const title = item.querySelector(".subtask-title");
@@ -151,10 +161,11 @@ function showSubtaskTitle(item, newTitle) {
  * Collects all subtasks of the form for the database.
  *
  * @param {HTMLFormElement} form - The task form.
- * @returns {Object} The subtasks, e.g. { subtask1: { title, completed } }.
+ * @returns {SubtaskDirectory} Subtasks with sequential IDs based on DOM order and their existing completion states.
  */
 function getTaskSubtasks(form) {
     const items = form.querySelectorAll("#subtask-list .subtask-item");
+    /** @type {SubtaskDirectory} */
     const subtasks = {};
 
     for (let i = 0; i < items.length; i++) {

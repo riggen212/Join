@@ -68,7 +68,7 @@ function handleKeyboardTaskCardOperation(event, taskId, taskStatus) {
  */
 async function keyboardMovement(taskId, event) {
     /** @type {Record<string, () => void|Promise<void>>} */
-    const actions = getKeyboardActions(taskId);
+    const actions = getKeyboardActions(event, taskId);
 
     /** @type {(() => void|Promise<void>)|undefined} */
     const action = actions[event.key];
@@ -81,16 +81,17 @@ async function keyboardMovement(taskId, event) {
 
 /**
  * Creates the keyboard action mapping for destination navigation,
- * confirmation, and cancellation.
+ * confirmation, and cancellation. Tab and ArrowRight advance; ArrowLeft moves back.
+ * Enter confirms, Escape cancels, and column navigation wraps around.
  *
  * @param {TaskId} taskId - ID passed to confirmation and cleanup actions.
  * @returns {Record<string, () => void|Promise<void>>} Actions indexed by key value.
  */
-function getKeyboardActions(taskId) {
+function getKeyboardActions(event, taskId) {
     return {
         ArrowRight: moveToNextColumn,
         ArrowLeft: moveToPreviousColumn,
-        Tab: moveToNextColumn,
+        Tab: event.shiftKey ? moveToPreviousColumn : moveToNextColumn,
         Enter: () => confirmMovingTaskWithKeyboard(taskId),
         Escape: () => finishMovingTaskWithKeyboard(taskId),
     };
@@ -139,6 +140,8 @@ async function confirmMovingTaskWithKeyboard(taskId) {
  * Calls endDraggingTask() to remove the card's rotation and
  * reset draggingTask, then focuses the task card.
  *
+ * Requires an active highlighted column and an existing task card.
+ *
  * @param {TaskId} taskId - ID of the task card to restore focus to.
  * @returns {void}
  */
@@ -156,7 +159,7 @@ function finishMovingTaskWithKeyboard(taskId) {
  * Increments highlightedColumnIndex and moves the highlight
  * to that column without moving the task.
  * Wraps from the last column to the first.
- * Requires a valid highlightedColumnIndex.
+ * Requires a valid highlightedColumnIndex and existing column elements.
  *
  * @returns {void}
  */
@@ -174,7 +177,7 @@ function moveToNextColumn() {
  * Decrements highlightedColumnIndex and moves the highlight
  * to that column without moving the task.
  * Wraps from the first column to the last.
- * Requires a valid highlightedColumnIndex.
+ * Requires a valid highlightedColumnIndex and existing column elements.
  *
  * @returns {void}
  */
