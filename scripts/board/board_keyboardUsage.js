@@ -68,7 +68,7 @@ function handleKeyboardTaskCardOperation(event, taskId, taskStatus) {
  */
 async function keyboardMovement(taskId, event) {
     /** @type {Record<string, () => void|Promise<void>>} */
-    const actions = getKeyboardActions(taskId);
+    const actions = getKeyboardActions(event, taskId);
 
     /** @type {(() => void|Promise<void>)|undefined} */
     const action = actions[event.key];
@@ -87,11 +87,11 @@ async function keyboardMovement(taskId, event) {
  * @param {TaskId} taskId - ID passed to confirmation and cleanup actions.
  * @returns {Record<string, () => void|Promise<void>>} Actions indexed by key value.
  */
-function getKeyboardActions(taskId) {
+function getKeyboardActions(event, taskId) {
     return {
         ArrowRight: moveToNextColumn,
         ArrowLeft: moveToPreviousColumn,
-        Tab: moveToNextColumn,
+        Tab: event.shiftKey ? moveToPreviousColumn : moveToNextColumn,
         Enter: () => confirmMovingTaskWithKeyboard(taskId),
         Escape: () => finishMovingTaskWithKeyboard(taskId),
     };
