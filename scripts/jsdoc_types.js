@@ -16,6 +16,10 @@
  */
 
 /**
+ * @typedef {string} ContactColorClass - CSS class selecting a contact badge color.
+ */
+
+/**
  * @typedef {Object} Contact
  * @property {string} name - The name of the contact.
  * @property {string} initials - The initials of the contact.
@@ -66,7 +70,7 @@
  */
 
 /**
- * @typedef {Object.<string, Task>} TaskDirectory - Contains tasks as key-value pairs.
+ * @typedef {Object.<TaskId, Task>} TaskDirectory - Contains tasks as key-value pairs.
  */
 
 /**
@@ -74,10 +78,10 @@
  * @property {string} title - The title of the task.
  * @property {string} description - The description of the task.
  * @property {string} dueDate - The due date of the task in YYYY-MM-DD format.
- * @property {"Low"|"Medium"|"High"} priority - The priority of the task.
+ * @property {"low"|"medium"|"high"|"Low"|"Medium"|"High"} priority - Lowercase priority written by forms; capitalized values may occur in existing tasks.
  * @property {"User Story"|"Technical Task"} category - The category of the task.
  * @property {"toDo"|"inProgress"|"awaitFeedback"|"done"} status - The current status of the task.
- * @property {Object.<string, true>} [assignedTo] - Maps contact IDs to their assignment state.
+ * @property {Object.<ContactId, true>} [assignedTo] - Selected contact IDs mapped to true; omitted when no assignments are stored.
  * @property {SubtaskDirectory} [subtasks] - The subtasks of the task.
  */
 
@@ -86,7 +90,7 @@
  */
 
 /**
- * @typedef {Object.<string, Subtask>} SubtaskDirectory - Contains subtasks as key-value pairs.
+ * @typedef {Object.<SubtaskId, Subtask>} SubtaskDirectory - Contains subtasks as key-value pairs.
  */
 
 /**
@@ -163,5 +167,5 @@
  */
 
 /**
- * @typedef {string} SearchTerm - String that is used to search tasks they including its value.
+ * @typedef {string} SearchTerm - Text matched against task titles and descriptions; normalized by the board search.
  */

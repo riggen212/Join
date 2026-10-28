@@ -3,7 +3,7 @@
  * Assigns tasks to board columns by status and copies contacts
  * into localContacts.
  *
- * @returns {Promise<void>} Resolves after tasks and contacts are stored locally.
+ * @returns {Promise<void>} Resolves after tasks and contacts are stored locally; rejects if loading or assignment fails.
  */
 async function loadBoardData() {
     const tasks = await getData(DB_TASKS);
@@ -38,7 +38,7 @@ function assignTasks(board, tasks) {
  * @param {TaskId} taskId - ID of a single task.
  * @param {Task["status"]} taskStatus - Current status of the task.
  * @returns {Task} The matching task.
- * @throws {Error} If the task does not exist.
+ * @throws {Error} If the task is missing or its column cannot be accessed.
  */
 function getTaskById(taskId, taskStatus) {
     const task = board[taskStatus].tasks[taskId];
@@ -123,9 +123,10 @@ function getSubtaskProgressInPercent(subtasks) {
 }
 
 /**
- * Allows drop cards into the column preventing the default behavior.
+ * Allows task cards to be dropped into a column by preventing the default drag-over behavior.
  *
- * @param {Event} event - Event that fires if drag over the column.
+ * @param {DragEvent} event - The column drag-over event.
+ * @returns {void}
  */
 function allowDrop(event) {
     event.preventDefault();
@@ -135,7 +136,7 @@ function allowDrop(event) {
  * Selects a task for movement by storing its ID and original status
  * and rotating its card.
  * Prevents the triggering event's default action if another movement
- * or save operation is already active.
+ * or task-move save operation is already active.
  *
  * @param {TaskId} taskId - ID of the task to select.
  * @param {Task["status"]} taskStatus - Current status of the task.
@@ -197,7 +198,7 @@ async function moveTask(destinationStatus) {
 }
 
 /**
- * Saves the new task status and reverts the local move if the database update fails.
+ * Saves the new task status. Reverts the local move and shows an error notification if saving fails.
  *
  * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
  * @returns {Promise<void>} Resolves after saving or reverting the task move.
@@ -209,7 +210,7 @@ async function saveTaskMove(draggingTaskData) {
         });
     } catch (error) {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
-        console.error(`Updating the database has failed:\n${error}`);
+        showNotification("Task could not be moved. Please try again.", "error");
     }
 }
 
@@ -221,6 +222,7 @@ async function saveTaskMove(draggingTaskData) {
  * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
  * @param {Task["status"]} destinationColumn - Status of the destination column.
  * @param {Task["status"]} sourceColumn - Status of the source column.
+ * @returns {void}
  */
 function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColumn) {
     draggingTaskData.task.status = destinationColumn;
@@ -299,6 +301,7 @@ function handleColumnDragLeaveOrDrop(columnStatus, event) {
  * Adds the CSS class that rotates the task card.
  *
  * @param {TaskId} taskId - ID of the task whose card should be rotated.
+ * @returns {void}
  */
 function addFlipCard(taskId) {
     const card = document.getElementById(taskId);
@@ -309,6 +312,7 @@ function addFlipCard(taskId) {
  * Removes the CSS class that rotates the task card.
  *
  * @param {TaskId} taskId - ID of the task whose card rotation should be removed.
+ * @returns {void}
  */
 function removeFlipCard(taskId) {
     const card = document.getElementById(taskId);
@@ -320,6 +324,7 @@ function removeFlipCard(taskId) {
  * stores it in activeSearchTerm, and renders all board columns.
  *
  * @param {SearchTerm} searchTerm - The search term getting from the HTML input element.
+ * @returns {void}
  */
 function searchTasks(searchTerm) {
     activeSearchTerm = searchTerm.toLowerCase().trim();
@@ -334,6 +339,7 @@ function searchTasks(searchTerm) {
  * @returns {BoardColumn[]} New column objects referencing matching tasks.
  */
 function getFilteredColumns(columns) {
+    /** @type {BoardColumn[]} */
     const filteredColumns = [];
 
     columns.forEach((column) => {
@@ -353,6 +359,7 @@ function getFilteredColumns(columns) {
  * @returns {TaskDirectory} A new directory referencing the matching tasks.
  */
 function getFilteredTasks(tasks) {
+    /** @type {TaskDirectory} */
     const filteredTasks = {};
 
     Object.entries(tasks).forEach(([taskId, task]) => {

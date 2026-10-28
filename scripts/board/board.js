@@ -66,7 +66,7 @@ let isTaskMovePending = false;
 let isKeyboardMoveActive = false;
 
 /**
- * Current normalized search term.
+ * Current search term, converted to lowercase with surrounding whitespace removed.
  *
  * @type {SearchTerm}
  *
@@ -74,8 +74,11 @@ let isKeyboardMoveActive = false;
 let activeSearchTerm = "";
 
 /**
- * Starts the board page, loads the tasks, contacts and the user,
- * caches the users ID globally and starts rendering the board.
+ * Loads the current user, tasks, and contacts, then renders the board.
+ * Caches the user ID globally and replaces the board content with a persistent
+ * error message if loading or rendering fails.
+ *
+ * @returns {Promise<void>} Resolves after rendering the board or handling an initialization error.
  */
 async function initBoard() {
     try {
@@ -83,7 +86,8 @@ async function initBoard() {
         await loadBoardData();
         renderBoard(Object.values(board));
     } catch (error) {
-        console.error(error);
+        const boardContainer = document.querySelector(".board");
+        boardContainer.innerHTML = getBoardLoadingFailureTemplate();
     }
 }
 
@@ -93,6 +97,7 @@ initBoard();
  * Renders the supplied columns, applying activeSearchTerm when it is not empty.
  *
  * @param {BoardColumn[]} columns - Array of columns that should be rendered.
+ * @returns {void}
  */
 function renderBoard(columns) {
     if (activeSearchTerm.length > 0) {
@@ -109,6 +114,7 @@ function renderBoard(columns) {
  * or an empty-column message.
  *
  * @param {BoardColumn} column - A single board column including the tasks.
+ * @returns {void}
  */
 function renderBoardColumn(column) {
     const columnContent = document.getElementById(column.id);
@@ -171,7 +177,7 @@ function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
 /**
  * Iterates through the subtasks and creates the html.
  *
- * @param {SubtaskDirectory} subtasks - Subtasks of a single task.
+ * @param {SubtaskDirectory|null} [subtasks] - Subtasks to render; null or omitted values produce empty HTML.
  * @returns {string} HTML for the subtasks.
  */
 function getTaskOverlaySubtasksHtml(subtasks) {
@@ -206,7 +212,7 @@ async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtask
 
 /**
  * Saves the subtask's completion status to the database.
- * Reverts the local state and checkbox if saving fails.
+ * Reverts the local state and checkbox and shows an error notification if saving fails.
  *
  * @param {HTMLInputElement} checkbox - The changed checkbox.
  * @param {TaskId} taskId - ID of the task containing the subtask.
@@ -222,7 +228,7 @@ async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask)
         });
     } catch (error) {
         revertSubtaskCompletion(checkbox, taskId, task, subtask);
-        console.error(`Updating the database has failed:\n${error}`);
+        showNotification("Subtask could not be updated. Your change was reverted.", "error");
     }
 }
 
@@ -232,6 +238,7 @@ async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask)
  * @param {TaskId} taskId - ID of the task containing the subtask.
  * @param {Task} task - The task whose card is refreshed.
  * @param {Subtask} subtask - The subtask to toggle.
+ * @returns {void}
  */
 function toggleSubtaskCompletion(taskId, task, subtask) {
     subtask.completed = !subtask.completed;
@@ -246,6 +253,7 @@ function toggleSubtaskCompletion(taskId, task, subtask) {
  * @param {TaskId} taskId - ID of the task containing the subtask.
  * @param {Task} task - The task whose card is refreshed.
  * @param {Subtask} subtask - The subtask whose toggle is reverted.
+ * @returns {void}
  */
 function revertSubtaskCompletion(checkbox, taskId, task, subtask) {
     toggleSubtaskCompletion(taskId, task, subtask);
@@ -257,6 +265,7 @@ function revertSubtaskCompletion(checkbox, taskId, task, subtask) {
  *
  * @param {TaskId} taskId - ID of the task whose card is updated.
  * @param {Task} task - The task whose subtask state is updated.
+ * @returns {void}
  */
 function updateTaskCardSubtasksState(taskId, task) {
     const subtaskData = getSubtasksCardData(task);
@@ -287,7 +296,7 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
 
 /**
  * Opens the task dialog and renders the selected task's data.
- * Does nothing while a task move is pending.
+ * Does nothing while a task move is pending. Shows an error notification if opening fails.
  *
  * @param {TaskId} taskId - ID of the task to display.
  * @param {Task["status"]} taskStatus - Current status identifying the task's column.
@@ -305,7 +314,7 @@ function openTaskDialog(taskId, taskStatus) {
         updateTaskDialog(dialog, taskData);
         openDialog("dialog-task");
     } catch (error) {
-        console.error(error);
+        showNotification("Task could not be opened. Please reload the board.", "error");
     }
 }
 
@@ -314,6 +323,7 @@ function openTaskDialog(taskId, taskStatus) {
  *
  * @param {HTMLDialogElement} dialog - The task dialog to update.
  * @param {TaskOverlayData} taskData - The prepared task overlay data.
+ * @returns {void}
  */
 function updateTaskDialog(dialog, taskData) {
     dialog.dataset.taskId = taskData.id;
@@ -322,47 +332,64 @@ function updateTaskDialog(dialog, taskData) {
 }
 
 /**
- * Switches the task dialog to the edit form of the given task.
+ * Replaces the open task dialog with an edit form and waits for initialization.
+ * On failure, attempts to restore the task details and shows an error notification.
  *
- * @param {TaskId} taskId - ID of the task to edit.
+ * @param {TaskId} taskId - ID of the task to edit; its status is read from the dialog.
+ * @returns {Promise<void>} Resolves after initialization or error handling.
  */
-function editTask(taskId) {
+async function editTask(taskId) {
     const dialog = document.getElementById("dialog-task");
 
     try {
         const task = getTaskById(taskId, dialog.dataset.taskStatus);
 
         dialog.innerHTML = `
-            ${getAddTaskDialogCloseButtonTemplate()}
-            ${renderAddTask(true)}
+        ${getAddTaskDialogCloseButtonTemplate()}
+        ${renderAddTask(true)}
         `;
-        initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+
+        await initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
     } catch (error) {
-        console.error(error);
+        openTaskDialog(taskId, dialog.dataset.taskStatus);
+        showNotification("Task could not be opened for editing. Please reload the board.", "error");
     }
 }
 
 /**
- * Updates the board and the task dialog after a task was edited.
+ * Updates the local task, renders all columns with the active search filter,
+ * and restores task details after a successful database save.
+ * Shows a saved-but-not-refreshed error if a local update or rendering fails.
+ * Any local changes already made are not rolled back.
  *
- * @param {TaskId} taskId - ID of the edited task.
- * @param {Task} task - The edited task.
+ * @param {TaskId} taskId - ID of the task already saved in the database.
+ * @param {Task} task - Saved task data.
+ * @returns {boolean} True if all update steps succeed; false after handling an update error.
  */
 function updateBoardAfterTaskEdit(taskId, task) {
     const dialog = document.getElementById("dialog-task");
 
-    board[task.status].tasks[taskId] = task;
-    renderBoard(Object.values(board));
-    updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
+    try {
+        board[task.status].tasks[taskId] = task;
+        renderBoard(Object.values(board));
+        updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
+        return true;
+    } catch (error) {
+        showNotification("Task saved, but the board could not be refreshed. Please reload the page.", "error");
+        return false;
+    }
 }
 
 /**
- * Opens the Add Task dialog on desktop screens.
- * On smaller screens, it opens the standalone Add Task page instead.
+ * On desktop, renders and initializes the creation form with the supplied status,
+ * then opens the dialog. Defaults to "toDo" through initAddTaskForm when omitted.
+ * Below 1280px, navigates to the standalone Add Task page without passing the status.
+ * Shows an error notification if rendering, initialization, or opening fails.
  *
- * @returns {void}
+ * @param {Task["status"]} [status] - Initial status of the task created in the desktop dialog.
+ * @returns {Promise<void>} Resolves after requesting navigation, opening the initialized dialog, or handling an error.
  */
-function openAddTaskDialog() {
+async function openAddTaskDialog(status) {
     const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
 
     if (!isDesktop) {
@@ -372,9 +399,13 @@ function openAddTaskDialog() {
 
     const dialog = document.getElementById("dialog-add-task");
 
-    dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
-    initAddTaskForm(dialog.querySelector(".task-form-wrapper"));
-    openDialog("dialog-add-task");
+    try {
+        dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
+        await initAddTaskForm(dialog.querySelector(".task-form-wrapper"), status);
+        openDialog("dialog-add-task");
+    } catch (error) {
+        showNotification("Task form could not be loaded. Please try again.", "error");
+    }
 }
 
 /**
@@ -382,6 +413,7 @@ function openAddTaskDialog() {
  *
  * @param {TaskId} taskId - ID of the new task.
  * @param {Task} task - The new task.
+ * @returns {void}
  */
 function updateBoardAfterTaskCreation(taskId, task) {
     board[task.status].tasks[taskId] = task;
