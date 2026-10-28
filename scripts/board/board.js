@@ -381,13 +381,15 @@ function updateBoardAfterTaskEdit(taskId, task) {
 }
 
 /**
- * On desktop, renders and initializes the creation form before opening its dialog.
+ * On desktop, renders and initializes the creation form with the supplied status,
+ * then opens the dialog. Defaults to "toDo" through initAddTaskForm when omitted.
+ * Below 1280px, navigates to the standalone Add Task page without passing the status.
  * Shows an error notification if rendering, initialization, or opening fails.
- * Below 1280px, navigates to the standalone Add Task page instead.
  *
+ * @param {Task["status"]} [status] - Initial status of the task created in the desktop dialog.
  * @returns {Promise<void>} Resolves after requesting navigation, opening the initialized dialog, or handling an error.
  */
-async function openAddTaskDialog() {
+async function openAddTaskDialog(status) {
     const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
 
     if (!isDesktop) {
@@ -399,7 +401,7 @@ async function openAddTaskDialog() {
 
     try {
         dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
-        await initAddTaskForm(dialog.querySelector(".task-form-wrapper"));
+        await initAddTaskForm(dialog.querySelector(".task-form-wrapper"), status);
         openDialog("dialog-add-task");
     } catch (error) {
         showNotification("Task form could not be loaded. Please try again.", "error");

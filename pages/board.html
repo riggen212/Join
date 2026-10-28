@@ -142,7 +142,7 @@
                             <header class="board-column-header">
                                 <h2>To do</h2>
 
-                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog()" aria-label="Create task in To do">
+                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog(this.closest('section').dataset.columnId)" aria-label="Create task in To do">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
 
@@ -159,7 +159,7 @@
                             <header class="board-column-header">
                                 <h2>In progress</h2>
 
-                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog()" aria-label="Create task in In progress">
+                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog(this.closest('section').dataset.columnId)" aria-label="Create task in In progress">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>
@@ -175,7 +175,7 @@
                             <header class="board-column-header">
                                 <h2>Await feedback</h2>
 
-                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog()" aria-label="Create task in Await feedback">
+                                <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog(this.closest('section').dataset.columnId)" aria-label="Create task in Await feedback">
                                     <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
                                 </button>
                             </header>

@@ -20,14 +20,6 @@ async function initAddTaskPage() {
         </p>`;
     }
 }
-// async function initAddTaskPage() {
-//     const container = document.querySelector(".board-inner.add-task-inner");
-//     if (!container) return;
-
-//     loggedUserId = await loadCurrentUser();
-//     container.innerHTML = renderAddTask();
-//     await initAddTaskForm(container.querySelector(".task-form-wrapper"));
-// }
 
 initAddTaskPage();
 
