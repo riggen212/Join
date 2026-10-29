@@ -60,14 +60,10 @@ function endDraggingTask(taskId) {
 }
 
 /**
- * Moves the dragged task to another column, saves its status,
- * and renders the affected columns. Reverts the move if saving fails.
- * Skips the move if no drag is active, another move is pending,
- * or the destination matches the current status.
+ * Moves a selected task when its destination differs from its current column.
  *
- * @param {Task["status"]} destinationStatus - Status of the destination column.
- * @returns {Promise<void>} Resolves when the move is skipped or the save
- * attempt and rendering have finished.
+ * @param {Task["status"]} destinationStatus - The destination column.
+ * @returns {Promise<boolean|undefined>} Save result, or undefined if skipped.
  */
 async function moveTask(destinationStatus) {
     if (!draggingTask || isTaskMovePending) return;
@@ -75,7 +71,7 @@ async function moveTask(destinationStatus) {
     const draggingTaskData = getDataToMoveTask(destinationStatus);
     if (!hasTaskStatusChanged(draggingTaskData)) return;
 
-    await moveAndSaveTask(draggingTaskData);
+    return await moveAndSaveTask(draggingTaskData);
 }
 
 /**
@@ -84,15 +80,16 @@ async function moveTask(destinationStatus) {
  * Sets isTaskMovePending during the operation and resets it in finally.
  *
  * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @returns {Promise<void>} Resolves after the save attempt and rendering finish.
+ * @returns {Promise<boolean>} Whether the task move was saved successfully.
  */
 async function moveAndSaveTask(draggingTaskData) {
     isTaskMovePending = true;
 
     try {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
-        await saveTaskMove(draggingTaskData);
+        const wasSaved = await saveTaskMove(draggingTaskData);
         renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+        return wasSaved;
     } finally {
         isTaskMovePending = false;
     }
@@ -102,16 +99,18 @@ async function moveAndSaveTask(draggingTaskData) {
  * Saves the new task status. Reverts the local move and shows an error notification if saving fails.
  *
  * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @returns {Promise<void>} Resolves after saving or reverting the task move.
+ * @returns {Promise<boolean>} Whether the task move was saved successfully.
  */
 async function saveTaskMove(draggingTaskData) {
     try {
         await updateTaskInDatabase(draggingTaskData.id, {
             status: draggingTaskData.newStatus,
         });
+        return true;
     } catch (error) {
         moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
         showNotification("Task could not be moved. Please try again.", "error");
+        return false;
     }
 }
 

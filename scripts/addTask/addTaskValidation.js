@@ -120,6 +120,7 @@ function validateCategory(form) {
 
 /**
  * Checks the category when the user leaves the category field.
+ * Marks the category options as collapsed when focus leaves the field.
  *
  * @param {FocusEvent} event - The focusout event.
  * @returns {void}
@@ -128,6 +129,7 @@ function checkCategoryOnLeave(event) {
     const field = event.currentTarget;
 
     if (!field.contains(event.relatedTarget)) {
+        setCategoryExpanded(field, false);
         validateCategory(field.form);
     }
 }
@@ -159,6 +161,7 @@ function showAllFieldErrors(form) {
 
 /**
  * Shows or hides the error message of a field.
+ * Updates aria-invalid to expose the field's validation state to assistive technology.
  *
  * @param {HTMLElement} field - The field with the red border.
  * @param {HTMLElement} errorElement - The element for the message.
@@ -172,11 +175,13 @@ function showFieldError(field, errorElement, message) {
         field.classList.add("is-invalid");
     }
 
+    field.setAttribute("aria-invalid", String(message !== ""));
     errorElement.textContent = message;
 }
 
 /**
  * Removes all error messages from the form.
+ * Removes aria-invalid from fields whose validation errors are cleared.
  *
  * @param {HTMLFormElement} form - The task form.
  * @returns {void}
@@ -187,6 +192,7 @@ function clearFieldErrors(form) {
 
     for (let i = 0; i < invalidFields.length; i++) {
         invalidFields[i].classList.remove("is-invalid");
+        invalidFields[i].removeAttribute("aria-invalid");
     }
 
     for (let i = 0; i < errorMessages.length; i++) {

@@ -145,26 +145,49 @@ function getInitialsFromName(name) {
 /**
  * Opens or closes the "Assigned to" list when the field or arrow is clicked.
  * A click into the search field only closes the list if nothing is typed.
+ * Uses is-collapsed to close the list while keeping focus on its search input.
  *
  * @param {MouseEvent} event - The mousedown event.
  * @returns {void}
  */
 function toggleAssignedDropdown(event) {
     const searchInput = event.currentTarget.querySelector("#task-assigned");
+    const field = searchInput.closest("fieldset");
+    const wasOpen = field.matches(":focus-within") && !field.classList.contains("is-collapsed");
 
-    if (event.target === searchInput && searchInput.value !== "") return;
+    if (event.target === searchInput && searchInput.value !== "" && wasOpen) return;
 
-    toggleDropdown(event, searchInput);
+    event.preventDefault();
+    searchInput.focus();
+    field.classList.toggle("is-collapsed", wasOpen);
 }
 
 /**
  * Opens or closes the category list when the field is clicked.
+ * Toggles aria-expanded while keeping focus on the category button.
  *
  * @param {MouseEvent} event - The mousedown event.
  * @returns {void}
  */
 function toggleCategoryDropdown(event) {
-    toggleDropdown(event, event.currentTarget);
+    const button = event.currentTarget;
+    const field = button.closest("fieldset");
+    const wasExpanded = button.getAttribute("aria-expanded") === "true";
+
+    event.preventDefault();
+    button.focus();
+    setCategoryExpanded(field, !wasExpanded);
+}
+
+/**
+ * Updates the category button's expanded state.
+ *
+ * @param {HTMLFieldSetElement} field - The category fieldset.
+ * @param {boolean} expanded - Whether the category options are visible.
+ * @returns {void}
+ */
+function setCategoryExpanded(field, expanded) {
+    field.querySelector("button").setAttribute("aria-expanded", String(expanded));
 }
 
 /**
@@ -188,16 +211,43 @@ function toggleDropdown(event, focusElement) {
 }
 
 /**
+ * Opens the contact list or toggles a contact with Enter.
+ * Delegates Escape handling to closeAssignedOnEscape().
+ *
+ * @param {KeyboardEvent} event - The contact field's keydown event.
+ * @returns {void}
+ */
+function handleAssignedKeydown(event) {
+    if (event.key === "Escape") return closeAssignedOnEscape(event);
+    if (event.key !== "Enter") return;
+
+    const input = event.target;
+    if (input.id !== "task-assigned" && !input.matches('input[name="assignedTo"]')) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    if (input.id === "task-assigned") event.currentTarget.classList.remove("is-collapsed");
+    else input.click();
+}
+
+/**
  * Closes the "Assigned to" list with Escape when the search field is empty.
+ * Handles Escape from both the search input and the contact options.
+ * Preserves the search text and selection, then restores search input focus.
  *
  * @param {KeyboardEvent} event - The keydown event.
  * @returns {void}
  */
 function closeAssignedOnEscape(event) {
-    if (event.key === "Escape" && event.target.value === "") {
-        event.preventDefault();
-        event.target.blur();
-    }
+    if (event.key !== "Escape") return;
+
+    const field = event.currentTarget;
+    if (field.classList.contains("is-collapsed")) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    field.querySelector("#task-assigned").focus();
+    field.classList.add("is-collapsed");
 }
 
 /**
@@ -220,8 +270,11 @@ function closeDropdownsOnOutsideClick(event) {
 
 /**
  * Shows the selected category in the field and closes the list.
+ * Moves focus to the subtask input after selecting a category.
+* Keeps focus within the list when selection changes through arrow keys.
+ * Closes the list after an option is activated through a click event.
  *
- * @param {Event} event - The change event of the category field.
+ * @param {Event} event - The change or click event of the category field.
  * @returns {void}
  */
 function selectTaskCategory(event) {
@@ -231,8 +284,68 @@ function selectTaskCategory(event) {
     if (!selectedCategory.matches('input[name="category"]')) return;
 
     field.querySelector("button span").textContent = selectedCategory.value;
-    selectedCategory.blur();
-    field.querySelector("button").blur();
+    if (event.type === "click") {
+        field.form.querySelector("#subtask").focus();
+    }
+}
+
+/**
+ * Moves focus between category options without selecting them.
+ *
+ * @param {KeyboardEvent} event - The category field's arrow-key event.
+ * @returns {void}
+ */
+function moveCategoryFocus(event) {
+    const options = Array.from(event.currentTarget.querySelectorAll('input[name="category"]'));
+    const index = options.indexOf(event.target);
+    const direction = ["ArrowDown", "ArrowRight"].includes(event.key) ? 1 : -1;
+    const nextIndex = index < 0
+        ? (direction === 1 ? 0 : options.length - 1)
+        : (index + direction + options.length) % options.length;
+
+    event.preventDefault();
+    event.stopPropagation();
+    options[nextIndex]?.focus();
+}
+
+/**
+ * Closes the category options with Escape without closing the task dialog.
+ *
+ * @param {KeyboardEvent} event - The category field's Escape event.
+ * @returns {void}
+ */
+function closeCategoryOnEscape(event) {
+    const field = event.currentTarget;
+    const button = field.querySelector("button");
+    if (button.getAttribute("aria-expanded") !== "true") return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    button.focus();
+    setCategoryExpanded(field, false);
+}
+
+/**
+ * Confirms the focused category option with Enter.
+ * Moves focus with arrow keys without changing the selected category.
+ * Closes the open category options with Escape and restores button focus.
+ * Opens the category options when Enter is pressed on their button.
+ * Also opens the category options when Space is pressed on their button.
+ *
+ * @param {KeyboardEvent} event - The category field's keydown event.
+ * @returns {void}
+ */
+function handleCategoryKeydown(event) {
+    if (event.key === "Escape") return closeCategoryOnEscape(event);
+    const arrowKeys = ["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft"];
+    if (arrowKeys.includes(event.key)) return moveCategoryFocus(event);
+    const buttonSpace = event.key === " " && event.target.matches("button");
+    if (event.key !== "Enter" && !buttonSpace) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.target.matches('input[name="category"]')) event.target.click();
+    else setCategoryExpanded(event.currentTarget, true);
 }
 
 /**

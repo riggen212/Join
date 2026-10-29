@@ -1,8 +1,8 @@
 let notificationTimeout;
 
-
 /**
  * Shows a temporary notification, optionally closing it together with a dialog.
+ * Announces the message through a separate live region.
  *
  * @param {string} message - The text displayed in the notification.
  * @param {string} [containerIdOrType] - A desktop container ID or "error".
@@ -16,8 +16,8 @@ function showNotification(message, containerIdOrType, type = "success", closeNot
 
     prepareNotification(notification, message, options.type);
     displayNotification(notification, closeNotificationWithDialog);
+    announceNotification(notification.parentElement, message, options.type);
 }
-
 
 /**
  * Normalizes the optional container and type arguments.
@@ -36,7 +36,6 @@ function getNotificationOptions(containerIdOrType, type) {
         type: type === "error" ? "error" : "success",
     };
 }
-
 
 /**
  * Returns the shared notification element and creates it when needed.
@@ -59,7 +58,6 @@ function getNotificationElement(containerId) {
     return notification;
 }
 
-
 /**
  * Returns the notification container for the current screen size.
  *
@@ -78,9 +76,9 @@ function getNotificationContainer(containerId) {
     return container ?? document.body;
 }
 
-
 /**
  * Sets the text, style, and accessibility attributes of a notification.
+ * Hides the visual notification from assistive technology to prevent duplicate announcements.
  *
  * @param {HTMLElement} notification - The notification element.
  * @param {string} message - The text displayed in the notification.
@@ -88,14 +86,13 @@ function getNotificationContainer(containerId) {
  * @returns {void}
  */
 function prepareNotification(notification, message, type) {
-    const isError = type === "error";
-
+    notification.classList.toggle("is-error", type === "error");
+    notification.setAttribute("aria-hidden", "true");
+    notification.removeAttribute("role");
+    notification.removeAttribute("aria-live");
+    notification.removeAttribute("aria-atomic");
     notification.textContent = message;
-    notification.classList.toggle("is-error", isError);
-    notification.setAttribute("role", isError ? "alert" : "status");
-    notification.setAttribute("aria-live", isError ? "assertive" : "polite");
 }
-
 
 /**
  * Displays a notification and starts its automatic dismissal timer.
@@ -112,7 +109,6 @@ function displayNotification(notification, closeNotificationWithDialog) {
     notification.classList.add("is-visible");
     notificationTimeout = window.setTimeout(() => closeNotification(notification, closeNotificationWithDialog), 1800);
 }
-
 
 /**
  * Starts the notification's closing animation or delegates closing to the dialog callback.
@@ -138,7 +134,6 @@ function closeNotification(notification = document.getElementById("notification"
     };
 }
 
-
 /**
  * Shows the notification stored for a dialog after it has closed.
  *
@@ -155,4 +150,45 @@ function showDialogNotification(dialog) {
     delete dialog.dataset.notificationContainer;
     delete dialog.dataset.notificationType;
     showNotification(message, containerId, type);
+}
+
+/**
+ * Returns a persistent live region within the notification's container.
+ *
+ * @param {HTMLElement} container - The active notification container.
+ * @param {"success"|"error"} type - The notification type.
+ * @returns {HTMLElement} The live region used for announcements.
+ */
+function getNotificationAnnouncer(container, type) {
+    let region = container.querySelector(`:scope > [data-notification-live="${type}"]`);
+    if (region) return region;
+
+    region = document.createElement("div");
+    region.className = "visually-hidden";
+    region.dataset.notificationLive = type;
+    region.setAttribute("role", type === "error" ? "alert" : "status");
+    region.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
+    region.setAttribute("aria-atomic", "true");
+    container.append(region);
+    return region;
+}
+
+/**
+ * Announces a notification independently of its visible display duration.
+ *
+ * @param {HTMLElement} container - The active notification container.
+ * @param {string} message - The text to announce.
+ * @param {"success"|"error"} type - The notification type.
+ * @returns {void}
+ */
+function announceNotification(container, message, type) {
+    const region = getNotificationAnnouncer(container, type);
+    region.textContent = "";
+    region.dataset.message = message;
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (region.isConnected && region.dataset.message === message) {
+            region.textContent = message;
+        }
+    }));
 }
