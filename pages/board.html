@@ -7,32 +7,35 @@
         <script src="../scripts/templates.js" defer></script>
         <script src="../scripts/notifications.js" defer></script>
         <script src="../script.js" defer></script>
-        <script src="../scripts/board/board_templates.js" defer></script>
-        <script src="../scripts/board/board_keyboardUsage.js" defer></script>
-        <script src="../scripts/board/board_services.js" defer></script>
+        <script src="../scripts/board/boardTemplates.js" defer></script>
+        <script src="../scripts/board/boardKeyboardUsage.js" defer></script>
+        <script src="../scripts/board/boardServices.js" defer></script>
+        <script src="../scripts/board/boardMovement.js" defer></script>
+        <script src="../scripts/board/boardDialogs.js" defer></script>
         <script src="../scripts/board/board.js" defer></script>
-        <script src="../add_task/add_task_fields.js" defer></script>
-        <script src="../add_task/add_task_subtasks.js" defer></script>
-        <script src="../add_task/add_task_validation.js" defer></script>
-        <script src="../add_task/add_task.js" defer></script>
+        <script src="../scripts/addTask/addTaskFields.js" defer></script>
+        <script src="../scripts/addTask/addTaskSubtasks.js" defer></script>
+        <script src="../scripts/addTask/addTaskValidation.js" defer></script>
+        <script src="../scripts/addTask/addTask.js" defer></script>
 
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon"/>
-        <link rel="stylesheet" href="../global_style.css"/>
+        <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon"/>
+        <link rel="stylesheet" href="../styles/root.css">
+        <link rel="stylesheet" href="../style.css"/>
         <link rel="stylesheet" href="../styles/components.css"/>
         <link rel="stylesheet" href="../styles/fonts.css"/>
-        <link rel="stylesheet" href="../styles/task_form.css"/>
-        <link rel="stylesheet" href="../styles/task_controls.css"/>
-        <link rel="stylesheet" href="../styles/task_subtasks.css"/>
-        <link rel="stylesheet" href="../styles/add_task.css"/>
-        <link rel="stylesheet" href="../styles/board.css"/>
-        <link rel="stylesheet" href="../styles/board-task.css"/>
+        <link rel="stylesheet" href="../styles/addTask/taskForm.css"/>
+        <link rel="stylesheet" href="../styles/addTask/taskControls.css"/>
+        <link rel="stylesheet" href="../styles/addTask/taskSubtasks.css"/>
+        <link rel="stylesheet" href="../styles/addTask/addTask.css"/>
+        <link rel="stylesheet" href="../styles/board/board.css"/>
+        <link rel="stylesheet" href="../styles/board/boardTask.css"/>
         <title>Join</title>
     </head>
     <body onmousedown="closeDropdownsOnOutsideClick(event)">
         <header class="header">
             <div class="header-wrapper">
                 <div>
-                    <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+                    <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
@@ -55,10 +58,10 @@
                             <a id="link-help-profile-dialog" href="../pages/help.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()">Help</a>
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()">Legal Notice</a>
+                            <a href="../pages/legalNotice.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()">Legal Notice</a>
                         </li>
                         <li>
-                            <a href="../pages/privacy_policy.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()" >Privacy Policy</a>
+                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar" onclick="event.target.closest('dialog').close()" >Privacy Policy</a>
                         </li>
                         <li>
                             <a href="../index.html" class="link-navbar">Log out</a>
@@ -71,18 +74,18 @@
         <div class="app-wrapper">
             <nav class="navbar" aria-label="Main navigation">
                 <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
+                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/summary_page.html" data-nav-link class="link-navbar">
+                            <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
                                 <img src="../assets/icons/summary.svg" alt="" />
                                 <span>Summary</span>
                             </a>
                         </li>
 
                         <li>
-                            <a href="../pages/add_task.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/add_task.svg" alt="" />
+                            <a href="../pages/addTask.html" data-nav-link class="link-navbar">
+                                <img src="../assets/icons/addTask.svg" alt="" />
                                 <span>Add Task</span>
                             </a>
                         </li>
@@ -106,13 +109,13 @@
                 <footer>
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/privacy_policy.html" data-nav-link class="link-navbar">
+                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
                                 <span>Privacy Policy</span>
                             </a>
                         </li>
 
                         <li>
-                            <a href="../pages/legal_notice.html" data-nav-link class="link-navbar">
+                            <a href="../pages/legalNotice.html" data-nav-link class="link-navbar">
                                 <span>Legal notice</span>
                             </a>
                         </li>
@@ -126,7 +129,7 @@
                         <h1>Board</h1>
 
                         <button class="button button-dark button-add button-add-dark-mobile" onclick="openAddTaskDialog()" aria-label="Create Task">
-                            <img class="button-add-icon-mobile" src="../assets/icons/add_mobile_white.svg" alt="Add" />
+                            <img class="button-add-icon-mobile" src="../assets/icons/addMobileWhite.svg" alt="Add" />
                             <span class="button-add-span-desktop">Add Task</span>
                             <img class="button-add-icon-desktop" src="../assets/icons/add.svg" alt="Add" />
                         </button>
@@ -143,7 +146,7 @@
                                 <h2>To do</h2>
 
                                 <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog(this.closest('section').dataset.columnId)" aria-label="Create task in To do">
-                                    <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
+                                    <img src="../assets/icons/addMobileBlue.svg" alt="Add" />
                                 </button>
 
                             </header>
@@ -160,7 +163,7 @@
                                 <h2>In progress</h2>
 
                                 <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog(this.closest('section').dataset.columnId)" aria-label="Create task in In progress">
-                                    <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
+                                    <img src="../assets/icons/addMobileBlue.svg" alt="Add" />
                                 </button>
                             </header>
 
@@ -176,7 +179,7 @@
                                 <h2>Await feedback</h2>
 
                                 <button class="button button-bright button-add button-add-bright-mobile" onclick="openAddTaskDialog(this.closest('section').dataset.columnId)" aria-label="Create task in Await feedback">
-                                    <img src="../assets/icons/add_mobile_blue.svg" alt="Add" />
+                                    <img src="../assets/icons/addMobileBlue.svg" alt="Add" />
                                 </button>
                             </header>
 
