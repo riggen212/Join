@@ -8,7 +8,7 @@ function renderAddContactTemplate() {
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
-                <img class="contact-dialog-logo" src="../assets/icons/logo_bright.svg" alt="">
+                <img class="contact-dialog-logo" src="../assets/icons/logoBright.svg" alt="">
                 <h1>Add contact</h1>
                 <p>Tasks are better with a team!</p>
             </div>
@@ -71,7 +71,7 @@ function renderEditContactTemplate(contact) {
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
-                <img class="contact-dialog-logo" src="../assets/icons/logo_bright.svg" alt="">
+                <img class="contact-dialog-logo" src="../assets/icons/logoBright.svg" alt="">
                 <h1>Edit Contact</h1>
             </div>
 

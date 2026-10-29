@@ -33,7 +33,7 @@ function getTaskCardTemplate(taskData) {
                             ${taskData.assigneesHtml}
                         </ul>
                         <span>
-                            <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="${taskData.task.priority} priority"/>
+                            <img src="../assets/icons/prio${taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase()}.svg" alt="${taskData.task.priority} priority"/>
                         </span>
                     </div>
             </article>`;
@@ -100,7 +100,7 @@ function getTaskOverlayTemplate(taskData) {
                             <dd>
                                 <div class="d-flex-align-center gap-xs">
                                     <span>${taskData.task.priority}</span>
-                                    <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="">
+                                    <img src="../assets/icons/prio${taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase()}.svg" alt="">
                                 </div>
                             </dd>
                         </div>

@@ -19,7 +19,7 @@ function checkLoginData(users, email, password) {
             users[key].password === password
         ) {
             loginSuccessful = true;
-            window.location.href = `./pages/summary_page.html?user=${key}&animation=true`;
+            window.location.href = `./pages/summaryPage.html?user=${key}&animation=true`;
         }
     }
         if (!loginSuccessful) showLoginError();   
@@ -40,7 +40,7 @@ function showLoginError() {
 
 function guestLogin() {
 
-    window.location.href = "./pages/summary_page.html?user=0&animation=true";
+    window.location.href = "./pages/summaryPage.html?user=0&animation=true";
 }
 
 
