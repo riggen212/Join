@@ -1,4 +1,21 @@
 /**
+ * Whether a task is being moved using the keyboard.
+ * Ends when the movement is confirmed or canceled.
+ *
+ * @type {boolean}
+ */
+let isKeyboardMoveActive = false;
+
+/**
+ * Index of the selected destination in Object.keys(board).
+ * Retained while the confirmed move is pending and reset to null
+ * by finishMovingTaskWithKeyboard().
+ *
+ * @type {number|null}
+ */
+let highlightedColumnIndex = null;
+
+/**
  * Handles task card keyboard input.
  * Delegates to movement controls when isKeyboardMoveActive is true;
  * otherwise handles opening the dialog or starting keyboard movement.
@@ -13,6 +30,26 @@ async function handleTaskCardKeydown(event, taskId, taskStatus) {
         await handleKeyboardMovement(taskId, event);
     } else {
         handleKeyboardTaskCardOperation(event, taskId, taskStatus);
+    }
+}
+
+/**
+ * Opens the task on Enter or starts keyboard movement on Space.
+ * Prevents the default action for both keys and skips repeated input
+ * or actions while a task move is pending.
+ *
+ * @param {KeyboardEvent} event - The task card's keydown event.
+ * @param {TaskId} taskId - ID of the focused task.
+ * @param {Task["status"]} taskStatus - Current status of the focused task.
+ * @returns {void}
+ */
+function handleKeyboardTaskCardOperation(event, taskId, taskStatus) {
+    if (event.key === " ") {
+        event.preventDefault();
+        if (!isTaskMovePending && !event.repeat) startMovingTaskWithKeyboard(taskId, taskStatus, event);
+    } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (!isTaskMovePending && !event.repeat) openTaskDialog(taskId, taskStatus);
     }
 }
 
@@ -35,26 +72,6 @@ async function handleKeyboardMovement(taskId, event) {
     }
 
     await keyboardMovement(taskId, event);
-}
-
-/**
- * Opens the task on Enter or starts keyboard movement on Space.
- * Prevents the default action for both keys and skips repeated input
- * or actions while a task move is pending.
- *
- * @param {KeyboardEvent} event - The task card's keydown event.
- * @param {TaskId} taskId - ID of the focused task.
- * @param {Task["status"]} taskStatus - Current status of the focused task.
- * @returns {void}
- */
-function handleKeyboardTaskCardOperation(event, taskId, taskStatus) {
-    if (event.key === " ") {
-        event.preventDefault();
-        if (!isTaskMovePending && !event.repeat) startMovingTaskWithKeyboard(taskId, taskStatus, event);
-    } else if (event.key === "Enter") {
-        event.preventDefault();
-        if (!isTaskMovePending && !event.repeat) openTaskDialog(taskId, taskStatus);
-    }
 }
 
 /**
@@ -98,7 +115,7 @@ function getKeyboardActions(event, taskId) {
 }
 
 /**
- * Calls getDraggingTask() to select the task.
+ * Calls startDraggingTask() to select the task.
  * If draggingTask is set, enables keyboard movement, sets
  * highlightedColumnIndex from taskStatus, and highlights
  * the column identified by draggingTask.status.
@@ -109,7 +126,7 @@ function getKeyboardActions(event, taskId) {
  * @returns {void}
  */
 function startMovingTaskWithKeyboard(taskId, taskStatus, event) {
-    getDraggingTask(taskId, taskStatus, event);
+    startDraggingTask(taskId, taskStatus, event);
 
     if (draggingTask) {
         isKeyboardMoveActive = true;

@@ -51,329 +51,6 @@ function getTaskById(taskId, taskStatus) {
 }
 
 /**
- * Builds the data needed to render a task card.
- *
- * @param {TaskId} taskId - ID of the task.
- * @param {Task} task - The task to prepare for rendering.
- * @returns {TaskCardData} Task data with subtask summary and assignee HTML.
- */
-function getTaskCardData(taskId, task) {
-    return {
-        id: taskId,
-        task: task,
-        subtasksData: getSubtasksCardData(task),
-        assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
-    };
-}
-
-/**
- * Builds the data needed to render a task overlay.
- *
- * @param {TaskId} taskId - ID of the task.
- * @param {Task} task - The task to prepare for rendering.
- * @returns {TaskOverlayData} Task data with assignee and subtask HTML.
- */
-function getTaskOverlayData(taskId, task) {
-    return {
-        id: taskId,
-        task: task,
-        assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
-        subtasksHtml: getTaskOverlaySubtasksHtml(task.subtasks),
-    };
-}
-
-/**
- * Calculates summary for the subtasks of a single task.
- *
- * @param {Task} task - A single task.
- * @returns {SubtasksData} Summary data of the task's subtasks.
- */
-function getSubtasksCardData(task) {
-    const subtasks = Object.values(task.subtasks ?? {});
-
-    return {
-        amount: subtasks.length,
-        completedAmount: getCompletedSubtasks(subtasks).length,
-        progressInPercent: getSubtaskProgressInPercent(subtasks),
-    };
-}
-
-/**
- * Returns all completed subtasks from the given subtasks.
- *
- * @param {Subtask[]} subtasks - The subtasks of a single task.
- * @returns {Subtask[]} Subtasks whose `completed` property is `true`.
- */
-function getCompletedSubtasks(subtasks) {
-    return subtasks.filter((subtask) => subtask.completed === true);
-}
-
-/**
- * Calculates the completion progress of the given subtasks.
- *
- * @param {Subtask[]} subtasks - The subtasks of a single task.
- * @returns {number} The value of the completion progress as percentage from 0 to 100.
- */
-function getSubtaskProgressInPercent(subtasks) {
-    if (subtasks.length <= 0) {
-        return 0;
-    } else {
-        return (getCompletedSubtasks(subtasks).length / subtasks.length) * 100;
-    }
-}
-
-/**
- * Allows task cards to be dropped into a column by preventing the default drag-over behavior.
- *
- * @param {DragEvent} event - The column drag-over event.
- * @returns {void}
- */
-function allowDrop(event) {
-    event.preventDefault();
-}
-
-/**
- * Selects a task for movement by storing its ID and original status
- * and rotating its card.
- * Prevents the triggering event's default action if another movement
- * or task-move save operation is already active.
- *
- * @param {TaskId} taskId - ID of the task to select.
- * @param {Task["status"]} taskStatus - Current status of the task.
- * @param {DragEvent|KeyboardEvent} event - The event starting the movement.
- * @returns {void}
- */
-function getDraggingTask(taskId, taskStatus, event) {
-    if (draggingTask || isTaskMovePending) {
-        event.preventDefault();
-        return;
-    }
-
-    addFlipCard(taskId);
-
-    draggingTask = {
-        id: taskId,
-        status: taskStatus,
-    };
-}
-
-/**
- * Removes the task card's rotation and resets draggingTask to null.
- *
- * @param {TaskId} taskId - ID of the task whose movement is ending.
- * @returns {void}
- */
-function endDraggingTask(taskId) {
-    removeFlipCard(taskId);
-    draggingTask = null;
-}
-
-/**
- * Moves the dragged task to another column, saves its status,
- * and renders the affected columns. Reverts the move if saving fails.
- * Skips the move if no drag is active, another move is pending,
- * or the destination matches the current status.
- * Sets isTaskMovePending while moving, saving, and rendering.
- * Resets isTaskMovePending in finally.
- *
- * @param {Task["status"]} destinationStatus - Status of the destination column.
- * @returns {Promise<void>} Resolves when the move is skipped or the save
- * attempt and rendering have finished.
- */
-async function moveTask(destinationStatus) {
-    if (!draggingTask || isTaskMovePending) return;
-
-    const draggingTaskData = getDataToMoveTask(destinationStatus);
-    if (!hasTaskStatusChanged(draggingTaskData)) return;
-
-    isTaskMovePending = true;
-
-    try {
-        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
-        await saveTaskMove(draggingTaskData);
-        renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
-    } finally {
-        isTaskMovePending = false;
-    }
-}
-
-/**
- * Saves the new task status. Reverts the local move and shows an error notification if saving fails.
- *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @returns {Promise<void>} Resolves after saving or reverting the task move.
- */
-async function saveTaskMove(draggingTaskData) {
-    try {
-        await updateTaskInDatabase(draggingTaskData.id, {
-            status: draggingTaskData.newStatus,
-        });
-    } catch (error) {
-        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
-        showNotification("Task could not be moved. Please try again.", "error");
-    }
-}
-
-/**
- * Updates the task's local status, adds it to the destination
- * column's task directory, and removes it from the source column.
- * Does not save or render the change.
- *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @param {Task["status"]} destinationColumn - Status of the destination column.
- * @param {Task["status"]} sourceColumn - Status of the source column.
- * @returns {void}
- */
-function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColumn) {
-    draggingTaskData.task.status = destinationColumn;
-    board[destinationColumn].tasks[draggingTaskData.id] = draggingTaskData.task;
-    delete board[sourceColumn].tasks[draggingTaskData.id];
-}
-
-/**
- * Reads the selected task from board using draggingTask.
- * Returns its ID, the task object, its original status,
- * and the requested destination status.
- * Requires draggingTask to be set.
- *
- * @param {Task["status"]} destinationStatus - Status of the destination column.
- * @returns {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} Data needed to move the task.
- */
-function getDataToMoveTask(destinationStatus) {
-    return {
-        id: draggingTask.id,
-        task: board[draggingTask.status].tasks[draggingTask.id],
-        oldStatus: draggingTask.status,
-        newStatus: destinationStatus,
-    };
-}
-
-/**
- * Checks whether the destination differs from the task's original status.
- *
- * @param {{oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Original and destination statuses.
- * @returns {boolean} Whether the task's status would change.
- */
-function hasTaskStatusChanged(draggingTaskData) {
-    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
-        return false;
-    } else return true;
-}
-
-/**
- * Adds the CSS class that highlights a column as a drop target.
- *
- * @param {Task["status"]} columnStatus - Status identifying the column to highlight.
- * @returns {void}
- */
-function addHighlightDroppableColumn(columnStatus) {
-    const column = document.getElementById(`${columnStatus}-content`);
-    column.classList.add("board-column-highlight");
-}
-
-/**
- * Removes the drop target highlight from a column.
- *
- * @param {Task["status"]} columnStatus - Status identifying the column.
- * @returns {void}
- */
-function removeHighlightDroppableColumn(columnStatus) {
-        const column = document.getElementById(`${columnStatus}-content`);
-        column.classList.remove("board-column-highlight");
-}
-
-/**
- * Removes the column highlight after a drop or when a drag leaves the column.
- * Keeps the highlight when dragging between elements within the same column.
- * Ignores other event types.
- *
- * @param {Task["status"]} columnStatus - Status identifying the column.
- * @param {DragEvent} event - The column's drop or dragleave event.
- * @returns {void}
- */
-function handleColumnDragLeaveOrDrop(columnStatus, event) {
-    if (event.type === "drop" || (event.type === "dragleave" && !event.currentTarget.contains(event.relatedTarget))) {
-        removeHighlightDroppableColumn(columnStatus);
-    }
-}
-
-/**
- * Adds the CSS class that rotates the task card.
- *
- * @param {TaskId} taskId - ID of the task whose card should be rotated.
- * @returns {void}
- */
-function addFlipCard(taskId) {
-    const card = document.getElementById(taskId);
-    card.classList.add("card-task-flip");
-}
-
-/**
- * Removes the CSS class that rotates the task card.
- *
- * @param {TaskId} taskId - ID of the task whose card rotation should be removed.
- * @returns {void}
- */
-function removeFlipCard(taskId) {
-    const card = document.getElementById(taskId);
-    card.classList.remove("card-task-flip");
-}
-
-/**
- * Converts the search term to lowercase, trims surrounding whitespace,
- * stores it in activeSearchTerm, and renders all board columns.
- *
- * @param {SearchTerm} searchTerm - The search term getting from the HTML input element.
- * @returns {void}
- */
-function searchTasks(searchTerm) {
-    activeSearchTerm = searchTerm.toLowerCase().trim();
-    renderBoard(Object.values(board));
-}
-
-/**
- * Creates column objects containing tasks matching the active search term.
- * Preserves column IDs and names without modifying the original task directories.
- *
- * @param {BoardColumn[]} columns - Columns to filter.
- * @returns {BoardColumn[]} New column objects referencing matching tasks.
- */
-function getFilteredColumns(columns) {
-    /** @type {BoardColumn[]} */
-    const filteredColumns = [];
-
-    columns.forEach((column) => {
-        filteredColumns.push({
-            id: column.id,
-            name: column.name,
-            tasks: getFilteredTasks(column.tasks),
-        });
-    });
-    return filteredColumns;
-}
-
-/**
- * Returns tasks whose title or description contains the active search term.
- *
- * @param {TaskDirectory} tasks - Tasks to filter.
- * @returns {TaskDirectory} A new directory referencing the matching tasks.
- */
-function getFilteredTasks(tasks) {
-    /** @type {TaskDirectory} */
-    const filteredTasks = {};
-
-    Object.entries(tasks).forEach(([taskId, task]) => {
-        if (
-            task.title.toLowerCase().includes(activeSearchTerm) ||
-            task.description.toLowerCase().includes(activeSearchTerm)
-        ) {
-            filteredTasks[taskId] = task;
-        }
-    });
-    return filteredTasks;
-}
-
-/**
  * Partially updates a specific task in the Firebase Realtime Database.
  * Preserves properties that are not included in the update.
  *
@@ -401,63 +78,41 @@ function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
 }
 
 /**
- * Coordinates task deletion and prevents repeated clicks.
- * Re-enables the button if database deletion fails.
- * On success, updates the board and schedules dialog closing through a notification.
+ * Calculates summary for the subtasks of a single task.
  *
- * @param {TaskId} taskId - ID of the task to delete.
- * @param {Task["status"]} taskStatus - Column containing the task.
- * @param {HTMLButtonElement} button - The clicked delete button.
- * @returns {Promise<void>} Resolves after deletion handling, without waiting for notification or dialog animations.
+ * @param {Task} task - A single task.
+ * @returns {SubtasksData} Summary data of the task's subtasks.
  */
-async function deleteTask(taskId, taskStatus, button) {
-    const dialog = button.closest("dialog");
+function getSubtasksCardData(task) {
+    const subtasks = Object.values(task.subtasks ?? {});
 
-    if (button.disabled) return;
-
-    button.disabled = true;
-
-    if (!(await deleteTaskFromDatabase(taskId))) {
-        button.disabled = false;
-        return;
-    }
-
-    updateBoardAfterTaskDeletion(taskId, taskStatus, dialog);
+    return {
+        amount: subtasks.length,
+        completedAmount: getCompletedSubtasks(subtasks).length,
+        progressInPercent: getSubtaskProgressInPercent(subtasks),
+    };
 }
 
 /**
- * Attempts to delete a task from Firebase.
- * Shows an error notification if deletion fails.
+ * Calculates the completion progress of the given subtasks.
  *
- * @param {TaskId} taskId - ID of the task to delete.
- * @returns {Promise<boolean>} Whether database deletion succeeded.
+ * @param {Subtask[]} subtasks - The subtasks of a single task.
+ * @returns {number} The value of the completion progress as percentage from 0 to 100.
  */
-async function deleteTaskFromDatabase(taskId) {
-    try {
-        await deleteData(DB_TASKS + taskId);
-        return true;
-    } catch (error) {
-        showNotification("Deleting Task failed!", "error");
-        return false;
+function getSubtaskProgressInPercent(subtasks) {
+    if (subtasks.length <= 0) {
+        return 0;
+    } else {
+        return (getCompletedSubtasks(subtasks).length / subtasks.length) * 100;
     }
 }
 
 /**
- * Removes a deleted task from the local board and renders the affected column.
- * Shows a success notification that triggers animated dialog closing after its display duration.
- * Shows an error notification if the board update fails.
+ * Returns all completed subtasks from the given subtasks.
  *
- * @param {TaskId} taskId - ID of the task already deleted from Firebase.
- * @param {Task["status"]} taskStatus - Column containing the task.
- * @param {HTMLDialogElement} dialog - The task dialog to close after the success notification.
- * @returns {void}
+ * @param {Subtask[]} subtasks - The subtasks of a single task.
+ * @returns {Subtask[]} Subtasks whose `completed` property is `true`.
  */
-function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
-    try {
-        delete board[taskStatus].tasks[taskId];
-        renderBoard([board[taskStatus]]);
-        showNotification("Task successfully deleted!", undefined, "success", () => dialog.requestClose());
-    } catch (error) {
-        showNotification("Task successfully deleted!\nReload required!", "error");
-    }
+function getCompletedSubtasks(subtasks) {
+    return subtasks.filter((subtask) => subtask.completed === true);
 }

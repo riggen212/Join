@@ -130,6 +130,8 @@ h2 {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto;
+
+    gap: var(--space-md);
 }
 
 .board-column {
@@ -221,6 +223,8 @@ h2 {
 
         flex: 1;
         min-height: 0;
+
+        gap: unset;
     }
 
     .board-column-content {

@@ -34,38 +34,6 @@ const board = {
 };
 
 /**
- * ID and original status of the task selected for mouse or keyboard movement.
- *
- * @type {{id: TaskId, status: Task["status"]}|null}
- */
-let draggingTask = null;
-
-/**
- * Index of the selected destination in Object.keys(board).
- * Retained while the confirmed move is pending and reset to null
- * by finishMovingTaskWithKeyboard().
- *
- * @type {number|null}
- */
-let highlightedColumnIndex = null;
-
-/**
- * Whether a task move is being saved and the affected columns are being rendered.
- * Blocks new task drags and opening task dialogs until the move finishes.
- *
- * @type {boolean}
- */
-let isTaskMovePending = false;
-
-/**
- * Whether a task is being moved using the keyboard.
- * Ends when the movement is confirmed or canceled.
- *
- * @type {boolean}
- */
-let isKeyboardMoveActive = false;
-
-/**
  * Current search term, converted to lowercase with surrounding whitespace removed.
  *
  * @type {SearchTerm}
@@ -148,7 +116,23 @@ function getColumnContentHtml(columnTasksObject) {
 }
 
 /**
- * Builds assignee HTML for contacts present in localContacts.
+ * Builds the data needed to render a task card.
+ *
+ * @param {TaskId} taskId - ID of the task.
+ * @param {Task} task - The task to prepare for rendering.
+ * @returns {TaskCardData} Task data with subtask summary and assignee HTML.
+ */
+function getTaskCardData(taskId, task) {
+    return {
+        id: taskId,
+        task: task,
+        subtasksData: getSubtasksCardData(task),
+        assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
+    };
+}
+
+/**
+ * Selects assigned contacts present in localContacts and builds their HTML.
  * For task card badges, shows at most three contacts and adds
  * a badge for the remaining count.
  *
@@ -157,10 +141,25 @@ function getColumnContentHtml(columnTasksObject) {
  * @returns {string} HTML string containing the assignees of the task.
  */
 function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
+    const maxVisible = 3;
     const assignees = Object.keys(task.assignedTo ?? {}).filter((id) => localContacts[id]);
     const isTaskCard = getUserBadgeTemplateFunction === getTaskCardUserBadgeTemplate;
-    const visibleAssignees = isTaskCard ? assignees.slice(0, 3) : assignees;
+    const visibleAssignees = isTaskCard ? assignees.slice(0, maxVisible) : assignees;
     const remainingCount = assignees.length - visibleAssignees.length;
+
+    return getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeTemplateFunction);
+}
+
+/**
+ * Builds badges for the supplied contact IDs and appends a remaining-count badge when needed.
+ * Requires each contact ID to exist in localContacts.
+ *
+ * @param {ContactId[]} visibleAssignees - IDs of the contacts whose badges should be rendered.
+ * @param {number} remainingCount - Number of additional assignees omitted from the visible badges.
+ * @param {(contact: Contact) => string} getUserBadgeTemplateFunction - Function that generates the HTML for one assignee.
+ * @returns {string} HTML containing the visible assignee badges and optional remaining-count badge.
+ */
+function getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeTemplateFunction) {
     let assigneesHtml = "";
 
     visibleAssignees.forEach((id) => {
@@ -172,23 +171,6 @@ function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
     }
 
     return assigneesHtml;
-}
-
-/**
- * Iterates through the subtasks and creates the html.
- *
- * @param {SubtaskDirectory|null} [subtasks] - Subtasks to render; null or omitted values produce empty HTML.
- * @returns {string} HTML for the subtasks.
- */
-function getTaskOverlaySubtasksHtml(subtasks) {
-    let subtasksHtml = "";
-
-    Object.entries(subtasks ?? {}).forEach(([subtaskId, subtask]) => {
-        const isCompleted = subtask.completed ? "checked" : "";
-        subtasksHtml += getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted);
-    });
-
-    return subtasksHtml;
 }
 
 /**
@@ -295,148 +277,55 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
 }
 
 /**
- * Opens the task dialog and renders the selected task's data.
- * Does nothing while a task move is pending. Shows an error notification if opening fails.
+ * Converts the search term to lowercase, trims surrounding whitespace,
+ * stores it in activeSearchTerm, and renders all board columns.
  *
- * @param {TaskId} taskId - ID of the task to display.
- * @param {Task["status"]} taskStatus - Current status identifying the task's column.
+ * @param {SearchTerm} searchTerm - The search term getting from the HTML input element.
  * @returns {void}
  */
-function openTaskDialog(taskId, taskStatus) {
-    if (isTaskMovePending) return;
-
-    const dialog = document.getElementById("dialog-task");
-
-    try {
-        const task = getTaskById(taskId, taskStatus);
-        const taskData = getTaskOverlayData(taskId, task);
-
-        updateTaskDialog(dialog, taskData);
-        openDialog("dialog-task");
-    } catch (error) {
-        showNotification("Task could not be opened. Please reload the board.", "error");
-    }
-}
-
-/**
- * Updates the task dialog's task ID, status, and HTML content.
- *
- * @param {HTMLDialogElement} dialog - The task dialog to update.
- * @param {TaskOverlayData} taskData - The prepared task overlay data.
- * @returns {void}
- */
-function updateTaskDialog(dialog, taskData) {
-    dialog.dataset.taskId = taskData.id;
-    dialog.dataset.taskStatus = taskData.task.status;
-    dialog.innerHTML = getTaskOverlayTemplate(taskData);
-}
-
-/**
- * Replaces the open task dialog with an edit form and waits for initialization.
- * On failure, attempts to restore the task details and shows an error notification.
- *
- * @param {TaskId} taskId - ID of the task to edit; its status is read from the dialog.
- * @returns {Promise<void>} Resolves after initialization or error handling.
- */
-async function editTask(taskId) {
-    const dialog = document.getElementById("dialog-task");
-
-    try {
-        const task = getTaskById(taskId, dialog.dataset.taskStatus);
-
-        dialog.innerHTML = `
-        ${getAddTaskDialogCloseButtonTemplate()}
-        ${renderAddTask(true)}
-        `;
-
-        await initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
-    } catch (error) {
-        openTaskDialog(taskId, dialog.dataset.taskStatus);
-        showNotification("Task could not be opened for editing. Please reload the board.", "error");
-    }
-}
-
-/**
- * Updates the local task, renders all columns with the active search filter,
- * and restores task details after a successful database save.
- * Shows a saved-but-not-refreshed error if a local update or rendering fails.
- * Any local changes already made are not rolled back.
- *
- * @param {TaskId} taskId - ID of the task already saved in the database.
- * @param {Task} task - Saved task data.
- * @returns {boolean} True if all update steps succeed; false after handling an update error.
- */
-function updateBoardAfterTaskEdit(taskId, task) {
-    const dialog = document.getElementById("dialog-task");
-
-    try {
-        board[task.status].tasks[taskId] = task;
-        renderBoard(Object.values(board));
-        updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
-        return true;
-    } catch (error) {
-        showNotification("Task saved, but the board could not be refreshed. Please reload the page.", "error");
-        return false;
-    }
-}
-
-/**
- * On desktop, renders and initializes the creation form with the supplied status,
- * then opens the dialog. Defaults to "toDo" through initAddTaskForm when omitted.
- * Below 1280px, navigates to the standalone Add Task page without passing the status.
- * Shows an error notification if rendering, initialization, or opening fails.
- *
- * @param {Task["status"]} [status] - Initial status of the task created in the desktop dialog.
- * @returns {Promise<void>} Resolves after requesting navigation, opening the initialized dialog, or handling an error.
- */
-async function openAddTaskDialog(status) {
-    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
-
-    if (!isDesktop) {
-        window.location.href = "./addTask.html?user=" + loggedUserId;
-        return;
-    }
-
-    const dialog = document.getElementById("dialog-add-task");
-
-    try {
-        dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
-        await initAddTaskForm(dialog.querySelector(".task-form-wrapper"), status);
-        openDialog("dialog-add-task");
-    } catch (error) {
-        showNotification("Task form could not be loaded. Please try again.", "error");
-    }
-}
-
-/**
- * Adds a task created in the Add Task dialog to the board.
- *
- * @param {TaskId} taskId - ID of the new task.
- * @param {Task} task - The new task.
- * @returns {void}
- */
-function updateBoardAfterTaskCreation(taskId, task) {
-    board[task.status].tasks[taskId] = task;
+function searchTasks(searchTerm) {
+    activeSearchTerm = searchTerm.toLowerCase().trim();
     renderBoard(Object.values(board));
 }
 
 /**
- * Handles the dialog's closing animation end.
- * Clears its taskId and taskStatus data attributes and calls
- * closeAnimatedDialog() to finish closing it.
- * Ignores child animation events and dialogs without the closing class.
+ * Creates column objects containing tasks matching the active search term.
+ * Preserves column IDs and names without modifying the original task directories.
  *
- * @param {AnimationEvent} event - The dialog animation event.
- * @returns {void}
+ * @param {BoardColumn[]} columns - Columns to filter.
+ * @returns {BoardColumn[]} New column objects referencing matching tasks.
  */
-function closeTaskDialog(event) {
-    const dialog = event.currentTarget;
+function getFilteredColumns(columns) {
+    /** @type {BoardColumn[]} */
+    const filteredColumns = [];
 
-    if (event.target !== dialog || !dialog.classList.contains("dialog-task-closing")) {
-        return;
-    }
+    columns.forEach((column) => {
+        filteredColumns.push({
+            id: column.id,
+            name: column.name,
+            tasks: getFilteredTasks(column.tasks),
+        });
+    });
+    return filteredColumns;
+}
 
-    dialog.dataset.taskId = "";
-    dialog.dataset.taskStatus = "";
-    closeAnimatedDialog(event, "dialog-task-closing");
+/**
+ * Returns tasks whose title or description contains the active search term.
+ *
+ * @param {TaskDirectory} tasks - Tasks to filter.
+ * @returns {TaskDirectory} A new directory referencing the matching tasks.
+ */
+function getFilteredTasks(tasks) {
+    /** @type {TaskDirectory} */
+    const filteredTasks = {};
+
+    Object.entries(tasks).forEach(([taskId, task]) => {
+        if (
+            task.title.toLowerCase().includes(activeSearchTerm) ||
+            task.description.toLowerCase().includes(activeSearchTerm)
+        ) {
+            filteredTasks[taskId] = task;
+        }
+    });
+    return filteredTasks;
 }
