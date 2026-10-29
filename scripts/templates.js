@@ -42,21 +42,21 @@ function renderAddTask(isEditMode = false) {
                                     <div>
                                         <button class="button" type="button" id="priority-urgent" onclick="selectTaskPriority(this, 'urgent')" aria-pressed="false">
                                             Urgent
-                                            <img src="../assets/icons/priority_arrows_up.svg" alt="" />
+                                            <img src="../assets/icons/priorityArrowsUp.svg" alt="" />
                                         </button>
                                     </div>
 
                                     <div>
                                         <button class="button medium" type="button" id="priority-medium" onclick="selectTaskPriority(this, 'medium')" aria-pressed="true">
                                             Medium
-                                            <img src="../assets/icons/priority_equal.svg" alt="" />
+                                            <img src="../assets/icons/priorityEqual.svg" alt="" />
                                         </button>
                                     </div>
 
                                     <div>
                                         <button class="button" type="button" id="priority-low" onclick="selectTaskPriority(this, 'low')" aria-pressed="false">
                                             Low
-                                            <img src="../assets/icons/priority_arrows_down.svg" alt="" />
+                                            <img src="../assets/icons/priorityArrowsDown.svg" alt="" />
                                         </button>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@ function renderAddTask(isEditMode = false) {
                                     <div class="input-wrapper" onmousedown="toggleAssignedDropdown(event)">
                                         <input type="search" id="task-assigned" placeholder="Select contacts to assign"
                                             aria-label="Search contacts" onkeydown="closeAssignedOnEscape(event)">
-                                        <img src="../assets/icons/arrow_drop_down.svg" alt="">
+                                        <img src="../assets/icons/arrowDropDown.svg" alt="">
                                     </div>
 
                                     <ul class="assigned-options" id="assigned-options" onmousedown="event.preventDefault()"></ul>
@@ -80,7 +80,7 @@ function renderAddTask(isEditMode = false) {
 
                                     <button class="input-wrapper" type="button" onmousedown="toggleCategoryDropdown(event)">
                                         <span>Select task category</span>
-                                        <img src="../assets/icons/arrow_drop_down.svg" alt="">
+                                        <img src="../assets/icons/arrowDropDown.svg" alt="">
                                     </button>
 
                                     <ul class="category-options" onmousedown="event.preventDefault()">
@@ -105,10 +105,15 @@ function renderAddTask(isEditMode = false) {
                                 <div class="subtask-input-wrapper">
                                     <input class="input-wrapper" id="subtask" name="subtask" type="text"
                                         placeholder="Add new subtask" autocomplete="off" onkeydown="addSubtaskOnEnter(event)" />
-                                    <button class="subtask-add-button" type="button" id="add-subtask"
-                                        aria-label="Add subtask" onclick="addSubtask(this.form)">
-                                        <img src="../assets/icons/add_mobile_blue.svg" alt="" />
-                                    </button>
+                                    <div class="subtask-input-actions">
+                                        <button type="button" aria-label="Clear subtask" onclick="clearSubtaskInput(this.form)">
+                                            <img src="../assets/icons/cancel.svg" alt="" />
+                                        </button>
+                                        <span class="subtask-actions-divider" aria-hidden="true"></span>
+                                        <button type="button" aria-label="Add subtask" onclick="addSubtask(this.form)">
+                                            <img src="../assets/icons/checkDark.svg" alt="" />
+                                        </button>
+                                    </div>
                                 </div>
                                 <ul class="subtask-list" id="subtask-list" aria-label="Subtasks"></ul>
                             </div>
@@ -198,14 +203,20 @@ function getMoreBadgeTemplate(count) {
 function getSubtaskTemplate(title, completed) {
     return `
         <li class="subtask-item" data-completed="${completed}">
-            <span class="subtask-title" ondblclick="editSubtask(this)">${title}</span>
+            <span class="subtask-title" onclick="editSubtask(this)">${title}</span>
             <div class="subtask-actions">
                 <button type="button" class="subtask-edit-button" aria-label="Edit subtask" onclick="editSubtask(this)">
                     <img src="../assets/icons/edit.svg" alt="">
                 </button>
-                <span class="subtask-actions-divider" aria-hidden="true"></span>
-                <button type="button" class="subtask-remove-button" aria-label="Delete subtask" onclick="deleteSubtask(this)">
+                <span class="subtask-actions-divider subtask-view-divider" aria-hidden="true"></span>
+                <button type="button" class="subtask-remove-button" aria-label="Delete subtask"
+                    onmousedown="event.preventDefault()" onclick="deleteSubtask(this)">
                     <img src="../assets/icons/delete.svg" alt="">
+                </button>
+                <span class="subtask-actions-divider subtask-edit-divider" aria-hidden="true"></span>
+                <button type="button" class="subtask-save-button" aria-label="Save subtask"
+                    onmousedown="event.preventDefault()" onclick="finishSubtaskEdit(this)">
+                    <img src="../assets/icons/checkDark.svg" alt="">
                 </button>
             </div>
         </li>

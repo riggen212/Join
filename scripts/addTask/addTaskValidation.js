@@ -1,8 +1,17 @@
 /**
+ * Whether task creation or editing is being saved on the current page.
+ * Blocks repeated submissions and keeps submit buttons disabled when updated.
+ * Reset by the save handlers in finally.
+ * @type {boolean}
+ */
+let isTaskSaving = false;
+
+/**
  * Sets the earliest selectable due date to today.
  * When editing, an old due date of the task can still be kept.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function setMinDueDate(form) {
     const today = getTodayAsIsoDate();
@@ -17,7 +26,7 @@ function setMinDueDate(form) {
 }
 
 /**
- * Returns an error message if the due date is in the past.
+ * Returns an error for a past due date unless it equals the original date of the edited task.
  *
  * @param {HTMLFormElement} form - The task form.
  * @returns {string} The error message or an empty string.
@@ -38,7 +47,7 @@ function getPastDateError(form) {
  * Checks if all required fields are filled correctly.
  *
  * @param {HTMLFormElement} form - The task form.
- * @returns {boolean} True if the task can be saved.
+ * @returns {boolean} Whether the required values and due date are valid; ignores saving and loading states.
  */
 function isTaskFormValid(form) {
     const title = form.querySelector("#task-title").value.trim();
@@ -49,18 +58,20 @@ function isTaskFormValid(form) {
 }
 
 /**
- * Enables the submit button only if the form is valid.
+ * Enables the submit button only when the fields are valid and isTaskSaving is false.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function updateCreateTaskButton(form) {
-    form.querySelector('button[type="submit"]').disabled = !isTaskFormValid(form);
+    form.querySelector('button[type="submit"]').disabled = !isTaskFormValid(form) || isTaskSaving;
 }
 
 /**
  * Shows an error if the title is empty.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function validateTitle(form) {
     const input = form.querySelector("#task-title");
@@ -74,9 +85,10 @@ function validateTitle(form) {
 }
 
 /**
- * Shows an error if the due date is empty or in the past.
+ * Shows an error for an empty or disallowed past due date; permits the original date when editing.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function validateDueDate(form) {
     const input = form.querySelector("#task-due-date");
@@ -93,6 +105,7 @@ function validateDueDate(form) {
  * Shows an error if no category is selected.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function validateCategory(form) {
     const category = form.querySelector('input[name="category"]:checked');
@@ -109,6 +122,7 @@ function validateCategory(form) {
  * Checks the category when the user leaves the category field.
  *
  * @param {FocusEvent} event - The focusout event.
+ * @returns {void}
  */
 function checkCategoryOnLeave(event) {
     const field = event.currentTarget;
@@ -123,6 +137,7 @@ function checkCategoryOnLeave(event) {
  * so the error disappears as soon as the field is correct.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function revalidateInvalidFields(form) {
     if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
@@ -134,6 +149,7 @@ function revalidateInvalidFields(form) {
  * Shows all error messages at once.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function showAllFieldErrors(form) {
     validateTitle(form);
@@ -147,6 +163,7 @@ function showAllFieldErrors(form) {
  * @param {HTMLElement} field - The field with the red border.
  * @param {HTMLElement} errorElement - The element for the message.
  * @param {string} message - The error message, empty if there is no error.
+ * @returns {void}
  */
 function showFieldError(field, errorElement, message) {
     if (message === "") {
@@ -162,6 +179,7 @@ function showFieldError(field, errorElement, message) {
  * Removes all error messages from the form.
  *
  * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
  */
 function clearFieldErrors(form) {
     const invalidFields = form.querySelectorAll(".is-invalid");

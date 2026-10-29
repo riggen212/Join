@@ -1,23 +1,4 @@
 /* Root variables */
-:root {
-    --color-input-placeholder: #d1d1d1;
-
-    --color-card-task-progress-grey: #f4f4f4;
-    --color-card-task-progress-blue: #4589ff;
-    --color-overlay-task-details-term: #42526e;
-
-    --background-board-feedback-color: #e7e7e7;
-
-    --size-input-height: clamp(48px, 45.71px + 0.71vw, 56px);
-    --size-task-card-width: 250px;
-
-    --font-size-task: 16px;
-    --font-size-task-overlay-heading-two: clamp(32px, 29.7143px + 0.7143vw, 40px);
-    --space-task: 16px;
-
-    --border-radius-task-card: 24px;
-}
-
 h1 {
     grid-area: headline;
 
@@ -42,6 +23,17 @@ h2 {
     min-height: 100dvh;
 
     background-color: var(--background-bright-color);
+}
+
+.board-loading-error {
+    align-self: center;
+    margin: var(--space-xl);
+    padding: 20px 24px;
+    color: #fff;
+    font-size: 16px;
+    background-color: #b3261e;
+    border-radius: var(--border-radius-middle);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
 }
 
 .board-inner {
@@ -137,7 +129,6 @@ h2 {
 #board-content {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    /* grid-template-columns: fit-content(var(--breakpoint-mobile-to-desktop)); */
     grid-template-rows: auto;
 
     gap: var(--space-md);
@@ -165,7 +156,8 @@ h2 {
 .board-column-content {
     display: flex;
 
-    padding: var(--space-xxs);
+    padding-block: var(--space-xxs);
+    padding-inline: var(--space-xs);
     gap: var(--space-lg);
     border: dashed 1px transparent;
 
@@ -231,6 +223,8 @@ h2 {
 
         flex: 1;
         min-height: 0;
+
+        gap: unset;
     }
 
     .board-column-content {
