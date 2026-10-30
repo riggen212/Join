@@ -51,17 +51,22 @@ let boardSearchAnnouncementTimeout;
  * Loads the current user, tasks, and contacts, then renders the board.
  * Caches the user ID globally and replaces the board content with a persistent
  * error message if loading or rendering fails.
+ * Stops initialization if no valid user is available.
  *
- * @returns {Promise<void>} Resolves after rendering the board or handling an initialization error.
+ * @returns {Promise<void>} Resolves after rendering, error handling or an early return.
  */
 async function initBoard() {
     try {
-        loggedUserId = await loadCurrentUser();
+        loggedUserId = await loadCurrentUser(false);
+        if (!loggedUserId) return;
         await loadBoardData();
         renderBoard(Object.values(board));
     } catch (error) {
         const boardContainer = document.querySelector(".board");
-        boardContainer.innerHTML = getBoardLoadingFailureTemplate();
+        boardContainer.innerHTML = `
+        <p class="board-loading-error" role="alert">
+            Board could not be loaded. Please reload the page.
+        </p>`;
     }
 }
 
@@ -297,9 +302,7 @@ function announceBoardSearchResults() {
         return;
     }
 
-    status.textContent = count === 0
-        ? "No matching tasks found."
-        : `${count} matching ${taskLabel} found.`;
+    status.textContent = count === 0 ? "No matching tasks found." : `${count} matching ${taskLabel} found.`;
 }
 
 /**

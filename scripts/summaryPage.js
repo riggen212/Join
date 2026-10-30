@@ -1,13 +1,15 @@
 /**
  * Loads the current user and tasks, then updates the summary page.
  * Catches and logs initialization errors.
+ * Stops initialization if no valid user is available.
  *
  * @returns {Promise<void>}
  */
 async function initSummary() {
     try {
         showAnimationLogin();
-        loggedUserId = await loadCurrentUser();
+        loggedUserId = await loadCurrentUser(false);
+        if (!loggedUserId) return;
         const user = await getData(DB_USERS, loggedUserId);
         const tasks = await loadTasks();
         const today = getLocalDate();
