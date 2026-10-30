@@ -61,12 +61,11 @@ function renderAddTask(isEditMode = false) {
                                     </div>
                                 </div>
 
-                                <fieldset class="assigned-dropdown">
+                                <fieldset class="assigned-dropdown" onkeydown="handleAssignedKeydown(event)" onfocusin="this.classList.remove('is-collapsed')" oninput="this.classList.remove('is-collapsed')">
                                     <legend>Assigned to</legend>
 
                                     <div class="input-wrapper" onmousedown="toggleAssignedDropdown(event)">
-                                        <input type="search" id="task-assigned" placeholder="Select contacts to assign"
-                                            aria-label="Search contacts" onkeydown="closeAssignedOnEscape(event)">
+                                        <input type="search" id="task-assigned" placeholder="Select contacts to assign" aria-label="Search contacts">
                                         <img src="../assets/icons/arrowDropDown.svg" alt="">
                                     </div>
 
@@ -74,16 +73,17 @@ function renderAddTask(isEditMode = false) {
                                     <ul class="assigned-badges" id="assigned-badges" aria-label="Selected contacts"></ul>
                                 </fieldset>
 
-                                <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)"
-                                    onfocusout="checkCategoryOnLeave(event)">
+                                <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)" onclick="selectTaskCategory(event)"
+                                    onfocusin="setCategoryExpanded(this, true)" onfocusout="checkCategoryOnLeave(event)"
+                                    onkeydown="handleCategoryKeydown(event)">
                                     <legend>Category<span class="required">*</span></legend>
 
-                                    <button class="input-wrapper" type="button" onmousedown="toggleCategoryDropdown(event)">
+                                    <button class="input-wrapper" type="button" aria-describedby="task-category-error" aria-controls="category-options" aria-expanded="false" onmousedown="toggleCategoryDropdown(event)">
                                         <span>Select task category</span>
                                         <img src="../assets/icons/arrowDropDown.svg" alt="">
                                     </button>
 
-                                    <ul class="category-options" onmousedown="event.preventDefault()">
+                                    <ul class="category-options" id="category-options" onmousedown="event.preventDefault()">
                                         <li>
                                             <label>
                                                 <input type="radio" name="category" value="Technical Task">

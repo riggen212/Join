@@ -42,6 +42,12 @@ const board = {
 let activeSearchTerm = "";
 
 /**
+ * Timer for announcing search results after a short typing pause.
+ * @type {number|undefined}
+ */
+let boardSearchAnnouncementTimeout;
+
+/**
  * Loads the current user, tasks, and contacts, then renders the board.
  * Caches the user ID globally and replaces the board content with a persistent
  * error message if loading or rendering fails.
@@ -277,8 +283,29 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
 }
 
 /**
+ * Announces the number of task cards currently shown after a search.
+ *
+ * @returns {void}
+ */
+function announceBoardSearchResults() {
+    const status = document.getElementById("board-search-status");
+    const count = document.querySelectorAll("#board-content .task-card").length;
+    const taskLabel = count === 1 ? "task" : "tasks";
+
+    if (activeSearchTerm === "") {
+        status.textContent = `Search cleared. ${count} ${taskLabel} shown.`;
+        return;
+    }
+
+    status.textContent = count === 0
+        ? "No matching tasks found."
+        : `${count} matching ${taskLabel} found.`;
+}
+
+/**
  * Converts the search term to lowercase, trims surrounding whitespace,
  * stores it in activeSearchTerm, and renders all board columns.
+ * Announces the result count after a 400 ms typing pause.
  *
  * @param {SearchTerm} searchTerm - The search term getting from the HTML input element.
  * @returns {void}
@@ -286,8 +313,9 @@ function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
 function searchTasks(searchTerm) {
     activeSearchTerm = searchTerm.toLowerCase().trim();
     renderBoard(Object.values(board));
+    window.clearTimeout(boardSearchAnnouncementTimeout);
+    boardSearchAnnouncementTimeout = window.setTimeout(announceBoardSearchResults, 400);
 }
-
 /**
  * Creates column objects containing tasks matching the active search term.
  * Preserves column IDs and names without modifying the original task directories.

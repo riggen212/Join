@@ -128,7 +128,7 @@
                     <header id="board-header">
                         <h1>Board</h1>
 
-                        <button class="button button-dark button-add button-add-dark-mobile" onclick="openAddTaskDialog()" aria-label="Create Task">
+                        <button class="button button-dark button-add button-add-dark-mobile" onclick="openAddTaskDialog()" aria-label="Add Task">
                             <img class="button-add-icon-mobile" src="../assets/icons/addMobileWhite.svg" alt="Add" />
                             <span class="button-add-span-desktop">Add Task</span>
                             <img class="button-add-icon-desktop" src="../assets/icons/add.svg" alt="Add" />
@@ -139,6 +139,15 @@
                             <img class="board-search-icon" src="../assets/icons/search.svg" alt="" />
                         </div>
                     </header>
+
+                    <p id="task-keyboard-help" hidden>
+                        Press Enter to open the task. Press Space to start moving it.
+                        Use the left and right arrow keys to select a column.
+                        Press Enter to confirm or Escape to cancel.
+                    </p>
+
+                    <div id="board-move-status" class="visually-hidden" role="status"aria-atomic="true"></div>
+                    <div id="board-search-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
 
                     <div id="board-content">
                         <section data-column-id="toDo" class="board-column">
@@ -204,7 +213,7 @@
                     </div>
                 </div>
 
-                <dialog id="dialog-task" aria-labelledby="task-dialog-title" data-task-id="" data-task-status="" closedby="any" oncancel="dialogSlideOut(event, 'dialog-task-closing')"onanimationend="closeTaskDialog(event)">
+                <dialog id="dialog-task" data-task-id="" data-task-status="" closedby="any" oncancel="dialogSlideOut(event, 'dialog-task-closing')"onanimationend="closeTaskDialog(event)">
                 </dialog>
                 
                 <dialog id="dialog-add-task" closedby="any" oncancel="dialogSlideOut(event, 'dialog-task-closing')" onanimationend="closeTaskDialog(event)">

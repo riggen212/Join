@@ -79,6 +79,11 @@ function updateTaskDialog(dialog, taskData) {
     dialog.dataset.taskId = taskData.id;
     dialog.dataset.taskStatus = taskData.task.status;
     dialog.innerHTML = getTaskOverlayTemplate(taskData);
+    dialog.removeAttribute("aria-label");
+    dialog.setAttribute("aria-labelledby", "task-dialog-title");
+    if (dialog.open) {
+        dialog.querySelector(".button-close").focus();
+    }
 }
 
 /**
@@ -101,7 +106,7 @@ async function editTask(taskId) {
 }
 
 /**
- * Replaces the task dialog's content with an edit form and initializes it.
+ * Renders and names the edit dialog, initializes the form and focuses its title field.
  * Errors propagate to the caller.
  *
  * @param {HTMLDialogElement} dialog - The task dialog containing the edit form.
@@ -110,12 +115,11 @@ async function editTask(taskId) {
  * @returns {Promise<void>} Resolves after the edit form is initialized.
  */
 async function renderAndInitTaskForm(dialog, taskId, task) {
-    dialog.innerHTML = `
-        ${getAddTaskDialogCloseButtonTemplate()}
-        ${renderAddTask(true)}
-        `;
-
+    dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask(true);
+    dialog.removeAttribute("aria-labelledby");
+    dialog.setAttribute("aria-label", "Edit task");
     await initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+    dialog.querySelector("#task-title").focus();
 }
 
 /**
@@ -175,6 +179,7 @@ async function renderAndOpenAddTaskDialog(status) {
 
     try {
         dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
+        dialog.setAttribute("aria-labelledby", "add-task-dialog-title");
         await initAddTaskForm(dialog.querySelector(".task-form-wrapper"), status);
         openDialog("dialog-add-task");
     } catch (error) {
@@ -264,22 +269,44 @@ function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
 }
 
 /**
+ * Restores board focus after closing a task dialog.
+ *
+ * @param {TaskId} taskId - ID of the previously opened task.
+ * @param {Task["status"]} taskStatus - The task's board column.
+ * @returns {void}
+ */
+function restoreBoardTaskFocus(taskId, taskStatus) {
+    if (!taskId) return;
+
+    const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
+    const target = document.getElementById(taskId)
+        ?? column?.querySelector(".task-card")
+        ?? column?.querySelector(".board-column-header button")
+        ?? document.getElementById("search");
+
+    target?.focus();
+}
+
+/**
  * Handles the dialog's closing animation end.
  * Clears its taskId and taskStatus data attributes and calls
  * closeAnimatedDialog() to finish closing it.
  * Ignores child animation events and dialogs without the closing class.
+ * Preserves the task ID and status before clearing them to restore board focus.
+ * After closing, focuses the task card or a fallback if the task no longer exists.
  *
  * @param {AnimationEvent} event - The dialog animation event.
  * @returns {void}
  */
 function closeTaskDialog(event) {
     const dialog = event.currentTarget;
-
     if (event.target !== dialog || !dialog.classList.contains("dialog-task-closing")) {
         return;
     }
 
+    const { taskId, taskStatus } = dialog.dataset;
     dialog.dataset.taskId = "";
     dialog.dataset.taskStatus = "";
     closeAnimatedDialog(event, "dialog-task-closing");
+    restoreBoardTaskFocus(taskId, taskStatus);
 }

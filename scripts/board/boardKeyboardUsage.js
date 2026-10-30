@@ -110,7 +110,10 @@ function getKeyboardActions(event, taskId) {
         ArrowLeft: moveToPreviousColumn,
         Tab: event.shiftKey ? moveToPreviousColumn : moveToNextColumn,
         Enter: () => confirmMovingTaskWithKeyboard(taskId),
-        Escape: () => finishMovingTaskWithKeyboard(taskId),
+        Escape: () => {
+            finishMovingTaskWithKeyboard(taskId);
+            announceBoardMoveStatus("Task movement cancelled.");
+        },
     };
 }
 
@@ -133,43 +136,49 @@ function startMovingTaskWithKeyboard(taskId, taskStatus, event) {
         highlightedColumnIndex = Object.keys(board).findIndex((column) => column === taskStatus);
 
         addHighlightDroppableColumn(draggingTask.status);
+        announceBoardMoveStatus(`Moving task. Selected column: ${board[taskStatus].name}.`);
     }
 }
 
 /**
- * Sets isKeyboardMoveActive to false and calls moveTask()
- * with the highlighted column's status.
- * After moveTask() resolves, removes the movement indicators,
- * resets the selection, and focuses the task card.
+ * Moves the task and passes its result to the focus restoration.
  *
  * @param {TaskId} taskId - ID of the task being moved.
- * @returns {Promise<void>} Resolves after the move attempt and keyboard cleanup.
+ * @returns {Promise<void>} Resolves after movement and focus restoration.
  */
 async function confirmMovingTaskWithKeyboard(taskId) {
+    const destinationStatus = Object.keys(board)[highlightedColumnIndex];
+    let message = "";
     isKeyboardMoveActive = false;
-    await moveTask(Object.keys(board)[highlightedColumnIndex]);
-    finishMovingTaskWithKeyboard(taskId);
+    try {
+        const wasSaved = await moveTask(destinationStatus);
+        message = wasSaved === undefined ? "Task remains in its current column."
+            : wasSaved ? `Task moved to ${board[destinationStatus].name}.`
+            : "Task could not be moved. Its original column has been restored.";
+    } finally {
+        finishMovingTaskWithKeyboard(taskId, message);
+    }
 }
 
 /**
- * Sets isKeyboardMoveActive to false, removes the highlighted
- * column's mark, and resets highlightedColumnIndex to null.
- * Calls endDraggingTask() to remove the card's rotation and
- * reset draggingTask, then focuses the task card.
+ * Ends movement, sets the result description and restores card focus.
  *
- * Requires an active highlighted column and an existing task card.
- *
- * @param {TaskId} taskId - ID of the task card to restore focus to.
+ * @param {TaskId} taskId - ID of the task card.
+ * @param {string} [message=""] - Result to include in the card description.
  * @returns {void}
  */
-function finishMovingTaskWithKeyboard(taskId) {
+function finishMovingTaskWithKeyboard(taskId, message = "") {
     isKeyboardMoveActive = false;
-
     removeHighlightDroppableColumn(Object.keys(board)[highlightedColumnIndex]);
     highlightedColumnIndex = null;
-
     endDraggingTask(taskId);
-    document.getElementById(taskId).focus();
+    const card = document.getElementById(taskId);
+    const alreadyFocused = document.activeElement === card;
+    card.querySelector(".task-move-result").textContent = message;
+    card.setAttribute("aria-describedby",
+        message ? `${taskId}-move-result` : "task-keyboard-help");
+    card.focus();
+    if (alreadyFocused && message) announceBoardMoveStatus(message);
 }
 
 /**
@@ -188,6 +197,7 @@ function moveToNextColumn() {
     if (highlightedColumnIndex >= columns.length) highlightedColumnIndex = 0;
 
     addHighlightDroppableColumn(columns[highlightedColumnIndex]);
+    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
 }
 
 /**
@@ -206,4 +216,15 @@ function moveToPreviousColumn() {
     if (highlightedColumnIndex < 0) highlightedColumnIndex = columns.length - 1;
 
     addHighlightDroppableColumn(columns[highlightedColumnIndex]);
+    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
+}
+
+/**
+ * Announces board movement updates to screen readers.
+ *
+ * @param {string} message - The movement information to announce.
+ * @returns {void}
+ */
+function announceBoardMoveStatus(message) {
+    document.getElementById("board-move-status").textContent = message;
 }

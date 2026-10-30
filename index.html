@@ -39,7 +39,7 @@
             <section class="main-wrapper main-margin-bottom">
                 <h1>Log in</h1>
 
-                <form onsubmit="login(event)">
+                <form onsubmit="login(event)" oninput="clearLoginError()">
                     <div class="input-wrapper" id="loginEmailRed">
                         <input type="email" id="emailField" autocomplete="email" placeholder="Email" aria-label="Email" aria-describedby="loginTextError">
                         <span class="input-icon">
@@ -65,6 +65,8 @@
                         </button>
                     </div>
                 </form>
+                
+                <p id="login-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
             </section>
         </div>
     </main>
