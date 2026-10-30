@@ -1,6 +1,6 @@
 /**
  * Loads the current user and tasks, then updates the summary page.
- * Catches and logs initialization errors.
+ * Displays and announces a notification if initialization fails.
  *
  * @returns {Promise<void>}
  */
@@ -14,7 +14,7 @@ async function initSummary() {
 
         updateSummary(user, tasks, today);
     } catch (error) {
-        console.error(error);
+        showNotification("Summary could not be loaded. Please try again.", "error");
     }
 }
 
@@ -27,7 +27,25 @@ function showAnimationLogin() {
     if (animation === 'true') {
         document.getElementById('login-animation-on').classList.add('animation-in');
         document.getElementById('login-animation-out').classList.add('animation-out');
+        lockSummaryDuringGreeting();
     }
+}
+
+/**
+ * Temporarily prevents interaction with content covered by the greeting.
+ * Restores interaction when the animation finishes or is cancelled.
+ *
+ * @returns {void}
+ */
+function lockSummaryDuringGreeting() {
+    const greeting = document.getElementById("login-animation-out");
+    const animation = greeting.getAnimations()
+        .find(animation => animation.animationName === "greetingFadeOut");
+    if (!animation) return;
+    const elements = document.querySelectorAll(".header, .navbar, .section-container");
+    elements.forEach(element => element.inert = true);
+    const unlock = () => elements.forEach(element => element.inert = false);
+    animation.finished.then(unlock, unlock);
 }
 
 /**
@@ -70,8 +88,7 @@ function updateSummaryHtml(user, taskSummaryData, greeting) {
     summaryHtmlElementList.forEach((element) => {
         element.textContent = taskSummaryData[element.dataset.summary] ?? 0;
         if (element.dataset.summary === "upcomingDeadline") {
-            element.dateTime = taskSummaryData.upcomingDeadline ?? "";
-            element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "";
+            updateSummaryDeadline(element, taskSummaryData);
         }
     });
 
@@ -80,6 +97,24 @@ function updateSummaryHtml(user, taskSummaryData, greeting) {
 
     document.getElementById("userNames").textContent =
         user.type === "guest" ? "" : user.name;
+}
+
+/**
+ * Displays the upcoming deadline and provides an accessible empty state.
+ * Keeps the visible dash when no deadline exists.
+ *
+ * @param {HTMLTimeElement} element - The deadline's time element.
+ * @param {TaskSummaryData} taskSummaryData - The summary values to display.
+ * @returns {void}
+ */
+function updateSummaryDeadline(element, taskSummaryData) {
+    const deadline = taskSummaryData.upcomingDeadline ?? "";
+    element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "-";
+    if (deadline) element.dateTime = deadline;
+    else element.removeAttribute("datetime");
+    element.setAttribute("aria-hidden", String(!deadline));
+    document.getElementById("summary-deadline-description").textContent =
+        deadline ? "" : "No upcoming deadline.";
 }
 
 /**
