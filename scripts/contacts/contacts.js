@@ -52,14 +52,16 @@ async function runWithDisabledContactButtons(request) {
 
 /**
  * Loads the shared contacts from Firebase and renders the list.
+ * Stops initialization if no valid user is available.
  *
- * @returns {Promise<void>} Resolves after the contact list has been rendered.
+ * @returns {Promise<void>} Resolves after rendering, error handling or an early return.
  */
 async function initContacts() {
     setContactButtonsDisabled(true);
 
     try {
-        await loadCurrentUser();
+        loggedUserId = await loadCurrentUser(false);
+        if (!loggedUserId) return;
         loggedInUserEmail = await getLoggedInUserEmail();
 
         const firebaseContacts = await getData(getContactPath());

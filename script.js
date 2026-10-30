@@ -6,7 +6,6 @@ const DB_SUBTASKS = "/subtasks";
 const DB_GUEST_USER_ID = "0";
 let loggedUserId = null;
 
-
 /**
  * Loads data from Firebase at the requested database path.
  *
@@ -24,7 +23,6 @@ async function getData(path = "", id = "") {
 
     return await response.json();
 }
-
 
 /**
  * Writes data to a fixed Firebase database path.
@@ -48,7 +46,6 @@ async function putData(path, value) {
     return await response.json();
 }
 
-
 /**
  * Updates specific data to a fixed Firebase database path.
  *
@@ -71,7 +68,6 @@ async function patchData(path = "", value = {}) {
     return await response.json();
 }
 
-
 /**
  * Deletes data from a Firebase database path.
  *
@@ -81,7 +77,6 @@ async function patchData(path = "", value = {}) {
 function deleteData(path) {
     return putData(path, null);
 }
-
 
 /**
  * Selects a contact card and opens its detail view.
@@ -102,7 +97,6 @@ function showContactDetails(card) {
     document.body.classList.add("contact-details-open");
 }
 
-
 /**
  * Plays the contact details slide-in animation again if it already exists.
  * On the first click, the CSS class starts the animation instead.
@@ -122,7 +116,6 @@ function restartContactDetailsAnimation(contactDetails) {
     animation.play();
 }
 
-
 /**
  * Hides the contact details and clears the current selection.
  *
@@ -141,7 +134,6 @@ function hideContactDetails() {
     document.getElementById("contact-details-info").innerHTML = "";
 }
 
-
 /**
  * Hides the contact actions and resets the mobile menu button.
  *
@@ -154,7 +146,6 @@ function hideContactActions() {
     actions?.classList.remove("is-open");
     menuButton?.setAttribute("aria-expanded", "false");
 }
-
 
 /**
  * Opens a modal dialog and prevents background scrolling.
@@ -171,7 +162,6 @@ function openDialog(dialogId) {
     document.querySelector(`[aria-controls="${dialogId}"]`)?.setAttribute("aria-expanded", "true");
 }
 
-
 /**
  * Finishes the closing animation of a profile-style dialog.
  *
@@ -181,7 +171,6 @@ function openDialog(dialogId) {
 function closeProfileDialog(event) {
     closeAnimatedDialog(event, "dialog-profile-closing");
 }
-
 
 /**
  * Starts the closing animation of a dialog.
@@ -194,7 +183,6 @@ function dialogSlideOut(event, closingClass) {
     event.preventDefault();
     event.currentTarget.classList.add(closingClass);
 }
-
 
 /**
  * Opens the dialog for creating a new contact.
@@ -210,7 +198,6 @@ function addNewContact() {
         openDialog("contact");
     }
 }
-
 
 /**
  * Opens the edit dialog with the currently selected contact's data.
@@ -230,7 +217,6 @@ function editContact() {
     dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);
     openDialog("contact");
 }
-
 
 /**
  * Closes a dialog after its closing animation has finished.
@@ -254,33 +240,65 @@ function closeAnimatedDialog(event, closingClass) {
     showDialogNotification(dialog);
 }
 
-
 /**
- * Updates the nav links and the profile button with die logged user's ID,
- * returns the logged user's ID.
+ * Validates the user ID from the URL and updates navigation and profile.
+ * Redirects invalid users to login unless the current page is public.
  *
- * @returns The ID of the user that logged is currently logged.
+ * @param {boolean} isMetaPage - Whether the page allows access without a valid user.
+ * @returns {Promise<UserId|null>} The valid user ID, or null if validation fails.
  */
-async function loadCurrentUser() {
-    const userId = getUserId();
+async function loadCurrentUser(isMetaPage) {
+    const userId = getUserIdFromUrl();
+    const user = await loadUserById(userId);
 
-    setUserIdsToNavLinks(userId);
-    await setInitialsToProfileButton(userId);
+    if (!user) {
+        if (!isMetaPage) {
+            window.location.href = `../index.html`;
+        }
+        return null;
+    }
 
+    updateNavbarAndProfile(userId, user);
     return userId;
 }
 
+/**
+ * Adds the user ID to navigation links and updates the profile button.
+ *
+ * @param {UserId} userId - The validated user ID.
+ * @param {User} user - The loaded user data.
+ * @returns {void}
+ */
+function updateNavbarAndProfile(userId, user) {
+    setUserIdsToNavLinks(userId);
+    setInitialsToProfileButton(user);
+}
 
 /**
- * Extract the user's ID from the URL and returns it.
+ * Reads the user ID from the URL without validating it.
  *
- * @returns The ID of the user that logged is currently logged.
+ * @returns {UserId|null} The user query parameter, or null if absent.
  */
-function getUserId() {
+function getUserIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("user");
 }
 
+/**
+ * Loads a user by ID.
+ *
+ * @param {UserId|null} userId - The user ID to load.
+ * @returns {Promise<User|null>} The user, or null if unavailable.
+ */
+async function loadUserById(userId) {
+    if (!userId) return null;
+
+    try {
+        return await getData(DB_USERS, userId);
+    } catch (error) {
+        return null;
+    }
+}
 
 /**
  * Returns the email address of the logged-in account.
@@ -289,13 +307,12 @@ function getUserId() {
  * @returns {Promise<string|null>} Email address or null for guest access.
  */
 async function getLoggedInUserEmail() {
-    const userId = getUserId();
+    const userId = getUserIdFromUrl();
 
     if (userId === DB_GUEST_USER_ID) return null;
 
     return getData(DB_USERS + userId + "/email");
 }
-
 
 /**
  * Returns the UI suffix for the logged-in user's matching contact.
@@ -305,12 +322,10 @@ async function getLoggedInUserEmail() {
  * @returns {string} The "(you)" suffix or an empty string.
  */
 function getCurrentUserSuffix(contactEmail, loggedUserEmail) {
-    const isCurrentUser = contactEmail?.toLowerCase() ===
-        loggedUserEmail?.toLowerCase();
+    const isCurrentUser = contactEmail?.toLowerCase() === loggedUserEmail?.toLowerCase();
 
     return isCurrentUser ? " (you)" : "";
 }
-
 
 /**
  * Updates the nav links with the currently logged user.
@@ -326,15 +341,14 @@ function setUserIdsToNavLinks(userId) {
     });
 }
 
-
 /**
- * Updates the profile button's label with the user's initials retrieved from the database.
+ * Updates the profile button using the loaded user's initials and type.
  *
- * @param {UserId} userId - The ID of the currently logged user.
+ * @param {User} user - The loaded user data.
+ * @returns {void}
  */
-async function setInitialsToProfileButton(userId) {
+function setInitialsToProfileButton(user) {
     const button = document.querySelector(".header-profile-initials-button");
-    const user = await getData(DB_USERS + userId);
     const userInitials = user.initials;
 
     if (user.type === "guest") {
