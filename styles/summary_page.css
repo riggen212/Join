@@ -225,6 +225,7 @@
 @keyframes greetingFadeOut {
     0%, 75% {
         opacity: 1;
+        visibility: visible;
     }
 
     100% {
@@ -254,11 +255,22 @@
 
 @media (prefers-reduced-motion: reduce) {
     .animation-out {
-        display: none;
+        opacity: 0;
+        visibility: hidden;
         animation: none;
     }
 
     .animation-in {
+        opacity: 1;
         animation: none;
     }
+}
+
+.mobile-animation-finished #login-animation-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.mobile-animation-finished #login-animation-on {
+    opacity: 1;
 }

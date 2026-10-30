@@ -120,14 +120,13 @@
     }
 
     .deadline-container {
-        transform-origin: left top;
         transition: transform 0.2s ease, background-color 0.2s ease;
         height: 168px;
     }
 
     .deadline-container:hover {
         background-color: #2A3647;
-        transform: scaleX(1.03) scaleY(1.05);
+        transform: scaleY(1.10);
     }
 
     .deadline-hr {
@@ -202,8 +201,17 @@
     .task-container-right:hover span {
         color: white;
     }
+}
 
-    .animation-in {
-        animation: none;
-    }
+#login-animation-out,
+.mobile-animation-finished #login-animation-out {
+    opacity: 1;
+    visibility: visible;
+    animation: none;
+}
+
+#login-animation-on {
+    opacity: 1;
+    visibility: visible;
+    animation: none;
 }
