@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="./script.js" defer></script>
-    <script src="./scripts/database.js" defer></script>
     <script src="./scripts/login.js" defer></script>
 
-    <link rel="icon" type="image/x-icon" href="./assets/icons/logo_dark.svg">
+    <link rel="icon" type="image/x-icon" href="./assets/icons/logoDark.svg">
 
-    <link rel="stylesheet" href="./global_style.css">
+    <link rel="stylesheet" href="./styles/root.css">
+    <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./styles/components.css">
     <link rel="stylesheet" href="./styles/login.css">
     <link rel="stylesheet" href="./styles/fonts.css">
@@ -25,7 +25,7 @@
             <span>
                 Not a Join user?
             </span>
-            <a href="./pages/sign_up.html" class="button button-dark">
+            <a href="./pages/signUp.html" class="button button-dark">
                 Sign up
             </a>
         </div>
@@ -33,12 +33,12 @@
 
     <main class="landing-page">
         <div class="landing-page-content">
-            <img class="logo-bright" src="./assets/icons/logo_bright.svg" alt="">
-            <img class="logo-dark" src="./assets/icons/logo_dark.svg" alt="">
+            <img class="logo-bright" src="./assets/icons/logoBright.svg" alt="">
+            <img class="logo-dark" src="./assets/icons/logoDark.svg" alt="">
             <section class="main-wrapper main-margin-bottom">
                 <h1>Log in</h1>
 
-                <form onsubmit="login(event)">
+                <form onsubmit="login(event)" oninput="clearLoginError()">
                     <div class="input-wrapper" id="loginEmailRed">
                         <input type="email" id="emailField" autocomplete="email" placeholder="Email" aria-label="Email" aria-describedby="loginTextError">
                         <span class="input-icon">
@@ -49,7 +49,7 @@
                     <div class="input-wrapper" id="loginPasswordRed">
                         <input type="password" id="passwortField" autocomplete="current-password" placeholder="Password" aria-label="Password" aria-describedby="loginTextError">
                         <button type="button" id="toggle-login-password" type="button" onclick="toggleLoginPasswordVisibility()" aria-label="Show password" aria-pressed="false">
-                            <img id="augeIcon" src="./assets/icons/show_password.svg" alt="">
+                            <img id="augeIcon" src="./assets/icons/showPassword.svg" alt="">
                         </button>
                     </div>
                    
@@ -64,13 +64,15 @@
                         </button>
                     </div>
                 </form>
+                
+                <p id="login-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
             </section>
         </div>
     </main>
     
     <footer>
-        <a href="./pages/privacy_policy.html">Privacy Policy</a>
-        <a href="./pages/legal_notice.html">Legal notice</a>
+        <a href="./pages/privacyPolicy.html">Privacy Policy</a>
+        <a href="./pages/legalNotice.html">Legal notice</a>
     </footer>
 </body>
 

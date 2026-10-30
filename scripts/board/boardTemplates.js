@@ -14,9 +14,11 @@ function getTaskCardTemplate(taskData) {
                 tabindex="0"
                 onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
                 onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
-                ondragstart="getDraggingTask('${taskData.id}', '${taskData.task.status}', event)"
+                ondragstart="startDraggingTask('${taskData.id}', '${taskData.task.status}', event)"
                 ondragend="endDraggingTask('${taskData.id}')"
-                aria-label="Open task: ${taskData.task.title}">
+                aria-label="Open task: ${taskData.task.title}"
+                aria-describedby="${taskData.id}-move-result task-keyboard-help">
+                    <span class="task-move-result" id="${taskData.id}-move-result" hidden></span>
                     <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
                     <div class="task-card-body">
                         <h3 class="task-card-title">${taskData.task.title}</h3>
@@ -33,7 +35,7 @@ function getTaskCardTemplate(taskData) {
                             ${taskData.assigneesHtml}
                         </ul>
                         <span>
-                            <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="${taskData.task.priority} priority"/>
+                            <img src="../assets/icons/prio${taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase()}.svg" alt="${taskData.task.priority} priority"/>
                         </span>
                     </div>
             </article>`;
@@ -100,7 +102,7 @@ function getTaskOverlayTemplate(taskData) {
                             <dd>
                                 <div class="d-flex-align-center gap-xs">
                                     <span>${taskData.task.priority}</span>
-                                    <img src="../assets/icons/prio_${taskData.task.priority.toLowerCase()}.svg" alt="">
+                                    <img src="../assets/icons/prio${taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase()}.svg" alt="">
                                 </div>
                             </dd>
                         </div>
@@ -174,13 +176,4 @@ function getAddTaskDialogCloseButtonTemplate() {
                 onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                 <img src="../assets/icons/cancel.svg" alt="">
             </button>`;
-}
-
-/**
- * Returns the persistent alert markup displayed when board initialization fails.
- *
- * @returns {string} HTML paragraph with error styling and role="alert".
- */
-function getBoardLoadingFailureTemplate() {
-    return `<p class="board-loading-error" role="alert">Board could not be loaded. Please reload the page.</p>`;
 }

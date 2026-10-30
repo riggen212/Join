@@ -1,23 +1,4 @@
 /* Root variables */
-:root {
-    --color-input-placeholder: #d1d1d1;
-
-    --color-card-task-progress-grey: #f4f4f4;
-    --color-card-task-progress-blue: #4589ff;
-    --color-overlay-task-details-term: #42526e;
-
-    --background-board-feedback-color: #e7e7e7;
-
-    --size-input-height: clamp(48px, 45.71px + 0.71vw, 56px);
-    --size-task-card-width: 250px;
-
-    --font-size-task: 16px;
-    --font-size-task-overlay-heading-two: clamp(32px, 29.7143px + 0.7143vw, 40px);
-    --space-task: 16px;
-
-    --border-radius-task-card: 24px;
-}
-
 h1 {
     grid-area: headline;
 
@@ -149,6 +130,8 @@ h2 {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto;
+
+    gap: var(--space-md);
 }
 
 .board-column {
@@ -240,6 +223,8 @@ h2 {
 
         flex: 1;
         min-height: 0;
+
+        gap: unset;
     }
 
     .board-column-content {

@@ -86,7 +86,7 @@
 
     .flexbox-container-left:hover .section-img {
         background-color: white;
-        content: url("../assets/icons/summary-pencil-hover.svg");
+        content: url("../../assets/icons/summaryPencilHover.svg");
     }
     
     .flexbox-container-left:hover .section-headline,
@@ -107,7 +107,7 @@
 
     .flexbox-container-right:hover .section-img-right{
         background-color: white;
-        content: url("../assets/icons/check-button-hover.svg");
+        content: url("../../assets/icons/checkButtonHover.svg");
     }
 
     .flexbox-container-right:hover .section-headline,
@@ -150,7 +150,7 @@
     .section-img {
         height: 69px;
         width: 69px;
-        content: url(../assets/icons/summary-pencil.svg);
+        content: url(../../assets/icons/summaryPencil.svg);
         background-color: #2A3647;;
         padding: 10px;
     }

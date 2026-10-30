@@ -42,48 +42,48 @@ function renderAddTask(isEditMode = false) {
                                     <div>
                                         <button class="button" type="button" id="priority-urgent" onclick="selectTaskPriority(this, 'urgent')" aria-pressed="false">
                                             Urgent
-                                            <img src="../assets/icons/priority_arrows_up.svg" alt="" />
+                                            <img src="../assets/icons/priorityArrowsUp.svg" alt="" />
                                         </button>
                                     </div>
 
                                     <div>
                                         <button class="button medium" type="button" id="priority-medium" onclick="selectTaskPriority(this, 'medium')" aria-pressed="true">
                                             Medium
-                                            <img src="../assets/icons/priority_equal.svg" alt="" />
+                                            <img src="../assets/icons/priorityEqual.svg" alt="" />
                                         </button>
                                     </div>
 
                                     <div>
                                         <button class="button" type="button" id="priority-low" onclick="selectTaskPriority(this, 'low')" aria-pressed="false">
                                             Low
-                                            <img src="../assets/icons/priority_arrows_down.svg" alt="" />
+                                            <img src="../assets/icons/priorityArrowsDown.svg" alt="" />
                                         </button>
                                     </div>
                                 </div>
 
-                                <fieldset class="assigned-dropdown">
+                                <fieldset class="assigned-dropdown" onkeydown="handleAssignedKeydown(event)" onfocusin="this.classList.remove('is-collapsed')" oninput="this.classList.remove('is-collapsed')">
                                     <legend>Assigned to</legend>
 
                                     <div class="input-wrapper" onmousedown="toggleAssignedDropdown(event)">
-                                        <input type="search" id="task-assigned" placeholder="Select contacts to assign"
-                                            aria-label="Search contacts" onkeydown="closeAssignedOnEscape(event)">
-                                        <img src="../assets/icons/arrow_drop_down.svg" alt="">
+                                        <input type="search" id="task-assigned" placeholder="Select contacts to assign" aria-label="Search contacts">
+                                        <img src="../assets/icons/arrowDropDown.svg" alt="">
                                     </div>
 
                                     <ul class="assigned-options" id="assigned-options" onmousedown="event.preventDefault()"></ul>
                                     <ul class="assigned-badges" id="assigned-badges" aria-label="Selected contacts"></ul>
                                 </fieldset>
 
-                                <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)"
-                                    onfocusout="checkCategoryOnLeave(event)">
+                                <fieldset class="category-field" id="task-category" onchange="selectTaskCategory(event)" onclick="selectTaskCategory(event)"
+                                    onfocusin="setCategoryExpanded(this, true)" onfocusout="checkCategoryOnLeave(event)"
+                                    onkeydown="handleCategoryKeydown(event)">
                                     <legend>Category<span class="required">*</span></legend>
 
-                                    <button class="input-wrapper" type="button" onmousedown="toggleCategoryDropdown(event)">
+                                    <button class="input-wrapper" type="button" aria-describedby="task-category-error" aria-controls="category-options" aria-expanded="false" onmousedown="toggleCategoryDropdown(event)">
                                         <span>Select task category</span>
-                                        <img src="../assets/icons/arrow_drop_down.svg" alt="">
+                                        <img src="../assets/icons/arrowDropDown.svg" alt="">
                                     </button>
 
-                                    <ul class="category-options" onmousedown="event.preventDefault()">
+                                    <ul class="category-options" id="category-options" onmousedown="event.preventDefault()">
                                         <li>
                                             <label>
                                                 <input type="radio" name="category" value="Technical Task">
@@ -111,7 +111,7 @@ function renderAddTask(isEditMode = false) {
                                         </button>
                                         <span class="subtask-actions-divider" aria-hidden="true"></span>
                                         <button type="button" aria-label="Add subtask" onclick="addSubtask(this.form)">
-                                            <img src="../assets/icons/check_dark.svg" alt="" />
+                                            <img src="../assets/icons/checkDark.svg" alt="" />
                                         </button>
                                     </div>
                                 </div>
@@ -216,7 +216,7 @@ function getSubtaskTemplate(title, completed) {
                 <span class="subtask-actions-divider subtask-edit-divider" aria-hidden="true"></span>
                 <button type="button" class="subtask-save-button" aria-label="Save subtask"
                     onmousedown="event.preventDefault()" onclick="finishSubtaskEdit(this)">
-                    <img src="../assets/icons/check_dark.svg" alt="">
+                    <img src="../assets/icons/checkDark.svg" alt="">
                 </button>
             </div>
         </li>

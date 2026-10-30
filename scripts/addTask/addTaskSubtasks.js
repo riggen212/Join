@@ -61,12 +61,15 @@ function fillSubtasks(form, subtasks) {
 
 /**
  * Removes a subtask from the form only; the database changes when the task is saved.
+ * Restores focus to the subtask input after removing the item.
  *
  * @param {HTMLButtonElement} button - The clicked delete button.
  * @returns {void}
  */
 function deleteSubtask(button) {
+    const form = button.form;
     button.closest(".subtask-item").remove();
+    form.querySelector("#subtask").focus();
 }
 
 /**
@@ -92,6 +95,7 @@ function editSubtask(element) {
 
 /**
  * Enter saves the edited subtask, Escape discards the change.
+ * Restores focus after either action through finishSubtaskEdit().
  *
  * @param {KeyboardEvent} event - The keydown event.
  * @returns {void}
@@ -102,24 +106,33 @@ function handleSubtaskEditKeydown(event) {
     if (event.key === "Escape") {
         event.preventDefault();
         input.value = input.previousElementSibling.textContent;
-        input.blur();
+        finishSubtaskEdit(input);
     }
 
     if (event.key === "Enter") {
         event.preventDefault();
-        input.blur();
+        finishSubtaskEdit(input);
     }
 }
 
 /**
  * Finishes editing a subtask. Leaving the input saves the new title.
+ * Restores focus to the edit button or the subtask input if the item was removed.
  *
- * @param {HTMLButtonElement} button - The clicked save button.
+ * @param {HTMLButtonElement|HTMLInputElement} button - The clicked save button or active edit input.
  * @returns {void}
  */
 function finishSubtaskEdit(button) {
-    const input = button.closest(".subtask-item").querySelector(".subtask-edit-input");
+    const item = button.closest(".subtask-item");
+    const form = item.closest("form");
+    const input = item.querySelector(".subtask-edit-input");
     if (input) input.blur();
+
+    const target = item.isConnected
+        ? item.querySelector(".subtask-edit-button")
+        : form.querySelector("#subtask");
+
+    target?.focus();
 }
 
 /**

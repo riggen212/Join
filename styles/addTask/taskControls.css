@@ -104,8 +104,8 @@
     outline-offset: 2px;
 }
 
-.assigned-dropdown:focus-within .assigned-options,
-.category-field:focus-within .category-options {
+.assigned-dropdown:focus-within:not(.is-collapsed) .assigned-options,
+.category-field:has(> button[aria-expanded="true"]) .category-options {
     display: block;
 }
 
@@ -114,8 +114,8 @@
     width: 8px;
 }
 
-.assigned-dropdown:focus-within .input-wrapper img,
-.category-field:focus-within .input-wrapper img {
+.assigned-dropdown:focus-within:not(.is-collapsed) .input-wrapper img,
+.category-field:has(> button[aria-expanded="true"]) > button img {
     transform: rotate(180deg);
 }
 
@@ -184,7 +184,7 @@
     font-size: var(--font-input);
 
     color: #757575;
-    background-image: url("../assets/icons/calender.svg");
+    background-image: url("../../assets/icons/calender.svg");
     background-repeat: no-repeat;
     background-position: right 16px center;
     background-size: 20px;

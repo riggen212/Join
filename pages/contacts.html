@@ -4,22 +4,23 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <script src="../scripts/contacts/contacts_templates.js" defer></script>
+        <script src="../scripts/contacts/contactsTemplates.js" defer></script>
         <script src="../scripts/notifications.js" defer></script>
         <script src="../script.js" defer></script>
-        <script src="../scripts/contacts/contacts_validation.js" defer></script>
+        <script src="../scripts/contacts/contactsValidation.js" defer></script>
         <script src="../scripts/contacts/contacts.js" defer></script>
 
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+        <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
-        <link rel="stylesheet" href="../global_style.css" />
+        <link rel="stylesheet" href="../styles/root.css">
+        <link rel="stylesheet" href="../style.css" />
         <link rel="stylesheet" href="../styles/components.css" />
         <link rel="stylesheet" href="../styles/login.css" />
-        <link rel="stylesheet" href="../styles/add_task.css" />
+        <link rel="stylesheet" href="../styles/addTask/addTask.css" />
         <link rel="stylesheet" href="../styles/fonts.css" />
-        <link rel="stylesheet" href="../styles/board.css" />
-        <link rel="stylesheet" href="../styles/contacts.css" />
-        <link rel="stylesheet" href="../styles/add_contact.css" />
+        <link rel="stylesheet" href="../styles/board/board.css" />
+        <link rel="stylesheet" href="../styles/contacts/contacts.css" />
+        <link rel="stylesheet" href="../styles/contacts/addContact.css" />
 
         <title>Join</title>
     </head>
@@ -28,7 +29,7 @@
         <header class="header">
             <div class="header-wrapper">
                 <div>
-                    <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+                    <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
@@ -58,7 +59,7 @@
                         </li>
                         <li>
                             <a
-                                href="../pages/legal_notice.html"
+                                href="../pages/legalNotice.html"
                                 data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
@@ -67,7 +68,7 @@
                         </li>
                         <li>
                             <a
-                                href="../pages/privacy_policy.html"
+                                href="../pages/privacyPolicy.html"
                                 data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
@@ -85,17 +86,17 @@
         <div id="content" class="app-wrapper">
             <nav class="navbar">
                 <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
+                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/summary_page.html" data-nav-link data-nav-link class="link-navbar">
+                            <a href="../pages/summaryPage.html" data-nav-link data-nav-link class="link-navbar">
                                 <img src="../assets/icons/summary.svg" alt="Summary icon" />
                                 <span>Summary</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/add_task.html" data-nav-link data-nav-link class="link-navbar">
-                                <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                            <a href="../pages/addTask.html" data-nav-link data-nav-link class="link-navbar">
+                                <img src="../assets/icons/addTask.svg" alt="Add task icon" />
                                 <span>Add Task</span>
                             </a>
                         </li>
@@ -116,12 +117,12 @@
                 <footer>
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/privacy_policy.html" data-nav-link class="link-navbar">
+                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
                                 <span>Privacy Policy</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" data-nav-link class="link-navbar">
+                            <a href="../pages/legalNotice.html" data-nav-link class="link-navbar">
                                 <span>Legal notice</span>
                             </a>
                         </li>
@@ -133,7 +134,7 @@
                     <div class="contact-list">
                         <button class="button button-dark detail-view" type="button" onclick="addNewContact()">
                             <span>Add new contact</span>
-                            <img src="../assets/icons/person_add.svg" alt="" />
+                            <img src="../assets/icons/personAdd.svg" alt="" />
                         </button>
 
                         <div id="contact-groups"></div>
