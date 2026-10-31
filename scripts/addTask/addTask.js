@@ -297,7 +297,7 @@ function finishTaskCreation(form, taskId, task) {
  * @returns {void}
  */
 function goToBoard() {
-    window.location.href = "./board.html" + "&taskCreated=true";
+    window.location.href = "./board.html?taskCreated=true";
 }
 
 /**

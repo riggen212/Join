@@ -340,7 +340,7 @@ function putToSessionStorage(key, value) {
 
 /**
  * Reads and parses a JSON value from session storage.
- * Logs read or parse errors and returns null when reading fails.
+ * Returns null when reading or parsing fails.
  *
  * @param {string} key - The storage key.
  * @returns {*} The parsed value, or null if the key is missing or reading fails.
@@ -349,7 +349,6 @@ function getFromSessionStorage(key) {
     try {
         return JSON.parse(sessionStorage.getItem(key));
     } catch (error) {
-        console.error("Failed to read session storage:", error);
         return null;
     }
 }
