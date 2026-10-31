@@ -241,14 +241,14 @@ function closeAnimatedDialog(event, closingClass) {
 }
 
 /**
- * Validates the user ID from the URL and updates navigation and profile.
+ * Validates the user ID from session storage and updates the profile.
  * Redirects invalid users to login unless the current page is public.
  *
  * @param {boolean} isMetaPage - Whether the page allows access without a valid user.
  * @returns {Promise<UserId|null>} The valid user ID, or null if validation fails.
  */
 async function loadCurrentUser(isMetaPage) {
-    const userId = getUserIdFromUrl();
+    const userId = getFromSessionStorage("userId");
     const user = await loadUserById(userId);
 
     if (!user) {
@@ -258,30 +258,8 @@ async function loadCurrentUser(isMetaPage) {
         return null;
     }
 
-    updateNavbarAndProfile(userId, user);
-    return userId;
-}
-
-/**
- * Adds the user ID to navigation links and updates the profile button.
- *
- * @param {UserId} userId - The validated user ID.
- * @param {User} user - The loaded user data.
- * @returns {void}
- */
-function updateNavbarAndProfile(userId, user) {
-    setUserIdsToNavLinks(userId);
     setInitialsToProfileButton(user);
-}
-
-/**
- * Reads the user ID from the URL without validating it.
- *
- * @returns {UserId|null} The user query parameter, or null if absent.
- */
-function getUserIdFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("user");
+    return userId;
 }
 
 /**
@@ -301,13 +279,13 @@ async function loadUserById(userId) {
 }
 
 /**
- * Returns the email address of the logged-in account.
+ * Returns the account email using the user ID stored in session storage.
  * Guest access deliberately has no email for UI markers.
  *
  * @returns {Promise<string|null>} Email address or null for guest access.
  */
 async function getLoggedInUserEmail() {
-    const userId = getUserIdFromUrl();
+    const userId = getFromSessionStorage("userId");
 
     if (userId === DB_GUEST_USER_ID) return null;
 
@@ -328,20 +306,6 @@ function getCurrentUserSuffix(contactEmail, loggedUserEmail) {
 }
 
 /**
- * Updates the nav links with the currently logged user.
- *
- * @param {UserId} userId - The ID of the currently logged user.
- */
-function setUserIdsToNavLinks(userId) {
-    document.querySelectorAll("[data-nav-link]").forEach((link) => {
-        const url = new URL(link.href);
-
-        url.searchParams.set("user", userId);
-        link.href = url.href;
-    });
-}
-
-/**
  * Updates the profile button using the loaded user's initials and type.
  *
  * @param {User} user - The loaded user data.
@@ -357,4 +321,64 @@ function setInitialsToProfileButton(user) {
 
     button.textContent = userInitials;
     button.setAttribute("aria-label", "Open service links and log out");
+}
+
+/**
+ * Serializes a value as JSON and stores it in session storage.
+ *
+ * @param {string} key - The storage key.
+ * @param {*} value - The JSON-serializable value to store.
+ * @returns {void}
+ */
+function putToSessionStorage(key, value) {
+    sessionStorage.setItem(key, JSON.stringify(value));
+}
+
+/**
+ * Reads and parses a JSON value from session storage.
+ * Logs read or parse errors and returns null when reading fails.
+ *
+ * @param {string} key - The storage key.
+ * @returns {*} The parsed value, or null if the key is missing or reading fails.
+ */
+function getFromSessionStorage(key) {
+    try {
+        return JSON.parse(sessionStorage.getItem(key));
+    } catch (error) {
+        console.error("Failed to read session storage:", error);
+        return null;
+    }
+}
+
+/**
+ * Handles pages restored from the back/forward cache without a stored user ID.
+ * Leaves normal page loads and pages with a stored user ID unchanged.
+ *
+ * @param {PageTransitionEvent} event - The pageshow event.
+ * @returns {void}
+ */
+function checkLoginStateOnPageShow(event) {
+    if (!event.persisted || getFromSessionStorage("userId")) return;
+
+    handleLoggedOutPage();
+}
+
+/**
+ * Reloads legal and privacy pages to refresh their logged-out navigation.
+ * Replaces all other current pages with the login page.
+ *
+ * @returns {void}
+ */
+function handleLoggedOutPage() {
+    const path = window.location.pathname;
+    const isMetaPage =
+        path.endsWith("legalNotice.html") ||
+        path.endsWith("privacyPolicy.html");
+
+    if (isMetaPage) {
+        window.location.reload();
+        return;
+    }
+
+    window.location.replace("../index.html");
 }

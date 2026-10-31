@@ -257,11 +257,11 @@ function finishTaskCreation(form, taskId, task) {
 }
 
 /**
- * Navigates to the board page with the current loggedUserId as a query parameter.
+ * Navigates to the board page.
  * @returns {void}
  */
 function goToBoard() {
-    window.location.href = "./board.html?user=" + loggedUserId;
+    window.location.href = "./board.html";
 }
 
 /**

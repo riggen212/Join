@@ -12,7 +12,7 @@
 
         <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
-        <link rel="stylesheet" href="../styles/root.css">
+        <link rel="stylesheet" href="../styles/root.css" />
         <link rel="stylesheet" href="../style.css" />
         <link rel="stylesheet" href="../styles/components.css" />
         <link rel="stylesheet" href="../styles/login.css" />
@@ -25,7 +25,7 @@
         <title>Join</title>
     </head>
 
-    <body>
+    <body onpageshow="checkLoginStateOnPageShow(event)">
         <header class="header">
             <div class="header-wrapper">
                 <div>
@@ -76,7 +76,12 @@
                             >
                         </li>
                         <li>
-                            <a href="../index.html" class="link-navbar">Log out</a>
+                            <a
+                                href="../index.html"
+                                class="link-navbar"
+                                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                                >Log out</a
+                            >
                         </li>
                     </ul>
                 </nav>
@@ -183,7 +188,7 @@
                                         <img src="../assets/icons/delete.svg" alt="Delete" />
                                         <span>Delete</span>
                                     </button>
-                                </li> 
+                                </li>
                             </ul>
                         </dialog>
                     </section>
