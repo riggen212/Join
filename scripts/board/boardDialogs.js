@@ -159,7 +159,7 @@ async function openAddTaskDialog(status) {
     const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
 
     if (!isDesktop) {
-        window.location.href = "./addTask.html?user=" + loggedUserId;
+        window.location.href = "./addTask.html";
         return;
     }
 
