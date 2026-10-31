@@ -55,6 +55,7 @@ function removeAnimationParameter(url) {
 /**
  * Starts the mobile login animation.
  * Finishes the animation after four seconds.
+ * Prevents keyboard interaction with content covered by the greeting.
  *
  * @returns {void}
  */
@@ -65,7 +66,25 @@ function startMobileAnimation() {
     animationIn.classList.add('animation-in');
     animationOut.classList.add('animation-out');
 
+    lockSummaryDuringGreeting();
     setTimeout(finishMobileAnimation, 4000);
+}
+
+/**
+ * Temporarily prevents interaction with content covered by the greeting.
+ * Restores interaction when the animation finishes or is cancelled.
+ *
+ * @returns {void}
+ */
+function lockSummaryDuringGreeting() {
+    const greeting = document.getElementById("login-animation-out");
+    const animation = greeting.getAnimations()
+        .find(animation => animation.animationName === "greetingFadeOut");
+    if (!animation) return;
+    const elements = document.querySelectorAll(".header, .navbar, .section-container");
+    elements.forEach(element => element.inert = true);
+    const unlock = () => elements.forEach(element => element.inert = false);
+    animation.finished.then(unlock, unlock);
 }
 
 /**

@@ -249,7 +249,7 @@ function closeAnimatedDialog(event, closingClass) {
  */
 async function loadCurrentUser(isMetaPage) {
     const userId = getUserIdFromUrl();
-    const user = await loadUserById(userId);
+    const user = await loadUserById(userId, isMetaPage);
 
     if (!user) {
         if (!isMetaPage) {
@@ -288,14 +288,18 @@ function getUserIdFromUrl() {
  * Loads a user by ID.
  *
  * @param {UserId|null} userId - The user ID to load.
+ * @param {boolean} [isMetaPage=false] - Whether loading failures allow public access.
+ * 
  * @returns {Promise<User|null>} The user, or null if unavailable.
+ * @throws {Error} If loading fails on a non-public page.
  */
-async function loadUserById(userId) {
+async function loadUserById(userId, isMetaPage = false) {
     if (!userId) return null;
 
     try {
         return await getData(DB_USERS, userId);
     } catch (error) {
+        if (!isMetaPage) throw error;
         return null;
     }
 }

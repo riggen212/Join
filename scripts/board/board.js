@@ -69,6 +69,26 @@ async function initBoard() {
     }
 }
 
+/**
+ * Announces successful task creation after navigation to the board.
+ * Removes the URL flag to prevent repetition when reloading.
+ * Focuses the Add Task button and associates the creation confirmation with it.
+ *
+ * @returns {void}
+ */
+function announceCreatedTask() {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("taskCreated") !== "true") return;
+    const result = document.getElementById("board-creation-result");
+    const button = document.querySelector("#board-header > button");
+    if (!result || !button) return;
+    url.searchParams.delete("taskCreated");
+    window.history.replaceState(window.history.state, "", url.href);
+    result.textContent = "Task added to board";
+    button.setAttribute("aria-label", "Task added to board. Add Task");
+    button.focus();
+}
+
 initBoard();
 
 /**
