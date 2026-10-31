@@ -177,12 +177,3 @@ function getAddTaskDialogCloseButtonTemplate() {
                 <img src="../assets/icons/cancel.svg" alt="">
             </button>`;
 }
-
-/**
- * Returns the persistent alert markup displayed when board initialization fails.
- *
- * @returns {string} HTML paragraph with error styling and role="alert".
- */
-function getBoardLoadingFailureTemplate() {
-    return `<p class="board-loading-error" role="alert">Board could not be loaded. Please reload the page.</p>`;
-}

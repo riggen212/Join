@@ -10,14 +10,13 @@ async function initAddTaskPage() {
     if (!container) return;
 
     try {
-        loggedUserId = await loadCurrentUser();
+        loggedUserId = await loadCurrentUser(false);
+        if (!loggedUserId) return;
         container.innerHTML = renderAddTask();
         await initAddTaskForm(container.querySelector(".task-form-wrapper"));
     } catch (error) {
-        container.innerHTML = `
-        <p class="board-loading-error" role="alert">
-            Task form could not be loaded. Please reload the page.
-        </p>`;
+        container.innerHTML = `<p class="board-loading-error" role="alert">
+        Task form could not be loaded. Please reload the page.</p>`;
     }
 }
 

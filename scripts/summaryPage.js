@@ -1,13 +1,15 @@
 /**
  * Loads the current user and tasks, then updates the summary page.
  * Displays and announces a notification if initialization fails.
+ * Stops initialization if no valid user is available.
  *
  * @returns {Promise<void>}
  */
 async function initSummary() {
     try {
         showAnimationLogin();
-        loggedUserId = await loadCurrentUser();
+        loggedUserId = await loadCurrentUser(false);
+        if (!loggedUserId) return;
         const user = await getData(DB_USERS, loggedUserId);
         const tasks = await loadTasks();
         const today = getLocalDate();
@@ -20,32 +22,65 @@ async function initSummary() {
 
 initSummary();
 
+/**
+ * Checks the URL parameter and starts the mobile login animation.
+ * The animation only runs on screens smaller than 1280px.
+ *
+ * @returns {void}
+ */
 function showAnimationLogin() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const animation = urlParams.get('animation');
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('animation') !== 'true') return;
 
-    if (animation === 'true') {
-        document.getElementById('login-animation-on').classList.add('animation-in');
-        document.getElementById('login-animation-out').classList.add('animation-out');
-        lockSummaryDuringGreeting();
+    removeAnimationParameter(url);
+
+    if (window.innerWidth < 1280) {
+        startMobileAnimation();
+    } else {
+        finishMobileAnimation();
     }
 }
 
 /**
- * Temporarily prevents interaction with content covered by the greeting.
- * Restores interaction when the animation finishes or is cancelled.
+ * Removes the animation parameter from the current URL.
+ *
+ * @param {URL} url - The current page URL.
+ * @returns {void}
+ */
+function removeAnimationParameter(url) {
+    url.searchParams.delete('animation');
+    window.history.replaceState(window.history.state, '', url.toString());
+}
+
+/**
+ * Starts the mobile login animation.
+ * Finishes the animation after four seconds.
  *
  * @returns {void}
  */
-function lockSummaryDuringGreeting() {
-    const greeting = document.getElementById("login-animation-out");
-    const animation = greeting.getAnimations()
-        .find(animation => animation.animationName === "greetingFadeOut");
-    if (!animation) return;
-    const elements = document.querySelectorAll(".header, .navbar, .section-container");
-    elements.forEach(element => element.inert = true);
-    const unlock = () => elements.forEach(element => element.inert = false);
-    animation.finished.then(unlock, unlock);
+function startMobileAnimation() {
+    const animationIn = document.getElementById('login-animation-on');
+    const animationOut = document.getElementById('login-animation-out');
+
+    animationIn.classList.add('animation-in');
+    animationOut.classList.add('animation-out');
+
+    setTimeout(finishMobileAnimation, 4000);
+}
+
+/**
+ * Removes the animation classes and marks the animation as finished.
+ *
+ * @returns {void}
+ */
+function finishMobileAnimation() {
+    const animationIn = document.getElementById('login-animation-on');
+    const animationOut = document.getElementById('login-animation-out');
+
+    animationIn.classList.remove('animation-in');
+    animationOut.classList.remove('animation-out');
+
+    document.body.classList.add('mobile-animation-finished');
 }
 
 /**

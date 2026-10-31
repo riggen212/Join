@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="./script.js" defer></script>
-    <script src="./scripts/database.js" defer></script>
     <script src="./scripts/login.js" defer></script>
 
     <link rel="icon" type="image/x-icon" href="./assets/icons/logoDark.svg">
@@ -41,14 +40,14 @@
 
                 <form onsubmit="login(event)" oninput="clearLoginError()">
                     <div class="input-wrapper" id="loginEmailRed">
-                        <input type="email" id="emailField" autocomplete="email" placeholder="Email" aria-label="Email" aria-describedby="loginTextError">
+                        <input type="email" id="emailField" autocomplete="email" placeholder="Email" aria-label="Email" aria-describedby="loginTextError" oninput="updatePasswordIcon()">
                         <span class="input-icon">
                             <img src="./assets/icons/mail.svg" alt="">
                         </span>
                     </div>
 
                     <div class="input-wrapper" id="loginPasswordRed">
-                        <input type="password" id="passwortField" autocomplete="current-password" placeholder="Password" aria-label="Password" aria-describedby="loginTextError">
+                        <input type="password" id="passwortField" autocomplete="current-password" placeholder="Password" aria-label="Password" aria-describedby="loginTextError" oninput="updatePasswordIcon()">
                         <button type="button" id="toggle-login-password" type="button" onclick="toggleLoginPasswordVisibility()" aria-label="Show password" aria-pressed="false">
                             <img id="augeIcon" src="./assets/icons/showPassword.svg" alt="">
                         </button>

@@ -7,13 +7,11 @@
 
 /**
  * @typedef {string} UserId - The unique ID of a user.
- */
+*/
 
 /**
- * @typedef {Object} UserDirectory
- * @property {UserId} - The ID of a User.
- * @property {User} - The user data.
- */
+ * @typedef {Object<UserId, User>} UserDirectory - Users indexed by their user ID.
+*/
 
 /**
  * @typedef {string} ContactColorClass - CSS class selecting a contact badge color.
