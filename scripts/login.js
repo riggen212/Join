@@ -55,12 +55,13 @@ function setLoginBusy(busy) {
 }
 
 /**
- * Redirects to the summary page using the guest user ID.
+ * Stores the guest user ID in session storage and redirects to the summary page.
  *
  * @returns {void}
  */
 function guestLogin() {
-    window.location.href = "./pages/summaryPage.html?user=0&animation=true";
+    putToSessionStorage("userId", DB_GUEST_USER_ID);
+    window.location.href = "./pages/summaryPage.html?animation=true";
 }
 
 /**
@@ -93,7 +94,7 @@ async function loadAndCheckLoginCredentials() {
 }
 
 /**
- * Redirects to the summary page when credentials match a user.
+ * Stores the matching user ID in session storage and redirects to the summary page.
  * Displays a credentials error if no match is found.
  *
  * @param {UserDirectory} users - The users loaded from the database.
@@ -107,7 +108,8 @@ function checkLoginData(users, email, password) {
     for (let key in users) {
         if (users[key].email === email && users[key].password === password) {
             loginSuccessful = true;
-            window.location.href = `./pages/summaryPage.html?user=${key}&animation=true`;
+            putToSessionStorage("userId", key);
+            window.location.href = `./pages/summaryPage.html?animation=true`;
         }
     }
 

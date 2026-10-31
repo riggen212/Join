@@ -13,21 +13,21 @@
         <script src="../scripts/addTask/addTask.js" defer></script>
         <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
-        <link rel="stylesheet" href="../styles/root.css">
-        <link rel="stylesheet" href="../style.css"/>
-        <link rel="stylesheet" href="../styles/components.css"/>
-        <link rel="stylesheet" href="../styles/login.css"/>
-        <link rel="stylesheet" href="../styles/addTask/taskForm.css"/>
-        <link rel="stylesheet" href="../styles/addTask/taskControls.css"/>
-        <link rel="stylesheet" href="../styles/addTask/taskSubtasks.css"/>
-        <link rel="stylesheet" href="../styles/addTask/addTask.css"/>
-        <link rel="stylesheet" href="../styles/fonts.css"/>
-        <link rel="stylesheet" href="../styles/board/board.css"/>
+        <link rel="stylesheet" href="../styles/root.css" />
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../styles/components.css" />
+        <link rel="stylesheet" href="../styles/login.css" />
+        <link rel="stylesheet" href="../styles/addTask/taskForm.css" />
+        <link rel="stylesheet" href="../styles/addTask/taskControls.css" />
+        <link rel="stylesheet" href="../styles/addTask/taskSubtasks.css" />
+        <link rel="stylesheet" href="../styles/addTask/addTask.css" />
+        <link rel="stylesheet" href="../styles/fonts.css" />
+        <link rel="stylesheet" href="../styles/board/board.css" />
 
         <title>Join</title>
     </head>
 
-    <body onmousedown="closeDropdownsOnOutsideClick(event)">
+    <body onpageshow="checkLoginStateOnPageShow(event)" onmousedown="closeDropdownsOnOutsideClick(event)">
         <header class="header">
             <div class="header-wrapper">
                 <div>
@@ -86,7 +86,12 @@
                             >
                         </li>
                         <li>
-                            <a href="../index.html" class="link-navbar">Log out</a>
+                            <a
+                                href="../index.html"
+                                class="link-navbar"
+                                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                                >Log out</a
+                            >
                         </li>
                     </ul>
                 </nav>

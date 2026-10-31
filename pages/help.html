@@ -9,7 +9,7 @@
         <script src="../scripts/meta.js" defer></script>
         <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
-        <link rel="stylesheet" href="../styles/root.css">
+        <link rel="stylesheet" href="../styles/root.css" />
         <link rel="stylesheet" href="../style.css" />
         <link rel="stylesheet" href="../styles/components.css" />
         <link rel="stylesheet" href="../styles/fonts.css" />
@@ -18,7 +18,7 @@
         <title>Help</title>
     </head>
 
-    <body>
+    <body onpageshow="checkLoginStateOnPageShow(event)">
         <header class="header">
             <div class="header-wrapper">
                 <div>
@@ -69,7 +69,12 @@
                             >
                         </li>
                         <li>
-                            <a href="../index.html" class="link-navbar">Log out</a>
+                            <a
+                                href="../index.html"
+                                class="link-navbar"
+                                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                                >Log out</a
+                            >
                         </li>
                     </ul>
                 </nav>
