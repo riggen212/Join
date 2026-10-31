@@ -163,9 +163,26 @@ function finishLoginAttempt(submitter) {
 function toggleLoginPasswordVisibility() {
     const passwordInput = document.getElementById("passwortField");
     const toggleButton = document.getElementById("toggle-login-password");
+    const eyeIcon = document.getElementById("augeIcon");
     const passwordIsHidden = passwordInput.type === "password";
 
     passwordInput.type = passwordIsHidden ? "text" : "password";
     toggleButton.setAttribute("aria-pressed", String(passwordIsHidden));
     toggleButton.setAttribute("aria-label", passwordIsHidden ? "Hide password" : "Show password");
+
+    eyeIcon.src = passwordIsHidden
+        ? "./assets/icons/eyeOpen.svg"
+        : "./assets/icons/showPassword.svg";
+}
+
+function updatePasswordIcon() {
+    const email = document.getElementById("emailField").value.trim();
+    const password = document.getElementById("passwortField").value;
+    const eyeIcon = document.getElementById("augeIcon");
+
+    if (email && password) {
+        eyeIcon.src = "./assets/icons/eyeClose.svg";
+    } else {
+        eyeIcon.src = "./assets/icons/showPassword.svg";
+    }
 }
