@@ -18,6 +18,7 @@ function renderAddTask(isEditMode = false) {
                                 <label for="task-title"> Title<span class="required">*</span> </label>
                                 <input class="input-wrapper" id="task-title" name="title" type="text"
                                     placeholder="Enter a title" aria-describedby="task-title-error"
+                                    aria-required="true"
                                     onblur="validateTitle(this.form)" />
                                 <p class="field-error" id="task-title-error" aria-live="polite"></p>
 
@@ -30,7 +31,7 @@ function renderAddTask(isEditMode = false) {
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
                                     <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
-                                        aria-describedby="task-due-date-error" onblur="validateDueDate(this.form)">
+                                        aria-describedby="task-due-date-error" aria-required="true" onblur="validateDueDate(this.form)">
                                 <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 
@@ -78,7 +79,9 @@ function renderAddTask(isEditMode = false) {
                                     onkeydown="handleCategoryKeydown(event)">
                                     <legend>Category<span class="required">*</span></legend>
 
-                                    <button class="input-wrapper" type="button" aria-describedby="task-category-error" aria-controls="category-options" aria-expanded="false" onmousedown="toggleCategoryDropdown(event)">
+                                    <span id="task-category-required" class="visually-hidden">Select a category. Required.</span>
+
+                                    <button class="input-wrapper" type="button" aria-describedby="task-category-required task-category-error" aria-controls="category-options" aria-expanded="false" onmousedown="toggleCategoryDropdown(event)">
                                         <span>Select task category</span>
                                         <img src="../assets/icons/arrowDropDown.svg" alt="">
                                     </button>

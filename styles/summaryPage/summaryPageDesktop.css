@@ -201,17 +201,18 @@
     .task-container-right:hover span {
         color: white;
     }
+
+    #login-animation-out,
+    .mobile-animation-finished #login-animation-out {
+        opacity: 1;
+        visibility: visible;
+        animation: none;
+    }
+
+    #login-animation-on {
+        opacity: 1;
+        visibility: visible;
+        animation: none;
+    }
 }
 
-#login-animation-out,
-.mobile-animation-finished #login-animation-out {
-    opacity: 1;
-    visibility: visible;
-    animation: none;
-}
-
-#login-animation-on {
-    opacity: 1;
-    visibility: visible;
-    animation: none;
-}

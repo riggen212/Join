@@ -249,7 +249,7 @@ function closeAnimatedDialog(event, closingClass) {
  */
 async function loadCurrentUser(isMetaPage) {
     const userId = getFromSessionStorage("userId");
-    const user = await loadUserById(userId);
+    const user = await loadUserById(userId, isMetaPage);
 
     if (!user) {
         if (!isMetaPage) {
@@ -266,14 +266,18 @@ async function loadCurrentUser(isMetaPage) {
  * Loads a user by ID.
  *
  * @param {UserId|null} userId - The user ID to load.
+ * @param {boolean} [isMetaPage=false] - Whether loading failures allow public access.
+ * 
  * @returns {Promise<User|null>} The user, or null if unavailable.
+ * @throws {Error} If loading fails on a non-public page.
  */
-async function loadUserById(userId) {
+async function loadUserById(userId, isMetaPage = false) {
     if (!userId) return null;
 
     try {
         return await getData(DB_USERS, userId);
     } catch (error) {
+        if (!isMetaPage) throw error;
         return null;
     }
 }
@@ -336,7 +340,7 @@ function putToSessionStorage(key, value) {
 
 /**
  * Reads and parses a JSON value from session storage.
- * Logs read or parse errors and returns null when reading fails.
+ * Returns null when reading or parsing fails.
  *
  * @param {string} key - The storage key.
  * @returns {*} The parsed value, or null if the key is missing or reading fails.
@@ -345,7 +349,6 @@ function getFromSessionStorage(key) {
     try {
         return JSON.parse(sessionStorage.getItem(key));
     } catch (error) {
-        console.error("Failed to read session storage:", error);
         return null;
     }
 }

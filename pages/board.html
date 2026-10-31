@@ -161,11 +161,9 @@
                     <header id="board-header">
                         <h1>Board</h1>
 
-                        <button
-                            class="button button-dark button-add button-add-dark-mobile"
-                            onclick="openAddTaskDialog()"
-                            aria-label="Add Task"
-                        >
+                        <p id="board-creation-result" class="visually-hidden"></p>
+
+                        <button class="button button-dark button-add button-add-dark-mobile" onclick="openAddTaskDialog()" aria-label="Add Task">
                             <img class="button-add-icon-mobile" src="../assets/icons/addMobileWhite.svg" alt="Add" />
                             <span class="button-add-span-desktop">Add Task</span>
                             <img class="button-add-icon-desktop" src="../assets/icons/add.svg" alt="Add" />
@@ -318,5 +316,7 @@
                 ></dialog>
             </main>
         </div>
+
+        <div class="visually-hidden" data-notification-live="success" role="status" aria-live="polite" aria-atomic="true" ></div>
     </body>
 </html>

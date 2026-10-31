@@ -184,18 +184,53 @@ function submitTaskForm(event) {
 }
 
 /**
+ * Updates the saving flag, accessible busy state and submit button.
+* Preserves submit-button focus when disabling it removes focus.
+ *
+ * @param {HTMLFormElement} form - The task form being saved.
+ * @param {boolean} saving - Whether saving is in progress.
+ * @returns {void}
+ */
+function setTaskSavingState(form, saving) {
+    const button = form.querySelector('button[type="submit"]');
+    if (saving) {
+        form.dataset.restoreSubmitFocus = String(document.activeElement === button);
+    }
+    isTaskSaving = saving;
+    form.setAttribute("aria-busy", String(saving));
+    updateCreateTaskButton(form);
+    if (!saving) restoreTaskSubmitFocus(form);
+}
+
+/**
+ * Restores lost submit-button focus while preserving other focus changes.
+ * Skips removed forms and dialogs that are already closing.
+ *
+ * @param {HTMLFormElement} form - The task form after saving.
+ * @returns {void}
+ */
+function restoreTaskSubmitFocus(form) {
+    const button = form.querySelector('button[type="submit"]');
+    if (form.dataset.restoreSubmitFocus !== "true") return;
+    if (!form.isConnected || button.disabled) return;
+    if (form.closest(".dialog-task-closing")) return;
+    if (document.activeElement !== document.body) return;
+    button.focus();
+}
+
+/**
  * Saves a new task while blocking repeated submissions through isTaskSaving.
  * Finishes creation only when saveNewTask returns an ID.
  * Shows an error if post-save processing fails. Resets the save flag and updates
  * the submitted form's button in finally without waiting for navigation or dialog closing.
+ * Exposes the saving state through aria-busy and clears it in finally.
  *
  * @param {HTMLFormElement} form - The valid task form to read and save.
  * @returns {Promise<void>} Resolves after saving and post-save handling, without waiting for navigation or animations.
  */
 async function createTask(form) {
     const task = getTaskFromForm(form);
-    isTaskSaving = true;
-    form.querySelector('button[type="submit"]').disabled = true;
+    setTaskSavingState(form, true);
 
     try {
         const taskId = await saveNewTask(task);
@@ -206,8 +241,7 @@ async function createTask(form) {
     } catch (error) {
         showNotification("Task is created but couldn't be rendered. Please refresh the page.", "error");
     } finally {
-        isTaskSaving = false;
-        updateCreateTaskButton(form);
+        setTaskSavingState(form, false);
     }
 }
 
@@ -258,10 +292,12 @@ function finishTaskCreation(form, taskId, task) {
 
 /**
  * Navigates to the board page.
+ * Marks successful task creation for announcement on the board page.
+ * 
  * @returns {void}
  */
 function goToBoard() {
-    window.location.href = "./board.html";
+    window.location.href = "./board.html?taskCreated=true";
 }
 
 /**
@@ -269,6 +305,7 @@ function goToBoard() {
  * Updates the board only after saving succeeds and shows success only if the board update succeeds.
  * Both helpers handle and report their own operation failures.
  * Resets the save flag and updates the submitted form's button in finally.
+ * Exposes the saving state through aria-busy and clears it in finally.
  *
  * @param {HTMLFormElement} form - The valid edit form containing the task ID and values.
  * @returns {Promise<void>} Resolves after saving and board-update handling.
@@ -276,8 +313,7 @@ function goToBoard() {
 async function updateTask(form) {
     const taskId = form.dataset.taskId;
     const task = getTaskFromForm(form);
-    isTaskSaving = true;
-    form.querySelector('button[type="submit"]').disabled = true;
+    setTaskSavingState(form, true);
 
     try {
         let isTaskSaved = await saveUpdatedTask(taskId, task);
@@ -286,8 +322,7 @@ async function updateTask(form) {
             if (isBoardUpdated) showNotification("Task successfully updated.");
         }
     } finally {
-        isTaskSaving = false;
-        updateCreateTaskButton(form);
+        setTaskSavingState(form, false);
     }
 }
 
