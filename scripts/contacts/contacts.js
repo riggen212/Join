@@ -22,9 +22,7 @@ let loggedInUserEmail = null;
  * @returns {void}
  */
 function setContactButtonsDisabled(isDisabled) {
-    const buttons = document.querySelectorAll(
-        ".contacts-content button, #contact button"
-    );
+    const buttons = document.querySelectorAll(".contacts-content button, #contact button");
 
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].disabled = isDisabled;
@@ -80,9 +78,7 @@ async function initContacts() {
 function groupContactsByInitial(contactDirectory) {
     const contactEntries = Object.entries(contactDirectory);
 
-    contactEntries.sort(([, first], [, second]) =>
-        first.name.localeCompare(second.name)
-    );
+    contactEntries.sort(([, first], [, second]) => first.name.localeCompare(second.name));
 
     return contactEntries.reduce((groups, contactEntry) => {
         const initial = contactEntry[1].name.charAt(0).toUpperCase();
@@ -99,8 +95,9 @@ function groupContactsByInitial(contactDirectory) {
  * @returns {string} The HTML for the contact cards.
  */
 function getContactCardsHtml(contactEntries, loggedUserEmail) {
-    return contactEntries.map(([contactId, contact]) =>
-        getContactCardTemplate(contactId, contact, loggedUserEmail)).join("");
+    return contactEntries
+        .map(([contactId, contact]) => getContactCardTemplate(contactId, contact, loggedUserEmail))
+        .join("");
 }
 
 /**
@@ -145,8 +142,7 @@ function renderContactDetails(contactId) {
     if (!contact) return;
 
     contactDetails.dataset.contactId = contactId;
-    document.getElementById("contact-details-info").innerHTML =
-        getContactDetailsTemplate(contact, loggedInUserEmail);
+    document.getElementById("contact-details-info").innerHTML = getContactDetailsTemplate(contact, loggedInUserEmail);
 }
 
 /**
@@ -239,15 +235,14 @@ function getNextContactId() {
  * @returns {ContactColorClass} A badge color CSS class.
  */
 function getNextContactColorClass() {
-    const colorIndex =
-        Object.keys(contacts).length % CONTACT_COLOR_CLASSES.length;
+    const colorIndex = Object.keys(contacts).length % CONTACT_COLOR_CLASSES.length;
 
     return CONTACT_COLOR_CLASSES[colorIndex];
 }
 
 /**
  * Validates, creates, saves, and confirms a contact from the submitted form.
- * 
+ *
  * @param {SubmitEvent} event - The Add Contact form submit event.
  * @returns {Promise<void>}
  */
@@ -323,9 +318,7 @@ function hideContactDetails() {
  * @returns {void}
  */
 function showContactById(contactId) {
-    const contactCard = document.querySelector(
-        `[data-contact-id="${contactId}"]`
-    );
+    const contactCard = document.querySelector(`[data-contact-id="${contactId}"]`);
 
     if (contactCard) showContactDetails(contactCard);
 }
@@ -370,17 +363,41 @@ async function saveEditedContact(contactId, contact) {
 }
 
 /**
- * Deletes a contact from Firebase and updates the local view.
+ * Deletes a contact and its task assignments in a single Firebase update.
+ * Updates the local contact list and closes the details and dialogs after success.
+ * Propagates loading and update errors to the caller.
  *
  * @param {ContactId} contactId - The ID of the contact to delete.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Resolves after deletion and local view updates.
  */
 async function removeContact(contactId) {
-    await deleteData(getContactPath(contactId));
+    const updates = {[getContactPath(contactId)]: null};
+    await getContactsTaskAssignings(contactId, updates);
+    await patchData("", updates);
     delete contacts[contactId];
+    
     renderContactList(contacts);
     hideContactDetails();
     closeDialogAfterContactDeletion("Contact successfully deleted");
+}
+
+/**
+ * Loads all tasks and adds deletion paths for the contact's assignments.
+ * Mutates the supplied update object using paths relative to the database root.
+ * Propagates task loading errors to the caller.
+ *
+ * @param {ContactId} contactId - The contact whose task assignments should be removed.
+ * @param {Object.<string, null>} updates - Firebase update object to extend with deletion paths.
+ * @returns {Promise<void>} Resolves after all matching assignment paths have been added.
+ */
+async function getContactsTaskAssignings(contactId, updates) {
+    const tasks = (await getData(DB_TASKS)) ?? {};
+
+    Object.entries(tasks).forEach(([taskId, task]) => {
+        if (task.assignedTo?.[contactId]) {
+            updates[`${DB_TASKS}${taskId}/assignedTo/${contactId}`] = null;
+        }
+    });
 }
 
 /**

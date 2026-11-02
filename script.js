@@ -229,11 +229,12 @@ async function loadCurrentUser(isMetaPage) {
 
 /**
  * Loads a user by ID.
+ * Returns null if the ID is missing or the user does not exist.
+ * Suppresses loading errors on public pages.
  *
  * @param {UserId|null} userId - The user ID to load.
- * @param {boolean} [isMetaPage=false] - Whether loading failures allow public access.
- * 
- * @returns {Promise<User|null>} The user, or null if unavailable.
+ * @param {boolean} [isMetaPage=false] - Whether the current page is public.
+ * @returns {Promise<User|null>} The user, or null if missing or loading fails on a public page.
  * @throws {Error} If loading fails on a non-public page.
  */
 async function loadUserById(userId, isMetaPage = false) {
@@ -339,9 +340,7 @@ function checkLoginStateOnPageShow(event) {
  */
 function handleLoggedOutPage() {
     const path = window.location.pathname;
-    const isMetaPage =
-        path.endsWith("legalNotice.html") ||
-        path.endsWith("privacyPolicy.html");
+    const isMetaPage = path.endsWith("legalNotice.html") || path.endsWith("privacyPolicy.html");
 
     if (isMetaPage) {
         window.location.reload();

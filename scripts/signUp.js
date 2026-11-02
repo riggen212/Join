@@ -162,3 +162,99 @@ async function handleSignUp() {
  * Initializes the sign-up button.
  */
 document.getElementById("signUpButton").addEventListener("click", handleSignUp);
+
+/**
+ * Toggles password visibility and updates the eye icon.
+ *
+ * @param {string} fieldId - ID of the password input.
+ * @param {string} iconId - ID of the eye icon.
+ * @returns {void}
+ */
+function toggleSignUpPassword(fieldId, iconId) {
+    const passwordInput = document.getElementById(fieldId);
+    const eyeIcon = document.getElementById(iconId);
+    const button = eyeIcon.closest("button");
+    const isHidden = passwordInput.type === "password";
+
+    passwordInput.type = isHidden ? "text" : "password";
+    eyeIcon.src = isHidden
+        ? "../assets/icons/eyeOpen.svg"
+        : "../assets/icons/eyeClose.svg";
+
+    button.setAttribute("aria-pressed", String(isHidden));
+    button.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+}
+
+/**
+ * Updates the password button based on the required input fields.
+ *
+ * @param {string} fieldId - ID of the password input.
+ * @param {string} iconId - ID of the eye icon.
+ * @returns {void}
+ */
+function updateSignUpPasswordIcon(fieldId, iconId) {
+    const input = document.getElementById(fieldId);
+    const icon = document.getElementById(iconId);
+    const button = icon.closest("button");
+    const canShowPassword = checkSignUpFields(input);
+
+    button.disabled = !canShowPassword;
+
+    if (!canShowPassword) resetSignUpPassword(input, button);
+    updateSignUpEyeIcon(input, icon, button, canShowPassword);
+}
+
+/**
+ * Resets the password input to its hidden state.
+ *
+ * @param {HTMLInputElement} input - Password input element.
+ * @param {HTMLButtonElement} button - Password toggle button.
+ * @returns {void}
+ */
+function resetSignUpPassword(input, button) {
+    input.type = "password";
+    button.setAttribute("aria-pressed", "false");
+}
+
+/**
+ * Updates the eye icon and accessibility label.
+ *
+ * @param {HTMLInputElement} input - Password input element.
+ * @param {HTMLImageElement} icon - Eye icon element.
+ * @param {HTMLButtonElement} button - Password toggle button.
+ * @param {boolean} hasPassword - Whether the required fields are filled.
+ * @returns {void}
+ */
+function updateSignUpEyeIcon(input, icon, button, hasPassword) {
+    const isVisible = input.type === "text";
+
+    button.setAttribute("aria-label",
+        !hasPassword ? "Password empty" : isVisible ? "Hide password" : "Show password");
+
+    icon.src = !hasPassword
+        ? "../assets/icons/showPassword.svg"
+        : isVisible ? "../assets/icons/eyeOpen.svg" : "../assets/icons/eyeClose.svg";
+}
+
+/**
+ * Updates the visibility icons of both sign-up password fields.
+ *
+ * @returns {void}
+ */
+function updateSignUpPasswordIcons() {
+    updateSignUpPasswordIcon("passwordField", "passwordEyeIcon");
+    updateSignUpPasswordIcon("confirmPasswordField", "confirmPasswordEyeIcon");
+}
+
+/**
+ * Checks whether the name, email and password fields contain values.
+ *
+ * @param {HTMLInputElement} input - Password input to check.
+ * @returns {boolean} True if all required fields contain values.
+ */
+function checkSignUpFields(input) {
+    const name = document.getElementById("nameField").value.trim();
+    const email = document.getElementById("emailField").value.trim();
+
+    return name !== "" && email !== "" && input.value.length > 0;
+}
