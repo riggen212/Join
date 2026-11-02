@@ -77,25 +77,8 @@ async function patchData(path = "", value = {}) {
 function deleteData(path) {
     return putData(path, null);
 }
+        
 
-/**
- * Selects a contact card and opens its detail view.
- *
- * @param {HTMLElement} card - The contact card that was clicked.
- * @returns {void}
- */
-function showContactDetails(card) {
-    const contactDetails = document.getElementById("show-details");
-    const selectedContact = document.querySelector(".contact-card.is-selected");
-    if (selectedContact === card) return hideContactDetails();
-    selectedContact?.classList.remove("is-selected");
-    card.classList.add("is-selected");
-    renderContactDetails(card.dataset.contactId);
-    restartContactDetailsAnimation(contactDetails);
-    contactDetails.classList.add("is-open");
-    document.documentElement.classList.add("contact-details-open");
-    document.body.classList.add("contact-details-open");
-}
 
 /**
  * Plays the contact details slide-in animation again if it already exists.
@@ -114,24 +97,6 @@ function restartContactDetailsAnimation(contactDetails) {
 
     animation.currentTime = 0;
     animation.play();
-}
-
-/**
- * Hides the contact details and clears the current selection.
- *
- * @returns {void}
- */
-function hideContactDetails() {
-    const contactDetails = document.getElementById("show-details");
-
-    contactDetails.classList.remove("is-open");
-    document.documentElement.classList.remove("contact-details-open");
-    document.body.classList.remove("contact-details-open");
-    document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
-
-    hideContactActions();
-    delete contactDetails.dataset.contactId;
-    document.getElementById("contact-details-info").innerHTML = "";
 }
 
 /**

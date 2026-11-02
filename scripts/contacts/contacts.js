@@ -15,7 +15,6 @@ const CONTACT_COLOR_CLASSES = [
 
 let loggedInUserEmail = null;
 
-
 /**
  * Enables or disables all action buttons of the contacts page.
  *
@@ -32,7 +31,6 @@ function setContactButtonsDisabled(isDisabled) {
     }
 }
 
-
 /**
  * Runs a database request while contact buttons are disabled.
  *
@@ -48,7 +46,6 @@ async function runWithDisabledContactButtons(request) {
         setContactButtonsDisabled(false);
     }
 }
-
 
 /**
  * Loads the shared contacts from Firebase and renders the list.
@@ -74,7 +71,6 @@ async function initContacts() {
     }
 }
 
-
 /**
  * Sorts contacts by name and groups them by their first letter.
  *
@@ -95,7 +91,6 @@ function groupContactsByInitial(contactDirectory) {
     }, {});
 }
 
-
 /**
  * Creates the HTML for the contact cards of one group.
  *
@@ -107,7 +102,6 @@ function getContactCardsHtml(contactEntries, loggedUserEmail) {
     return contactEntries.map(([contactId, contact]) =>
         getContactCardTemplate(contactId, contact, loggedUserEmail)).join("");
 }
-
 
 /**
  * Creates the HTML for all grouped contacts.
@@ -125,7 +119,6 @@ function getContactGroupsHtml(contactGroups, loggedUserEmail) {
         .join("");
 }
 
-
 /**
  * Renders all contacts inside the contact list.
  *
@@ -138,7 +131,6 @@ function renderContactList(contactDirectory) {
 
     container.innerHTML = getContactGroupsHtml(groups, loggedInUserEmail);
 }
-
 
 /**
  * Renders the selected contact and stores its ID on the detail view.
@@ -157,7 +149,6 @@ function renderContactDetails(contactId) {
         getContactDetailsTemplate(contact, loggedInUserEmail);
 }
 
-
 /**
  * Returns the currently selected contact together with its ID.
  *
@@ -171,7 +162,6 @@ function getSelectedContactEntry() {
     return contact ? { id: contactId, contact } : null;
 }
 
-
 /**
  * Marks the corresponding contact card as selected after rerendering.
  *
@@ -182,7 +172,6 @@ function markContactCardSelected(contactId) {
     const card = document.querySelector(`[data-contact-id="${contactId}"]`);
     card?.classList.add("is-selected");
 }
-
 
 /**
  * Closes a contact form dialog and schedules its success notification.
@@ -199,7 +188,6 @@ function closeContactFormWithNotification(form, message) {
     dialog.requestClose();
 }
 
-
 /**
  * Finishes the closing animation of the contact form dialog.
  *
@@ -209,7 +197,6 @@ function closeContactFormWithNotification(form, message) {
 function closeContactDialog(event) {
     closeAnimatedDialog(event, "contact-closing");
 }
-
 
 /**
  * Validates, saves, and confirms the submitted changes of the selected contact.
@@ -233,7 +220,6 @@ async function saveContact(event) {
     }
 }
 
-
 /**
  * Creates the next available contact ID.
  *
@@ -247,7 +233,6 @@ function getNextContactId() {
     return `contact${Math.max(0, ...contactNumbers) + 1}`;
 }
 
-
 /**
  * Selects the next badge color for a new contact.
  *
@@ -259,7 +244,6 @@ function getNextContactColorClass() {
 
     return CONTACT_COLOR_CLASSES[colorIndex];
 }
-
 
 /**
  * Validates, creates, saves, and confirms a contact from the submitted form.
@@ -283,6 +267,54 @@ async function createContact(event) {
     }
 }
 
+/**
+ * Selects a contact card and opens its detail view.
+ * Closes the detail view when the currently selected card is activated again.
+ * Renders the contact information and restarts the detail animation.
+ *
+ * @param {HTMLElement} card - The contact card that was clicked.
+ * @returns {void}
+ */
+function showContactDetails(card) {
+    const contactDetails = document.getElementById("show-details");
+    const selectedContact = document.querySelector(".contact-card.is-selected");
+    const backToListView = contactDetails.querySelector("button.button-close");
+
+    if (selectedContact === card) return hideContactDetails();
+    selectedContact?.classList.remove("is-selected");
+    card.classList.add("is-selected");
+    renderContactDetails(card.dataset.contactId);
+    restartContactDetailsAnimation(contactDetails);
+    contactDetails.classList.add("is-open");
+    if (window.innerWidth < 1280) backToListView.focus();
+    document.documentElement.classList.add("contact-details-open");
+    document.body.classList.add("contact-details-open");
+}
+
+/**
+ * Hides the contact details and clears the current selection.
+ * Hides contact actions and removes the detail view's page state.
+ * Clears the stored contact ID and rendered contact information.
+ *
+ * @returns {void}
+ */
+function hideContactDetails() {
+    const contactDetails = document.getElementById("show-details");   
+    contactDetails.classList.remove("is-open");
+    document.documentElement.classList.remove("contact-details-open");
+    document.body.classList.remove("contact-details-open");
+
+    const selectedContact = document.querySelector(".contact-card.is-selected");
+    selectedContact?.classList.remove("is-selected");
+    // document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
+    
+    
+    hideContactActions();
+
+    delete contactDetails.dataset.contactId;
+    document.getElementById("contact-details-info").innerHTML = "";
+    selectedContact?.focus();
+}
 
 /**
  * Selects a contact card and opens its detail view.
@@ -298,7 +330,6 @@ function showContactById(contactId) {
     if (contactCard) showContactDetails(contactCard);
 }
 
-
 /**
  * Returns the Firebase path for the guest user's contacts.
  *
@@ -308,7 +339,6 @@ function showContactById(contactId) {
 function getContactPath(contactId) {
     return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
 }
-
 
 /**
  * Saves a new contact in Firebase and updates the local view.
@@ -323,7 +353,6 @@ async function saveNewContact(contactId, contact) {
     renderContactList(contacts);
     showContactById(contactId);
 }
-
 
 /**
  * Saves an edited contact in Firebase and refreshes its views.
@@ -340,7 +369,6 @@ async function saveEditedContact(contactId, contact) {
     markContactCardSelected(contactId);
 }
 
-
 /**
  * Deletes a contact from Firebase and updates the local view.
  *
@@ -354,7 +382,6 @@ async function removeContact(contactId) {
     hideContactDetails();
     closeDialogAfterContactDeletion("Contact successfully deleted");
 }
-
 
 /**
  * Closes the contact dialog and shows a notification afterwards.
@@ -394,5 +421,11 @@ async function deleteContact() {
     }
 }
 
+function handleContactCardKeydown(card, event) {
+    if(event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showContactDetails(card);
+    }
+}
 
 initContacts();
