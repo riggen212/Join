@@ -147,19 +147,19 @@ function updateBoardAfterTaskEdit(taskId, task) {
 }
 
 /**
- * On desktop, renders and initializes the creation form with the supplied status,
- * then opens the dialog. Defaults to "toDo" through initAddTaskForm when omitted.
- * Below 1280px, navigates to the standalone Add Task page without passing the status.
- * Shows an error notification if rendering, initialization, or opening fails.
+ * Opens the Add Task form with the supplied initial status.
+ * Below 1280px, navigates to the standalone page with the status in the URL.
+ * At 1280px and above, initializes and opens the desktop dialog.
+ * The desktop helper handles initialization and dialog opening errors.
  *
- * @param {Task["status"]} [status] - Initial status of the task created in the desktop dialog.
- * @returns {Promise<void>} Resolves after requesting navigation, opening the initialized dialog, or handling an error.
+ * @param {Task["status"]} [status="toDo"] - Initial status of the new task.
+ * @returns {Promise<void>} Resolves after requesting navigation, opening the initialized dialog, or handling a desktop dialog error.
  */
-async function openAddTaskDialog(status) {
+async function openAddTaskDialog(status = "toDo") {
     const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
 
     if (!isDesktop) {
-        window.location.href = "./addTask.html";
+        window.location.href = `./addTask.html?status=${status}`;
         return;
     }
 

@@ -5,14 +5,11 @@
 let isLoginPending = false;
 
 /**
- * Prevents native submission and checks the entered login credentials.
- * Shows an accessible error message if loading user data fails.
- * Clears previous login errors before starting a new attempt.
- * Blocks repeated submissions while a request is pending.
- * Restores the controls and, if necessary, submitter focus in finally.
+ * Prevents native submission and starts a regular or guest login attempt.
+ * Clears previous errors and blocks repeated submissions while pending.
  *
  * @param {SubmitEvent} event - The login form's submit event.
- * @returns {Promise<void>} Resolves after the login attempt or error handling.
+ * @returns {Promise<void>} Resolves after the attempt and cleanup, or an early return.
  */
 async function login(event) {
     event.preventDefault();
@@ -55,25 +52,32 @@ function setLoginBusy(busy) {
 }
 
 /**
- * Stores the guest user ID in session storage and redirects to the summary page.
+ * Loads the guest account before storing its ID and redirecting to the summary page.
  *
- * @returns {void}
+ * @returns {Promise<void>} Resolves after initiating the redirect.
+ * @throws {Error} If loading fails or the guest account does not exist.
  */
-function guestLogin() {
+async function guestLogin() {
+    const guestUser = await getData(DB_USERS + DB_GUEST_USER_ID);
+
+    if (!guestUser) throw new Error("Guest user does not exist.");
+
     putToSessionStorage("userId", DB_GUEST_USER_ID);
     window.location.href = "./pages/summaryPage.html?animation=true";
 }
 
 /**
- * Checks login credentials and displays an error if the attempt fails.
- * Always restores the controls and, if needed, submitter focus.
+ * Runs the login flow selected by the submitting button.
+ * Displays an availability error if the selected login flow throws.
+ * Restores controls and, if needed, submitter focus in finally.
  *
- * @param {SubmitEvent} event - The login form's submit event.
+ * @param {SubmitEvent} event - The submit event identifying the selected login type.
  * @returns {Promise<void>} Resolves after the attempt and cleanup.
  */
 async function handleLoginAttempt(event) {
     try {
-        await loadAndCheckLoginCredentials();
+        if (event.submitter?.value === "guest") await guestLogin();
+        else if (event.submitter?.value === "regular") await loadAndCheckLoginCredentials();
     } catch (error) {
         console.error("Login failed:", error);
         showLoginConnectionError();
@@ -172,9 +176,7 @@ function toggleLoginPasswordVisibility() {
     toggleButton.setAttribute("aria-pressed", String(passwordIsHidden));
     toggleButton.setAttribute("aria-label", passwordIsHidden ? "Hide password" : "Show password");
 
-    eyeIcon.src = passwordIsHidden
-        ? "./assets/icons/eyeOpen.svg"
-        : "./assets/icons/showPassword.svg";
+    eyeIcon.src = passwordIsHidden ? "./assets/icons/eyeOpen.svg" : "./assets/icons/showPassword.svg";
 }
 
 function updatePasswordIcon() {

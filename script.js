@@ -249,7 +249,7 @@ function closeAnimatedDialog(event, closingClass) {
  */
 async function loadCurrentUser(isMetaPage) {
     const userId = getFromSessionStorage("userId");
-    const user = await loadUserById(userId);
+    const user = await loadUserById(userId, isMetaPage);
 
     if (!user) {
         if (!isMetaPage) {
@@ -264,16 +264,21 @@ async function loadCurrentUser(isMetaPage) {
 
 /**
  * Loads a user by ID.
+ * Returns null if the ID is missing or the user does not exist.
+ * Suppresses loading errors on public pages.
  *
  * @param {UserId|null} userId - The user ID to load.
- * @returns {Promise<User|null>} The user, or null if unavailable.
+ * @param {boolean} [isMetaPage=false] - Whether the current page is public.
+ * @returns {Promise<User|null>} The user, or null if missing or loading fails on a public page.
+ * @throws {Error} If loading fails on a non-public page.
  */
-async function loadUserById(userId) {
+async function loadUserById(userId, isMetaPage = false) {
     if (!userId) return null;
 
     try {
         return await getData(DB_USERS, userId);
     } catch (error) {
+        if (!isMetaPage) throw error;
         return null;
     }
 }
@@ -371,9 +376,7 @@ function checkLoginStateOnPageShow(event) {
  */
 function handleLoggedOutPage() {
     const path = window.location.pathname;
-    const isMetaPage =
-        path.endsWith("legalNotice.html") ||
-        path.endsWith("privacyPolicy.html");
+    const isMetaPage = path.endsWith("legalNotice.html") || path.endsWith("privacyPolicy.html");
 
     if (isMetaPage) {
         window.location.reload();
