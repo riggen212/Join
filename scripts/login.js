@@ -176,7 +176,9 @@ function toggleLoginPasswordVisibility() {
     toggleButton.setAttribute("aria-pressed", String(passwordIsHidden));
     toggleButton.setAttribute("aria-label", passwordIsHidden ? "Hide password" : "Show password");
 
-    eyeIcon.src = passwordIsHidden ? "./assets/icons/eyeOpen.svg" : "./assets/icons/showPassword.svg";
+    eyeIcon.src = passwordIsHidden
+        ? "./assets/icons/eyeOpen.svg"
+        : "./assets/icons/eyeClose.svg";
 }
 
 function updatePasswordIcon() {
