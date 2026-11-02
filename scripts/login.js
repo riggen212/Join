@@ -172,7 +172,7 @@ function toggleLoginPasswordVisibility() {
 
     eyeIcon.src = passwordIsHidden
         ? "./assets/icons/eyeOpen.svg"
-        : "./assets/icons/showPassword.svg";
+        : "./assets/icons/eyeClose.svg";
 }
 
 function updatePasswordIcon() {
