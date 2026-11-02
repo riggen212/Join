@@ -1,9 +1,10 @@
 /**
  * Initializes the standalone Add Task page; does nothing on other pages.
- * Loads the current user, renders the form, and waits for initialization.
+ * Loads the current user and renders the form with the status from the URL.
+ * Defaults to "toDo" when the status parameter is absent.
  * Replaces the form container with a persistent error message on failure.
  *
- * @returns {Promise<void>} Resolves after initialization, error handling, or the early return.
+ * @returns {Promise<void>} Resolves after initialization, error handling, or an early return.
  */
 async function initAddTaskPage() {
     const container = document.querySelector(".board-inner.add-task-inner");
@@ -13,7 +14,11 @@ async function initAddTaskPage() {
         loggedUserId = await loadCurrentUser(false);
         if (!loggedUserId) return;
         container.innerHTML = renderAddTask();
-        await initAddTaskForm(container.querySelector(".task-form-wrapper"));
+
+        await initAddTaskForm(
+            container.querySelector(".task-form-wrapper"),
+            new URLSearchParams(window.location.search).get("status") ?? "toDo",
+        );
     } catch (error) {
         container.innerHTML = `<p class="board-loading-error" role="alert">
         Task form could not be loaded. Please reload the page.</p>`;
@@ -257,11 +262,11 @@ function finishTaskCreation(form, taskId, task) {
 }
 
 /**
- * Navigates to the board page with the current loggedUserId as a query parameter.
+ * Navigates to the board page.
  * @returns {void}
  */
 function goToBoard() {
-    window.location.href = "./board.html?user=" + loggedUserId;
+    window.location.href = "./board.html";
 }
 
 /**
