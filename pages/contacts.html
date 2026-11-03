@@ -9,6 +9,7 @@
         <script src="../script.js" defer></script>
         <script src="../scripts/contacts/contactsValidation.js" defer></script>
         <script src="../scripts/contacts/contacts.js" defer></script>
+        <script src="../scripts/contacts/contactsDetails.js" defer></script>
 
         <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
@@ -36,16 +37,25 @@
                     <a href="../pages/help.html" data-nav-link class="header-link">
                         <img src="../assets/icons/help.svg" alt="Help" />
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
+
+                    <button class="header-profile-initials-button" aria-controls="dialog-profile"
+                        aria-expanded="false"
+                        aria-label="Open service links and log out"
+                        aria-haspopup="dialog"
+                        onclick="openDialog('dialog-profile')"
+                        >
+                    </button>
                 </div>
             </div>
+
             <dialog
                 id="dialog-profile"
+                aria-label="Service links and log out"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
                 onanimationend="closeProfileDialog(event)"
             >
-                <nav>
+                <nav aria-label="Service links">
                     <ul>
                         <li>
                             <a
@@ -89,31 +99,31 @@
         </header>
 
         <div id="content" class="app-wrapper">
-            <nav class="navbar">
+            <nav class="navbar" aria-label="Main navigation">
                 <div class="navbar-wrapper">
                     <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/summaryPage.html" data-nav-link data-nav-link class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                            <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
+                                <img src="../assets/icons/summary.svg" alt="" />
                                 <span>Summary</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/addTask.html" data-nav-link data-nav-link class="link-navbar">
-                                <img src="../assets/icons/addTask.svg" alt="Add task icon" />
+                            <a href="../pages/addTask.html" data-nav-link class="link-navbar">
+                                <img src="../assets/icons/addTask.svg" alt="" />
                                 <span>Add Task</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/board.html" data-nav-link data-nav-link class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="Board icon" />
+                            <a href="../pages/board.html" data-nav-link class="link-navbar">
+                                <img src="../assets/icons/board.svg" alt="" />
                                 <span>Board</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/contacts.html" data-nav-link data-nav-link class="link-navbar active">
-                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                            <a href="../pages/contacts.html" data-nav-link class="link-navbar active" aria-current="page">
+                                <img src="../assets/icons/contacts.svg" alt="" />
                                 <span>Contacts</span>
                             </a>
                         </li>
@@ -137,7 +147,7 @@
             <main class="board">
                 <div class="contacts-content">
                     <div class="contact-list">
-                        <button class="button button-dark detail-view" type="button" onclick="addNewContact()">
+                        <button id="addNewContactButton" class="button button-dark detail-view" type="button" onclick="addNewContact()">
                             <span>Add new contact</span>
                             <img src="../assets/icons/personAdd.svg" alt="" />
                         </button>
@@ -153,22 +163,28 @@
                             </div>
 
                             <button class="button button-close" onclick="hideContactDetails()" aria-label="Back to contact list">
-                                <img src="../assets/icons/arrow.svg" alt="Close" />
+                                <img src="../assets/icons/arrow.svg" alt="" />
                             </button>
                         </header>
 
                         <section id="contact-details-info" class="contact-details-info"></section>
 
                         <button
+                            id="pointMenu"
                             class="button button-dark contact-add detail-view"
                             type="button"
-                            onclick="openDialog('dialog-edit-contact')"
+                            onclick="event.stopPropagation(); openDialog('dialog-edit-contact')"
+                            aria-label="Open contact actions"
+                            aria-controls="dialog-edit-contact"
+                            aria-expanded="false"
+                            aria-haspopup="dialog"
                         >
                             &#8942;
                         </button>
 
                         <dialog
                             id="dialog-edit-contact"
+                            aria-label="Contact actions"
                             closedby="any"
                             oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
                             onanimationend="closeProfileDialog(event, this.id)"
@@ -176,13 +192,13 @@
                             <ul>
                                 <li>
                                     <button class="button button-task-overlay" onclick="editContact()">
-                                        <img src="../assets/icons/edit.svg" alt="Edit" />
+                                        <img src="../assets/icons/edit.svg" alt="" />
                                         <span>Edit</span>
                                     </button>
                                 </li>
                                 <li>
                                     <button class="button button-task-overlay" onclick="deleteContact()">
-                                        <img src="../assets/icons/delete.svg" alt="Delete" />
+                                        <img src="../assets/icons/delete.svg" alt="" />
                                         <span>Delete</span>
                                     </button>
                                 </li>
@@ -198,6 +214,7 @@
             closedby="any"
             oncancel="dialogSlideOut(event, 'contact-closing')"
             onanimationend="closeContactDialog(event)"
+            aria-labelledby="contact-dialog-title"
         ></dialog>
     </body>
 </html>

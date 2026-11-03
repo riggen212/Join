@@ -100,19 +100,6 @@ function restartContactDetailsAnimation(contactDetails) {
 }
 
 /**
- * Hides the contact actions and resets the mobile menu button.
- *
- * @returns {void}
- */
-function hideContactActions() {
-    const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(".contact-details > .contact-add");
-
-    actions?.classList.remove("is-open");
-    menuButton?.setAttribute("aria-expanded", "false");
-}
-
-/**
  * Opens a modal dialog and prevents background scrolling.
  *
  * @param {string} dialogId - The ID of the dialog to open.
@@ -162,25 +149,6 @@ function addNewContact() {
         dialog.innerHTML = renderAddContactTemplate();
         openDialog("contact");
     }
-}
-
-/**
- * Opens the edit dialog with the currently selected contact's data.
- * Closes the mobile contact actions dialog before showing the edit form.
- *
- * @returns {void}
- */
-function editContact() {
-    const dialog = document.getElementById("contact");
-    const actionsDialog = document.getElementById("dialog-edit-contact");
-    const selectedContact = getSelectedContactEntry();
-
-    if (!selectedContact || dialog.open) return;
-    if (actionsDialog.open) actionsDialog.close();
-
-    dialog.classList.add("contact-edit");
-    dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);
-    openDialog("contact");
 }
 
 /**

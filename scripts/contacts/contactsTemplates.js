@@ -9,7 +9,7 @@ function renderAddContactTemplate() {
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
                 <img class="contact-dialog-logo" src="../assets/icons/logoBright.svg" alt="">
-                <h1>Add contact</h1>
+                <h1 id="contact-dialog-title">Add contact</h1>
                 <p>Tasks are better with a team!</p>
             </div>
 
@@ -20,27 +20,42 @@ function renderAddContactTemplate() {
             <form novalidate onsubmit="createContact(event)">
                 <div class="contact-form-field">
                     <div class="input-wrapper">
-                        <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" aria-label="Name" aria-describedby="contact-name-error" oninput="validateContactField(this)">
+                        <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name"
+                            aria-label="Name"
+                            aria-describedby="contact-name-error"
+                            aria-required="true"
+                            oninput="validateContactField(this)"
+                        >
                         <span type="button">
-                            <img src="../assets/icons/person.svg" alt="show password">
+                            <img src="../assets/icons/person.svg" alt="">
                         </span>
                     </div>
                     <p class="contact-form-error" id="contact-name-error" aria-live="polite"></p>
                 </div>
                 <div class="contact-form-field">
                     <div class="input-wrapper">
-                        <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" aria-label="Email address" aria-describedby="contact-email-error" oninput="validateContactField(this)">
+                        <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email"
+                            aria-label="Email address"
+                            aria-describedby="contact-email-error"
+                            aria-required="true"
+                            oninput="validateContactField(this)"
+                        >
                         <span type="button">
-                            <img src="../assets/icons/mail.svg" alt="show password">
+                            <img src="../assets/icons/mail.svg" alt="">
                         </span>
                     </div>
                     <p class="contact-form-error" id="contact-email-error" aria-live="polite"></p>
                 </div>
                 <div class="contact-form-field">
                     <div class="input-wrapper">
-                        <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" aria-label="Phone number" aria-describedby="contact-phone-error" oninput="validateContactField(this)">
+                        <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" 
+                            aria-label="Phone number"
+                            aria-describedby="contact-phone-error"
+                            aria-required="true"
+                            oninput="validateContactField(this)"
+                        >
                         <span type="button">
-                            <img src="../assets/icons/phone.svg" alt="show password">
+                            <img src="../assets/icons/phone.svg" alt="">
                         </span>
                     </div>
                 <p class="contact-form-error" id="contact-phone-error" aria-live="polite"></p>
@@ -59,7 +74,6 @@ function renderAddContactTemplate() {
         `;
 }
 
-
 /**
  * Creates the prefilled HTML for the Edit Contact dialog.
  *
@@ -72,7 +86,7 @@ function renderEditContactTemplate(contact) {
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
                 <img class="contact-dialog-logo" src="../assets/icons/logoBright.svg" alt="">
-                <h1>Edit Contact</h1>
+                <h1 id="contact-dialog-title">Edit Contact</h1>
             </div>
 
             <div class="badge-user ${contact.colorClass}">
@@ -82,27 +96,42 @@ function renderEditContactTemplate(contact) {
             <form novalidate onsubmit="saveContact(event)">
                 <div class="contact-form-field">
                     <div class="input-wrapper">
-                        <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" value="${contact.name}" aria-label="Name" aria-describedby="contact-name-error" oninput="validateContactField(this)">
+                        <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" value="${contact.name}"
+                            aria-label="Name"
+                            aria-describedby="contact-name-error"
+                            aria-required="true"
+                            oninput="validateContactField(this)"
+                        >
                         <span type="button">
-                            <img src="../assets/icons/person.svg" alt="show password">
+                            <img src="../assets/icons/person.svg" alt="">
                         </span>
                     </div>
                     <p class="contact-form-error" id="contact-name-error" aria-live="polite"></p>
                 </div>
                 <div class="contact-form-field">
                     <div class="input-wrapper">
-                        <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" value="${contact.email}" aria-label="Email address" aria-describedby="contact-email-error" oninput="validateContactField(this)">
+                        <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" value="${contact.email}"
+                            aria-label="Email address"
+                            aria-describedby="contact-email-error"
+                            aria-required="true"
+                            oninput="validateContactField(this)"
+                        >
                         <span type="button">
-                            <img src="../assets/icons/mail.svg" alt="show password">
+                            <img src="../assets/icons/mail.svg" alt="">
                         </span>
                     </div>
                     <p class="contact-form-error" id="contact-email-error" aria-live="polite"></p>
                 </div>
                 <div class="contact-form-field">
                     <div class="input-wrapper">
-                        <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" value="${contact.phone}" aria-label="Phone number" aria-describedby="contact-phone-error" oninput="validateContactField(this)">
+                        <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" value="${contact.phone}"
+                            aria-label="Phone number"
+                            aria-describedby="contact-phone-error"
+                            aria-required="true"
+                            oninput="validateContactField(this)"
+                        >
                         <span type="button">
-                            <img src="../assets/icons/phone.svg" alt="show password">
+                            <img src="../assets/icons/phone.svg" alt="">
                         </span>
                     </div>
                     <p class="contact-form-error" id="contact-phone-error" aria-live="polite"></p>
@@ -120,7 +149,6 @@ function renderEditContactTemplate(contact) {
             </form>
             `;
 }
-
 
 /**
  * Creates the HTML for one contact card.
@@ -150,7 +178,6 @@ function getContactCardTemplate(contactId, contact, loggedUserEmail) {
     `;
 }
 
-
 /**
  * Creates the HTML for a group of contacts sharing the same initial.
  *
@@ -166,7 +193,6 @@ function getContactGroupTemplate(initial, contactCardsHtml) {
         </section>
     `;
 }
-
 
 /**
  * Creates the detail view for the selected contact.
@@ -196,7 +222,6 @@ function getContactDetailsTemplate(contact, loggedUserEmail) {
         <span>${contact.phone}</span>
     `;
 }
-
 
 /**
  * Creates the action buttons of the contact detail view.
