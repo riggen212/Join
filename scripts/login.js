@@ -79,7 +79,6 @@ async function handleLoginAttempt(event) {
         if (event.submitter?.value === "guest") await guestLogin();
         else if (event.submitter?.value === "regular") await loadAndCheckLoginCredentials();
     } catch (error) {
-        console.error("Login failed:", error);
         showLoginConnectionError();
     } finally {
         finishLoginAttempt(event.submitter);
@@ -163,13 +162,13 @@ function finishLoginAttempt(submitter) {
 
 /**
  * Toggles the visibility of the login password.
+ * Synchronizes the icon with the updated password visibility.
  *
  * @returns {void}
  */
 function toggleLoginPasswordVisibility() {
     const passwordInput = document.getElementById("passwortField");
     const toggleButton = document.getElementById("toggle-login-password");
-    const eyeIcon = document.getElementById("augeIcon");
     const passwordIsHidden = passwordInput.type === "password";
 
     passwordInput.type = passwordIsHidden ? "text" : "password";
@@ -181,14 +180,21 @@ function toggleLoginPasswordVisibility() {
         : "./assets/icons/eyeClose.svg";
 }
 
+/**
+ * Updates the password icon using field contents and password visibility.
+ *
+ * @returns {void}
+ */
 function updatePasswordIcon() {
     const email = document.getElementById("emailField").value.trim();
-    const password = document.getElementById("passwortField").value;
+    const passwordInput = document.getElementById("passwortField");
     const eyeIcon = document.getElementById("augeIcon");
 
-    if (email && password) {
-        eyeIcon.src = "./assets/icons/eyeClose.svg";
+    if (passwordInput.type === "text") {
+        eyeIcon.src = "./assets/icons/eyeOpen.svg";
     } else {
-        eyeIcon.src = "./assets/icons/showPassword.svg";
+        eyeIcon.src = email && passwordInput.value
+            ? "./assets/icons/eyeClose.svg"
+            : "./assets/icons/showPassword.svg";
     }
 }
