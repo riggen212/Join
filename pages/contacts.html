@@ -4,36 +4,40 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <script src="../scripts/templates.js" defer></script>
+        <script src="../scripts/contacts/contactsTemplates.js" defer></script>
+        <script src="../scripts/notifications.js" defer></script>
         <script src="../script.js" defer></script>
-        <script src="../scripts/contacts.js" defer></script>
+        <script src="../scripts/contacts/contactData.js" defer></script>
+        <script src="../scripts/contacts/contactsValidation.js" defer></script>
+        <script src="../scripts/contacts/contacts.js" defer></script>
 
-        <link rel="shortcut icon" href="../assets/icons/logo_dark.svg" type="image/x-icon" />
+        <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
-        <link rel="stylesheet" href="../global_style.css" />
+        <link rel="stylesheet" href="../styles/root.css" />
+        <link rel="stylesheet" href="../style.css" />
         <link rel="stylesheet" href="../styles/components.css" />
         <link rel="stylesheet" href="../styles/login.css" />
-        <link rel="stylesheet" href="../styles/add_task.css" />
+        <link rel="stylesheet" href="../styles/addTask/addTask.css" />
         <link rel="stylesheet" href="../styles/fonts.css" />
-        <link rel="stylesheet" href="../styles/board.css" />
-        <link rel="stylesheet" href="../styles/contacts.css" />
-        <link rel="stylesheet" href="../styles/add_contact.css" />
+        <link rel="stylesheet" href="../styles/board/board.css" />
+        <link rel="stylesheet" href="../styles/contacts/contacts.css" />
+        <link rel="stylesheet" href="../styles/contacts/addContact.css" />
 
         <title>Join</title>
     </head>
 
-    <body>
+    <body onpageshow="checkLoginStateOnPageShow(event)">
         <header class="header">
             <div class="header-wrapper">
                 <div>
-                    <img src="../assets/icons/logo_dark.svg" alt="Dark join logo" class="header-logo" />
+                    <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" class="header-link">
+                    <a href="../pages/help.html" data-nav-link class="header-link">
                         <img src="../assets/icons/help.svg" alt="Help" />
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')">G</button>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
                 </div>
             </div>
             <dialog
@@ -48,6 +52,7 @@
                             <a
                                 id="link-help-profile-dialog"
                                 href="../pages/help.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Help</a
@@ -55,7 +60,8 @@
                         </li>
                         <li>
                             <a
-                                href="../pages/legal_notice.html"
+                                href="../pages/legalNotice.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Legal Notice</a
@@ -63,14 +69,20 @@
                         </li>
                         <li>
                             <a
-                                href="../pages/privacy_policy.html"
+                                href="../pages/privacyPolicy.html"
+                                data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
                                 >Privacy Policy</a
                             >
                         </li>
                         <li>
-                            <a href="../index.html" class="link-navbar">Log out</a>
+                            <a
+                                href="../index.html"
+                                class="link-navbar"
+                                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                                >Log out</a
+                            >
                         </li>
                     </ul>
                 </nav>
@@ -80,28 +92,28 @@
         <div id="content" class="app-wrapper">
             <nav class="navbar">
                 <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logo_bright.svg" alt="Join Logo bright" />
+                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/summary_page.html" class="link-navbar">
+                            <a href="../pages/summaryPage.html" data-nav-link data-nav-link class="link-navbar">
                                 <img src="../assets/icons/summary.svg" alt="Summary icon" />
                                 <span>Summary</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/add_task.html" class="link-navbar">
-                                <img src="../assets/icons/add_task.svg" alt="Add task icon" />
+                            <a href="../pages/addTask.html" data-nav-link data-nav-link class="link-navbar">
+                                <img src="../assets/icons/addTask.svg" alt="Add task icon" />
                                 <span>Add Task</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/board.html" class="link-navbar">
+                            <a href="../pages/board.html" data-nav-link data-nav-link class="link-navbar">
                                 <img src="../assets/icons/board.svg" alt="Board icon" />
                                 <span>Board</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/contacts.html" class="link-navbar active">
+                            <a href="../pages/contacts.html" data-nav-link data-nav-link class="link-navbar active">
                                 <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
                                 <span>Contacts</span>
                             </a>
@@ -111,12 +123,12 @@
                 <footer>
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/privacy_policy.html" class="link-navbar">
+                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
                                 <span>Privacy Policy</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/legal_notice.html" class="link-navbar">
+                            <a href="../pages/legalNotice.html" data-nav-link class="link-navbar">
                                 <span>Legal notice</span>
                             </a>
                         </li>
@@ -128,11 +140,10 @@
                     <div class="contact-list">
                         <button class="button button-dark detail-view" type="button" onclick="addNewContact()">
                             <span>Add new contact</span>
-                            <img src="../assets/icons/person_add.svg" alt="" />
+                            <img src="../assets/icons/personAdd.svg" alt="" />
                         </button>
 
                         <div id="contact-groups"></div>
-
                     </div>
 
                     <section id="show-details" class="contact-details" onclick="hideContactActions()">
@@ -152,22 +163,31 @@
 
                         <section id="contact-details-info" class="contact-details-info"></section>
 
-                        <button class="button button-dark contact-add detail-view" type="button" onclick="openDialog('dialog-edit-contact')">
+                        <button
+                            class="button button-dark contact-add detail-view"
+                            type="button"
+                            onclick="openDialog('dialog-edit-contact')"
+                        >
                             &#8942;
                         </button>
 
-                        <dialog id="dialog-edit-contact" closedby="any" oncancel="dialogSlideOut(event, 'dialog-profile-closing')" onanimationend="closeProfileDialog(event, this.id)">
+                        <dialog
+                            id="dialog-edit-contact"
+                            closedby="any"
+                            oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
+                            onanimationend="closeProfileDialog(event, this.id)"
+                        >
                             <ul>
-                                <li>
-                                    <button class="button button-task-overlay" onclick="deleteContact()">
-                                        <img src="../assets/icons/delete.svg" alt="Delete" />
-                                        <span>Delete</span>
-                                    </button>
-                                </li>
                                 <li>
                                     <button class="button button-task-overlay" onclick="editContact()">
                                         <img src="../assets/icons/edit.svg" alt="Edit" />
                                         <span>Edit</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="button button-task-overlay" onclick="deleteContact()">
+                                        <img src="../assets/icons/delete.svg" alt="Delete" />
+                                        <span>Delete</span>
                                     </button>
                                 </li>
                             </ul>
@@ -177,6 +197,11 @@
             </main>
         </div>
 
-        <dialog id="contact" closedby="any" oncancel="dialogSlideOut(event, 'contact-closing')" onanimationend="closeContactDialog(event)"></dialog>
+        <dialog
+            id="contact"
+            closedby="any"
+            oncancel="dialogSlideOut(event, 'contact-closing')"
+            onanimationend="closeContactDialog(event)"
+        ></dialog>
     </body>
 </html>

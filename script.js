@@ -1,8 +1,10 @@
 const DB_BASE_URL = "https://join-4092e-default-rtdb.europe-west1.firebasedatabase.app/";
 const DB_USERS = "users/";
-const DB_GUEST_USER_ID = "0";
-const DB_TASKS = "/tasks";
+const DB_TASKS = "tasks/";
+const DB_CONTACTS = "contacts/";
 const DB_SUBTASKS = "/subtasks";
+const DB_GUEST_USER_ID = "0";
+let loggedUserId = null;
 
 /**
  * Loads data from Firebase at the requested database path.
@@ -157,16 +159,7 @@ function openDialog(dialogId) {
     document.body.classList.add("overflow-hidden");
 
     dialog.showModal();
-}
-
-/**
- * Finishes the closing animation of the contact form dialog.
- *
- * @param {AnimationEvent} event - The dialog animation event.
- * @returns {void}
- */
-function closeContactDialog(event) {
-    closeAnimatedDialog(event, "contact-closing");
+    document.querySelector(`[aria-controls="${dialogId}"]`)?.setAttribute("aria-expanded", "true");
 }
 
 /**
@@ -226,22 +219,6 @@ function editContact() {
 }
 
 /**
- * Deletes the currently selected contact.
- *
- * @returns {Promise<void>}
- */
-async function deleteContact() {
-    const selectedContact = getSelectedContactEntry();
-    if (!selectedContact) return;
-
-    try {
-        await removeContact(selectedContact.id);
-    } catch (error) {
-        console.error("Contact could not be deleted:", error);
-    }
-}
-
-/**
  * Closes a dialog after its closing animation has finished.
  *
  * @param {AnimationEvent} event - The dialog animation event.
@@ -258,36 +235,153 @@ function closeAnimatedDialog(event, closingClass) {
     dialog.classList.remove(closingClass);
     document.body.classList.remove("overflow-hidden");
     dialog.close();
+    document.querySelector(`[aria-controls="${dialog.id}"]`)?.setAttribute("aria-expanded", "false");
+    dialog.querySelector("#notification")?.classList.remove("is-visible", "is-closing");
+    showDialogNotification(dialog);
 }
 
 /**
- * Closes the dialog from which a contact was deleted.
- * The mobile actions dialog closes immediately to release its backdrop.
+ * Validates the user ID from session storage and updates the profile.
+ * Redirects invalid users to login unless the current page is public.
  *
- * @returns {void}
+ * @param {boolean} isMetaPage - Whether the page allows access without a valid user.
+ * @returns {Promise<UserId|null>} The valid user ID, or null if validation fails.
  */
-function closeDialogAfterContactDeletion() {
-    const contactDialog = document.getElementById("contact");
-    const actionsDialog = document.getElementById("dialog-edit-contact");
+async function loadCurrentUser(isMetaPage) {
+    const userId = getFromSessionStorage("userId");
+    const user = await loadUserById(userId, isMetaPage);
 
-    if (actionsDialog.open) {
-        actionsDialog.close();
-        document.body.classList.remove("overflow-hidden");
+    if (!user) {
+        if (!isMetaPage) {
+            window.location.href = `../index.html`;
+        }
+        return null;
     }
 
-    if (contactDialog.open) contactDialog.requestClose();
+    setInitialsToProfileButton(user);
+    return userId;
 }
 
 /**
- * Closes the task dialog immediately and clears its state.
+ * Loads a user by ID.
+ * Returns null if the ID is missing or the user does not exist.
+ * Suppresses loading errors on public pages.
  *
- * @param {HTMLDialogElement} dialog - The task dialog to close.
+ * @param {UserId|null} userId - The user ID to load.
+ * @param {boolean} [isMetaPage=false] - Whether the current page is public.
+ * @returns {Promise<User|null>} The user, or null if missing or loading fails on a public page.
+ * @throws {Error} If loading fails on a non-public page.
+ */
+async function loadUserById(userId, isMetaPage = false) {
+    if (!userId) return null;
+
+    try {
+        return await getData(DB_USERS, userId);
+    } catch (error) {
+        if (!isMetaPage) throw error;
+        return null;
+    }
+}
+
+/**
+ * Returns the account email using the user ID stored in session storage.
+ * Guest access deliberately has no email for UI markers.
+ *
+ * @returns {Promise<string|null>} Email address or null for guest access.
+ */
+async function getLoggedInUserEmail() {
+    const userId = getFromSessionStorage("userId");
+
+    if (userId === DB_GUEST_USER_ID) return null;
+
+    return getData(DB_USERS + userId + "/email");
+}
+
+/**
+ * Returns the UI suffix for the logged-in user's matching contact.
+ *
+ * @param {string} contactEmail Email address of the displayed contact.
+ * @param {string|null} loggedUserEmail Email address of the logged-in user.
+ * @returns {string} The "(you)" suffix or an empty string.
+ */
+function getCurrentUserSuffix(contactEmail, loggedUserEmail) {
+    const isCurrentUser = contactEmail?.toLowerCase() === loggedUserEmail?.toLowerCase();
+
+    return isCurrentUser ? " (you)" : "";
+}
+
+/**
+ * Updates the profile button using the loaded user's initials and type.
+ *
+ * @param {User} user - The loaded user data.
  * @returns {void}
  */
-function closeTaskDialogImmediately(dialog) {
-    dialog.classList.remove("dialog-task-closing");
-    dialog.dataset.taskId = "";
-    dialog.dataset.taskStatus = "";
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
+function setInitialsToProfileButton(user) {
+    const button = document.querySelector(".header-profile-initials-button");
+    const userInitials = user.initials;
+
+    if (user.type === "guest") {
+        button.classList.add(user.type);
+    }
+
+    button.textContent = userInitials;
+    button.setAttribute("aria-label", "Open service links and log out");
+}
+
+/**
+ * Serializes a value as JSON and stores it in session storage.
+ *
+ * @param {string} key - The storage key.
+ * @param {*} value - The JSON-serializable value to store.
+ * @returns {void}
+ */
+function putToSessionStorage(key, value) {
+    sessionStorage.setItem(key, JSON.stringify(value));
+}
+
+/**
+ * Reads and parses a JSON value from session storage.
+ * Logs read or parse errors and returns null when reading fails.
+ *
+ * @param {string} key - The storage key.
+ * @returns {*} The parsed value, or null if the key is missing or reading fails.
+ */
+function getFromSessionStorage(key) {
+    try {
+        return JSON.parse(sessionStorage.getItem(key));
+    } catch (error) {
+        console.error("Failed to read session storage:", error);
+        return null;
+    }
+}
+
+/**
+ * Handles pages restored from the back/forward cache without a stored user ID.
+ * Leaves normal page loads and pages with a stored user ID unchanged.
+ *
+ * @param {PageTransitionEvent} event - The pageshow event.
+ * @returns {void}
+ */
+function checkLoginStateOnPageShow(event) {
+    if (!event.persisted || getFromSessionStorage("userId")) return;
+
+    handleLoggedOutPage();
+}
+
+/**
+ * Reloads legal and privacy pages to refresh their logged-out navigation.
+ * Replaces all other current pages with the login page.
+ *
+ * @returns {void}
+ */
+function handleLoggedOutPage() {
+    const path = window.location.pathname;
+    const isMetaPage = path.endsWith("legalNotice.html") || path.endsWith("privacyPolicy.html");
+
+    if (isMetaPage) {
+        window.location.reload();
+        return;
+    }
+
+    window.location.replace("../index.html");
 }

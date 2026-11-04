@@ -1,0 +1,80 @@
+
+html:has(.add-task-page),
+.add-task-page :is(.assigned-options, .assigned-badges, .category-options, textarea) {
+    scrollbar-width: none;
+}
+
+.board-inner.add-task-inner {
+    padding-inline: var(--space-lg);
+}
+
+.add-task-inner > h1 {
+    padding-bottom: var(--space-xs);
+}
+
+.add-task-inner > h1 {
+    position: sticky;
+    top: calc(
+        var(--mobile-header-footer-height)
+        + clamp(48px, 6vw, 96px)
+    );
+    z-index: 3;
+
+    isolation: isolate;
+    background-color: var(--background-bright-color);
+}
+
+.add-task-inner > h1::before {
+    content: "";
+
+    position: absolute;
+    top: calc(-1 * clamp(48px, 6vw, 96px));
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+
+    background-color: var(--background-bright-color);
+}
+
+.board.add-task-page {
+    padding-bottom: calc(var(--mobile-header-footer-height) + 150px);
+    background-color: var(--background-bright-color);
+}
+
+body:has(.add-task-inner) #notification {
+    top: auto;
+    bottom: calc(96px + clamp(48px, 14vw, 64px) + 16px);
+    left: 50%;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    text-align: center;
+    --notification-transform: translateX(-50%);
+}
+
+@media screen and (min-width: 1280px) {
+    body:has(.add-task-inner) #notification {
+        top: 50%;
+        bottom: auto;
+        width: auto;
+        max-width: none;
+        text-align: left;
+        --notification-transform: translate(-50%, -50%);
+    }
+
+    html:has(.add-task-page),
+    .add-task-page :is(.assigned-options, .assigned-badges, .category-options, textarea) {
+        scrollbar-width: auto;
+    }
+
+    .board.add-task-page {
+        padding-bottom: 0;
+    }
+
+    .board-inner.add-task-inner {
+        margin-top: 0;
+        padding-block-start: clamp(48px, 6vw, 96px);
+        padding-inline-start: calc(2 * var(--space-xl));
+        padding-inline-end: var(--space-xl);
+    }
+}

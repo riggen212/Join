@@ -1,0 +1,113 @@
+:root {
+    /* From style.css */
+    --background-dark-color: #2a3647;
+    --background-bright-color: #f6f7f8;
+    --background-dark-hover-color: #124658;
+
+    --color-grey-bright: #a8a8a8;
+
+    --border-radius-high: 30px;
+    --border-radius-middle: 10px;
+    --border-radius-small: 8px;
+
+    --content-max-width: 1440px;
+    --breakpoint-mobile-to-desktop: 1280px;
+
+    --link-color: #124658;
+
+    --input-focus-color: rgba(41 171 226 / 0.5);
+
+    /* root settings for login screen */
+    --space-xxs: 4px;
+    --space-xs: 8px;
+    --space-sm: clamp(8px, 6.86px + 0.36vw, 12px);
+    --space-md: clamp(8px, 5.71px + 0.71vw, 16px);
+    --space-lg: clamp(16px, 13.71px + 0.71vw, 24px);
+    --space-xl: clamp(24px, 17.14px + 2.14vw, 48px);
+    --space-xxl: 56px;
+
+    --font-input: clamp(16px, 14.86px + 0.36vw, 20px);
+    --font-button: clamp(16px, 14.86px + 0.36vw, 20px);
+    --font-heading: clamp(40px, 34.29px + 1.79vw, 60px);
+    --font-heading-h2: clamp(36px, 29.14px + 2.14vw, 60px);
+    --font-heading-strong: clamp(48px, 44.57px + 1.07vw, 60px);
+    --font-heading-two-desktop: 20px;
+    --font-heading-two-mobile: 27px;
+
+    --logo-start-size: clamp(180px, 111.43px + 21.43vw, 420px);
+    --logo-end-size: clamp(64px, 53.71px + 3.21vw, 100px);
+
+    --button-hover-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+    --button-dark-active-background-color: #091931;
+    --button-dark-hover-bright-background-color: #29abe2;
+
+    /* root settings for header/navbar */
+    --navbar-link-grey-color: #cdcdcd;
+    --navbar-link-border-radius: 16px;
+    --navbar-desktop-link-height: 48px;
+    --navbar-desktop-width: 220px;
+    --navbar-desktop-padding-block: 64px;
+    --mobile-header-footer-height: 80px;
+
+    /* root settings for buttons */
+    --size-button-add-mobile-dark: clamp(36px, 34.8571px + 0.3571vw, 40px);
+    --size-button-add-mobile-bright: clamp(26px, 24.8571px + 0.3571vw, 30px);
+    --size-button-search: clamp(30px, 27.1429px + 0.8929vw, 40px);
+
+    /* root settings for badges */
+    --size-badge-user: clamp(40px, 38.8571px + 0.3571vw, 44px);
+
+    --color-badge-user-orange: #ff7a00;
+    --color-badge-user-red: #ff4646;
+    --color-badge-user-purple: #9327ff;
+    --color-badge-user-pink: #fc71ff;
+    --color-badge-user-blue-dark: #462f8a;
+    --color-badge-user-blue-medium: #6e52ff;
+    --color-badge-user-blue-light: #00bee8;
+    --color-badge-user-mint: #1fd7c1;
+    --color-badge-user-yellow: #ffbb2b;
+
+    --color-badge-type-blue: #0038ff;
+    --color-badge-type-green: #1fd7c1;
+
+    /* From login.css */
+    --login-max-width: 650px;
+    --form-max-width: 460px;
+
+    /* From summaryPage.css */
+    /* SVG scale */
+    --image-to-do-size: clamp(40px, 31.4286px + 2.6786cqi, 70px);
+    --image-deadline-size: clamp(40px, calc(1.98vw + 33.67px), 59px);
+
+    /* Container mobile To-Do, Done, Taks in Board, in progresse, Awaiting feedback*/
+
+    --todo-card-width: clamp(186px, calc(3.55vw + 174.65px), 220px);
+    --task-container-width: clamp(116px, calc(10.84vw + 81.3px), 140px);
+
+    /*Container Desktop */
+    --todo-card-desktop-width: clamp(221px, calc(26.875vw - 123px), 264px);
+    --task-container-desktop-width: clamp(141px, calc(15.625vw - 59px), 166px);
+
+    /* From board.css */
+    --color-input-placeholder: #d1d1d1;
+
+    --color-card-task-progress-grey: #f4f4f4;
+    --color-card-task-progress-blue: #4589ff;
+    --color-overlay-task-details-term: #42526e;
+
+    --background-board-feedback-color: #e7e7e7;
+
+    --size-input-height: clamp(48px, 45.71px + 0.71vw, 56px);
+    --size-task-card-width: 250px;
+
+    --font-size-task: 16px;
+    --font-size-task-overlay-heading-two: clamp(32px, 29.7143px + 0.7143vw, 40px);
+    --space-task: 16px;
+
+    --border-radius-task-card: 24px;
+
+    /* From taskForm.css */
+    --task-fields-max-width: calc(405px + var(--space-md) + var(--space-md));
+    --task-column-gap-half: clamp(12px, 8.57px + 1.07vw, 24px);
+    --task-label-input-gap: 12px;
+}
