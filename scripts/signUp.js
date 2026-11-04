@@ -28,7 +28,8 @@ async function handleSignUp(data) {
         const signUpSuccessful = await processSignUp(data);
         if (signUpSuccessful) window.location.href = "../index.html?signup=success#login";
     } catch (error) {
-        showNotification("Registration failed. Please try again.", "error");
+        const form = document.getElementById("signUpForm");
+        showFormError(form, "Registration failed. Please try again.");
     } finally {
         signUpButton.disabled = false;
     }
@@ -49,40 +50,66 @@ function getSignUpData() {
 }
 
 /**
- * Validates registration data and shows the first error as a notification.
+ * Validates registration data and refreshes the displayed form errors.
+ * Displays all detected errors beside their corresponding fields.
  *
- * @param {Object} user - Registration data.
+ * @param {Object} data - The registration data.
  * @returns {boolean} Whether the registration data is valid.
  */
-function validateSignUpData(user) {
-    const error = getSignUpValidationError(user);
-    if (!error) return true;
+function validateSignUpData(data) {
+    const errors = getSignUpValidationErrors(data);
+    const form = document.getElementById("signUpForm");
 
-    showNotification(error, "error");
-    return false;
+    clearFormError(form);
+    showFormFieldErrors(form, errors);
+
+    return Object.keys(errors).length === 0;
 }
 
 /**
- * Checks required fields, email format, matching passwords and policy acceptance.
+ * Checks required fields, email format, passwords and policy acceptance.
  *
- * @param {Object} user - Registration data.
- * @returns {string} The first error message, or an empty string if valid.
+ * @param {Object} data - The registration data.
+ * @returns {Object.<string, string>} Error messages indexed by input ID,
+ * or an empty object if valid.
  */
-function getSignUpValidationError(user) {
-    if (!user.name || !user.email || !user.password || !user.confirmPassword)
-        return "Please fill in all fields.";
-    if (!isValidEmail(user.email))
-        return "Please enter a valid email address.";
-    if (user.password !== user.confirmPassword)
-        return "Passwords do not match.";
-    if (!user.acceptPolicy)
-        return "Please accept the Privacy Policy.";
-    return "";
+function getSignUpValidationErrors(data) {
+    const errors = {};
+
+    if (!data.name) errors.nameField = "Please enter your name.";
+    if (!data.email) errors.emailField = "Please enter your email.";
+    else if (!isValidEmail(data.email)) errors.emailField = "Please enter a valid email address.";
+
+    Object.assign(errors, getSignUpPasswordErrors(data));
+
+    if (!data.acceptPolicy) errors.acceptPolicy = "Please accept the Privacy Policy.";
+
+    return errors;
+}
+
+/**
+ * Checks password presence, confirmation and equality in that order.
+ * Marks only the first password when empty, only an empty confirmation
+ * when the first password is filled, or both fields when their values differ.
+ *
+ * @param {{password: string, confirmPassword: string}} data - The entered passwords.
+ * @returns {Object.<string, string>} Error messages indexed by password input ID,
+ * or an empty object if valid.
+ */
+function getSignUpPasswordErrors(data) {
+    if (!data.password) return { passwordField: "Please enter a password." };
+    if (!data.confirmPassword) return { confirmPasswordField: "Please confirm your password." };
+    if (data.password !== data.confirmPassword)
+        return {
+            passwordField: "Passwords do not match.",
+            confirmPasswordField: "Passwords do not match.",
+        };
+    return {};
 }
 
 /**
  * Checks email availability and saves the new user and contact.
- * Shows a notification if the email is already registered.
+ * Displays a field error if the email is already registered.
  *
  * @param {Object} data - Validated registration data.
  * @returns {Promise<boolean>} True after saving, false if the email already exists.
@@ -90,9 +117,12 @@ function getSignUpValidationError(user) {
  */
 async function processSignUp(data) {
     const exists = await doesEmailAlreadyExist(data.email);
-    
+
     if (exists) {
-        showNotification("This email address is already registered.", "error");
+        const form = document.getElementById("signUpForm");
+        showFormFieldErrors(form, {
+            emailField: "This email address is already registered.",
+        });
         return false;
     }
 
@@ -240,7 +270,7 @@ function toggleSignUpPassword(fieldId, iconId) {
 }
 
 /**
- * Updates the password button based on the required input fields.
+ * Updates the visibility button and icon based on the password field's content.
  *
  * @param {string} fieldId - ID of the password input.
  * @param {string} iconId - ID of the eye icon.
@@ -250,7 +280,7 @@ function updateSignUpPasswordIcon(fieldId, iconId) {
     const input = document.getElementById(fieldId);
     const icon = document.getElementById(iconId);
     const button = icon.closest("button");
-    const canShowPassword = checkSignUpFields(input);
+    const canShowPassword = input.value.length > 0;
 
     button.disabled = !canShowPassword;
 
@@ -271,12 +301,12 @@ function resetSignUpPassword(input, button) {
 }
 
 /**
- * Updates the eye icon and accessibility label.
+ * Updates the password icon and accessibility label for the current field state.
  *
- * @param {HTMLInputElement} input - Password input element.
- * @param {HTMLImageElement} icon - Eye icon element.
- * @param {HTMLButtonElement} button - Password toggle button.
- * @param {boolean} hasPassword - Whether the required fields are filled.
+ * @param {HTMLInputElement} input - The password input element.
+ * @param {HTMLImageElement} icon - The password visibility icon.
+ * @param {HTMLButtonElement} button - The password visibility toggle button.
+ * @param {boolean} hasPassword - Whether this password input contains text.
  * @returns {void}
  */
 function updateSignUpEyeIcon(input, icon, button, hasPassword) {
@@ -289,27 +319,4 @@ function updateSignUpEyeIcon(input, icon, button, hasPassword) {
         : isVisible
           ? "../assets/icons/eyeOpen.svg"
           : "../assets/icons/eyeClose.svg";
-}
-
-/**
- * Updates the visibility icons of both sign-up password fields.
- *
- * @returns {void}
- */
-function updateSignUpPasswordIcons() {
-    updateSignUpPasswordIcon("passwordField", "passwordEyeIcon");
-    updateSignUpPasswordIcon("confirmPasswordField", "confirmPasswordEyeIcon");
-}
-
-/**
- * Checks whether the name, email and password fields contain values.
- *
- * @param {HTMLInputElement} input - Password input to check.
- * @returns {boolean} True if all required fields contain values.
- */
-function checkSignUpFields(input) {
-    const name = document.getElementById("nameField").value.trim();
-    const email = document.getElementById("emailField").value.trim();
-
-    return name !== "" && email !== "" && input.value.length > 0;
 }

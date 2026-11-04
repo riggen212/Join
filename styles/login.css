@@ -337,12 +337,3 @@ body#login:target footer {
         animation: none;
     }
 }
-
-.login-fail {
-    border-color: red;
-}
-
-.login-text-fail {
-    color: red;
-    margin-top: -8px;
-}

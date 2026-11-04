@@ -33,25 +33,11 @@ async function login(event) {
     event.preventDefault();
     if (isLoginPending) return;
 
-    clearLoginError();
+    const form = event.currentTarget;
+    clearFormError(form);
     setLoginBusy(true);
 
     await handleLoginAttempt(event);
-}
-
-/**
- * Clears the login error message, visual error markers and invalid states.
- *
- * @returns {void}
- */
-function clearLoginError() {
-    const errorText = document.getElementById("loginTextError");
-    errorText.textContent = "";
-    errorText.classList.remove("login-text-fail");
-    document.getElementById("emailField").removeAttribute("aria-invalid");
-    document.getElementById("passwortField").removeAttribute("aria-invalid");
-    document.getElementById("loginEmailRed").classList.remove("login-fail");
-    document.getElementById("loginPasswordRed").classList.remove("login-fail");
 }
 
 /**
@@ -178,13 +164,8 @@ function getLoginValidationError(data) {
  * @returns {void}
  */
 function showLoginError(message) {
-    document.getElementById("loginTextError").innerText = message;
-
-    document.getElementById("emailField").setAttribute("aria-invalid", "true");
-    document.getElementById("passwortField").setAttribute("aria-invalid", "true");
-    document.getElementById("loginEmailRed").classList.add("login-fail");
-    document.getElementById("loginPasswordRed").classList.add("login-fail");
-    document.getElementById("loginTextError").classList.add("login-text-fail");
+    const form = document.getElementById("emailField").form;
+    showFormError(form, message, ["emailField", "passwortField"]);
 }
 
 /**
@@ -194,9 +175,8 @@ function showLoginError(message) {
  * @returns {void}
  */
 function showLoginConnectionError() {
-    const errorText = document.getElementById("loginTextError");
-    errorText.classList.add("login-text-fail");
-    errorText.textContent = "Login is currently unavailable. Please try again later.";
+    const form = document.getElementById("emailField").form;
+    showFormError(form, "Login is currently unavailable. Please try again later.");
 }
 
 /**
