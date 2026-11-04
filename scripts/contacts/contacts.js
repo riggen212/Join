@@ -118,46 +118,6 @@ function renderContactList(contactDirectory) {
 }
 
 /**
- * Renders the selected contact and stores its ID on the detail view.
- *
- * @param {ContactId} contactId - The ID of the selected contact.
- * @returns {void}
- */
-function renderContactDetails(contactId) {
-    const contact = contacts[contactId];
-    const contactDetails = document.getElementById("show-details");
-
-    if (!contact) return;
-
-    contactDetails.dataset.contactId = contactId;
-    document.getElementById("contact-details-info").innerHTML = getContactDetailsTemplate(contact, loggedInUserEmail);
-}
-
-/**
- * Returns the currently selected contact together with its ID.
- *
- * @returns {ContactEntry|null} The selected contact entry.
- */
-function getSelectedContactEntry() {
-    const details = document.getElementById("show-details");
-    const contactId = details.dataset.contactId;
-    const contact = contacts[contactId];
-
-    return contact ? { id: contactId, contact } : null;
-}
-
-/**
- * Marks the corresponding contact card as selected after rerendering.
- *
- * @param {ContactId} contactId - The ID of the selected contact.
- * @returns {void}
- */
-function markContactCardSelected(contactId) {
-    const card = document.querySelector(`[data-contact-id="${contactId}"]`);
-    card?.classList.add("is-selected");
-}
-
-/**
  * Closes a contact form dialog and schedules its success notification.
  *
  * @param {HTMLFormElement} form - The submitted contact form.
@@ -170,16 +130,6 @@ function closeContactFormWithNotification(form, message) {
     dialog.dataset.notification = message;
     dialog.dataset.notificationContainer = "show-details";
     dialog.requestClose();
-}
-
-/**
- * Finishes the closing animation of the contact form dialog.
- *
- * @param {AnimationEvent} event - The dialog animation event.
- * @returns {void}
- */
-function closeContactDialog(event) {
-    closeAnimatedDialog(event, "contact-closing");
 }
 
 /**
@@ -223,18 +173,6 @@ async function createContact(event) {
     } catch (error) {
         showNotification("Contact could not be created. Please try again.", "error");
     }
-}
-
-/**
- * Selects a contact card and opens its detail view.
- *
- * @param {ContactId} contactId - The ID of the contact to display.
- * @returns {void}
- */
-function showContactById(contactId) {
-    const contactCard = document.querySelector(`[data-contact-id="${contactId}"]`);
-
-    if (contactCard) showContactDetails(contactCard);
 }
 
 /**
@@ -293,6 +231,7 @@ async function removeContact(contactId) {
     renderContactList(contacts);
     hideContactDetails();
     closeDialogAfterContactDeletion("Contact successfully deleted");
+    setNewFocusOnFirstContactcard();
 }
 
 /**

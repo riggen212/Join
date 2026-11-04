@@ -51,6 +51,7 @@ let boardSearchAnnouncementTimeout;
  * Loads the current user, tasks, and contacts, then renders the board.
  * Caches the user ID globally and replaces the board content with a persistent
  * error message if loading or rendering fails.
+ * Announces successful task creation after navigation from Add Task.
  * Stops initialization if no valid user is available.
  *
  * @returns {Promise<void>} Resolves after rendering, error handling or an early return.
@@ -61,13 +62,31 @@ async function initBoard() {
         if (!loggedUserId) return;
         await loadBoardData();
         renderBoard(Object.values(board));
+        announceCreatedTask();
     } catch (error) {
         const boardContainer = document.querySelector(".board");
-        boardContainer.innerHTML = `
-        <p class="board-loading-error" role="alert">
-            Board could not be loaded. Please reload the page.
-        </p>`;
+        boardContainer.innerHTML = getBoardLoadingFailureTemplate();
     }
+}
+
+/**
+ * Announces successful task creation after navigation to the board.
+ * Removes the URL flag to prevent repetition when reloading.
+ * Focuses the Add Task button and associates the creation confirmation with it.
+ *
+ * @returns {void}
+ */
+function announceCreatedTask() {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("taskCreated") !== "true") return;
+    const result = document.getElementById("board-creation-result");
+    const button = document.querySelector("#board-header > button");
+    if (!result || !button) return;
+    url.searchParams.delete("taskCreated");
+    window.history.replaceState(window.history.state, "", url.href);
+    result.textContent = "Task added to board";
+    button.setAttribute("aria-label", "Task added to board. Add Task");
+    button.focus();
 }
 
 initBoard();

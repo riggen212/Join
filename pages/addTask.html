@@ -34,24 +34,32 @@
                     <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
+
                 <div class="d-flex-align-center gap-lg">
                     <a href="../pages/help.html" data-nav-link class="header-link">
                         <img src="../assets/icons/help.svg" alt="Help" />
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
+
+                    <button class="header-profile-initials-button" type="button" onclick="openDialog('dialog-profile')"
+                        aria-label="Open service links and log out"
+                        aria-haspopup="dialog"
+                        aria-controls="dialog-profile"
+                        aria-expanded="false"
+                    ></button>
                 </div>
             </div>
+
             <dialog
                 id="dialog-profile"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
                 onanimationend="closeProfileDialog(event)"
+                aria-label="Service links and log out"
             >
-                <nav>
+                <nav aria-label="Service links">
                     <ul>
                         <li>
-                            <a
-                                id="link-help-profile-dialog"
+                            <a id="link-help-profile-dialog"
                                 href="../pages/help.html"
                                 data-nav-link
                                 class="link-navbar"
@@ -91,31 +99,31 @@
         </header>
 
         <div class="app-wrapper">
-            <nav class="navbar">
+            <nav class="navbar" aria-label="Main navigation">
                 <div class="navbar-wrapper">
                     <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
                             <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                                <img src="../assets/icons/summary.svg" alt="" />
                                 <span>Summary</span>
                             </a>
                         </li>
                         <li>
-                            <a href="../pages/addTask.html" data-nav-link class="link-navbar active">
-                                <img src="../assets/icons/addTask.svg" alt="Add task icon" />
+                            <a href="../pages/addTask.html" data-nav-link class="link-navbar active" aria-current="page">
+                                <img src="../assets/icons/addTask.svg" alt="" />
                                 <span>Add Task</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/board.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="Board icon" />
+                                <img src="../assets/icons/board.svg" alt="" />
                                 <span>Board</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/contacts.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                                <img src="../assets/icons/contacts.svg" alt="" />
                                 <span>Contacts</span>
                             </a>
                         </li>
@@ -140,5 +148,7 @@
                 <div class="board-inner add-task-inner"></div>
             </main>
         </div>
+
+        <div class="visually-hidden" data-notification-live="success" role="status" aria-live="polite" aria-atomic="true"></div>
     </body>
 </html>
