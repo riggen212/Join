@@ -37,7 +37,13 @@
                         <h1>Sign up</h1>
                     </div>
 
-                    <form id="signUpForm" novalidate onsubmit="signUp(event)">
+                    <form
+                        id="signUpForm"
+                        novalidate
+                        onsubmit="signUp(event)"
+                        oninput="updateSignUpButton()"
+                        onchange="updateSignUpButton()"
+                    >
                         <div class="form-field">
                             <div class="input-wrapper">
                                 <input
@@ -178,7 +184,9 @@
                             <div class="form-field">
                                 <p class="form-error" data-form-error role="alert"></p>
 
-                                <button class="button button-dark" type="submit" id="signUpButton">Sign up</button>
+                                <button class="button button-dark" type="submit" id="signUpButton" disabled>
+                                    Sign up
+                                </button>
                             </div>
                         </div>
                     </form>

@@ -1,3 +1,5 @@
+let isSignUpSaving = false;
+
 /**
  * Prevents native submission and starts sign-up for valid form data.
  *
@@ -21,17 +23,43 @@ async function signUp(event) {
  * @returns {Promise<void>} Resolves after the attempt and cleanup.
  */
 async function handleSignUp(data) {
-    const signUpButton = document.getElementById("signUpButton");
-    signUpButton.disabled = true;
+    if (isSignUpSaving) return;
+
+    setSignUpSaving(true);
 
     try {
-        const signUpSuccessful = await processSignUp(data);
-        if (signUpSuccessful) window.location.href = "../index.html?signup=success#login";
+        await attemptSignUp(data);
+    } finally {
+        setSignUpSaving(false);
+    }
+}
+
+/**
+ * Updates the saving state and refreshes the sign-up button.
+ *
+ * @param {boolean} isSaving - Whether registration is being saved.
+ * @returns {void}
+ */
+function setSignUpSaving(isSaving) {
+    isSignUpSaving = isSaving;
+    updateSignUpButton();
+}
+
+/**
+ * Processes registration, redirects on success and displays errors.
+ *
+ * @param {Object} data - Validated registration data.
+ * @returns {Promise<void>}
+ */
+async function attemptSignUp(data) {
+    try {
+        const successful = await processSignUp(data);
+        if (successful) {
+            window.location.href = "../index.html?signup=success#login";
+        }
     } catch (error) {
         const form = document.getElementById("signUpForm");
         showFormError(form, "Registration failed. Please try again.");
-    } finally {
-        signUpButton.disabled = false;
     }
 }
 
@@ -319,4 +347,16 @@ function updateSignUpEyeIcon(input, icon, button, hasPassword) {
         : isVisible
           ? "../assets/icons/eyeOpen.svg"
           : "../assets/icons/eyeClose.svg";
+}
+
+/**
+ * Enables sign-up when all required fields are filled and policy is accepted.
+ *
+ * @returns {void}
+ */
+function updateSignUpButton() {
+    const data = getSignUpData();
+    const isComplete = data.name && data.email && data.password && data.confirmPassword && data.acceptPolicy;
+
+    document.getElementById("signUpButton").disabled = !isComplete || isSignUpSaving;
 }
