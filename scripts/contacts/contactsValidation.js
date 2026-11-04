@@ -16,7 +16,6 @@ function getContactFormValues(form) {
     };
 }
 
-
 /**
  * Validates the entered contact form values.
  *
@@ -54,7 +53,6 @@ function renderContactValidationErrors(form, errors) {
     });
 }
 
-
 /**
  * Displays or clears the validation feedback of one input.
  *
@@ -71,7 +69,6 @@ function renderContactValidationError(input, message) {
     error.textContent = message;
 }
 
-
 /**
  * Validates one contact input while the user is typing.
  *
@@ -86,9 +83,9 @@ function validateContactField(input) {
     renderContactValidationError(input, errors[input.name] ?? "");
 }
 
-
 /**
  * Validates a contact form and returns its values only when they are valid.
+ * Focuses the first invalid field when validation errors are found.
  *
  * @param {HTMLFormElement} form - The submitted contact form.
  * @returns {ContactFormValues|null} The valid form values, or null on errors.
@@ -98,5 +95,11 @@ function getValidContactFormValues(form) {
     const errors = getContactValidationErrors(values);
 
     renderContactValidationErrors(form, errors);
-    return Object.keys(errors).length ? null : values;
+    if (Object.keys(errors).length !== 0) {
+        const firstInvalidField = Object.keys(errors)[0];
+        form.querySelector(`[name="${firstInvalidField}"]`)?.focus();
+        return null;
+    }
+
+    return values;
 }

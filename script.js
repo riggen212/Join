@@ -77,25 +77,8 @@ async function patchData(path = "", value = {}) {
 function deleteData(path) {
     return putData(path, null);
 }
+        
 
-/**
- * Selects a contact card and opens its detail view.
- *
- * @param {HTMLElement} card - The contact card that was clicked.
- * @returns {void}
- */
-function showContactDetails(card) {
-    const contactDetails = document.getElementById("show-details");
-    const selectedContact = document.querySelector(".contact-card.is-selected");
-    if (selectedContact === card) return hideContactDetails();
-    selectedContact?.classList.remove("is-selected");
-    card.classList.add("is-selected");
-    renderContactDetails(card.dataset.contactId);
-    restartContactDetailsAnimation(contactDetails);
-    contactDetails.classList.add("is-open");
-    document.documentElement.classList.add("contact-details-open");
-    document.body.classList.add("contact-details-open");
-}
 
 /**
  * Plays the contact details slide-in animation again if it already exists.
@@ -114,37 +97,6 @@ function restartContactDetailsAnimation(contactDetails) {
 
     animation.currentTime = 0;
     animation.play();
-}
-
-/**
- * Hides the contact details and clears the current selection.
- *
- * @returns {void}
- */
-function hideContactDetails() {
-    const contactDetails = document.getElementById("show-details");
-
-    contactDetails.classList.remove("is-open");
-    document.documentElement.classList.remove("contact-details-open");
-    document.body.classList.remove("contact-details-open");
-    document.querySelector(".contact-card.is-selected")?.classList.remove("is-selected");
-
-    hideContactActions();
-    delete contactDetails.dataset.contactId;
-    document.getElementById("contact-details-info").innerHTML = "";
-}
-
-/**
- * Hides the contact actions and resets the mobile menu button.
- *
- * @returns {void}
- */
-function hideContactActions() {
-    const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(".contact-details > .contact-add");
-
-    actions?.classList.remove("is-open");
-    menuButton?.setAttribute("aria-expanded", "false");
 }
 
 /**
@@ -197,25 +149,6 @@ function addNewContact() {
         dialog.innerHTML = renderAddContactTemplate();
         openDialog("contact");
     }
-}
-
-/**
- * Opens the edit dialog with the currently selected contact's data.
- * Closes the mobile contact actions dialog before showing the edit form.
- *
- * @returns {void}
- */
-function editContact() {
-    const dialog = document.getElementById("contact");
-    const actionsDialog = document.getElementById("dialog-edit-contact");
-    const selectedContact = getSelectedContactEntry();
-
-    if (!selectedContact || dialog.open) return;
-    if (actionsDialog.open) actionsDialog.close();
-
-    dialog.classList.add("contact-edit");
-    dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);
-    openDialog("contact");
 }
 
 /**
@@ -341,7 +274,7 @@ function putToSessionStorage(key, value) {
 
 /**
  * Reads and parses a JSON value from session storage.
- * Logs read or parse errors and returns null when reading fails.
+ * Returns null when reading or parsing fails.
  *
  * @param {string} key - The storage key.
  * @returns {*} The parsed value, or null if the key is missing or reading fails.
@@ -350,7 +283,6 @@ function getFromSessionStorage(key) {
     try {
         return JSON.parse(sessionStorage.getItem(key));
     } catch (error) {
-        console.error("Failed to read session storage:", error);
         return null;
     }
 }
