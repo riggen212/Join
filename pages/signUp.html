@@ -1,100 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="../script.js" defer></script>
+        <script src="../scripts/notifications.js" defer></script>
+        <script src="../scripts/contacts/contactsValidation.js" defer></script>
+        <script src="../scripts/contacts/contactData.js" defer></script>
+        <script src="../scripts/signUp.js" defer></script>
+        <link rel="icon" type="image/x-icon" href="../assets/icons/logoDark.svg" />
 
-    <script src="../script.js" defer></script>
-    <script src="../scripts/notifications.js" defer></script>
-    <script src="../scripts/signUp.js" defer></script>
-    <link rel="icon" type="image/x-icon" href="../assets/icons/logoDark.svg">
-    
-    <link rel="stylesheet" href="../styles/root.css">
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../styles/components.css">
-    <link rel="stylesheet" href="../styles/login.css">
-    <link rel="stylesheet" href="../styles/signUp.css">
-    <link rel="stylesheet" href="../styles/fonts.css">
+        <link rel="stylesheet" href="../styles/root.css" />
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../styles/components.css" />
+        <link rel="stylesheet" href="../styles/login.css" />
+        <link rel="stylesheet" href="../styles/signUp.css" />
+        <link rel="stylesheet" href="../styles/fonts.css" />
 
-    <title>Join</title>
-</head>
+        <title>Join</title>
+    </head>
 
-<body class="sign-up-page">
-    <header>
-    </header>
-    <main>
-        <div class="landing-page-content">
-            <img class="logo-bright" src="../assets/icons/logoBright.svg" alt="">
-            <img class="logo-dark" src="../assets/icons/logoDark.svg" alt="">
-            <section class="main-wrapper">
-                <div class="sign-up-headline">
-                    <a href="../index.html#login" class="button-close back-to-login" aria-label="Back to login">
-                        <img src="../assets/icons/arrow.svg" alt="">
-                    </a>
-                    <h1>Sign up</h1>
-                </div>
-
-                <form id="signUpForm">
-                    <div class="input-wrapper">
-                        <input  type="text" id="nameField" autocomplete="name" placeholder="Name" required
-                                oninput="updateSignUpPasswordIcons()">
-                        <span class="input-icon">
-                            <img src="../assets/icons/person.svg" alt="">
-                        </span>
+    <body class="sign-up-page">
+        <header></header>
+        <main>
+            <div class="landing-page-content">
+                <img class="logo-bright" src="../assets/icons/logoBright.svg" alt="" />
+                <img class="logo-dark" src="../assets/icons/logoDark.svg" alt="" />
+                <section class="main-wrapper">
+                    <div class="sign-up-headline">
+                        <a href="../index.html#login" class="button-close back-to-login" aria-label="Back to login">
+                            <img src="../assets/icons/arrow.svg" alt="" />
+                        </a>
+                        <h1>Sign up</h1>
                     </div>
 
-                    <div class="input-wrapper">
-                        <input  type="email" id="emailField" autocomplete="email" placeholder="Email" required
-                                oninput="updateSignUpPasswordIcons()">
-                        <span class="input-icon">
-                            <img src="../assets/icons/mail.svg" alt="">
-                        </span>
-                    </div>
-
-                    <div class="input-wrapper">
-                        <input type="password" id="passwordField"
-                            autocomplete="new-password" placeholder="Password" required
-                            oninput="updateSignUpPasswordIcon('passwordField', 'passwordEyeIcon')">
-
-                        <button type="button" disabled
-                            onclick="toggleSignUpPassword('passwordField', 'passwordEyeIcon')"
-                            aria-label="Show password" aria-pressed="false">
-                            <img id="passwordEyeIcon" src="../assets/icons/showPassword.svg" alt="">
-                        </button>
-                    </div>
-
-                    <div class="input-wrapper">
-                        <input type="password" id="confirmPasswordField"
-                            autocomplete="new-password" placeholder="Confirm Password" required
-                            oninput="updateSignUpPasswordIcon('confirmPasswordField', 'confirmPasswordEyeIcon')">
-
-                        <button type="button" disabled
-                            onclick="toggleSignUpPassword('confirmPasswordField', 'confirmPasswordEyeIcon')"
-                            aria-label="Show password" aria-pressed="false">
-                            <img id="confirmPasswordEyeIcon" src="../assets/icons/showPassword.svg" alt="">
-                        </button>
-                    </div>
-
-                    <div class="sign-up-button-area">
-                        <div class="d-flex-align-center gap-xxs">
-                            <input type="checkbox" name="accept_policy" id="acceptPolicy">
-                            <label for="acceptPolicy">I accept the
-                                <a href="../pages/privacyPolicy.html" target="_blank">Privacy Policy</a>
-                            </label>
+                    <form id="signUpForm" novalidate onsubmit="signUp(event)">
+                        <div class="input-wrapper">
+                            <input
+                                type="text"
+                                id="nameField"
+                                autocomplete="name"
+                                placeholder="Name"
+                                required
+                                oninput="updateSignUpPasswordIcons()"
+                            />
+                            <span class="input-icon">
+                                <img src="../assets/icons/person.svg" alt="" />
+                            </span>
                         </div>
-                        <button class="button button-dark" type="button" id="signUpButton">
-                            Sign up
-                        </button>
-                    </div>
-                </form>
-            </section>
-        </div>
-    </main>
-    <footer>
-        <a href="../pages/privacyPolicy.html">Privacy Policy</a>
-        <a href="../pages/legalNotice.html">Legal notice</a>
-    </footer>
-</body>
 
+                        <div class="input-wrapper">
+                            <input
+                                type="email"
+                                id="emailField"
+                                autocomplete="email"
+                                placeholder="Email"
+                                required
+                                oninput="updateSignUpPasswordIcons()"
+                            />
+                            <span class="input-icon">
+                                <img src="../assets/icons/mail.svg" alt="" />
+                            </span>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <input
+                                type="password"
+                                id="passwordField"
+                                autocomplete="new-password"
+                                placeholder="Password"
+                                required
+                                oninput="updateSignUpPasswordIcon('passwordField', 'passwordEyeIcon')"
+                            />
+
+                            <button
+                                type="button"
+                                disabled
+                                onclick="toggleSignUpPassword('passwordField', 'passwordEyeIcon')"
+                                aria-label="Show password"
+                                aria-pressed="false"
+                            >
+                                <img id="passwordEyeIcon" src="../assets/icons/showPassword.svg" alt="" />
+                            </button>
+                        </div>
+
+                        <div class="input-wrapper">
+                            <input
+                                type="password"
+                                id="confirmPasswordField"
+                                autocomplete="new-password"
+                                placeholder="Confirm Password"
+                                required
+                                oninput="updateSignUpPasswordIcon('confirmPasswordField', 'confirmPasswordEyeIcon')"
+                            />
+
+                            <button
+                                type="button"
+                                disabled
+                                onclick="toggleSignUpPassword('confirmPasswordField', 'confirmPasswordEyeIcon')"
+                                aria-label="Show password"
+                                aria-pressed="false"
+                            >
+                                <img id="confirmPasswordEyeIcon" src="../assets/icons/showPassword.svg" alt="" />
+                            </button>
+                        </div>
+
+                        <div class="sign-up-button-area">
+                            <div class="d-flex-align-center gap-xxs">
+                                <input type="checkbox" name="accept_policy" id="acceptPolicy" />
+                                <label for="acceptPolicy"
+                                    >I accept the
+                                    <a href="../pages/privacyPolicy.html" target="_blank">Privacy Policy</a>
+                                </label>
+                            </div>
+                            <button class="button button-dark" type="submit" id="signUpButton">
+                                Sign up
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </main>
+        <footer>
+            <a href="../pages/privacyPolicy.html">Privacy Policy</a>
+            <a href="../pages/legalNotice.html">Legal notice</a>
+        </footer>
+    </body>
 </html>

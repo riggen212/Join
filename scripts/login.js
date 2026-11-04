@@ -5,6 +5,24 @@
 let isLoginPending = false;
 
 /**
+ * Initializes the login page by showing a sign-up success notification
+ * when requested and removing the signup parameter from the URL.
+ *
+ * @returns {void}
+ */
+function initLoginPage() {
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get("signup") === "success") {
+        showNotification("Registration successful!");
+        url.searchParams.delete("signup");
+        window.history.replaceState(null, "", url);
+    }
+}
+
+initLoginPage();
+
+/**
  * Prevents native submission and starts a regular or guest login attempt.
  * Clears previous errors and blocks repeated submissions while pending.
  *
@@ -17,6 +35,7 @@ async function login(event) {
 
     clearLoginError();
     setLoginBusy(true);
+
     await handleLoginAttempt(event);
 }
 
@@ -79,7 +98,6 @@ async function handleLoginAttempt(event) {
         if (event.submitter?.value === "guest") await guestLogin();
         else if (event.submitter?.value === "regular") await loadAndCheckLoginCredentials();
     } catch (error) {
-        console.error("Login failed:", error);
         showLoginConnectionError();
     } finally {
         finishLoginAttempt(event.submitter);
@@ -87,13 +105,17 @@ async function handleLoginAttempt(event) {
 }
 
 /**
- * Reads the entered credentials, loads users and checks the login.
+ * Reads and validates credentials before loading users and checking the login.
  *
- * @returns {Promise<void>} Resolves after checking the credentials.
+ * @returns {Promise<void>} Resolves after checking the login or a validation return.
+ * @throws {Error} If loading users fails.
  */
 async function loadAndCheckLoginCredentials() {
-    const email = document.getElementById("emailField").value;
+    const email = document.getElementById("emailField").value.trim();
     const password = document.getElementById("passwortField").value;
+
+    if (!validateLoginData({email, password})) return;
+
     const users = await getData(DB_USERS);
     checkLoginData(users, email, password);
 }
@@ -118,16 +140,45 @@ function checkLoginData(users, email, password) {
         }
     }
 
-    if (!loginSuccessful) showLoginError();
+    if (!loginSuccessful) showLoginError("Check your email and password. Please try again.");
 }
 
 /**
- * Displays a credentials error and marks both login fields as invalid.
+ * Validates login input and displays any error below the fields.
  *
+ * @param {{email: string, password: string}} data - The entered credentials.
+ * @returns {boolean} Whether both required fields are filled.
+ */
+function validateLoginData(data) {
+    const error = getLoginValidationError(data);
+    if (!error) return true;
+
+    showLoginError(error);
+    return false;
+}
+
+/**
+ * Checks whether email and password are filled.
+ *
+ * @param {{email: string, password: string}} data - The entered credentials.
+ * @returns {string} The error message, or an empty string if valid.
+ */
+function getLoginValidationError(data) {
+    if (!data.email || !data.password) {
+        return "Please enter your email and password.";
+    }
+
+    return "";
+}
+
+/**
+ * Displays an error below the inputs and marks both login fields as invalid.
+ *
+ * @param {string} message - The error message to display.
  * @returns {void}
  */
-function showLoginError() {
-    document.getElementById("loginTextError").innerText = "Check your email and password. Please try again.";
+function showLoginError(message) {
+    document.getElementById("loginTextError").innerText = message;
 
     document.getElementById("emailField").setAttribute("aria-invalid", "true");
     document.getElementById("passwortField").setAttribute("aria-invalid", "true");
@@ -176,9 +227,7 @@ function toggleLoginPasswordVisibility() {
     toggleButton.setAttribute("aria-pressed", String(passwordIsHidden));
     toggleButton.setAttribute("aria-label", passwordIsHidden ? "Hide password" : "Show password");
 
-    eyeIcon.src = passwordIsHidden
-        ? "./assets/icons/eyeOpen.svg"
-        : "./assets/icons/eyeClose.svg";
+    eyeIcon.src = passwordIsHidden ? "./assets/icons/eyeOpen.svg" : "./assets/icons/eyeClose.svg";
 }
 
 function updatePasswordIcon() {
@@ -192,3 +241,4 @@ function updatePasswordIcon() {
         eyeIcon.src = "./assets/icons/showPassword.svg";
     }
 }
+

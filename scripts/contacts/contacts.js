@@ -1,17 +1,5 @@
 /** @type {ContactDirectory} */
 const contacts = {};
-/** @type {ContactColorClass[]} */
-const CONTACT_COLOR_CLASSES = [
-    "badge-user-orange",
-    "badge-user-purple",
-    "badge-user-pink",
-    "badge-user-blue-medium",
-    "badge-user-yellow",
-    "badge-user-mint",
-    "badge-user-blue-light",
-    "badge-user-red",
-    "badge-user-blue-dark",
-];
 
 let loggedInUserEmail = null;
 
@@ -217,30 +205,6 @@ async function saveContact(event) {
 }
 
 /**
- * Creates the next available contact ID.
- *
- * @returns {ContactId} A unique contact ID.
- */
-function getNextContactId() {
-    const contactNumbers = Object.keys(contacts)
-        .map((contactId) => Number(contactId.replace("contact", "")))
-        .filter(Number.isFinite);
-
-    return `contact${Math.max(0, ...contactNumbers) + 1}`;
-}
-
-/**
- * Selects the next badge color for a new contact.
- *
- * @returns {ContactColorClass} A badge color CSS class.
- */
-function getNextContactColorClass() {
-    const colorIndex = Object.keys(contacts).length % CONTACT_COLOR_CLASSES.length;
-
-    return CONTACT_COLOR_CLASSES[colorIndex];
-}
-
-/**
  * Validates, creates, saves, and confirms a contact from the submitted form.
  *
  * @param {SubmitEvent} event - The Add Contact form submit event.
@@ -252,8 +216,7 @@ async function createContact(event) {
     const formValues = getValidContactFormValues(form);
     if (!formValues) return;
 
-    const contactId = getNextContactId();
-    const contact = { ...formValues, colorClass: getNextContactColorClass() };
+    const { contactId, contact } = createContactData(formValues, contacts);
     try {
         await runWithDisabledContactButtons(() => saveNewContact(contactId, contact));
         closeContactFormWithNotification(form, "Contact successfully created");
@@ -322,11 +285,11 @@ async function saveEditedContact(contactId, contact) {
  * @returns {Promise<void>} Resolves after deletion and local view updates.
  */
 async function removeContact(contactId) {
-    const updates = {[getContactPath(contactId)]: null};
+    const updates = { [getContactPath(contactId)]: null };
     await getContactsTaskAssignings(contactId, updates);
     await patchData("", updates);
     delete contacts[contactId];
-    
+
     renderContactList(contacts);
     hideContactDetails();
     closeDialogAfterContactDeletion("Contact successfully deleted");

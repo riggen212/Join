@@ -1,21 +1,4 @@
 /**
- * Creates initials from the first two parts of a name.
- *
- * @param {string} name - The complete contact name.
- * @returns {string} The generated initials.
- */
-function getContactInitials(name) {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((namePart) => namePart.charAt(0))
-        .join("")
-        .toUpperCase();
-}
-
-
-/**
  * Reads and returns the values of a contact form.
  *
  * @param {HTMLFormElement} form - The submitted contact form.
@@ -42,15 +25,18 @@ function getContactFormValues(form) {
  */
 function getContactValidationErrors(contact) {
     const errors = {};
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email);
     const isValidPhone = /^[+\d\s()/-]+$/.test(contact.phone) && /\d/.test(contact.phone);
 
     if (!contact.name) errors.name = "Please enter a name.";
     if (!contact.email) errors.email = "Please enter an email address.";
-    else if (!isValidEmail) errors.email = "Please enter a valid email address.";
+    else if (!isValidEmail(contact.email)) errors.email = "Please enter a valid email address.";
     if (!contact.phone) errors.phone = "Please enter a phone number.";
     else if (!isValidPhone) errors.phone = "Please enter a valid phone number.";
     return errors;
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 

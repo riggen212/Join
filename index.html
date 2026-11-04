@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="./script.js" defer></script>
+    <script src="./scripts/notifications.js" defer></script>
     <script src="./scripts/login.js" defer></script>
 
     <link rel="icon" type="image/x-icon" href="./assets/icons/logoDark.svg">
@@ -38,7 +39,7 @@
             <section class="main-wrapper main-margin-bottom">
                 <h1>Log in</h1>
 
-                <form onsubmit="login(event)" oninput="clearLoginError()">
+                <form onsubmit="login(event)" novalidate oninput="clearLoginError()">
                     <div class="input-wrapper" id="loginEmailRed">
                         <input type="email" id="emailField" autocomplete="email" placeholder="Email" aria-label="Email" aria-describedby="loginTextError" oninput="updatePasswordIcon()">
                         <span class="input-icon">
