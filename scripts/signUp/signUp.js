@@ -78,64 +78,6 @@ function getSignUpData() {
 }
 
 /**
- * Validates registration data and refreshes the displayed form errors.
- * Displays all detected errors beside their corresponding fields.
- *
- * @param {Object} data - The registration data.
- * @returns {boolean} Whether the registration data is valid.
- */
-function validateSignUpData(data) {
-    const errors = getSignUpValidationErrors(data);
-    const form = document.getElementById("signUpForm");
-
-    clearFormError(form);
-    showFormFieldErrors(form, errors);
-
-    return Object.keys(errors).length === 0;
-}
-
-/**
- * Checks required fields, email format, passwords and policy acceptance.
- *
- * @param {Object} data - The registration data.
- * @returns {Object.<string, string>} Error messages indexed by input ID,
- * or an empty object if valid.
- */
-function getSignUpValidationErrors(data) {
-    const errors = {};
-
-    if (!data.name) errors.nameField = "Please enter your name.";
-    if (!data.email) errors.emailField = "Please enter your email.";
-    else if (!isValidEmail(data.email)) errors.emailField = "Please enter a valid email address.";
-
-    Object.assign(errors, getSignUpPasswordErrors(data));
-
-    if (!data.acceptPolicy) errors.acceptPolicy = "Please accept the Privacy Policy.";
-
-    return errors;
-}
-
-/**
- * Checks password presence, confirmation and equality in that order.
- * Marks only the first password when empty, only an empty confirmation
- * when the first password is filled, or both fields when their values differ.
- *
- * @param {{password: string, confirmPassword: string}} data - The entered passwords.
- * @returns {Object.<string, string>} Error messages indexed by password input ID,
- * or an empty object if valid.
- */
-function getSignUpPasswordErrors(data) {
-    if (!data.password) return { passwordField: "Please enter a password." };
-    if (!data.confirmPassword) return { confirmPasswordField: "Please confirm your password." };
-    if (data.password !== data.confirmPassword)
-        return {
-            passwordField: "Passwords do not match.",
-            confirmPasswordField: "Passwords do not match.",
-        };
-    return {};
-}
-
-/**
  * Checks email availability and saves the new user and contact.
  * Displays a field error if the email is already registered.
  *
