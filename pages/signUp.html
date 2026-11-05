@@ -9,7 +9,8 @@
         <script src="../scripts/formErrors.js" defer></script>
         <script src="../scripts/contacts/contactsValidation.js" defer></script>
         <script src="../scripts/contacts/contactData.js" defer></script>
-        <script src="../scripts/signUp.js" defer></script>
+        <script src="../scripts/signUp/signUpValidation.js" defer></script>
+        <script src="../scripts/signUp/signUp.js" defer></script>
         <link rel="icon" type="image/x-icon" href="../assets/icons/logoDark.svg" />
 
         <link rel="stylesheet" href="../styles/root.css" />
@@ -53,7 +54,8 @@
                                     placeholder="Name"
                                     required
                                     aria-describedby="signup-name-error"
-                                    oninput="clearFormFieldError(this.form, this.id)"
+                                    oninput="handleSignUpFieldValidation(this)"
+                                    onblur="handleSignUpFieldValidation(this, true)"
                                 />
                                 <span class="input-icon">
                                     <img src="../assets/icons/person.svg" alt="" />
@@ -76,7 +78,8 @@
                                     placeholder="Email"
                                     required
                                     aria-describedby="signup-email-error"
-                                    oninput="clearFormFieldError(this.form, this.id)"
+                                    oninput="handleSignUpFieldValidation(this)"
+                                    onblur="handleSignUpFieldValidation(this, true)"
                                 />
                                 <span class="input-icon">
                                     <img src="../assets/icons/mail.svg" alt="" />
@@ -100,9 +103,10 @@
                                     required
                                     aria-describedby="signup-password-error"
                                     oninput="
-                                        (updateSignUpPasswordIcon('passwordField', 'passwordEyeIcon'),
-                                            clearFormFieldError(this.form, this.id))
+                                        updateSignUpPasswordIcon('passwordField', 'passwordEyeIcon');
+                                        handleSignUpFieldValidation(this);
                                     "
+                                    onblur="handleSignUpFieldValidation(this, true)"
                                 />
 
                                 <button
@@ -134,9 +138,10 @@
                                     required
                                     aria-describedby="signup-confirm-password-error"
                                     oninput="
-                                        (updateSignUpPasswordIcon('confirmPasswordField', 'confirmPasswordEyeIcon'),
-                                            clearFormFieldError(this.form, this.id))
+                                        updateSignUpPasswordIcon('confirmPasswordField', 'confirmPasswordEyeIcon');
+                                        handleSignUpFieldValidation(this);
                                     "
+                                    onblur="handleSignUpFieldValidation(this, true)"
                                 />
 
                                 <button
@@ -166,7 +171,7 @@
                                         name="accept_policy"
                                         id="acceptPolicy"
                                         aria-describedby="signup-policy-error"
-                                        onchange="clearFormFieldError(this.form, this.id)"
+                                        onchange="handleSignUpFieldValidation(this, true)"
                                     />
                                     <label for="acceptPolicy">
                                         I accept the
