@@ -26,10 +26,16 @@
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" data-nav-link class="header-link">
-                        <img src="../assets/icons/help.svg" alt="Help" />
+                    <a href="../pages/help.html" data-nav-link class="header-link" aria-current="page">
+                        <img src="../assets/icons/help.svg" alt="Help"/>
                     </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"
+                        aria-label="Open service links and log out"
+                        aria-haspopup="dialog"
+                        aria-controls="dialog-profile"
+                        aria-expanded="false"
+                        >
+                    </button>
                 </div>
             </div>
             <dialog
@@ -37,8 +43,9 @@
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
                 onanimationend="closeProfileDialog(event)"
+                aria-label="Service links and log out"
             >
-                <nav>
+                <nav aria-label="Service links">
                     <ul>
                         <li>
                             <a
@@ -47,6 +54,7 @@
                                 data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
+                                aria-current="page"
                                 >Help</a
                             >
                         </li>
@@ -82,31 +90,31 @@
         </header>
 
         <div class="app-wrapper">
-            <nav class="navbar navbar-loading">
+            <nav class="navbar navbar-loading" aria-label="Main navigation">
                 <div class="navbar-wrapper">
                     <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
                             <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                                <img src="../assets/icons/summary.svg" alt="" />
                                 <span>Summary</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/addTask.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/addTask.svg" alt="Add task icon" />
+                                <img src="../assets/icons/addTask.svg" alt="" />
                                 <span>Add Task</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/board.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="Board icon" />
+                                <img src="../assets/icons/board.svg" alt="" />
                                 <span>Board</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/contacts.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                                <img src="../assets/icons/contacts.svg" alt="" />
                                 <span>Contacts</span>
                             </a>
                         </li>
@@ -131,117 +139,98 @@
                 <div class="privacy-policy-wrapper">
                     <div class="privacy-policy-wrapper-headline-container">
                         <h1>Help</h1>
-                        <button class="button button-arrow" onclick="window.history.back()">
-                            <img src="../assets/icons/arrow.svg" alt="Back" />
+
+                        <button class="button button-arrow button-close" onclick="window.history.back()">
+                            <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="Back" />
                         </button>
                     </div>
 
-                    <section aria-labelledby="welcome">
-                        <p>
-                            Welcome to the help page for Join, your guide to using our kanban project management tool.
-                            Here, we will provide an overview of what Join is, how it can benefit you, and how to use
-                            it.
-                        </p>
-                    </section>
+                    <p>
+                        Welcome to the help page for <span class="link-color-text">Join</span>, your guide to using our kanban project management tool.
+                        Here, we'll provide an overview of what <span class="link-color-text">Join</span> is, how it can benefit you, and how to use it.
+                    </p>
 
                     <section aria-labelledby="what-is-join">
                         <h2 id="what-is-join">What is Join?</h2>
 
                         <p>
-                            Join is a kanban-based project management tool designed and built by a group of dedicated
-                            students as part of their web development bootcamp at the Developer Akademie.
+                            <span class="link-color-text">Join</span> is a kanban-based project management tool designed and built by a group of dedicated
+                            students as part of their web development bootcamp at the <span class="link-color-text">Developer Akademie GmbH</span>.
                         </p>
 
                         <p>
-                            Kanban, a Japanese term meaning “billboard,” is a highly effective method to visualize work,
-                            limit work-in-progress, and maximize efficiency or flow. Join leverages the principles of
-                            kanban to help users manage their tasks in an intuitive, visual interface.
+                            Kanban, a Japanese term meaning "billboard", is a highly effective method to visualize work, limit work-in-progress,
+                            and maximize efficiency (or flow). <span class="link-color-text">Join</span> leverages the principles of kanban to help users manage their tasks and projects in an intuitive, visual interface.
                         </p>
 
                         <p>
-                            It is important to note that Join is designed as an educational exercise and is not intended
+                            It is important to note that <span class="link-color-text">Join</span> is designed as an educational exercise and is not intended
                             for extensive business usage. While we strive to ensure the best possible user experience,
                             we cannot guarantee consistent availability, reliability, accuracy, or other aspects of
-                            quality regarding Join.
+                            quality regarding <span class="link-color-text">Join</span>.
                         </p>
                     </section>
 
                     <section aria-labelledby="how-to-use">
                         <h2 id="how-to-use">How to use it</h2>
 
-                        <p>Here is a step-by-step guide on how to use Join:</p>
+                        <p>Here is a step-by-step guide on how to use <span class="link-color-text">Join</span>:</p>
+                        
+                        <ol class="help-page">
+                            <li>
+                                <h3>1. Exploring the Board</h3>
 
-                        <h3>1. Exploring the Board</h3>
+                                <p>
+                                    When you log in to <span class="link-color-text">Join</span>, you'll find a default board. This board represents your project and
+                                    contains four default lists: "To Do", "In Progress", "Await feedback" and "Done."
+                                </p>
+                            </li>
+                            
+                            <li>
+                                <h3>2. Creating Contacts</h3>
+
+                                <p>
+                                    In <span class="link-color-text">Join</span>, you can add contacts to collaborate on your projects. Go to the "Contacts" section, click on "New contact",
+                                    and fill in the required information. Once added, these contacts can be assigned tasks and they can interact with the tasks on the board.
+                                </p>
+                            </li>                            
+
+                            <li>
+                                <h3>3. Adding Cards</h3>
+
+                                <p>
+                                    Now that you've added your contacts, you can start adding cards. Cards represent individual tasks.
+                                    Click the "+" button under the appropriate list to create a new card. Fill in the task details in the card,
+                                    like task name, description, due date, assignees, etc.
+                                </p>
+                            </li>                            
+
+                            <li>
+                                <h3>4. Moving Cards</h3>
+
+                                <p>
+                                    As the task moves from one stage to another, you can reflect that on the board by dragging and dropping the card from one list to another.
+                                </p>
+                            </li>                           
+
+                            <li>
+                                <h3>5. Deleting Cards</h3>
+
+                                <p>
+                                    Once a task is completed, you can either move it to the "Done" list or delete it. Deleting a card will permanently remove it from the board.
+                                    Please exercise caution when deleting cards, as this action is irreversible.
+                                </p>
+
+                            </li>
+                        </ol>
+
                         <p>
-                            The Board gives you an overview of all tasks in your project. Tasks are organized into
-                            different columns according to their current status.
+                            Remember that using <span class="link-color-text">Join</span> effectively requires consistent updates from you and your team to ensure the board reflects the current state of your project.
                         </p>
 
                         <p>
-                            You can quickly see which tasks are waiting to be completed, which tasks are currently in
-                            progress, and which tasks have already been completed.
+                            Have more questions about <span class="link-color-text">Join</span>? Feel free to contact us at [Your Contact Email]. We're here to help you!
                         </p>
-
-                        <h3>2. Creating a task</h3>
-                        <p>
-                            To create a new task, select the option to add a task and enter the relevant information.
-                            You can provide a title, description, category, due date, priority, and assigned contact.
-                        </p>
-
-                        <p>Once the task has been saved, it will appear on the Board in the appropriate column.</p>
-
-                        <h3>3. Managing tasks</h3>
-                        <p>
-                            Tasks can be opened to view their details or edited whenever information changes. You can
-                            update the title, description, priority, due date, category, assigned contacts, and
-                            subtasks.
-                        </p>
-
-                        <h3>4. Moving tasks</h3>
-                        <p>
-                            Move tasks between the different Board columns to update their status. This allows you and
-                            your team to keep track of the current progress of every task.
-                        </p>
-
-                        <h3>5. Using subtasks</h3>
-                        <p>
-                            Subtasks help you divide larger tasks into smaller steps. Mark individual subtasks as
-                            completed to monitor your progress in more detail.
-                        </p>
-
-                        <h3>6. Managing contacts</h3>
-                        <p>
-                            In the Contacts section, you can view the people associated with your project. You can
-                            create new contacts, edit existing contact information, or remove contacts when they are no
-                            longer needed.
-                        </p>
-
-                        <h3>7. Using the Summary</h3>
-                        <p>
-                            The Summary provides a quick overview of your project. It shows important information such
-                            as the number of tasks, upcoming deadlines, task priorities, and the current distribution of
-                            tasks across the Board.
-                        </p>
-                    </section>
-
-                    <section aria-labelledby="features">
-                        <h2 id="features">What Join can do</h2>
-
-                        <p>
-                            Join combines the most important functions needed to organize tasks and projects in one
-                            clear interface.
-                        </p>
-
-                        <ul>
-                            <li>Create, edit, and delete tasks.</li>
-                            <li>Organize tasks using kanban columns.</li>
-                            <li>Assign tasks to one or more contacts.</li>
-                            <li>Set priorities, categories, and due dates.</li>
-                            <li>Create and manage subtasks.</li>
-                            <li>Track the progress of individual tasks.</li>
-                            <li>Manage project contacts.</li>
-                            <li>View a summary of the current project status.</li>
-                        </ul>
                     </section>
                 </div>
             </main>

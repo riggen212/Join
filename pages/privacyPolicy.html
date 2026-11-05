@@ -23,17 +23,26 @@
                     <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
+
                 <div class="d-flex-align-center gap-lg">
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"></button>
+                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"
+                        aria-label="Open service links and log out"
+                        aria-haspopup="dialog"
+                        aria-controls="dialog-profile"
+                        aria-expanded="false"
+                    >
+                    </button>
                 </div>
             </div>
+            
             <dialog
                 id="dialog-profile"
                 closedby="any"
                 oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
                 onanimationend="closeProfileDialog(event)"
+                aria-label="Service links and log out"
             >
-                <nav>
+                <nav aria-label="Service links">
                     <ul>
                         <li>
                             <a
@@ -76,37 +85,37 @@
             </dialog>
         </header>
         <div class="app-wrapper">
-            <nav class="navbar navbar-loading">
+            <nav class="navbar navbar-loading" aria-label="Main navigation">
                 <div class="navbar-wrapper">
                     <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
                     <ul class="navbar-links">
                         <li>
                             <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="Summary icon" />
+                                <img src="../assets/icons/summary.svg" alt="" />
                                 <span>Summary</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/addTask.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/addTask.svg" alt="Add task icon" />
+                                <img src="../assets/icons/addTask.svg" alt="" />
                                 <span>Add Task</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/board.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="Board icon" />
+                                <img src="../assets/icons/board.svg" alt="" />
                                 <span>Board</span>
                             </a>
                         </li>
                         <li>
                             <a href="../pages/contacts.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="Contacts icon" />
+                                <img src="../assets/icons/contacts.svg" alt="" />
                                 <span>Contacts</span>
                             </a>
                         </li>
                         <li class="d-none">
                             <a id="nav-login" href="../index.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/login.svg" alt="Login icon" />
+                                <img src="../assets/icons/login.svg" alt="" />
                                 <span>Log In</span>
                             </a>
                         </li>
@@ -115,7 +124,7 @@
                 <footer>
                     <ul class="navbar-links">
                         <li>
-                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar active">
+                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar active" aria-current="page">
                                 <span>Privacy Policy</span>
                             </a>
                         </li>
@@ -131,8 +140,8 @@
                 <div class="privacy-policy-wrapper">
                     <div class="privacy-policy-wrapper-headline-container">
                         <h1>Privacy Policy</h1>
-                        <button class="button button-arrow" onclick="window.history.back()">
-                            <img src="../assets/icons/arrow.svg" alt="Back" />
+                        <button class="button button-arrow button-close" onclick="window.history.back()">
+                            <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="Back" />
                         </button>
                     </div>
                     <section aria-labelledby="privacy-overview">
@@ -248,8 +257,8 @@
                             Germany
                         </address>
                         <p>
-                            Telephone: 0173/5365975<br />
-                            Email: calvinlamel@outlook.de
+                            <span>Telephone: </span><a href="tel:+491735365975">0173/5365975</a><br>
+                            <span>E-Mail: </span><a href="mailto:calvinlamel@outlook.de">calvinlamel@outlook.de</a>
                         </p>
                         <p>
                             The data controller is the natural or legal person who, alone or jointly with others,
@@ -357,18 +366,6 @@
                             legal claims; for the protection of the rights of another natural or legal person; or for
                             reasons of important public interest of the European Union or a member state.
                         </p>
-
-                        <h3>SSL or TLS Encryption</h3>
-                        <p>
-                            For security reasons and to protect the transmission of registration and application data,
-                            this website uses SSL or TLS encryption. You can recognize an encrypted connection because
-                            the address bar in your browser changes from “http://” to “https://” and a lock icon appears
-                            in the browser's address bar.
-                        </p>
-                        <p>
-                            When SSL or TLS encryption is enabled, the data you transmit to us cannot be read by third
-                            parties.
-                        </p>
                     </section>
 
                     <section aria-labelledby="website-data-collection">
@@ -387,6 +384,13 @@
                             non-commercial portfolio project and the data is not used for advertising, profiling,
                             purchases, or subscriptions. Processing is based on Article 6(1)(b) GDPR because it is
                             necessary to provide the demo account and functions requested by the user.
+                        </p>
+
+                        <h4>Important Notice on Demo Data</h4>
+                        <p>
+                            Please use fictional test data only. Do not enter real names, email addresses, telephone numbers, confidential information, or passwords that you use elsewhere.
+                            Data entered in this non-commercial demo project, including account, contact, task, and assignment data, may be accessible to other users of the application for
+                            demonstration and testing purposes. Therefore, it must not contain sensitive personal information.    
                         </p>
 
                         <h3>Firebase Realtime Database</h3>
