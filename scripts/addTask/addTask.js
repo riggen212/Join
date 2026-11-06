@@ -1,7 +1,7 @@
 /**
  * Initializes the standalone Add Task page; does nothing on other pages.
  * Loads the current user and renders the form with the status from the URL.
- * Defaults to "toDo" when the status parameter is absent.
+ * Defaults to "toDo" when the status parameter is absent or invalid.
  * Replaces the form container with a persistent error message on failure.
  *
  * @returns {Promise<void>} Resolves after initialization, error handling, or an early return.
@@ -17,7 +17,7 @@ async function initAddTaskPage() {
 
         await initAddTaskForm(
             container.querySelector(".task-form-wrapper"),
-            new URLSearchParams(window.location.search).get("status") ?? "toDo",
+            getValidTaskStatus(new URLSearchParams(window.location.search).get("status")),
         );
     } catch (error) {
         container.innerHTML = `<p class="board-loading-error" role="alert">
@@ -40,7 +40,8 @@ initAddTaskPage();
  */
 async function initAddTaskForm(form, status = "toDo", task = null) {
     form.inert = true;
-    form.dataset.taskStatus = status;
+    isTaskSaving = false;
+    form.dataset.taskStatus = getValidTaskStatus(status);
     setMinDueDate(form);
 
     await loadAssignedContacts(form, task);
@@ -50,20 +51,56 @@ async function initAddTaskForm(form, status = "toDo", task = null) {
     }
 
     updateCreateTaskButton(form);
+    form.dataset.initialState = getTaskFormState(form);
     form.inert = false;
 }
 
 /**
- * Stores the task ID and original due date, then initializes the edit form.
+ * Returns all values of the task form as one string, so two states can be compared.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {string} The current form values as JSON.
+ */
+function getTaskFormState(form) {
+    return JSON.stringify({
+        title: form.querySelector("#task-title").value,
+        description: form.querySelector("#task-description").value,
+        dueDate: form.querySelector("#task-due-date").value,
+        priority: getSelectedPriority(form),
+        category: form.querySelector('input[name="category"]:checked')?.value ?? "",
+        assignedTo: getAssignedContacts(form),
+        subtasks: getTaskSubtasks(form),
+        newSubtask: form.querySelector("#subtask").value,
+    });
+}
+
+/**
+ * Checks whether the form was changed since it was opened.
+ * A form that is still loading has no changes yet.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {boolean} True if there are unsaved changes.
+ */
+function hasUnsavedTaskChanges(form) {
+    if (form.dataset.initialState === undefined) return false;
+
+    return getTaskFormState(form) !== form.dataset.initialState;
+}
+
+/**
+ * Stores the task ID, its ETag and the original due date, then initializes the edit form.
+ * The ETag is used to save the task only if nobody changed it in the meantime.
  * Propagates initialization errors to the caller.
  *
  * @param {HTMLFormElement} form - The form rendered by renderAddTask(true).
  * @param {TaskId} taskId - ID of the task being edited.
  * @param {Task} task - Existing task whose values populate the form.
+ * @param {string} etag - ETag of the task when it was loaded.
  * @returns {Promise<void>} Resolves after initialization; rejects if initialization fails.
  */
-async function initEditTaskForm(form, taskId, task) {
+async function initEditTaskForm(form, taskId, task, etag) {
     form.dataset.taskId = taskId;
+    form.dataset.etag = etag;
     form.dataset.originalDueDate = task.dueDate || "";
     await initAddTaskForm(form, task.status, task);
 }
@@ -226,45 +263,56 @@ function restoreTaskSubmitFocus(form) {
 /**
  * Saves a new task while blocking repeated submissions through isTaskSaving.
  * Finishes creation only when saveNewTask returns an ID.
- * Shows an error if post-save processing fails. Resets the save flag and updates
- * the submitted form's button in finally without waiting for navigation or dialog closing.
- * Exposes the saving state through aria-busy and clears it in finally.
+ * After a successful save the submit button stays disabled until the page changes or the dialog closes,
+ * so the same task cannot be created twice. Only a failed save enables the button again.
+ * Exposes the saving state through aria-busy.
  *
  * @param {HTMLFormElement} form - The valid task form to read and save.
  * @returns {Promise<void>} Resolves after saving and post-save handling, without waiting for navigation or animations.
  */
 async function createTask(form) {
     const task = getTaskFromForm(form);
+    let isTaskCreated = false;
     setTaskSavingState(form, true);
 
     try {
         const taskId = await saveNewTask(task);
 
         if (taskId !== false) {
+            isTaskCreated = true;
             finishTaskCreation(form, taskId, task);
         }
     } catch (error) {
-        showNotification("Task is created but couldn't be rendered. Please refresh the page.", "error");
+        showNotification("Task was saved, but the page could not be updated. Please reload the page.", "error");
     } finally {
-        setTaskSavingState(form, false);
+        if (!isTaskCreated) setTaskSavingState(form, false);
     }
 }
 
 /**
+ * Maximum number of attempts to find a free task ID.
+ * Another attempt is needed when someone saved a task with the same ID at the same time.
+ */
+const MAX_TASK_ID_ATTEMPTS = 5;
+
+/**
  * Loads existing tasks, derives the next numeric task ID, and saves the new task.
- * Shows an error notification and returns false if loading, ID generation, or saving fails.
- * The derived ID is not reserved atomically in the database.
+ * The task is only written if the ID is still free. Otherwise the next ID is tried.
+ * Shows an error notification and returns false if loading or saving fails.
  *
  * @param {Task} task - The new task to save.
  * @returns {Promise<TaskId|false>} The saved task ID, or false if the operation fails.
  */
 async function saveNewTask(task) {
     try {
-        const tasks = await getData(DB_TASKS);
-        const taskId = getNextTaskId(tasks || {});
+        for (let attempt = 0; attempt < MAX_TASK_ID_ATTEMPTS; attempt++) {
+            const tasks = await getData(DB_TASKS);
+            const taskId = getNextTaskId(tasks || {});
 
-        await putData(DB_TASKS + taskId, task);
-        return taskId;
+            if (await putDataIfUnchanged(DB_TASKS + taskId, task, DB_EMPTY_ETAG)) return taskId;
+        }
+
+        throw new Error("No free task ID found.");
     } catch (error) {
         showNotification("Saving task to the database has failed.", "error");
         return false;
@@ -321,7 +369,7 @@ async function updateTask(form) {
     setTaskSavingState(form, true);
 
     try {
-        let isTaskSaved = await saveUpdatedTask(taskId, task);
+        let isTaskSaved = await saveUpdatedTask(taskId, task, form.dataset.etag);
         if (isTaskSaved) {
             let isBoardUpdated = updateBoardAfterTaskEdit(taskId, task);
             if (isBoardUpdated) showNotification("Task successfully updated.");
@@ -332,17 +380,24 @@ async function updateTask(form) {
 }
 
 /**
- * Replaces an existing task in Firebase with the supplied task data.
- * Shows an error notification if writing to the database fails.
+ * Replaces an existing task in Firebase with the supplied task data,
+ * but only if nobody changed, moved or deleted the task since the edit form was opened.
+ * Shows an error notification if the task was changed or writing to the database fails.
  *
  * @param {TaskId} taskId - ID of the task to replace.
  * @param {Task} task - Complete task data to write.
- * @returns {Promise<boolean>} True if saving succeeds; false if the write fails.
+ * @param {string} etag - ETag of the task when the edit form was opened.
+ * @returns {Promise<boolean>} True if saving succeeds; false if the task was changed or the write fails.
  */
-async function saveUpdatedTask(taskId, task) {
+async function saveUpdatedTask(taskId, task, etag) {
     try {
-        await putData(DB_TASKS + taskId, task);
-        return true;
+        const isSaved = await putDataIfUnchanged(DB_TASKS + taskId, task, etag);
+
+        if (!isSaved) {
+            showNotification("This task was changed by someone else. Please reload the board and try again.", "error");
+        }
+
+        return isSaved;
     } catch (error) {
         showNotification("Saving task to the database has failed.", "error");
         return false;

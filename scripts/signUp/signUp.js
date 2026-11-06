@@ -116,21 +116,6 @@ async function doesEmailAlreadyExist(email) {
 }
 
 /**
- * Creates initials from the user's name.
- *
- * @param {string} name - Full name of the user.
- * @returns {string} User initials.
- */
-function getUserInitials(name) {
-    const names = name.trim().split(/\s+/);
-
-    return names
-        .slice(0, 2)
-        .map((part) => part.charAt(0).toUpperCase())
-        .join("");
-}
-
-/**
  * Creates the user object for Firebase.
  * @param {Object} data - Validated registration data.
  * @returns {Object} New user.
@@ -140,7 +125,7 @@ function createUserObject(data) {
         name: data.name,
         email: data.email,
         password: data.password,
-        initials: getUserInitials(data.name),
+        initials: getInitialsFromName(data.name),
         colorClass: "badge-user-blue-light",
     };
 }

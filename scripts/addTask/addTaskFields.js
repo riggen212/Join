@@ -15,27 +15,13 @@ const MAX_VISIBLE_BADGES = 4;
  * @returns {Promise<void>} Resolves after options and badges render; rejects if loading or rendering fails.
  */
 async function loadAssignedContacts(form, task) {
-        const [contacts, loggedUserEmail] = await Promise.all([
-            getData(DB_CONTACTS),
-            getLoggedInUserEmail(),
-        ]);
+    const [contacts, loggedUserEmail] = await Promise.all([
+        getData(DB_CONTACTS),
+        getLoggedInUserEmail(),
+    ]);
 
-        renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
+    renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
 }
-// async function loadAssignedContacts(form, task) {
-//     try {
-//         const [contacts, loggedUserEmail] = await Promise.all([
-//             getData(DB_CONTACTS),
-//             getLoggedInUserEmail(),
-//         ]);
-
-//         renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
-//     }
-//     catch (error) {
-//         showNotification("Saving the assignees failed.", "error");
-//     }
-// }
-
 
 /**
  * Renders the contacts in the "Assigned to" list.
@@ -102,9 +88,8 @@ function renderAssignedBadges(form) {
 function getBadgeHtmlFromCheckbox(checkbox) {
     const option = checkbox.closest(".assigned-option");
     const badge = option.querySelector(".badge-user");
-    const name = option.querySelectorAll("span")[1].textContent;
 
-    return getAssignedBadgeTemplate(badge.className, badge.textContent, name);
+    return getAssignedBadgeTemplate(badge.className, badge.textContent, option.dataset.contactName);
 }
 
 /**
@@ -121,23 +106,6 @@ function filterAssignedOptions(form) {
         const name = options[i].textContent.toLowerCase();
         options[i].hidden = !name.includes(searchText);
     }
-}
-
-/**
- * Creates initials from the first two parts of a name.
- *
- * @param {string} name - The full name.
- * @returns {string} The initials, e.g. "AM" for "Anton Mayer".
- */
-function getInitialsFromName(name) {
-    const parts = name.trim().split(" ");
-    let initials = parts[0].charAt(0);
-
-    if (parts.length > 1) {
-        initials += parts[1].charAt(0);
-    }
-
-    return initials.toUpperCase();
 }
 
 // ---------- Dropdowns ----------

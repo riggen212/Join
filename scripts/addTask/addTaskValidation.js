@@ -7,6 +7,34 @@
 let isTaskSaving = false;
 
 /**
+ * All statuses a task can have. Each status is one column on the board.
+ * @type {Task["status"][]}
+ */
+const TASK_STATUSES = ["toDo", "inProgress", "awaitFeedback", "done"];
+
+/** Maximum number of characters of a task title. */
+const MAX_TITLE_LENGTH = 100;
+
+/** Maximum number of characters of a task description. */
+const MAX_DESCRIPTION_LENGTH = 1000;
+
+/** Maximum number of characters of a subtask title. */
+const MAX_SUBTASK_LENGTH = 100;
+
+/** Latest selectable due date. */
+const MAX_DUE_DATE = "2099-12-31";
+
+/**
+ * Returns the status if it is a valid task status, otherwise "toDo".
+ *
+ * @param {string|null} status - The status to check, e.g. from the URL.
+ * @returns {Task["status"]} A valid task status.
+ */
+function getValidTaskStatus(status) {
+    return TASK_STATUSES.includes(status) ? status : "toDo";
+}
+
+/**
  * Sets the earliest selectable due date to today.
  * When editing, an old due date of the task can still be kept.
  *
@@ -27,6 +55,7 @@ function setMinDueDate(form) {
 
 /**
  * Returns an error for a past due date unless it equals the original date of the edited task.
+ * Also returns an error for a due date after MAX_DUE_DATE.
  *
  * @param {HTMLFormElement} form - The task form.
  * @returns {string} The error message or an empty string.
@@ -38,6 +67,10 @@ function getPastDateError(form) {
 
     if (isPast && !isOriginalDate) {
         return "The due date cannot be in the past.";
+    }
+
+    if (dueDate > MAX_DUE_DATE) {
+        return "The due date is too far in the future.";
     }
 
     return "";

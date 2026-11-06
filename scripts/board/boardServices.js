@@ -15,18 +15,16 @@ async function loadBoardData() {
 
 /**
  * Assigns loaded tasks to board columns according to their status.
+ * Skips tasks with an unknown status, so one broken task cannot stop the whole board from loading.
  * Modifies the supplied board.
  *
  * @param {Board} board - Board receiving the tasks.
  * @param {TaskDirectory} tasks - Tasks to assign.
  * @returns {void}
- * @throws {Error} If a task has an unknown status.
  */
 function assignTasks(board, tasks) {
     Object.entries(tasks).forEach(([taskKey, taskEntry]) => {
-        if (!board[taskEntry.status]) {
-            throw new Error(`Invalid status: ${taskEntry.status}`);
-        }
+        if (!board[taskEntry?.status]) return;
 
         board[taskEntry.status].tasks[taskKey] = taskEntry;
     });

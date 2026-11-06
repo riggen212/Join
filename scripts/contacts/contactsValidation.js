@@ -12,7 +12,7 @@ function getContactFormValues(form) {
         name,
         email: String(formData.get("email")).trim(),
         phone: String(formData.get("phone")).trim(),
-        initials: getContactInitials(name),
+        initials: getInitialsFromName(name),
     };
 }
 

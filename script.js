@@ -47,6 +47,90 @@ async function putData(path, value) {
 }
 
 /**
+ * ETag that Firebase returns for a database path without data.
+ * Writing with this ETag only succeeds while the path is still empty.
+ */
+const DB_EMPTY_ETAG = "null_etag";
+
+/**
+ * Loads data from Firebase together with its ETag.
+ * The ETag changes whenever the data at the path changes.
+ *
+ * @param {string} path - The database path without the `.json` suffix.
+ * @returns {Promise<{data: Object|null, etag: string}>} The data and its ETag.
+ * @throws {Error} If the HTTP response is not successful.
+ */
+async function getDataWithEtag(path) {
+    const response = await fetch(DB_BASE_URL + path + ".json", {
+        headers: { "X-Firebase-ETag": "true" },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP-Fehler: ${response.status}`);
+    }
+
+    return { data: await response.json(), etag: response.headers.get("ETag") };
+}
+
+/**
+ * Writes data only if the data at the path has not changed since its ETag was loaded.
+ * Use DB_EMPTY_ETAG to write only if the path is still empty.
+ *
+ * @param {string} path - The database path without the `.json` suffix.
+ * @param {Object} value - The data written to Firebase.
+ * @param {string} etag - The ETag the path must still have.
+ * @returns {Promise<boolean>} True if saved, false if the data was changed in the meantime.
+ * @throws {Error} If the HTTP response is not successful for another reason.
+ */
+async function putDataIfUnchanged(path, value, etag) {
+    const response = await fetch(DB_BASE_URL + path + ".json", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "if-match": etag },
+        body: JSON.stringify(value),
+    });
+
+    if (response.status === 412) return false;
+
+    if (!response.ok) {
+        throw new Error(`HTTP-Fehler: ${response.status}`);
+    }
+
+    return true;
+}
+
+/**
+ * Replaces characters with a special meaning in HTML,
+ * so user input is shown as text and never executed as HTML.
+ *
+ * @param {*} value - The value to insert into an HTML template.
+ * @returns {string} The escaped text.
+ */
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+}
+
+/**
+ * Creates uppercase initials from the first two parts of a name, e.g. "AM" for "Anton Mayer".
+ *
+ * @param {string} name - The full name.
+ * @returns {string} The initials.
+ */
+function getInitialsFromName(name) {
+    return name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((namePart) => namePart.charAt(0))
+        .join("")
+        .toUpperCase();
+}
+
+/**
  * Updates specific data to a fixed Firebase database path.
  *
  * @param {string} path - The database path without the `.json` suffix.

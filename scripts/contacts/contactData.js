@@ -28,7 +28,7 @@ function createContactData(data, existingContacts) {
         name: data.name,
         email: data.email,
         phone: data.phone ?? "",
-        initials: getContactInitials(data.name),
+        initials: getInitialsFromName(data.name),
         colorClass: getNextContactColorClass(existingContacts),
     };
 
@@ -59,20 +59,4 @@ function getNextContactColorClass(existingContacts) {
     const colorIndex = Object.keys(existingContacts).length % CONTACT_COLOR_CLASSES.length;
 
     return CONTACT_COLOR_CLASSES[colorIndex];
-}
-
-/**
- * Creates uppercase initials from the first two parts of a name.
- *
- * @param {string} name - The contact's full name.
- * @returns {string} The generated initials.
- */
-function getContactInitials(name) {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((namePart) => namePart.charAt(0))
-        .join("")
-        .toUpperCase();
 }

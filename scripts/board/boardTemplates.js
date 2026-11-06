@@ -16,13 +16,13 @@ function getTaskCardTemplate(taskData) {
                 onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
                 ondragstart="startDraggingTask('${taskData.id}', '${taskData.task.status}', event)"
                 ondragend="endDraggingTask('${taskData.id}')"
-                aria-label="Open task: ${taskData.task.title}"
+                aria-label="Open task: ${escapeHtml(taskData.task.title)}"
                 aria-describedby="${taskData.id}-move-result task-keyboard-help">
                     <span class="task-move-result" id="${taskData.id}-move-result" hidden></span>
-                    <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                    <span class="badge-type badge-type-${escapeHtml(taskData.task.category.toLowerCase())}">${escapeHtml(taskData.task.category)}</span>
                     <div class="task-card-body">
-                        <h3 class="task-card-title">${taskData.task.title}</h3>
-                        <div class="task-card-description">${taskData.task.description}</div>
+                        <h3 class="task-card-title">${escapeHtml(taskData.task.title)}</h3>
+                        <div class="task-card-description">${escapeHtml(taskData.task.description)}</div>
                     </div>
                     <div class="task-card-subtasks">
                         <div class="task-card-subtasks-progress">
@@ -35,7 +35,7 @@ function getTaskCardTemplate(taskData) {
                             ${taskData.assigneesHtml}
                         </ul>
                         <span>
-                            <img src="../assets/icons/prio${taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase()}.svg" alt="${taskData.task.priority} priority"/>
+                            <img src="../assets/icons/prio${escapeHtml(taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase())}.svg" alt="${escapeHtml(taskData.task.priority)} priority"/>
                         </span>
                     </div>
             </article>`;
@@ -48,7 +48,7 @@ function getTaskCardTemplate(taskData) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskCardUserBadgeTemplate(contact) {
-    return `<li class="badge-user ${contact.colorClass}" aria-label="${contact.name}">${contact.initials}</li>`;
+    return `<li class="badge-user ${escapeHtml(contact.colorClass)}" aria-label="${escapeHtml(contact.name)}">${escapeHtml(contact.initials)}</li>`;
 }
 
 /**
@@ -80,29 +80,29 @@ function getTaskOverlayTemplate(taskData) {
     return `<article class="task-overlay">
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
-                        <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                        <span class="badge-type badge-type-${escapeHtml(taskData.task.category.toLowerCase())}">${escapeHtml(taskData.task.category)}</span>
                         <button class="button button-close" onclick="event.target.closest('dialog').requestClose()" aria-label="Close Task">
                             <img src="../assets/icons/cancel.svg" alt="" />
                         </button>
                     </div>
-                    <h2 id="task-dialog-title" class="scrollbar">${taskData.task.title}</h2>
+                    <h2 id="task-dialog-title" class="scrollbar">${escapeHtml(taskData.task.title)}</h2>
                 </header>
 
                 <div class="task-overlay-body">
-                    <p class="task-overlay-description scrollbar">${taskData.task.description}</p>
+                    <p class="task-overlay-description scrollbar">${escapeHtml(taskData.task.description)}</p>
 
                     <dl class="task-overlay-details">
                         <div class="task-overlay-property">
                             <dt>Due Date:</dt>
-                            <dd>${taskData.task.dueDate}</dd>
+                            <dd>${escapeHtml(taskData.task.dueDate)}</dd>
                         </div>
 
                         <div class="task-overlay-property">
                             <dt>Priority:</dt>
                             <dd>
                                 <div class="d-flex-align-center gap-xs">
-                                    <span>${taskData.task.priority}</span>
-                                    <img src="../assets/icons/prio${taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase()}.svg" alt="">
+                                    <span>${escapeHtml(taskData.task.priority)}</span>
+                                    <img src="../assets/icons/prio${escapeHtml(taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase())}.svg" alt="">
                                 </div>
                             </dd>
                         </div>
@@ -144,8 +144,8 @@ function getTaskOverlayTemplate(taskData) {
  */
 function getTaskOverlayUserBadgeTemplate(contact) {
     return `<li>
-            <span class="badge-user ${contact.colorClass}">${contact.initials}</span>
-            <span>${contact.name}</span>
+            <span class="badge-user ${escapeHtml(contact.colorClass)}">${escapeHtml(contact.initials)}</span>
+            <span>${escapeHtml(contact.name)}</span>
         </li>`;
 }
 
@@ -161,8 +161,8 @@ function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
     return `<li>
             <input type="checkbox" ${isCompleted}
             onchange="handleSubtaskCheckboxChange(this, this.closest('dialog').dataset.taskId, this.closest('dialog').dataset.taskStatus, '${subtaskId}')"
-            aria-label="Mark ${subtask.title} as completed" />
-            ${subtask.title}
+            aria-label="Mark ${escapeHtml(subtask.title)} as completed" />
+            ${escapeHtml(subtask.title)}
         </li>`;
 }
 

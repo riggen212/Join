@@ -97,8 +97,7 @@ async function editTask(taskId) {
     const dialog = document.getElementById("dialog-task");
 
     try {
-        const task = getTaskById(taskId, dialog.dataset.taskStatus);
-        await renderAndInitTaskForm(dialog, taskId, task);
+        await renderAndInitTaskForm(dialog, taskId);
     } catch (error) {
         openTaskDialog(taskId, dialog.dataset.taskStatus);
         showNotification("Task could not be opened for editing. Please reload the board.", "error");
@@ -106,19 +105,24 @@ async function editTask(taskId) {
 }
 
 /**
- * Renders and names the edit dialog, initializes the form and focuses its title field.
+ * Loads the current task and its ETag from the database,
+ * renders and names the edit dialog, initializes the form and focuses its title field.
+ * The task is loaded again, so the form never shows outdated data.
  * Errors propagate to the caller.
  *
  * @param {HTMLDialogElement} dialog - The task dialog containing the edit form.
  * @param {TaskId} taskId - ID of the task to edit.
- * @param {Task} task - Task data used to initialize the form.
  * @returns {Promise<void>} Resolves after the edit form is initialized.
+ * @throws {Error} If the task could not be loaded or no longer exists.
  */
-async function renderAndInitTaskForm(dialog, taskId, task) {
+async function renderAndInitTaskForm(dialog, taskId) {
+    const { data: task, etag } = await getDataWithEtag(DB_TASKS + taskId);
+    if (!task) throw new Error("Task no longer exists.");
+
     dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask(true);
     dialog.removeAttribute("aria-labelledby");
     dialog.setAttribute("aria-label", "Edit task");
-    await initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+    await initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task, etag);
     dialog.querySelector("#task-title").focus();
 }
 
@@ -136,6 +140,7 @@ function updateBoardAfterTaskEdit(taskId, task) {
     const dialog = document.getElementById("dialog-task");
 
     try {
+        removeTaskFromAllColumns(taskId);
         board[task.status].tasks[taskId] = task;
         renderBoard(Object.values(board));
         updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
@@ -144,6 +149,43 @@ function updateBoardAfterTaskEdit(taskId, task) {
         showNotification("Task saved, but the board could not be refreshed. Please reload the page.", "error");
         return false;
     }
+}
+
+/**
+ * Starts closing a task dialog (Escape, backdrop click or close button).
+ * If the dialog contains a task form with unsaved changes, asks first
+ * and keeps the dialog open if the user wants to keep the changes.
+ *
+ * @param {Event} event - The dialog cancel event.
+ * @returns {void}
+ */
+function closeTaskDialogWithCheck(event) {
+    const dialog = event.currentTarget;
+    const form = dialog.querySelector(".task-form-wrapper");
+
+    if (dialog.classList.contains("dialog-task-closing")) {
+        event.preventDefault();
+        return;
+    }
+
+    if (form && hasUnsavedTaskChanges(form) && !confirm("Discard your unsaved changes?")) {
+        event.preventDefault();
+        return;
+    }
+
+    dialogSlideOut(event, "dialog-task-closing");
+}
+
+/**
+ * Removes a task from every board column.
+ * Needed when the saved task is in another column than the local copy,
+ * e.g. because someone else moved it before it was edited.
+ *
+ * @param {TaskId} taskId - ID of the task to remove.
+ * @returns {void}
+ */
+function removeTaskFromAllColumns(taskId) {
+    Object.values(board).forEach((column) => delete column.tasks[taskId]);
 }
 
 /**

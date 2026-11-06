@@ -17,7 +17,7 @@ function renderAddTask(isEditMode = false) {
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
                                 <input class="input-wrapper" id="task-title" name="title" type="text"
-                                    placeholder="Enter a title" aria-describedby="task-title-error"
+                                    placeholder="Enter a title" aria-describedby="task-title-error" maxlength="${MAX_TITLE_LENGTH}"
                                     aria-required="true"
                                     onblur="validateTitle(this.form)" />
                                 <p class="field-error" id="task-title-error" aria-live="polite"></p>
@@ -25,13 +25,13 @@ function renderAddTask(isEditMode = false) {
                                 <label for="task-description"> Description </label>
                                 <div class="textarea-wrapper">
                                     <textarea class="input-wrapper" id="task-description" name="description"
-                                        placeholder="Enter a Description"></textarea>
+                                        placeholder="Enter a Description" maxlength="${MAX_DESCRIPTION_LENGTH}"></textarea>
                                     <img class="textarea-resize-icon" src="../assets/icons/recurso.svg" alt="">
                                 </div>
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
                                     <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
-                                        aria-describedby="task-due-date-error" aria-required="true" onblur="validateDueDate(this.form)">
+                                        max="${MAX_DUE_DATE}" aria-describedby="task-due-date-error" aria-required="true" onblur="validateDueDate(this.form)">
                                 <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 
@@ -107,7 +107,8 @@ function renderAddTask(isEditMode = false) {
 
                                 <div class="subtask-input-wrapper">
                                     <input class="input-wrapper" id="subtask" name="subtask" type="text"
-                                        placeholder="Add new subtask" autocomplete="off" onkeydown="addSubtaskOnEnter(event)" />
+                                        placeholder="Add new subtask" autocomplete="off" maxlength="${MAX_SUBTASK_LENGTH}"
+                                        onkeydown="addSubtaskOnEnter(event)" />
                                     <div class="subtask-input-actions">
                                         <button type="button" aria-label="Clear subtask" onclick="clearSubtaskInput(this.form)">
                                             <img src="../assets/icons/cancel.svg" alt="" />
@@ -163,10 +164,10 @@ function getAssignedOptionTemplate( contactId, contact, initials, isChecked, log
 
     return `
         <li>
-            <label class="assigned-option">
-                <span class="badge-user ${contact.colorClass || ""}">${initials}</span>
-                <span>${contact.name}${currentUserSuffix}</span>
-                <input type="checkbox" name="assignedTo" value="${contactId}"
+            <label class="assigned-option" data-contact-name="${escapeHtml(contact.name)}">
+                <span class="badge-user ${escapeHtml(contact.colorClass)}">${escapeHtml(initials)}</span>
+                <span>${escapeHtml(contact.name)}${currentUserSuffix}</span>
+                <input type="checkbox" name="assignedTo" value="${escapeHtml(contactId)}"
                     ${isChecked ? "checked" : ""}>
             </label>
         </li>
@@ -183,7 +184,7 @@ function getAssignedOptionTemplate( contactId, contact, initials, isChecked, log
  * @returns {string} The HTML of the badge.
  */
 function getAssignedBadgeTemplate(badgeClass, initials, name) {
-    return `<li class="${badgeClass}" aria-label="${name}">${initials}</li>`;
+    return `<li class="${escapeHtml(badgeClass)}" aria-label="${escapeHtml(name)}">${escapeHtml(initials)}</li>`;
 }
 
 /**
@@ -206,7 +207,7 @@ function getMoreBadgeTemplate(count) {
 function getSubtaskTemplate(title, completed) {
     return `
         <li class="subtask-item" data-completed="${completed}">
-            <span class="subtask-title" onclick="editSubtask(this)">${title}</span>
+            <span class="subtask-title" onclick="editSubtask(this)">${escapeHtml(title)}</span>
             <div class="subtask-actions">
                 <button type="button" class="subtask-edit-button" aria-label="Edit subtask" onclick="editSubtask(this)">
                     <img src="../assets/icons/edit.svg" alt="">
@@ -232,7 +233,7 @@ function getSubtaskTemplate(title, completed) {
  * @returns {string} The HTML of the input.
  */
 function getSubtaskEditTemplate() {
-    return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
+    return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask" maxlength="${MAX_SUBTASK_LENGTH}"
                 onkeydown="handleSubtaskEditKeydown(event)" onblur="saveSubtaskEdit(this)">`;
 }
 

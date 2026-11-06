@@ -304,14 +304,14 @@
                     data-task-id=""
                     data-task-status=""
                     closedby="any"
-                    oncancel="dialogSlideOut(event, 'dialog-task-closing')"
+                    oncancel="closeTaskDialogWithCheck(event)"
                     onanimationend="closeTaskDialog(event)"
                 ></dialog>
 
                 <dialog
                     id="dialog-add-task"
                     closedby="any"
-                    oncancel="dialogSlideOut(event, 'dialog-task-closing')"
+                    oncancel="closeTaskDialogWithCheck(event)"
                     onanimationend="closeTaskDialog(event)"
                 ></dialog>
             </main>
