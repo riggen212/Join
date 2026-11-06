@@ -1,11 +1,15 @@
-.help-page {
+.help-steps {
     margin-top: var(--space-md);
     padding: 0;
 
     list-style: none;
 }
 
-.privacy-policy {
+.meta-page {
+    --font-meta-heading-two: 1.5rem;
+    --font-meta-heading-three: 1.125rem;
+    --font-meta-heading-four: 1rem;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,7 +19,7 @@
     min-height: 100dvh;
 }
 
-.privacy-policy-wrapper {
+.meta-page-wrapper {
     min-height: 0;
     display: flex;
     flex-direction: column;
@@ -24,35 +28,40 @@
     padding: var(--space-md);
 }
 
-.privacy-policy-wrapper section {
+.meta-page-wrapper section {
     margin-top: var(--space-xl);
 }
 
-.privacy-policy-wrapper h1 {
+.meta-page-wrapper h1 {
     margin-top: var(--space-xl);
 
     font-size: var(--font-heading);
     font-weight: 700;
 }
 
-.privacy-policy-wrapper h2 {
-    font-size: 1.5rem;
+.meta-page-wrapper h2 {
+    font-size: var(--font-meta-heading-two);
     font-weight: 700;
 }
 
-.privacy-policy-wrapper h3 {
+.meta-page-wrapper h3 {
     margin-top: var(--space-md);
+
+    font-size: var(--font-meta-heading-three);
 }
 
-.privacy-policy-wrapper h4 {
+.meta-page-wrapper h4 {
     margin-top: var(--space-sm);
+
+    font-size: var(--font-meta-heading-four);
 }
 
-.privacy-policy-wrapper p,
-.privacy-policy-wrapper address {
+.meta-page-wrapper p,
+.meta-page-wrapper address {
     margin-top: var(--space-xs);
 }
-.privacy-policy-wrapper-headline-container {
+
+.meta-page-headline {
     display: flex;
     justify-content: space-between;
 
@@ -69,13 +78,13 @@
 }
 
 @media screen and (min-width: 1280px) {
-    .privacy-policy {
+    .meta-page {
         padding-bottom: 0;
 
         align-items: flex-start;
     }
 
-    .privacy-policy-wrapper {
+    .meta-page-wrapper {
         padding: var(--space-md) var(--space-xl);
     }
 }
