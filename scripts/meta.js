@@ -1,11 +1,15 @@
 /**
- * Initializes a public page with navigation matching the user context.
+ * Initializes a meta page with navigation matching the user context.
  * Hides the profile button for visitors and reveals the prepared navbar.
+ * The help page is only available for logged in users, visitors are sent to the login page.
  *
  * @returns {Promise<void>}
  */
 async function initMeta() {
-    loggedUserId = await loadCurrentUser(true);
+    const isHelpPage = window.location.pathname.endsWith("help.html");
+    loggedUserId = await loadCurrentUser(!isHelpPage);
+
+    if (!loggedUserId && isHelpPage) return;
 
     if (!loggedUserId) {
         setLoggedOutNavbar();
