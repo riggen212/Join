@@ -5,6 +5,7 @@
     flex: 0 0 var(--size-task-card-width);
 
     margin: var(--space-xxs);
+    margin-inline: 0;
     padding: var(--space-task);
     gap: var(--space-task);
 

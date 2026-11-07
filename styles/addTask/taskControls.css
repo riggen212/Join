@@ -123,6 +123,8 @@
     display: flex;
     align-items: center;
     gap: var(--space-lg);
+
+    padding-inline: 4px;
 }
 
 .task-priority > div {
@@ -265,6 +267,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .task-priority button {
         gap: 4px;
         padding-inline: 4px;
+        max-height: 40px;
         white-space: nowrap;
     }
 

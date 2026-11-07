@@ -95,6 +95,7 @@ function focusContactDetailsControl(contactDetails) {
         contactList.inert = true;
     } else {
         const editButton = document.getElementById("contact-actions").querySelector(".button-task-overlay");
+        editButton.focus({ preventScroll: true });
         editButton.focus();
     }
 }

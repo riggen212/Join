@@ -91,3 +91,90 @@
 .sign-up-page [data-form-error] {
     text-align: center;
 }
+
+.sign-up-page .input-wrapper,
+.sign-up-page .input-wrapper input {
+    min-height: 40px;
+    height: 40px;
+}
+
+.sign-up-page .input-wrapper button {
+    width: 40px;
+    height: 40px;
+}
+
+.sign-up-page .input-icon {
+    width: 40px;
+    height: 40px;
+    padding: 14px;
+}
+
+.sign-up-page .button-show-password img {
+    width: 18px;
+    height: 18px;
+}
+
+.sign-up-page .form-field-error {
+    margin-block: 0;
+}
+
+.sign-up-page .main-wrapper {
+    gap: var(--space-lg);
+    padding-block: var(--space-lg);
+}
+
+.sign-up-page .sign-up-button-area {
+    padding-top: var(--space-md);
+}
+
+.sign-up-page #signUpButton {
+    min-width: 180px;
+}
+
+.sign-up-page #signup-policy-error {
+    text-align: center;
+}
+
+@media (min-width: 1280px) {
+    .sign-up-page .main-wrapper {
+        gap: var(--space-xl);
+        padding-block: var(--space-xl);
+    }
+
+    .sign-up-page .input-wrapper {
+        min-height: clamp(48px, 45.71px + 0.71vw, 56px);
+        height: auto;
+    }
+
+    .sign-up-page .input-wrapper input {
+        min-height: 0;
+        height: clamp(48px, 45.71px + 0.71vw, 56px);
+    }
+
+    .sign-up-page .input-wrapper button,
+    .sign-up-page .input-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .sign-up-page .input-icon {
+        padding: var(--space-xs);
+    }
+
+    .sign-up-page .button-show-password img {
+        width: clamp(18px, 17.43px + 0.18vw, 20px);
+        height: auto;
+    }
+
+    .sign-up-page .form-field-error {
+        margin-block: 4px;
+    }
+
+    .sign-up-page .sign-up-button-area {
+        padding-top: var(--space-lg);
+    }
+
+    .sign-up-page #signUpButton {
+        min-width: unset;
+    }
+}

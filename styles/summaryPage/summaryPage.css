@@ -2,6 +2,7 @@
     min-height: calc(100vh - 160px);
     padding: 0 8px;
     padding-top: 80px;
+    max-width: var(--content-max-width);
     
     display: flex;
     justify-content: flex-start;
@@ -174,7 +175,7 @@
     height: 60px;
     width: 1px;
     align-self: center;
-    background-color: #2A3647;
+    background-color: #d1d1d1;
 }
 
 .flexbox-deadline {

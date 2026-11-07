@@ -52,7 +52,6 @@
                                     id="nameField"
                                     autocomplete="name"
                                     placeholder="Name"
-                                    required
                                     aria-describedby="signup-name-error"
                                     oninput="handleSignUpFieldValidation(this)"
                                     onblur="handleSignUpFieldValidation(this, true)"
@@ -76,7 +75,6 @@
                                     id="emailField"
                                     autocomplete="email"
                                     placeholder="Email"
-                                    required
                                     aria-describedby="signup-email-error"
                                     oninput="handleSignUpFieldValidation(this)"
                                     onblur="handleSignUpFieldValidation(this, true)"
@@ -100,7 +98,6 @@
                                     id="passwordField"
                                     autocomplete="new-password"
                                     placeholder="Password"
-                                    required
                                     aria-describedby="signup-password-error"
                                     oninput="
                                         updateSignUpPasswordIcon('passwordField', 'passwordEyeIcon');
@@ -135,7 +132,6 @@
                                     id="confirmPasswordField"
                                     autocomplete="new-password"
                                     placeholder="Confirm Password"
-                                    required
                                     aria-describedby="signup-confirm-password-error"
                                     oninput="
                                         updateSignUpPasswordIcon('confirmPasswordField', 'confirmPasswordEyeIcon');
