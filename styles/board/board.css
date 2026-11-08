@@ -60,6 +60,8 @@ h2 {
 
     align-items: center;
 
+    row-gap: var(--space-xl);
+
     & > button {
         grid-area: button;
     }
@@ -150,14 +152,14 @@ h2 {
 
     height: var(--size-button-add-mobile-bright);
 
-    padding: 0 12px;
+    padding-inline: 0px;
 }
 
 .board-column-content {
     display: flex;
 
     padding-block: var(--space-xxs);
-    padding-inline: var(--space-xs);
+    padding-inline: 0;
     gap: var(--space-lg);
     border: dashed 1px transparent;
 
@@ -212,8 +214,11 @@ h2 {
 
         grid-template-areas: "headline input button";
 
+        min-height: var(--size-input-height);
+
         & > button {
             justify-self: center;
+            min-height: var(--size-input-height);
         }
     }
 
@@ -234,6 +239,16 @@ h2 {
 
         overflow-x: unset;
         overflow-y: scroll;
+
+        padding-inline: var(--space-xs);
+    }
+
+    .board-column-header {
+        padding-inline: 20px;
+    }
+
+    .board-column-content .task-card {
+        margin-inline: var(--space-xxs);
     }
 
     /* Buttons */

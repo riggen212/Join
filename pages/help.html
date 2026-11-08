@@ -22,13 +22,10 @@
         <header class="header">
             <div class="header-wrapper">
                 <div>
-                    <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
+                    <img src="../assets/icons/logoDark.svg" alt="Join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
                 <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" data-nav-link class="header-link" aria-current="page">
-                        <img src="../assets/icons/help.svg" alt="Help"/>
-                    </a>
                     <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"
                         aria-label="Open service links and log out"
                         aria-haspopup="dialog"
@@ -92,7 +89,7 @@
         <div class="app-wrapper">
             <nav class="navbar navbar-loading" aria-label="Main navigation">
                 <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
+                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo" />
                     <ul class="navbar-links">
                         <li>
                             <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
@@ -140,8 +137,8 @@
                     <div class="privacy-policy-wrapper-headline-container">
                         <h1>Help</h1>
 
-                        <button class="button button-arrow button-close" onclick="window.history.back()">
-                            <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="Back" />
+                        <button class="button button-arrow button-close" onclick="window.history.back()" aria-label="Back">
+                            <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="" />
                         </button>
                     </div>
 
@@ -178,7 +175,7 @@
                         
                         <ol class="help-page">
                             <li>
-                                <h3>1. Exploring the Board</h3>
+                                <h3>Exploring the Board</h3>
 
                                 <p>
                                     When you log in to <span class="link-color-text">Join</span>, you'll find a default board. This board represents your project and
@@ -187,7 +184,7 @@
                             </li>
                             
                             <li>
-                                <h3>2. Creating Contacts</h3>
+                                <h3>Creating Contacts</h3>
 
                                 <p>
                                     In <span class="link-color-text">Join</span>, you can add contacts to collaborate on your projects. Go to the "Contacts" section, click on "New contact",
@@ -196,7 +193,7 @@
                             </li>                            
 
                             <li>
-                                <h3>3. Adding Cards</h3>
+                                <h3>Adding Cards</h3>
 
                                 <p>
                                     Now that you've added your contacts, you can start adding cards. Cards represent individual tasks.
@@ -206,7 +203,7 @@
                             </li>                            
 
                             <li>
-                                <h3>4. Moving Cards</h3>
+                                <h3>Moving Cards</h3>
 
                                 <p>
                                     As the task moves from one stage to another, you can reflect that on the board by dragging and dropping the card from one list to another.
@@ -214,7 +211,7 @@
                             </li>                           
 
                             <li>
-                                <h3>5. Deleting Cards</h3>
+                                <h3>Deleting Cards</h3>
 
                                 <p>
                                     Once a task is completed, you can either move it to the "Done" list or delete it. Deleting a card will permanently remove it from the board.
@@ -229,7 +226,7 @@
                         </p>
 
                         <p>
-                            Have more questions about <span class="link-color-text">Join</span>? Feel free to contact us at [Your Contact Email]. We're here to help you!
+                            Have more questions about <span class="link-color-text">Join</span>? Feel free to contact us at <a href="mailto:calvinlamel@outlook.de">calvinlamel@outlook.de</a>. We're here to help you!
                         </p>
                     </section>
                 </div>

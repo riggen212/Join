@@ -1,8 +1,18 @@
 .help-page {
     margin-top: var(--space-md);
-    padding: 0;
+    padding-inline-start: calc(var(--space-md) * 2);
+}
 
-    list-style: none;
+.help-page li {
+    padding-inline-start: 24px;
+}
+
+.help-page li + li {
+    margin-top: var(--space-md);
+}
+
+.help-page h3 {
+    margin-top: 0;
 }
 
 .privacy-policy {

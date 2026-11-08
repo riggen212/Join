@@ -22,7 +22,7 @@
         <header class="header">
             <div class="header-wrapper">
                 <div>
-                    <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
+                    <img src="../assets/icons/logoDark.svg" alt="Join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
                 </div>
 
@@ -62,6 +62,7 @@
                                 data-nav-link
                                 class="link-navbar"
                                 onclick="event.target.closest('dialog').close()"
+                                aria-current="page"
                                 >Legal Notice</a
                             >
                         </li>
@@ -90,7 +91,7 @@
         <div class="app-wrapper">
             <nav class="navbar navbar-loading" aria-label="Main navigation">
                 <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
+                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join logo" />
                     <ul class="navbar-links">
                         <li>
                             <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
@@ -143,8 +144,8 @@
                 <div class="privacy-policy-wrapper">
                     <div class="privacy-policy-wrapper-headline-container">
                         <h1>Legal Notice</h1>
-                        <button class="button button-arrow button-close" onclick="window.history.back()">
-                            <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="Back" />
+                        <button class="button button-arrow button-close" onclick="window.history.back()" aria-label="Back">
+                            <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="" />
                         </button>
                     </div>
 

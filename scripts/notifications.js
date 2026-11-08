@@ -79,7 +79,8 @@ function getNotificationContainer(containerId) {
 /**
  * Sets the text, style, and accessibility attributes of a notification.
  * Hides the visual notification from assistive technology to prevent duplicate announcements.
- *
+ * Adds a task-created presentation for the matching success message.
+ * 
  * @param {HTMLElement} notification - The notification element.
  * @param {string} message - The text displayed in the notification.
  * @param {"success" | "error"} type - The notification type.
@@ -87,6 +88,7 @@ function getNotificationContainer(containerId) {
  */
 function prepareNotification(notification, message, type) {
     notification.classList.toggle("is-error", type === "error");
+    notification.classList.toggle("notification-task-created", message === "Task added to board");
     notification.setAttribute("aria-hidden", "true");
     notification.removeAttribute("role");
     notification.removeAttribute("aria-live");
