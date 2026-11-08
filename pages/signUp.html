@@ -25,7 +25,6 @@
     </head>
 
     <body class="sign-up-page">
-        <header></header>
         <main>
             <div class="landing-page-content">
                 <img class="logo-bright" src="../assets/icons/logoBright.svg" alt="" />
@@ -53,7 +52,6 @@
                                     aria-label="Name"
                                     autocomplete="name"
                                     placeholder="Name"
-                                    required
                                     aria-describedby="signup-name-error"
                                     oninput="handleSignUpFieldValidation(this)"
                                     onblur="handleSignUpFieldValidation(this, true)"
@@ -78,7 +76,6 @@
                                     aria-label="Email"
                                     autocomplete="email"
                                     placeholder="Email"
-                                    required
                                     aria-describedby="signup-email-error"
                                     oninput="handleSignUpFieldValidation(this)"
                                     onblur="handleSignUpFieldValidation(this, true)"
@@ -103,7 +100,6 @@
                                     aria-label="Password"
                                     autocomplete="new-password"
                                     placeholder="Password"
-                                    required
                                     aria-describedby="signup-password-error"
                                     oninput="
                                         updateSignUpPasswordIcon('passwordField', 'passwordEyeIcon');
@@ -139,7 +135,6 @@
                                     aria-label="Confirm Password"
                                     autocomplete="new-password"
                                     placeholder="Confirm Password"
-                                    required
                                     aria-describedby="signup-confirm-password-error"
                                     oninput="
                                         updateSignUpPasswordIcon('confirmPasswordField', 'confirmPasswordEyeIcon');
@@ -179,7 +174,7 @@
                                     />
                                     <label for="acceptPolicy">
                                         I accept the
-                                        <a href="../pages/privacyPolicy.html" target="_blank"> Privacy Policy </a>
+                                        <a href="../pages/privacyPolicy.html" target="_blank" aria-label="Privacy Policy (opens in a new tab)"> Privacy Policy </a>
                                     </label>
                                 </div>
 
@@ -199,6 +194,7 @@
                             </div>
                         </div>
                     </form>
+                    <p id="sign-up-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
                 </section>
             </div>
         </main>

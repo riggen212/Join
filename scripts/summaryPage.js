@@ -263,7 +263,7 @@ function getDateWritten(date) {
 
     const [year, month, day] = date.split("-").map(Number);
     const localDate = new Date(year, month - 1, day);
-    const monthName = localDate.toLocaleDateString("en-EN", { month: "long" });
+    const monthName = localDate.toLocaleDateString("en-US", { month: "long" });
 
     return `${monthName} ${localDate.getDate()}, ${localDate.getFullYear()}`;
 }
