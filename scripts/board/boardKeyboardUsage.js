@@ -101,6 +101,7 @@ async function keyboardMovement(taskId, event) {
  * confirmation, and cancellation. Tab and ArrowRight advance; ArrowLeft moves back.
  * Enter confirms, Escape cancels, and column navigation wraps around.
  *
+ * @param {KeyboardEvent} event - Keyboard event used to check the Shift key.
  * @param {TaskId} taskId - ID passed to confirmation and cleanup actions.
  * @returns {Record<string, () => void|Promise<void>>} Actions indexed by key value.
  */
