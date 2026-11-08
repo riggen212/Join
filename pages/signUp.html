@@ -25,7 +25,6 @@
     </head>
 
     <body class="sign-up-page">
-        <header></header>
         <main>
             <div class="landing-page-content">
                 <img class="logo-bright" src="../assets/icons/logoBright.svg" alt="" />
@@ -175,7 +174,7 @@
                                     />
                                     <label for="acceptPolicy">
                                         I accept the
-                                        <a href="../pages/privacyPolicy.html" target="_blank"> Privacy Policy </a>
+                                        <a href="../pages/privacyPolicy.html" target="_blank" aria-label="Privacy Policy (opens in a new tab)"> Privacy Policy </a>
                                     </label>
                                 </div>
 
@@ -195,6 +194,7 @@
                             </div>
                         </div>
                     </form>
+                    <p id="sign-up-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
                 </section>
             </div>
         </main>

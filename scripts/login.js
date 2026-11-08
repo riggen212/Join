@@ -7,6 +7,7 @@ let isLoginPending = false;
 /**
  * Initializes the login page by showing a sign-up success notification
  * when requested and removing the signup parameter from the URL.
+ * Moves focus to the email field after returning from the sign-up page.
  *
  * @returns {void}
  */
@@ -14,9 +15,13 @@ function initLoginPage() {
     const url = new URL(window.location.href);
 
     if (url.searchParams.get("signup") === "success") {
-        showNotification("Registration successful!");
+        showNotification("You Signed Up successfully");
         url.searchParams.delete("signup");
         window.history.replaceState(null, "", url);
+    }
+
+    if (window.location.hash === "#login") {
+        requestAnimationFrame(() => document.getElementById("emailField").focus());
     }
 }
 
@@ -131,6 +136,7 @@ function checkLoginData(users, email, password) {
 
 /**
  * Validates login input and displays any error below the fields.
+ * Focuses the first empty field when validation fails.
  *
  * @param {{email: string, password: string}} data - The entered credentials.
  * @returns {boolean} Whether both required fields are filled.
@@ -140,7 +146,20 @@ function validateLoginData(data) {
     if (!error) return true;
 
     showLoginError(error);
+    focusFirstInvalidLoginField(data);
     return false;
+}
+
+/**
+ * Focuses the first login field without a value.
+ *
+ * @param {{email: string, password: string}} data - The entered credentials.
+ * @returns {void}
+ */
+function focusFirstInvalidLoginField(data) {
+    const fieldId = !data.email ? "emailField" : "passwortField";
+
+    document.getElementById(fieldId).focus();
 }
 
 /**
@@ -213,22 +232,23 @@ function toggleLoginPasswordVisibility() {
 
 /**
  * Updates the password icon using field contents and password visibility.
+ * Resets the password visibility and button ARIA state when the field becomes empty.
+ * Enables the visibility toggle only when the password field has a value.
  *
  * @returns {void}
  */
 function updatePasswordIcon() {
-    const email = document.getElementById("emailField").value.trim();
     const passwordInput = document.getElementById("passwortField");
+    const toggleButton = document.getElementById("toggle-login-password");
     const eyeIcon = document.getElementById("augeIcon");
 
-    if (!passwordInput.value) passwordInput.type = "password";
-
-    if (passwordInput.type === "text") {
-        eyeIcon.src = "./assets/icons/eyeOpen.svg";
-    } else {
-        eyeIcon.src = passwordInput.value
-            ? "./assets/icons/eyeClose.svg"
-            : "./assets/icons/showPassword.svg";
+    if (!passwordInput.value) {
+        passwordInput.type = "password";
+        toggleButton.setAttribute("aria-pressed", "false");
+        toggleButton.setAttribute("aria-label", "Show password");
     }
+    
+    toggleButton.disabled = !passwordInput.value;
+    eyeIcon.src = passwordInput.type === "text" ? "./assets/icons/eyeOpen.svg" : passwordInput.value ? "./assets/icons/eyeClose.svg" : "./assets/icons/showPassword.svg";
 }
 

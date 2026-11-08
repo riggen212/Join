@@ -1,6 +1,7 @@
 /**
  * Validates registration data and refreshes the displayed form errors.
  * Displays all detected errors beside their corresponding fields.
+ * Moves focus to the first invalid form field.
  *
  * @param {Object} data - The registration data.
  * @returns {boolean} Whether the registration data is valid.
@@ -11,8 +12,21 @@ function validateSignUpData(data) {
 
     clearFormError(form);
     showFormFieldErrors(form, errors);
+    if (Object.keys(errors).length) focusFirstInvalidSignUpField(errors);
 
     return Object.keys(errors).length === 0;
+}
+
+/**
+ * Moves focus to the first field with a validation error.
+ *
+ * @param {Object.<string, string>} errors - Validation errors by field ID.
+ * @returns {void}
+ */
+function focusFirstInvalidSignUpField(errors) {
+    const firstInvalidField = Object.keys(errors)[0];
+
+    document.getElementById(firstInvalidField)?.focus();
 }
 
 /**

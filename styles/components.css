@@ -259,6 +259,22 @@
     animation: notification-slide-out-mobile 160ms linear forwards;
 }
 
+#notification.notification-task-created.is-visible {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+#notification.notification-task-created::after {
+    content: "";
+
+    width: 24px;
+    height: 20px;
+    flex: 0 0 auto;
+
+    background: url("../assets/icons/board.svg") center / contain no-repeat;
+}
+
 /* buttons */
 .button {
     min-height: 48px;

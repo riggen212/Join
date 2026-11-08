@@ -36,13 +36,30 @@ async function handleSignUp(data) {
 
 /**
  * Updates the saving state and refreshes the sign-up button.
+ * Sets the form busy state and announces the current saving status.
+ * Updates the password visibility buttons.
  *
  * @param {boolean} isSaving - Whether registration is being saved.
  * @returns {void}
  */
 function setSignUpSaving(isSaving) {
+    const form = document.getElementById("signUpForm");
+
     isSignUpSaving = isSaving;
+    form.setAttribute("aria-busy", String(isSaving));
+    document.getElementById("sign-up-status").textContent = isSaving ? "Creating account…" : "";
     updateSignUpButton();
+    updateSignUpPasswordButtons();
+}
+
+/**
+ * Refreshes both password visibility buttons.
+ *
+ * @returns {void}
+ */
+function updateSignUpPasswordButtons() {
+    updateSignUpPasswordIcon("passwordField", "passwordEyeIcon");
+    updateSignUpPasswordIcon("confirmPasswordField", "confirmPasswordEyeIcon");
 }
 
 /**
@@ -80,6 +97,7 @@ function getSignUpData() {
 /**
  * Checks email availability and saves the new user and contact.
  * Displays a field error if the email is already registered.
+ * Moves focus to the email field when the address is already registered.
  *
  * @param {Object} data - Validated registration data.
  * @returns {Promise<boolean>} True after saving, false if the email already exists.
@@ -93,6 +111,7 @@ async function processSignUp(data) {
         showFormFieldErrors(form, {
             emailField: "This email address is already registered.",
         });
+        document.getElementById("emailField").focus();
         return false;
     }
 
@@ -241,6 +260,7 @@ function toggleSignUpPassword(fieldId, iconId) {
 
 /**
  * Updates the visibility button and icon based on the password field's content.
+* Keeps the button disabled while registration is being saved.
  *
  * @param {string} fieldId - ID of the password input.
  * @param {string} iconId - ID of the eye icon.
@@ -252,7 +272,7 @@ function updateSignUpPasswordIcon(fieldId, iconId) {
     const button = icon.closest("button");
     const canShowPassword = input.value.length > 0;
 
-    button.disabled = !canShowPassword;
+    button.disabled = !canShowPassword || isSignUpSaving;
 
     if (!canShowPassword) resetSignUpPassword(input, button);
     updateSignUpEyeIcon(input, icon, button, canShowPassword);
@@ -302,3 +322,14 @@ function updateSignUpButton() {
 
     document.getElementById("signUpButton").disabled = !isComplete || isSignUpSaving;
 }
+
+/**
+ * Moves focus to the name input after navigating to the sign-up page.
+ *
+ * @returns {void}
+ */
+function initSignUpPage() {
+    document.getElementById("nameField").focus();
+}
+
+initSignUpPage();
