@@ -202,6 +202,7 @@ function toggleLoginPasswordVisibility() {
     const passwordInput = document.getElementById("passwortField");
     const toggleButton = document.getElementById("toggle-login-password");
     const passwordIsHidden = passwordInput.type === "password";
+    const eyeIcon = document.getElementById("augeIcon");
 
     passwordInput.type = passwordIsHidden ? "text" : "password";
     toggleButton.setAttribute("aria-pressed", String(passwordIsHidden));
@@ -220,10 +221,12 @@ function updatePasswordIcon() {
     const passwordInput = document.getElementById("passwortField");
     const eyeIcon = document.getElementById("augeIcon");
 
+    if (!passwordInput.value) passwordInput.type = "password";
+
     if (passwordInput.type === "text") {
         eyeIcon.src = "./assets/icons/eyeOpen.svg";
     } else {
-        eyeIcon.src = email && passwordInput.value
+        eyeIcon.src = passwordInput.value
             ? "./assets/icons/eyeClose.svg"
             : "./assets/icons/showPassword.svg";
     }
