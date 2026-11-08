@@ -105,6 +105,7 @@
  * @property {Task} task - The task data.
  * @property {SubtasksData} subtasksData - Subtask summary and progress.
  * @property {string} assigneesHtml - HTML for the assigned contacts.
+ * @property {string} popupHtml - HTML for the task's move popup.
  */
 
 /**

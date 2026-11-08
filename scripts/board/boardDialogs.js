@@ -279,10 +279,11 @@ function restoreBoardTaskFocus(taskId, taskStatus) {
     if (!taskId) return;
 
     const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
-    const target = document.getElementById(taskId)
-        ?? column?.querySelector(".task-card")
-        ?? column?.querySelector(".board-column-header button")
-        ?? document.getElementById("search");
+    const target =
+        document.getElementById(taskId)?.querySelector(".task-card-open") ??
+        column?.querySelector(".task-card-open") ??
+        column?.querySelector(".board-column-header button") ??
+        document.getElementById("search");
 
     target?.focus();
 }

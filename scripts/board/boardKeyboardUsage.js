@@ -151,7 +151,7 @@ async function confirmMovingTaskWithKeyboard(taskId) {
     let message = "";
     isKeyboardMoveActive = false;
     try {
-        const wasSaved = await moveTask(destinationStatus);
+        const wasSaved = await moveTask(taskId, destinationStatus, draggingTask?.status);
         message = wasSaved === undefined ? "Task remains in its current column."
             : wasSaved ? `Task moved to ${board[destinationStatus].name}.`
             : "Task could not be moved. Its original column has been restored.";
@@ -161,7 +161,7 @@ async function confirmMovingTaskWithKeyboard(taskId) {
 }
 
 /**
- * Ends movement, sets the result description and restores card focus.
+ * Ends movement, sets the result description and restores focus to the task's opening button.
  *
  * @param {TaskId} taskId - ID of the task card.
  * @param {string} [message=""] - Result to include in the card description.
@@ -173,11 +173,12 @@ function finishMovingTaskWithKeyboard(taskId, message = "") {
     highlightedColumnIndex = null;
     endDraggingTask(taskId);
     const card = document.getElementById(taskId);
-    const alreadyFocused = document.activeElement === card;
+    const openButton = card.querySelector(".task-card-open");
+    const alreadyFocused = document.activeElement === openButton;
     card.querySelector(".task-move-result").textContent = message;
-    card.setAttribute("aria-describedby",
+    openButton.setAttribute("aria-describedby",
         message ? `${taskId}-move-result` : "task-keyboard-help");
-    card.focus();
+    openButton.focus();
     if (alreadyFocused && message) announceBoardMoveStatus(message);
 }
 
@@ -217,14 +218,4 @@ function moveToPreviousColumn() {
 
     addHighlightDroppableColumn(columns[highlightedColumnIndex]);
     announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
-}
-
-/**
- * Announces board movement updates to screen readers.
- *
- * @param {string} message - The movement information to announce.
- * @returns {void}
- */
-function announceBoardMoveStatus(message) {
-    document.getElementById("board-move-status").textContent = message;
 }

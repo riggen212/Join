@@ -150,7 +150,7 @@ function getColumnContentHtml(columnTasksObject) {
  *
  * @param {TaskId} taskId - ID of the task.
  * @param {Task} task - The task to prepare for rendering.
- * @returns {TaskCardData} Task data with subtask summary and assignee HTML.
+ * @returns {TaskCardData} Task data with subtask summary, assignee HTML and move popup HTML.
  */
 function getTaskCardData(taskId, task) {
     return {
@@ -158,6 +158,7 @@ function getTaskCardData(taskId, task) {
         task: task,
         subtasksData: getSubtasksCardData(task),
         assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
+        popupHtml: getTaskMovePopupHtml(taskId, task.status),
     };
 }
 
@@ -201,6 +202,25 @@ function getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeT
     }
 
     return assigneesHtml;
+}
+
+/**
+ * Builds the move popup excluding the task's current column.
+ *
+ * @param {TaskId} taskId - ID of the task.
+ * @param {Task["status"]} currentStatus - Current task status.
+ * @returns {string} HTML for the move popup.
+ */
+function getTaskMovePopupHtml(taskId, currentStatus) {
+    let optionHtml = "";
+
+    Object.entries(board).forEach(([status, column]) => {
+        if (status !== currentStatus) {
+            optionHtml += getTaskCardMoveOptionsTemplate(taskId ,status, currentStatus ,column.name);
+        }
+    });
+
+    return getTaskCardMovePopupTemplate(taskId, optionHtml);
 }
 
 /**
