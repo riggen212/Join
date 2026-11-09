@@ -1,0 +1,50 @@
+/* Display */
+.d-none {
+    display: none !important;
+}
+
+.d-unset {
+    display: unset !important;
+}
+
+/* Layout */
+.d-flex-align-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gap-xxs {
+    gap: var(--space-xxs);
+}
+
+.gap-xs {
+    gap: var(--space-xs);
+}
+
+.gap-lg {
+    gap: var(--space-lg);
+}
+
+/* State */
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.active {
+    color: #fff !important;
+    background-color: var(--button-dark-active-background-color) !important;
+}
+
+/* Accessibility */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}

@@ -1,16 +1,6 @@
 /* Root variables */
-h1 {
+.board-heading {
     grid-area: headline;
-
-    font-size: var(--font-heading);
-    font-weight: 700;
-}
-
-h2 {
-    font-size: var(--font-heading-two-mobile);
-    font-weight: 700;
-
-    color: var(--background-dark-color);
 }
 
 /* Board structure */
@@ -29,7 +19,7 @@ h2 {
     align-self: center;
     margin: var(--space-xl);
     padding: 20px 24px;
-    color: #fff;
+    color: var(--color-white);
     font-size: 16px;
     background-color: #b3261e;
     border-radius: var(--border-radius-middle);
@@ -84,7 +74,7 @@ h2 {
     width: 100%;
     min-height: var(--size-input-height);
 
-    background-color: #fff;
+    background-color: var(--color-white);
 
     border: solid 1px var(--color-grey-bright);
     border-radius: var(--border-radius-middle);
@@ -95,25 +85,25 @@ h2 {
 }
 
 .board-search:focus-within {
-    border-color: var(--background-dark-hover-color);
+    border-color: var(--color-brand);
 }
 
 .board-search-input {
     margin-inline-start: var(--space-lg);
 
-    color: #000;
+    color: var(--color-black);
     font-size: var(--font-input);
 
     background-color: inherit;
     border: none;
-    border-right: solid 1px var(--color-input-placeholder);
+    border-right: solid 1px var(--color-neutral-light);
     outline: none;
 
     min-width: 0;
     flex: 1;
 
     &::placeholder {
-        color: var(--color-input-placeholder);
+        color: var(--color-neutral-light);
     }
 }
 
@@ -181,20 +171,16 @@ h2 {
     font-weight: 400;
 
     background-color: var(--background-board-feedback-color);
-    border: dashed 1px var(--color-grey-bright);
     border-radius: var(--border-radius-middle);
 }
 
+.board-column-feedback,
 .board-column-highlight {
     border: dashed 1px var(--color-grey-bright);
 }
 
 /* Media queries */
 @media screen and (min-width: 1280px) {
-    h2 {
-        font-size: var(--font-heading-two-desktop);
-    }
-
     /* Board structure */
     .board {
         min-height: 0;

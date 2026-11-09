@@ -1,5 +1,3 @@
-
-
 /**
  * Returns the HTML of the task form.
  *
@@ -8,7 +6,7 @@
  * @returns {string} The task form HTML.
  */
 function renderAddTask(isEditMode = false) {
-    return `${isEditMode ? "" : '<h1 id="add-task-dialog-title">Add Task</h1>'}
+  return `${isEditMode ? "" : '<h1 id="add-task-dialog-title" class="page-heading">Add Task</h1>'}
                 <section class="add-task${isEditMode ? " edit-task" : ""}">
                     <form class="task-form-wrapper" novalidate onsubmit="submitTaskForm(event)" onreset="resetTaskForm(this)"
                         oninput="updateTaskForm(this)" onchange="updateTaskForm(this)" onkeydown="preventEnterSubmit(event)">
@@ -129,10 +127,14 @@ function renderAddTask(isEditMode = false) {
                             </p>
 
                             <div class="submit-task-send">
-                                ${isEditMode ? "" : `<button class="button button-bright" type="reset">
+                                ${
+                                  isEditMode
+                                    ? ""
+                                    : `<button class="button button-bright" type="reset">
                                     <span>Clear</span>
                                     <img src="../assets/icons/cancel.svg" alt="">
-                                </button>`}
+                                </button>`
+                                }
 
                                 <button class="button button-dark" type="submit">
                                     <span>${isEditMode ? "Ok" : "Create Task"}</span>
@@ -155,13 +157,10 @@ function renderAddTask(isEditMode = false) {
  * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The HTML of the list entry.
  */
-function getAssignedOptionTemplate( contactId, contact, initials, isChecked, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(
-        contact.email,
-        loggedUserEmail
-    );
+function getAssignedOptionTemplate(contactId, contact, initials, isChecked, loggedUserEmail) {
+  const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
-    return `
+  return `
         <li>
             <label class="assigned-option">
                 <span class="badge-user ${contact.colorClass || ""}">${initials}</span>
@@ -173,7 +172,6 @@ function getAssignedOptionTemplate( contactId, contact, initials, isChecked, log
     `;
 }
 
-
 /**
  * Returns the HTML for the badge of an assigned contact.
  *
@@ -183,7 +181,7 @@ function getAssignedOptionTemplate( contactId, contact, initials, isChecked, log
  * @returns {string} The HTML of the badge.
  */
 function getAssignedBadgeTemplate(badgeClass, initials, name) {
-    return `<li class="${badgeClass}" aria-label="${name}">${initials}</li>`;
+  return `<li class="${badgeClass}" aria-label="${name}">${initials}</li>`;
 }
 
 /**
@@ -193,7 +191,7 @@ function getAssignedBadgeTemplate(badgeClass, initials, name) {
  * @returns {string} The HTML of the badge.
  */
 function getMoreBadgeTemplate(count) {
-    return `<li class="badge-user badge-user-more" aria-label="${count} more contacts">+${count}</li>`;
+  return `<li class="badge-user badge-user-more" aria-label="${count} more contacts">+${count}</li>`;
 }
 
 /**
@@ -204,7 +202,7 @@ function getMoreBadgeTemplate(count) {
  * @returns {string} The HTML of the subtask.
  */
 function getSubtaskTemplate(title, completed) {
-    return `
+  return `
         <li class="subtask-item" data-completed="${completed}">
             <span class="subtask-title" onclick="editSubtask(this)">${title}</span>
             <div class="subtask-actions">
@@ -232,7 +230,7 @@ function getSubtaskTemplate(title, completed) {
  * @returns {string} The HTML of the input.
  */
 function getSubtaskEditTemplate() {
-    return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
+  return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
                 onkeydown="handleSubtaskEditKeydown(event)" onblur="saveSubtaskEdit(this)">`;
 }
 
@@ -244,7 +242,7 @@ function getSubtaskEditTemplate() {
  * @returns {string} The contact card HTML.
  */
 function getContactCardTemplate(contactId, contact) {
-    return `
+  return `
         <article class="contact-card" data-contact-id="${contactId}"
             onclick="showContactDetails(this)">
             <div class="badge-user ${contact.colorClass}">
@@ -266,9 +264,9 @@ function getContactCardTemplate(contactId, contact) {
  * @returns {string} The complete contact group HTML.
  */
 function getContactGroupTemplate(initial, contactCardsHtml) {
-    return `
+  return `
         <section class="contact-group">
-            <h2>${initial}</h2>
+            <h2 class="section-heading">${initial}</h2>
             ${contactCardsHtml}
         </section>
     `;
@@ -281,7 +279,7 @@ function getContactGroupTemplate(initial, contactCardsHtml) {
  * @returns {string} The contact details HTML.
  */
 function getContactDetailsTemplate(contact) {
-    return `
+  return `
         <div>
             <div class="badge-user ${contact.colorClass}"><span>${contact.initials}</span></div>
             <h3>${contact.name}</h3>
@@ -301,7 +299,7 @@ function getContactDetailsTemplate(contact) {
  * @returns {string} The contact action buttons HTML.
  */
 function getContactActionsTemplate() {
-    return `
+  return `
         <div id="contact-actions">
             <button class="button button-task-overlay" onclick="editContact()">
                 <img src="../assets/icons/edit.svg" alt="">

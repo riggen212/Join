@@ -188,7 +188,7 @@ function getContactCardTemplate(contactId, contact, loggedUserEmail) {
 function getContactGroupTemplate(initial, contactCardsHtml) {
     return `
         <section class="contact-group">
-            <h2>${initial}</h2>
+            <h2 class="section-heading">${initial}</h2>
             ${contactCardsHtml}
         </section>
     `;

@@ -1,117 +1,113 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <script src="./script.js" defer></script>
-        <script src="./scripts/notifications.js" defer></script>
-        <script src="./scripts/formErrors.js" defer></script>
-        <script src="./scripts/login.js" defer></script>
+    <script src="./script.js" defer></script>
+    <script src="./scripts/notifications.js" defer></script>
+    <script src="./scripts/formErrors.js" defer></script>
+    <script src="./scripts/login.js" defer></script>
 
-        <link rel="icon" type="image/x-icon" href="./assets/icons/logoDark.svg" />
+    <link rel="icon" type="image/x-icon" href="./assets/icons/logoDark.svg" />
 
-        <link rel="stylesheet" href="./styles/root.css" />
-        <link rel="stylesheet" href="./style.css" />
-        <link rel="stylesheet" href="./styles/components.css" />
-        <link rel="stylesheet" href="./styles/formErrors.css" />
-        <link rel="stylesheet" href="./styles/login.css" />
-        <link rel="stylesheet" href="./styles/fonts.css" />
+    <link rel="stylesheet" href="./styles/root.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./styles/utilities.css" />
+    <link rel="stylesheet" href="./styles/utilities.css" />
+    <link rel="stylesheet" href="./styles/components.css" />
+    <link rel="stylesheet" href="./styles/formErrors.css" />
+    <link rel="stylesheet" href="./styles/login.css" />
+    <link rel="stylesheet" href="./styles/fonts.css" />
 
-        <title>Join</title>
-    </head>
+    <title>Join</title>
+  </head>
 
-    <body id="login" class="login-page">
-        <header class="login-header">
-            <div class="sign-up-wrapper sing-up-position">
-                <span> Not a Join user? </span>
-                <a href="./pages/signUp.html" class="button button-dark"> Sign up </a>
+  <body id="login" class="login-page">
+    <header class="login-header">
+      <div class="sign-up-wrapper sing-up-position">
+        <span> Not a Join user? </span>
+        <a href="./pages/signUp.html" class="button button-dark"> Sign up </a>
+      </div>
+    </header>
+
+    <main class="landing-page">
+      <div class="landing-page-content">
+        <img class="logo-bright" src="./assets/icons/logoBright.svg" alt="" />
+        <img class="logo-dark" src="./assets/icons/logoDark.svg" alt="" />
+        <section class="main-wrapper main-margin-bottom">
+          <h1>Log in</h1>
+
+          <form onsubmit="login(event)" novalidate oninput="clearFormError(this)">
+            <div class="input-wrapper" id="loginEmailRed">
+              <input
+                type="email"
+                id="emailField"
+                autocomplete="username"
+                placeholder="Email"
+                aria-label="Email"
+                aria-describedby="loginTextError"
+                oninput="updatePasswordIcon()"
+              />
+              <span class="input-icon">
+                <img src="./assets/icons/mail.svg" alt="" />
+              </span>
             </div>
-        </header>
 
-        <main class="landing-page">
-            <div class="landing-page-content">
-                <img class="logo-bright" src="./assets/icons/logoBright.svg" alt="" />
-                <img class="logo-dark" src="./assets/icons/logoDark.svg" alt="" />
-                <section class="main-wrapper main-margin-bottom">
-                    <h1>Log in</h1>
+            <div class="form-field">
+              <div class="input-wrapper" id="loginPasswordRed">
+                <input
+                  type="password"
+                  id="passwortField"
+                  autocomplete="current-password"
+                  placeholder="Password"
+                  aria-label="Password"
+                  aria-describedby="loginTextError"
+                  oninput="updatePasswordIcon()"
+                />
+                <button
+                  type="button"
+                  id="toggle-login-password"
+                  onclick="toggleLoginPasswordVisibility()"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                  disabled
+                >
+                  <img id="augeIcon" src="./assets/icons/showPassword.svg" alt="" />
+                </button>
+              </div>
 
-                    <form onsubmit="login(event)" novalidate oninput="clearFormError(this)">
-                        <div class="input-wrapper" id="loginEmailRed">
-                            <input
-                                type="email"
-                                id="emailField"
-                                autocomplete="username"
-                                placeholder="Email"
-                                aria-label="Email"
-                                aria-describedby="loginTextError"
-                                oninput="updatePasswordIcon()"
-                            />
-                            <span class="input-icon">
-                                <img src="./assets/icons/mail.svg" alt="" />
-                            </span>
-                        </div>
-
-                        <div class="form-field">
-                            <div class="input-wrapper" id="loginPasswordRed">
-                                <input
-                                    type="password"
-                                    id="passwortField"
-                                    autocomplete="current-password"
-                                    placeholder="Password"
-                                    aria-label="Password"
-                                    aria-describedby="loginTextError"
-                                    oninput="updatePasswordIcon()"
-                                />
-                                <button
-                                    type="button"
-                                    id="toggle-login-password"
-                                    onclick="toggleLoginPasswordVisibility()"
-                                    aria-label="Show password"
-                                    aria-pressed="false"
-                                    disabled
-                                >
-                                    <img id="augeIcon" src="./assets/icons/showPassword.svg" alt="" />
-                                </button>
-                            </div>
-
-                            <p id="loginTextError" class="form-error" data-form-error role="alert"></p>
-                        </div>
-
-                        <div class="login-button-area">
-                            <button
-                                class="button button-dark button-width button-login-desktop"
-                                type="submit"
-                                name="loginType"
-                                value="regular"
-                            >
-                                Log in
-                            </button>
-                            <button
-                                class="button button-bright button-width button-questlogin-desktop"
-                                type="submit"
-                                name="loginType"
-                                value="guest"
-                            >
-                                Guest Log in
-                            </button>
-                        </div>
-                    </form>
-
-                    <p
-                        id="login-status"
-                        class="visually-hidden"
-                        role="status"
-                        aria-live="polite"
-                        aria-atomic="true"
-                    ></p>
-                </section>
+              <p id="loginTextError" class="form-error" data-form-error role="alert"></p>
             </div>
-        </main>
 
-        <footer>
-            <a href="./pages/privacyPolicy.html">Privacy Policy</a>
-            <a href="./pages/legalNotice.html">Legal notice</a>
-        </footer>
-    </body>
+            <div class="login-button-area">
+              <button
+                class="button button-dark button-width button-login-desktop"
+                type="submit"
+                name="loginType"
+                value="regular"
+              >
+                Log in
+              </button>
+              <button
+                class="button button-bright button-width button-questlogin-desktop"
+                type="submit"
+                name="loginType"
+                value="guest"
+              >
+                Guest Log in
+              </button>
+            </div>
+          </form>
+
+          <p id="login-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <a href="./pages/privacyPolicy.html">Privacy Policy</a>
+      <a href="./pages/legalNotice.html">Legal notice</a>
+    </footer>
+  </body>
 </html>

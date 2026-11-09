@@ -1,9 +1,8 @@
 .main {
     min-height: calc(100vh - 160px);
-    padding: 0 8px;
-    padding-top: 80px;
+    padding: var(--mobile-header-footer-height) 8px 0;
     max-width: var(--content-max-width);
-    
+
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -13,40 +12,39 @@
 
 .desktop-wrapper {
     display: contents;
-    margin-top: 16px;
 }
 
 .headline-h2 {
     position: fixed;
     inset: 0;
-    
+
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     z-index: 8;
-    background-color: #f6f7f8;
+    background-color: var(--background-bright-color);
 
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 400;
     font-size: var(--font-heading-h2);
 }
 
 .headline-strong {
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 700;
     font-size: var(--font-heading-strong);
-    color: #124658;
+    color: var(--color-brand);
 }
 
 /* Here start the summary after (good morning) */
 
-.headline-container {
+.headline-container,
+.section-container {
     display: flex;
     flex-direction: column;
+}
+
+.headline-container {
     justify-content: flex-start;
     margin-top: 32px;
     gap: 12px;
@@ -56,111 +54,86 @@
     content: "";
     width: 106px;
     height: 3px;
-    background-color: #29abe2;
+    background-color: var(--color-accent);
     border-radius: 2px;
 }
 
 .headline-strong2 {
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 700;
     font-size: var(--font-heading-h2);
 }
 
-.headline-span {
-    font-family: 'Inter';
-    font-style: normal;
+.headline-span,
+.section-span {
     font-weight: 400;
-    font-size: var(--space-lg);    
+    font-size: var(--space-lg);
 }
 
-
 .section-container {
-    display: flex;
-    flex-direction: column;
     width: 100%;
-    flex-wrap: nowrap;
     gap: 32px;
 }
 
-.section-inner {
+.section-inner,
+.flexbox,
+.deadline-inner {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+}
+
+.section-inner {
+    justify-content: space-between;
     gap: 12px;
 }
 
-.flexbox-container-left {
-    width: var(--todo-card-width);
-    border: 1px solid #d1d1d1;
-    border-radius: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
-.flexbox-container-right {
-    width: var(--todo-card-width);
-    border: 1px solid #d1d1d1;
+.flexbox-container-left,
+.flexbox-container-right,
+.deadline-container,
+.task-container {
+    border: 1px solid var(--color-neutral-light);
     border-radius: 24px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .flexbox {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     justify-content: center;
-    flex-wrap: nowrap;
     gap: 16px;
     height: 100%;
     padding: var(--space-xs);
 }
 
-.section-img {
+.section-img,
+.section-img-right {
     width: var(--image-to-do-size);
     height: var(--image-to-do-size);
-    background-color: #2A3647;
+
+    background-color: var(--background-dark-color);
     border-radius: 50%;
 }
 
 .section-img-right {
-    width: var(--image-to-do-size);
-    height: var(--image-to-do-size);
-    background-color: #2A3647;
-    border-radius: 50%;
     padding: 10px;
 }
 
-.flexbox-inner {
+.flexbox-inner,
+.taks-inner,
+.flexbox-deadline {
     display: flex;
     flex-direction: column;
-    align-content: center;
     justify-content: center;
+}
+
+.flexbox-inner,
+.taks-inner {
     text-align: center;
 }
 
 .section-headline {
-    font-family: 'Inter';
     font-weight: 600;
     font-size: var(--font-heading-h2);
 }
 
-.section-span {
-    font-family: 'Inter';
-    font-weight: 400;
-    font-size: var(--space-lg);
-}
-
-.deadline-container {
-    border: 1px solid #d1d1d1;
-    border-radius: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
 .deadline-inner {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     justify-content: space-evenly;
     gap: 8px;
     padding: var(--space-xs);
@@ -175,35 +148,23 @@
     height: 60px;
     width: 1px;
     align-self: center;
-    background-color: #d1d1d1;
+    background-color: var(--color-neutral-light);
 }
 
 .flexbox-deadline {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     gap: 4px;
 }
 
 .deadline-date {
-    font-family: 'Inter';
     font-weight: 600;
-    font-size: var(--space-lg);  
+    font-size: var(--space-lg);
 }
 
 .task-container {
     width: var(--task-container-width);
-    border: 1px solid #d1d1d1;
-    border-radius: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .taks-inner {
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    text-align: center;
     padding: var(--space-xs);
 }
 

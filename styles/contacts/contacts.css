@@ -16,10 +16,9 @@
 .contact-list {
     height: 100%;
     padding: var(--space-xl) clamp(24px, 8vw, 42px) 100px;
-    background-color: #fff;
+    background-color: var(--color-white);
     box-shadow: 4px 0 6px rgb(0 0 0 / 8%);
     overflow-y: auto;
-    scrollbar-width: thin;
     scrollbar-color: #a8a8a8 transparent;
     scrollbar-width: none;
 }
@@ -57,14 +56,9 @@ body.contact-details-open .contact-list > .detail-view { display: none; }
 
 .contact-list > .detail-view span { display: none; }
 
-.contact-list > .detail-view:hover { background-color: #29abe2; }
+.contact-list > .detail-view:hover { background-color: var(--color-accent); }
 
 .contact-list > .detail-view:active { background-color: var(--button-dark-active-background-color);}
-
-.contact-list > .detail-view img {
-    width: 24px;
-    height: 24px;
-}
 
 .contact-group {
     display: flex;
@@ -88,7 +82,7 @@ body.contact-details-open .contact-list > .detail-view { display: none; }
     bottom: 0;
     left: 0;
     height: 2px;
-    background-color: #d1d1d1;
+    background-color: var(--color-neutral-light);
 }
 
 .contact-group + .contact-group { margin-top: var(--space-md); }
@@ -106,7 +100,7 @@ body.contact-details-open .contact-list > .detail-view { display: none; }
 
 .contact-card.is-selected {
     background-color: var(--background-dark-color);
-    color: #fff;
+    color: var(--color-white);
 }
 
 .contact-card p {
@@ -116,7 +110,7 @@ body.contact-details-open .contact-list > .detail-view { display: none; }
 
 .adress {
     margin-top: var(--space-xxs);
-    color: #007cee;
+    color: var(--color-contact-info);
     font-size: clamp(14px, 4vw, 16px);
     line-height: 1.2;
 }
@@ -129,7 +123,7 @@ body.contact-details-open .contact-list > .detail-view { display: none; }
     z-index: 2;
     display: none;
     padding: var(--space-xl) var(--space-lg);
-    background-color: #fff;
+    background-color: var(--color-white);
     overflow: hidden;
 }
 
@@ -171,17 +165,12 @@ body.contact-details-open {
     flex: 0 0 2px;
     width: 90px;
     height: 2px;
-    background-color: #29abe2;
+    background-color: var(--color-accent);
 }
 
 .contact-details > header > button {
     flex-shrink: 0;
     margin-left: auto;
-
-    & img {
-        width: 24px;
-        height: 24px;
-    }
 }
 
 .contact-details-info {
@@ -215,15 +204,21 @@ body.contact-details-open {
 }
 
 .detail-info {
-    color: #007cee;
+    color: var(--color-contact-info);
     font-size: 16px;
 }
 
 .contact-details-info .badge-user {
     width: 80px;
     height: 80px;
-    border: 3px solid #fff;
+    border: 3px solid var(--color-white);
     box-shadow: 0 0 4px 2px rgba(209, 209, 209, 0.8);
+}
+
+.contact-list > .detail-view img,
+.contact-details > header > button img {
+    width: 24px;
+    height: 24px;
 }
 
 .contact-details-info .badge-user span { font-size: 28px; }

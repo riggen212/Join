@@ -140,7 +140,7 @@ function getTaskOverlayTemplate(taskData) {
                             <img src="../assets/icons/cancel.svg" alt="" />
                         </button>
                     </div>
-                    <h2 id="task-dialog-title" class="scrollbar">${taskData.task.title}</h2>
+                    <h2 class="section-heading" id="task-dialog-title" class="scrollbar">${taskData.task.title}</h2>
                 </header>
 
                 <div class="task-overlay-body">

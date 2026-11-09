@@ -11,7 +11,7 @@
     margin: 0;
     padding: 0;
 
-    background-color: #fff;
+    background-color: var(--color-white);
     border: none;
     border-radius: var(--border-radius-high);
     transform: translate(-50%, -50%);
@@ -48,7 +48,7 @@
     min-height: 0;
     padding: clamp(32px, 8vw, 48px);
 
-    color: #fff;
+    color: var(--color-white);
     background-color: var(--background-dark-color);
 }
 
@@ -99,7 +99,7 @@
     height: 3px;
     margin-top: 12px;
 
-    background-color: #29abe2;
+    background-color: var(--color-accent);
     border-radius: 999px;
 }
 
@@ -113,13 +113,13 @@
     height: var(--badge-size);
     margin: 0;
 
-    border: 3px solid #fff;
+    border: 3px solid var(--color-white);
     box-shadow: 0 0 4px 2px rgb(209 209 209 / 80%);
     transform: translate(-50%, -50%);
 }
 
 #contact > .badge-user:has(img) {
-    background-color: #d1d1d1;
+    background-color: var(--color-neutral-light);
 }
 
 #contact > .badge-user img {
@@ -129,7 +129,7 @@
 }
 
 #contact.contact-edit > .badge-user span {
-    color: #fff;
+    color: var(--color-white);
     font-size: clamp(40px, 10vw, 56px);
     font-weight: 400;
     line-height: 1;
@@ -145,7 +145,7 @@
     padding: calc(var(--badge-size) / 2 + clamp(16px, 2.5dvh, 24px)) 20px clamp(24px, 4dvh, 40px);
     gap: clamp(8px, 1.8dvh, 18px);
 
-    background-color: #fff;
+    background-color: var(--color-white);
 }
 
 #contact > form > .contact-form-field {
@@ -157,7 +157,7 @@
     min-height: 20px;
     margin: 4px 0 0;
 
-    color: #ff3d00;
+    color: var(--color-error);
     font-size: 16px;
     line-height: 20px;
     visibility: hidden;
@@ -180,7 +180,7 @@
     height: 100%;
     min-height: 0;
 
-    color: #000;
+    color: var(--color-black);
     font-size: 20px;
 }
 
@@ -199,31 +199,30 @@
 }
 
 #contact .input-wrapper:focus-within {
-    border-color: #29abe2;
-    box-shadow: 0 0 0 1px #29abe2;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
 }
 
 #contact .input-wrapper.has-error,
 #contact .input-wrapper.has-error:focus-within {
-    border-color: #ff3d00;
-    box-shadow: 0 0 0 1px #ff3d00;
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 1px var(--color-error);
 }
 
-#contact .contact-form-actions {
+#contact .contact-form-actions,
+#contact .contact-form-actions > .button {
     display: flex;
     justify-content: center;
     align-items: center;
+}
 
+#contact .contact-form-actions {
     width: auto;
     margin-top: clamp(8px, 2dvh, 20px);
     gap: var(--space-lg);
 }
 
 #contact .contact-form-actions > .button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     min-height: clamp(48px, 7dvh, 64px);
     gap: 10px;
 
@@ -247,7 +246,6 @@
         height: min(calc(100dvh - 64px), 592px);
 
         overflow: hidden;
-        transform: translate(-50%, -50%);
     }
 
     #contact[open] {
@@ -268,7 +266,6 @@
 
         height: auto;
         min-height: clamp(260px, 38dvh, 440px);
-        padding: clamp(32px, 8vw, 48px);
     }
 
     #contact > div:first-child > .button-close {

@@ -2,7 +2,7 @@
     /* From style.css */
     --background-dark-color: #2a3647;
     --background-bright-color: #f6f7f8;
-    --background-dark-hover-color: #124658;
+    --color-brand: #124658;
 
     --color-grey-bright: #a8a8a8;
 
@@ -12,10 +12,6 @@
 
     --content-max-width: 1440px;
     --breakpoint-mobile-to-desktop: 1280px;
-
-    --link-color: #124658;
-
-    --input-focus-color: rgba(41 171 226 / 0.5);
 
     /* root settings for login screen */
     --space-xxs: 4px;
@@ -39,7 +35,16 @@
 
     --button-hover-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
     --button-dark-active-background-color: #091931;
-    --button-dark-hover-bright-background-color: #29abe2;
+    --button-dark-hover-bright-background-color:  var(--color-accent);
+    --color-white: #fff;
+    --color-accent: #29abe2;
+    --color-black: #000;
+    --color-input-border: #ccc;
+    --color-surface-hover: #eeeeee;
+    --color-input-muted: #757575;
+    --color-error: #ff3d00;
+    --input-focus-color: rgba(41 171 226 / 0.5);
+    --color-neutral-light: #d1d1d1;
 
     /* root settings for header/navbar */
     --navbar-link-grey-color: #cdcdcd;
@@ -54,6 +59,8 @@
     --size-button-add-mobile-bright: clamp(26px, 24.8571px + 0.3571vw, 30px);
     --size-button-search: clamp(30px, 27.1429px + 0.8929vw, 40px);
 
+    --size-input-icon: clamp(18px, 17.43px + 0.18vw, 20px);
+
     /* root settings for badges */
     --size-badge-user: clamp(40px, 38.8571px + 0.3571vw, 44px);
 
@@ -64,11 +71,10 @@
     --color-badge-user-blue-dark: #462f8a;
     --color-badge-user-blue-medium: #6e52ff;
     --color-badge-user-blue-light: #00bee8;
-    --color-badge-user-mint: #1fd7c1;
+    --color-mint: #1fd7c1;
     --color-badge-user-yellow: #ffbb2b;
 
     --color-badge-type-blue: #0038ff;
-    --color-badge-type-green: #1fd7c1;
 
     /* From login.css */
     --login-max-width: 650px;
@@ -89,8 +95,6 @@
     --task-container-desktop-width: clamp(141px, calc(15.625vw - 59px), 166px);
 
     /* From board.css */
-    --color-input-placeholder: #d1d1d1;
-
     --color-card-task-progress-grey: #f4f4f4;
     --color-card-task-progress-blue: #4589ff;
     --color-overlay-task-details-term: #42526e;
