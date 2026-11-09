@@ -190,7 +190,7 @@ function submitTaskForm(event) {
 
 /**
  * Updates the saving flag, accessible busy state and submit button.
-* Preserves submit-button focus when disabling it removes focus.
+ * Preserves submit-button focus when disabling it removes focus.
  *
  * @param {HTMLFormElement} form - The task form being saved.
  * @param {boolean} saving - Whether saving is in progress.
@@ -253,19 +253,17 @@ async function createTask(form) {
 }
 
 /**
- * Loads existing tasks, derives the next numeric task ID, and saves the new task.
- * Shows an error notification and returns false if loading, ID generation, or saving fails.
- * The derived ID is not reserved atomically in the database.
+ * Generates a UUID, saves the new task via PUT and returns its ID.
+ * Shows an error notification and returns false if ID generation or saving fails.
  *
  * @param {Task} task - The new task to save.
- * @returns {Promise<TaskId|false>} The saved task ID, or false if the operation fails.
+ * @returns {Promise<TaskId|false>} The generated task ID, or false if creation fails.
  */
 async function saveNewTask(task) {
     try {
-        const tasks = await getData(DB_TASKS);
-        const taskId = getNextTaskId(tasks || {});
-
+        const taskId = crypto.randomUUID();
         await putData(DB_TASKS + taskId, task);
+
         return taskId;
     } catch (error) {
         showNotification("Saving task to the database has failed.", "error");
@@ -300,7 +298,7 @@ function finishTaskCreation(form, taskId, task) {
 /**
  * Navigates to the board page.
  * Marks successful task creation for announcement on the board page.
- * 
+ *
  * @returns {void}
  */
 function goToBoard() {
@@ -398,25 +396,4 @@ function getAssignedContacts(form) {
     }
 
     return assignedTo;
-}
-
-/**
- * Finds the highest task number and returns the next free task ID.
- *
- * @param {TaskDirectory} tasks - Existing tasks used to find the highest numeric ID suffix.
- * @returns {TaskId} The next numeric task ID, e.g. "task11"; does not reserve it in Firebase.
- */
-function getNextTaskId(tasks) {
-    const taskIds = Object.keys(tasks);
-    let highestNumber = 0;
-
-    for (let i = 0; i < taskIds.length; i++) {
-        const number = Number(taskIds[i].replace("task", ""));
-
-        if (number > highestNumber) {
-            highestNumber = number;
-        }
-    }
-
-    return "task" + (highestNumber + 1);
 }

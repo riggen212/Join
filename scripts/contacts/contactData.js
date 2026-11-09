@@ -12,18 +12,16 @@ const CONTACT_COLOR_CLASSES = [
 ];
 
 /**
- * Creates a contact ID and contact object without saving them.
+ * Prepares contact data with initials and a badge color without saving it.
  *
  * @param {Object} data - The source data.
  * @param {string} data.name - The contact's name.
  * @param {string} data.email - The contact's email address.
  * @param {string} [data.phone] - The phone number; defaults to an empty string.
- * @param {ContactDirectory} existingContacts - The existing contacts.
- * @returns {{contactId: ContactId, contact: Contact}} The contact ID and data.
+ * @param {ContactDirectory} existingContacts - Existing contacts used to select the badge color.
+ * @returns {Contact} The prepared contact data.
  */
 function createContactData(data, existingContacts) {
-    const contactId = getNextContactId(existingContacts);
-
     const contact = {
         name: data.name,
         email: data.email,
@@ -32,21 +30,7 @@ function createContactData(data, existingContacts) {
         colorClass: getNextContactColorClass(existingContacts),
     };
 
-    return { contactId, contact };
-}
-
-/**
- * Creates a contact ID using the highest existing number plus one.
- *
- * @param {ContactDirectory} existingContacts - The existing contacts.
- * @returns {ContactId} The next contact ID based on the supplied contacts.
- */
-function getNextContactId(existingContacts) {
-    const contactNumbers = Object.keys(existingContacts)
-        .map((contactId) => Number(contactId.replace("contact", "")))
-        .filter(Number.isFinite);
-
-    return `contact${Math.max(0, ...contactNumbers) + 1}`;
+    return contact;
 }
 
 /**

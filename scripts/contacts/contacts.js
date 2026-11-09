@@ -166,9 +166,9 @@ async function createContact(event) {
     const formValues = getValidContactFormValues(form);
     if (!formValues) return;
 
-    const { contactId, contact } = createContactData(formValues, contacts);
+    const contact = createContactData(formValues, contacts);
     try {
-        await runWithDisabledContactButtons(() => saveNewContact(contactId, contact));
+        await runWithDisabledContactButtons(() => saveNewContact(contact));
         closeContactFormWithNotification(form, "Contact successfully created");
     } catch (error) {
         showNotification("Contact could not be created. Please try again.", "error");
@@ -176,24 +176,26 @@ async function createContact(event) {
 }
 
 /**
- * Returns the Firebase path for the guest user's contacts.
+ * Returns the Firebase path for the contacts collection or a single contact.
  *
  * @param {ContactId} [contactId] - The optional ID of one contact.
- * @returns {string} The contacts collection or contact path.
+ * @returns {string} The database path without the `.json` suffix.
  */
 function getContactPath(contactId) {
     return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
 }
 
 /**
- * Saves a new contact in Firebase and updates the local view.
+ * Generates a UUID and saves the new contact via PUT.
+ * Adds the contact to the local directory, refreshes the list and shows its details.
  *
- * @param {ContactId} contactId - The new contact's ID.
- * @param {Contact} contact - The contact to save.
- * @returns {Promise<void>}
+ * @param {Contact} contact - The contact data to save.
+ * @returns {Promise<void>} Resolves after saving and updating the local view.
+ * @throws {Error} If ID generation, saving or updating the local view fails.
  */
-async function saveNewContact(contactId, contact) {
-    await putData(getContactPath(contactId), contact);
+async function saveNewContact(contact) {
+    const contactId = crypto.randomUUID();
+    await putData(DB_CONTACTS + contactId, contact);
     contacts[contactId] = contact;
     renderContactList(contacts);
     showContactById(contactId);
