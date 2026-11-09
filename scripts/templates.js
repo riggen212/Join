@@ -197,13 +197,14 @@ function getMoreBadgeTemplate(count) {
 /**
  * Returns the HTML for one subtask in the subtask list.
  *
+ * @param {SubtaskId} subtaskId - The persistent ID stored on the subtask list item.
  * @param {string} title - The title of the subtask.
  * @param {boolean} completed - True if the subtask is already done.
  * @returns {string} The HTML of the subtask.
  */
-function getSubtaskTemplate(title, completed) {
-  return `
-        <li class="subtask-item" data-completed="${completed}">
+function getSubtaskTemplate(subtaskId, title, completed) {
+    return `
+        <li class="subtask-item" data-subtask-id="${subtaskId}" data-completed="${completed}">
             <span class="subtask-title" onclick="editSubtask(this)">${title}</span>
             <div class="subtask-actions">
                 <button type="button" class="subtask-edit-button" aria-label="Edit subtask" onclick="editSubtask(this)">

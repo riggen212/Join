@@ -95,6 +95,7 @@
  * @typedef {Object} Subtask
  * @property {string} title - The title of the subtask.
  * @property {boolean} completed - Indicates whether the subtask is completed.
+ * @property {number} [position] - Zero-based display position; absent in older entries.
  */
 
 /**

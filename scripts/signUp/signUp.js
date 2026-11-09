@@ -165,56 +165,22 @@ function createUserObject(data) {
 }
 
 /**
- * Creates IDs and contact data, then saves the new user and contact.
+ * Prepares contact data and saves the new user and contact.
  *
  * @param {Object} user - The new user data.
  * @returns {Promise<void>} Resolves after saving the user and contact.
- * @throws {Error} If the user ID exists or a database request fails.
+ * @throws {Error} If preparing or saving the data fails.
  */
 async function signUpUser(user) {
-    const users = (await getData(DB_USERS)) || {};
-    const userNumbers = getExistingUserIdNumbers(users);
-    const userId = getNewUserId(userNumbers);
-
-    if (users[userId]) {
-        throw new Error("User ID already exists.");
-    }
-
-    const { contactId, contact } = await getContactData(user);
-    await saveSignUpUser(userId, user, { contactId, contact });
-}
-
-/**
- * Extracts numeric suffixes from existing user IDs.
- *
- * @param {Object} users - Users indexed by their database IDs.
- * @returns {number[]} Numeric suffixes, with 0 for unmatched IDs.
- */
-function getExistingUserIdNumbers(users) {
-    const userNumbers = Object.keys(users).map((key) => {
-        const match = key.match(/^FIREBASE_UID_USER_(\d+)$/);
-        return match ? Number(match[1]) : 0;
-    });
-
-    return userNumbers;
-}
-
-/**
- * Creates a user ID using the highest existing number plus one.
- *
- * @param {number[]} userNumbers - The existing user ID numbers.
- * @returns {string} The next user ID.
- */
-function getNewUserId(userNumbers) {
-    const nextNumber = Math.max(0, ...userNumbers) + 1;
-    return `FIREBASE_UID_USER_${nextNumber}`;
+    const contact = await getContactData(user);
+    await saveSignUpUser(user, contact);
 }
 
 /**
  * Loads existing contacts and prepares contact data for the new user.
  *
  * @param {Object} user - User data containing a name and email.
- * @returns {Promise<{contactId: ContactId, contact: Contact}>} The contact ID and data.
+ * @returns {Promise<Contact>} The prepared contact data.
  * @throws {Error} If loading the contacts fails.
  */
 async function getContactData(user) {
@@ -223,15 +189,17 @@ async function getContactData(user) {
 }
 
 /**
- * Saves the user and contact in a single database update.
+ * Saves the user and contact atomically using generated UUIDs.
  *
- * @param {string} userId - The new user's ID.
  * @param {Object} user - The user data to save.
- * @param {{contactId: ContactId, contact: Contact}} contactData - The contact ID and data.
- * @returns {Promise<void>} Resolves after saving both entries.
+ * @param {Contact} contact - The contact data to save.
+ * @returns {Promise<void>} Resolves after both entries have been saved.
  * @throws {Error} If the database update fails.
  */
-async function saveSignUpUser(userId, user, { contactId, contact }) {
+async function saveSignUpUser(user, contact) {
+    const userId = crypto.randomUUID();
+    const contactId = crypto.randomUUID();
+
     await patchData("", {
         [`${DB_USERS}${userId}`]: user,
         [`${DB_CONTACTS}${contactId}`]: contact,
@@ -260,7 +228,7 @@ function toggleSignUpPassword(fieldId, iconId) {
 
 /**
  * Updates the visibility button and icon based on the password field's content.
-* Keeps the button disabled while registration is being saved.
+ * Keeps the button disabled while registration is being saved.
  *
  * @param {string} fieldId - ID of the password input.
  * @param {string} iconId - ID of the eye icon.

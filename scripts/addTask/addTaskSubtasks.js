@@ -12,7 +12,8 @@ function addSubtaskOnEnter(event) {
 }
 
 /**
- * Adds the text of the subtask field as a new subtask.
+ * Appends a new subtask with a generated UUID to the form.
+ * Does not save the subtask to the database.
  *
  * @param {HTMLFormElement} form - The task form.
  * @returns {void}
@@ -20,10 +21,11 @@ function addSubtaskOnEnter(event) {
 function addSubtask(form) {
     const input = form.querySelector("#subtask");
     const title = input.value.trim();
+    const subtaskId = crypto.randomUUID();
 
     if (title === "") return;
 
-    form.querySelector("#subtask-list").insertAdjacentHTML("beforeend", getSubtaskTemplate(title, false));
+    form.querySelector("#subtask-list").insertAdjacentHTML("beforeend", getSubtaskTemplate(subtaskId, title, false));
     input.value = "";
     input.focus();
 }
@@ -41,7 +43,8 @@ function clearSubtaskInput(form) {
 }
 
 /**
- * Shows the subtasks of an existing task in the subtask list.
+ * Appends existing subtasks to the form sorted by position, preserving their IDs.
+ * Treats missing positions as zero.
  *
  * @param {HTMLFormElement} form - The task form.
  * @param {SubtaskDirectory|null} [subtasks] - Existing subtasks; null or omitted values leave the list unchanged.
@@ -51,11 +54,11 @@ function fillSubtasks(form, subtasks) {
     if (!subtasks) return;
 
     const list = form.querySelector("#subtask-list");
-    const keys = Object.keys(subtasks).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    const keys = Object.keys(subtasks).sort((a, b) => (subtasks[a].position ?? 0) - (subtasks[b].position ?? 0));
 
     for (let i = 0; i < keys.length; i++) {
         const subtask = subtasks[keys[i]];
-        list.insertAdjacentHTML("beforeend", getSubtaskTemplate(subtask.title, subtask.completed));
+        list.insertAdjacentHTML("beforeend", getSubtaskTemplate(keys[i], subtask.title, subtask.completed));
     }
 }
 
@@ -128,9 +131,7 @@ function finishSubtaskEdit(button) {
     const input = item.querySelector(".subtask-edit-input");
     if (input) input.blur();
 
-    const target = item.isConnected
-        ? item.querySelector(".subtask-edit-button")
-        : form.querySelector("#subtask");
+    const target = item.isConnected ? item.querySelector(".subtask-edit-button") : form.querySelector("#subtask");
 
     target?.focus();
 }
@@ -174,17 +175,17 @@ function showSubtaskTitle(item, newTitle) {
  * Collects all subtasks of the form for the database.
  *
  * @param {HTMLFormElement} form - The task form.
- * @returns {SubtaskDirectory} Subtasks with sequential IDs based on DOM order and their existing completion states.
+ * @returns {SubtaskDirectory} Subtasks with preserved IDs, completion states and positions based on DOM order.
  */
 function getTaskSubtasks(form) {
     const items = form.querySelectorAll("#subtask-list .subtask-item");
-    /** @type {SubtaskDirectory} */
     const subtasks = {};
 
     for (let i = 0; i < items.length; i++) {
-        subtasks["subtask" + (i + 1)] = {
+        subtasks[items[i].dataset.subtaskId] = {
             title: items[i].querySelector(".subtask-title").textContent,
             completed: items[i].dataset.completed === "true",
+            position: i,
         };
     }
 
