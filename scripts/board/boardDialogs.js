@@ -52,7 +52,8 @@ function getTaskOverlayData(taskId, task) {
 }
 
 /**
- * Iterates through the subtasks and creates the html.
+ * Creates subtask HTML sorted by position.
+ * Treats missing positions as zero.
  *
  * @param {SubtaskDirectory|null} [subtasks] - Subtasks to render; null or omitted values produce empty HTML.
  * @returns {string} HTML for the subtasks.
@@ -60,10 +61,12 @@ function getTaskOverlayData(taskId, task) {
 function getTaskOverlaySubtasksHtml(subtasks) {
     let subtasksHtml = "";
 
-    Object.entries(subtasks ?? {}).forEach(([subtaskId, subtask]) => {
-        const isCompleted = subtask.completed ? "checked" : "";
-        subtasksHtml += getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted);
-    });
+    Object.entries(subtasks ?? {})
+        .sort(([, a], [, b]) => (a.position ?? 0) - (b.position ?? 0))
+        .forEach(([subtaskId, subtask]) => {
+            const isCompleted = subtask.completed ? "checked" : "";
+            subtasksHtml += getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted);
+        });
 
     return subtasksHtml;
 }
