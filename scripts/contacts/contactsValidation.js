@@ -34,6 +34,12 @@ function getContactValidationErrors(contact) {
     return errors;
 }
 
+/**
+ * Checks whether an email address matches a basic email format.
+ *
+ * @param {string} email - The email address to validate.
+ * @returns {boolean} Whether the email address matches the expected format.
+ */
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }

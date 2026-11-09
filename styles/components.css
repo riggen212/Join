@@ -98,7 +98,7 @@
 
     & .button-task-overlay {
         width: 100px;
-        padding-block: 16px
+        padding-block: 16px;
     }
 
     & .button-task-overlay:hover {
@@ -116,7 +116,9 @@
         color: var(--background-dark-hover-color);
         background-color: #eeeeee;
         border-radius: var(--border-radius-middle);
-        text-shadow: 0.3px 0 currentColor, -0.3px 0 currentColor;
+        text-shadow:
+            0.3px 0 currentColor,
+            -0.3px 0 currentColor;
     }
 }
 
@@ -196,7 +198,6 @@
     }
 }
 
-
 @keyframes notification-slide-out-mobile {
     from {
         transform: var(--notification-transform);
@@ -216,7 +217,6 @@
         transform: var(--notification-transform);
     }
 }
-
 
 @keyframes notification-slide-out-desktop {
     from {
@@ -432,6 +432,36 @@
     }
 }
 
+.button-move-task {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 32px;
+    height: 32px;
+    min-height: unset;
+
+    flex-shrink: 0;
+    padding: 4px;
+
+    background-color: transparent;
+    border: unset;
+    border-radius: var(--border-radius-small);
+}
+
+.button-move-task:hover {
+    background-color: #eeeeee;
+}
+
+.button-move-task > img {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
 /* main form container */
 .main-wrapper {
     position: relative;
@@ -639,5 +669,9 @@ input:-webkit-autofill:focus {
 
     #notification.is-closing {
         animation: notification-slide-out-desktop 160ms linear forwards;
+    }
+
+    .button-move-task {
+        display: none;
     }
 }

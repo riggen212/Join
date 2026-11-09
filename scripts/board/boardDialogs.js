@@ -279,10 +279,11 @@ function restoreBoardTaskFocus(taskId, taskStatus) {
     if (!taskId) return;
 
     const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
-    const target = document.getElementById(taskId)
-        ?? column?.querySelector(".task-card")
-        ?? column?.querySelector(".board-column-header button")
-        ?? document.getElementById("search");
+    const target =
+        document.getElementById(taskId)?.querySelector(".task-card-open") ??
+        column?.querySelector(".task-card-open") ??
+        column?.querySelector(".board-column-header button") ??
+        document.getElementById("search");
 
     target?.focus();
 }
@@ -294,6 +295,7 @@ function restoreBoardTaskFocus(taskId, taskStatus) {
  * Ignores child animation events and dialogs without the closing class.
  * Preserves the task ID and status before clearing them to restore board focus.
  * After closing, focuses the task card or a fallback if the task no longer exists.
+ * Releases the creation lock after a successfully created task's dialog closes.
  *
  * @param {AnimationEvent} event - The dialog animation event.
  * @returns {void}
@@ -308,5 +310,22 @@ function closeTaskDialog(event) {
     dialog.dataset.taskId = "";
     dialog.dataset.taskStatus = "";
     closeAnimatedDialog(event, "dialog-task-closing");
+    resetTaskCreationState(dialog);
     restoreBoardTaskFocus(taskId, taskStatus);
+}
+
+/**
+ * Releases the saving lock for a successfully completed Add Task dialog.
+ * Leaves other dialogs and forms without a created task unchanged.
+ *
+ * @param {HTMLDialogElement} dialog - The closed task dialog.
+ * @returns {void}
+ */
+function resetTaskCreationState(dialog) {
+    const form = dialog.querySelector("form");
+
+    if (dialog.id === "dialog-add-task" && form?.dataset.taskCreated === "true") {
+        delete form.dataset.taskCreated;
+        setTaskSavingState(form, false);
+    }
 }

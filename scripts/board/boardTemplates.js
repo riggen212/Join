@@ -10,18 +10,30 @@ function getTaskCardTemplate(taskData) {
                 data-task-id="${taskData.id}"
                 class="task-card"
                 draggable="true"
-                role="button"
-                tabindex="0"
-                onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
-                onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
                 ondragstart="startDraggingTask('${taskData.id}', '${taskData.task.status}', event)"
-                ondragend="endDraggingTask('${taskData.id}')"
-                aria-label="Open task: ${taskData.task.title}"
-                aria-describedby="${taskData.id}-move-result task-keyboard-help">
+                ondragend="endDraggingTask('${taskData.id}')">
                     <span class="task-move-result" id="${taskData.id}-move-result" hidden></span>
-                    <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                    <div class="task-card-header">
+                        <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                        <button type="button" class="button button-move-task"
+                        onclick="event.stopPropagation()"
+                        onkeydown="event.stopPropagation()"
+                        popovertarget="move-task-${taskData.id}"
+                        aria-label="Move task: ${taskData.task.title}">
+                        <img src="../assets/icons/moveTo.svg" alt="">
+                        </button>
+                        ${taskData.popupHtml}
+                    </div>
                     <div class="task-card-body">
-                        <h3 class="task-card-title">${taskData.task.title}</h3>
+                        <h3 class="task-card-title">
+                            <button type="button"
+                            class="task-card-open"
+                            onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
+                            onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
+                            aria-describedby="${taskData.id}-move-result task-keyboard-help">
+                                ${taskData.task.title}
+                            </button>
+                        </h3>
                         <div class="task-card-description">${taskData.task.description}</div>
                     </div>
                     <div class="task-card-subtasks">
@@ -68,6 +80,49 @@ function getTaskCardEmptyBadge(columnName) {
  */
 function getTaskCardMatchingBadge() {
     return `<span class="board-column-feedback">No matching tasks</span>`;
+}
+
+/**
+ * Creates a task's move popup using prepared option HTML.
+ *
+ * @param {TaskId} taskId - ID used to link the popup and its trigger.
+ * @param {string} optionHtml - HTML for the available destination options.
+ * @returns {string} HTML for the move popup.
+ */
+function getTaskCardMovePopupTemplate(taskId, optionHtml) {
+    return `<div
+            id="move-task-${taskId}"
+            class="task-move-popover"
+            onclick="event.stopPropagation()"
+            onkeydown="event.stopPropagation()"
+            popover="auto"
+            aria-labelledby="move-title-${taskId}"
+        >
+            <p id="move-title-${taskId}">Move to</p>
+            <ul>
+                ${optionHtml}
+            </ul>
+        </div>`;
+}
+
+/**
+ * Creates one destination option for moving a task.
+ *
+ * @param {TaskId} taskId - ID of the task to move.
+ * @param {Task["status"]} status - Destination column.
+ * @param {Task["status"]} currentStatus - Current task column.
+ * @param {BoardColumn["name"]} name - Display name of the destination.
+ * @returns {string} HTML for one destination option.
+ */
+function getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, name) {
+    return `<li>
+            <button
+            type="button"
+            class="task-move-option" data-status="${status}"
+            onclick="moveTaskFromPopup('${taskId}', '${status}', '${currentStatus}')">
+                ${name}
+            </button>
+        </li>`;
 }
 
 /**

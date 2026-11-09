@@ -60,18 +60,21 @@ function endDraggingTask(taskId) {
 }
 
 /**
- * Moves a selected task when its destination differs from its current column.
+ * Moves a task through drag-and-drop, keyboard or popup controls.
+ * Skips missing task IDs or current statuses, pending moves and unchanged statuses.
  *
- * @param {Task["status"]} destinationStatus - The destination column.
+ * @param {TaskId|undefined} taskId - ID of the task to move.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @param {Task["status"]|undefined} currentStatus - Current task column.
  * @returns {Promise<boolean|undefined>} Save result, or undefined if skipped.
  */
-async function moveTask(destinationStatus) {
-    if (!draggingTask || isTaskMovePending) return;
+async function moveTask(taskId, destinationStatus, currentStatus) {
+    if (!taskId || !currentStatus || isTaskMovePending) return;
+    if (currentStatus === destinationStatus) return;
 
-    const draggingTaskData = getDataToMoveTask(destinationStatus);
-    if (!hasTaskStatusChanged(draggingTaskData)) return;
+    const moveData = getDataToMoveTask(taskId, destinationStatus, currentStatus);
 
-    return await moveAndSaveTask(draggingTaskData);
+    return await moveAndSaveTask(moveData);
 }
 
 /**
@@ -79,16 +82,16 @@ async function moveTask(destinationStatus) {
  * Reverts the local move through saveTaskMove if saving fails.
  * Sets isTaskMovePending during the operation and resets it in finally.
  *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} moveData - Data needed to move the task.
  * @returns {Promise<boolean>} Whether the task move was saved successfully.
  */
-async function moveAndSaveTask(draggingTaskData) {
+async function moveAndSaveTask(moveData) {
     isTaskMovePending = true;
 
     try {
-        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
-        const wasSaved = await saveTaskMove(draggingTaskData);
-        renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
+        moveTaskBetweenColumns(moveData, moveData.newStatus, moveData.oldStatus);
+        const wasSaved = await saveTaskMove(moveData);
+        renderBoard([board[moveData.oldStatus], board[moveData.newStatus]]);
         return wasSaved;
     } finally {
         isTaskMovePending = false;
@@ -98,17 +101,17 @@ async function moveAndSaveTask(draggingTaskData) {
 /**
  * Saves the new task status. Reverts the local move and shows an error notification if saving fails.
  *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} moveData - Data needed to move the task.
  * @returns {Promise<boolean>} Whether the task move was saved successfully.
  */
-async function saveTaskMove(draggingTaskData) {
+async function saveTaskMove(moveData) {
     try {
-        await updateTaskInDatabase(draggingTaskData.id, {
-            status: draggingTaskData.newStatus,
+        await updateTaskInDatabase(moveData.id, {
+            status: moveData.newStatus,
         });
         return true;
     } catch (error) {
-        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
+        moveTaskBetweenColumns(moveData, moveData.oldStatus, moveData.newStatus);
         showNotification("Task could not be moved. Please try again.", "error");
         return false;
     }
@@ -119,45 +122,69 @@ async function saveTaskMove(draggingTaskData) {
  * column's task directory, and removes it from the source column.
  * Does not save or render the change.
  *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} moveData - Data needed to move the task.
  * @param {Task["status"]} destinationColumn - Status of the destination column.
  * @param {Task["status"]} sourceColumn - Status of the source column.
  * @returns {void}
  */
-function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColumn) {
-    draggingTaskData.task.status = destinationColumn;
-    board[destinationColumn].tasks[draggingTaskData.id] = draggingTaskData.task;
-    delete board[sourceColumn].tasks[draggingTaskData.id];
+function moveTaskBetweenColumns(moveData, destinationColumn, sourceColumn) {
+    moveData.task.status = destinationColumn;
+    board[destinationColumn].tasks[moveData.id] = moveData.task;
+    delete board[sourceColumn].tasks[moveData.id];
 }
 
 /**
- * Reads the selected task from board using draggingTask.
- * Returns its ID, the task object, its original status,
- * and the requested destination status.
- * Requires draggingTask to be set.
+ * Builds movement data from the task ID and source and destination statuses.
+ * Requires the task to exist in the source column.
  *
- * @param {Task["status"]} destinationStatus - Status of the destination column.
+ * @param {TaskId} taskId - ID of the task to move.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @param {Task["status"]} currentStatus - Current task column.
  * @returns {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} Data needed to move the task.
  */
-function getDataToMoveTask(destinationStatus) {
+function getDataToMoveTask(taskId, destinationStatus, currentStatus) {
     return {
-        id: draggingTask.id,
-        task: board[draggingTask.status].tasks[draggingTask.id],
-        oldStatus: draggingTask.status,
+        id: taskId,
+        task: board[currentStatus].tasks[taskId],
+        oldStatus: currentStatus,
         newStatus: destinationStatus,
     };
 }
 
 /**
- * Checks whether the destination differs from the task's original status.
+ * Moves a dropped task and announces a successful move.
  *
- * @param {{oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Original and destination statuses.
- * @returns {boolean} Whether the task's status would change.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @returns {Promise<void>}
  */
-function hasTaskStatusChanged(draggingTaskData) {
-    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
-        return false;
-    } else return true;
+async function moveTaskFromDrop(destinationStatus) {
+    const wasSaved = await moveTask(draggingTask?.id, destinationStatus, draggingTask?.status);
+
+    if (wasSaved) {
+        announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
+    }
+}
+
+/**
+ * Moves a task from its popup, restores focus and announces a successful move.
+ *
+ * @param {TaskId} taskId - ID of the task to move.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @param {Task["status"]} currentStatus - Current task column.
+ * @returns {Promise<void>}
+ */
+async function moveTaskFromPopup(taskId, destinationStatus, currentStatus) {
+    let wasSaved;
+
+    try {
+        wasSaved = await moveTask(taskId, destinationStatus, currentStatus);
+    } finally {
+        document.getElementById(taskId)?.querySelector(".button-move-task")?.focus();
+    }
+
+    if (wasSaved) {
+        announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
+    }
 }
 
 /**
@@ -217,4 +244,14 @@ function addFlipCard(taskId) {
 function removeFlipCard(taskId) {
     const card = document.getElementById(taskId);
     card.classList.remove("card-task-flip");
+}
+
+/**
+ * Announces board movement updates to screen readers.
+ *
+ * @param {string} message - The movement information to announce.
+ * @returns {void}
+ */
+function announceBoardMoveStatus(message) {
+    document.getElementById("board-move-status").textContent = message;
 }

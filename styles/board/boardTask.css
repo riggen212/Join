@@ -1,5 +1,8 @@
 /* Task cards */
 .task-card {
+    position: relative;
+    isolation: isolate;
+
     display: flex;
     flex-direction: column;
     flex: 0 0 var(--size-task-card-width);
@@ -17,6 +20,92 @@
     box-shadow: inset 0 0 7px -3px rgb(0 0 0 / 50%);
 
     cursor: pointer;
+}
+
+.task-card-open {
+    padding: 0;
+
+    font: inherit;
+    color: inherit;
+    text-align: left;
+
+    background: transparent;
+    border: unset;
+    cursor: pointer;
+}
+
+.task-card-open::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    border-radius: var(--border-radius-task-card);
+}
+
+.task-card-open:focus-visible::after {
+    outline: 2px solid var(--background-dark-hover-color);
+    outline-offset: 2px;
+}
+
+.task-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.task-move-popover {
+    position: fixed;
+    position-anchor: auto;
+    inset: auto;
+    margin: 0;
+
+    top: anchor(top);
+    right: anchor(right);
+
+    padding: var(--space-xs);
+
+    color: var(--navbar-link-grey-color);
+    background-color: var(--background-dark-color);
+    border: unset;
+    border-radius: 20px 0 20px 20px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 50%);
+}
+
+.task-move-popover > p {
+    padding: var(--space-xs);
+    color: #fff;
+}
+
+.task-move-popover > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.task-move-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+
+    width: 100%;
+    padding: var(--space-xs);
+
+    font: inherit;
+    color: inherit;
+    text-align: left;
+
+    background-color: transparent;
+    border: unset;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: background-color 100ms ease;
+}
+
+.task-move-option:hover,
+.task-move-option:focus-visible {
+    background-color: var(--button-dark-active-background-color);
 }
 
 .task-card-body {
@@ -249,7 +338,7 @@
     box-sizing: border-box;
 }
 
-.edit-task .task-form>label:not(:first-child) {
+.edit-task .task-form > label:not(:first-child) {
     margin-top: 12px;
 }
 
@@ -340,6 +429,10 @@
     .task-card,
     .board-column-feedback {
         flex: 0 1 auto;
+    }
+
+    .task-move-popover {
+        display: none;
     }
 
     /* Board task edit dialog */

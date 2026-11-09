@@ -224,29 +224,31 @@ function restoreTaskSubmitFocus(form) {
 }
 
 /**
- * Saves a new task while blocking repeated submissions through isTaskSaving.
- * Finishes creation only when saveNewTask returns an ID.
- * Shows an error if post-save processing fails. Resets the save flag and updates
- * the submitted form's button in finally without waiting for navigation or dialog closing.
- * Exposes the saving state through aria-busy and clears it in finally.
+ * Saves a new task and blocks repeated submissions through isTaskSaving.
+ * Keeps the form locked after creation until navigation or dialog closing.
+ * Unlocks the form if saving fails and reports post-save rendering errors.
  *
  * @param {HTMLFormElement} form - The valid task form to read and save.
- * @returns {Promise<void>} Resolves after saving and post-save handling, without waiting for navigation or animations.
+ * @returns {Promise<void>} Resolves after saving and post-save handling.
  */
 async function createTask(form) {
     const task = getTaskFromForm(form);
     setTaskSavingState(form, true);
 
+    let taskWasCreated = false;
+
     try {
         const taskId = await saveNewTask(task);
 
         if (taskId !== false) {
+            taskWasCreated = true;
+            form.dataset.taskCreated = "true";
             finishTaskCreation(form, taskId, task);
         }
     } catch (error) {
         showNotification("Task is created but couldn't be rendered. Please refresh the page.", "error");
     } finally {
-        setTaskSavingState(form, false);
+        if (!taskWasCreated) setTaskSavingState(form, false);
     }
 }
 
