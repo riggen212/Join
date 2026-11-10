@@ -75,7 +75,7 @@ function showContactDetails(card) {
     renderContactDetails(card.dataset.contactId);
     restartContactDetailsAnimation(contactDetails);
     contactDetails.classList.add("is-open");
-    focusContactDetailsControl(contactDetails)
+    focusContactDetailsControl(contactDetails);
     document.documentElement.classList.add("contact-details-open");
     document.body.classList.add("contact-details-open");
 }
@@ -165,15 +165,15 @@ function showContactById(contactId) {
 function setNewFocusOnFirstContactcard() {
     const firstContactCard = document.getElementById("contact-groups").querySelector(".contact-card");
 
-    if (firstContactCard){
+    if (firstContactCard) {
         firstContactCard.focus();
     } else {
-        document.getElementById("addNewContactButton").focus();  
+        document.getElementById("addNewContactButton").focus();
     }
 }
 
 function handleContactCardKeydown(card, event) {
-    if(event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         showContactDetails(card);
     }

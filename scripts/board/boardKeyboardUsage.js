@@ -153,9 +153,12 @@ async function confirmMovingTaskWithKeyboard(taskId) {
     isKeyboardMoveActive = false;
     try {
         const wasSaved = await moveTask(taskId, destinationStatus, draggingTask?.status);
-        message = wasSaved === undefined ? "Task remains in its current column."
-            : wasSaved ? `Task moved to ${board[destinationStatus].name}.`
-            : "Task could not be moved. Its original column has been restored.";
+        message =
+            wasSaved === undefined
+                ? "Task remains in its current column."
+                : wasSaved
+                  ? `Task moved to ${board[destinationStatus].name}.`
+                  : "Task could not be moved. Its original column has been restored.";
     } finally {
         finishMovingTaskWithKeyboard(taskId, message);
     }
@@ -177,8 +180,7 @@ function finishMovingTaskWithKeyboard(taskId, message = "") {
     const openButton = card.querySelector(".task-card-open");
     const alreadyFocused = document.activeElement === openButton;
     card.querySelector(".task-move-result").textContent = message;
-    openButton.setAttribute("aria-describedby",
-        message ? `${taskId}-move-result` : "task-keyboard-help");
+    openButton.setAttribute("aria-describedby", message ? `${taskId}-move-result` : "task-keyboard-help");
     openButton.focus();
     if (alreadyFocused && message) announceBoardMoveStatus(message);
 }

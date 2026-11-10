@@ -30,7 +30,7 @@ initSummary();
  */
 function showAnimationLogin() {
     const url = new URL(window.location.href);
-    if (url.searchParams.get('animation') !== 'true') return;
+    if (url.searchParams.get("animation") !== "true") return;
 
     removeAnimationParameter(url);
 
@@ -48,8 +48,8 @@ function showAnimationLogin() {
  * @returns {void}
  */
 function removeAnimationParameter(url) {
-    url.searchParams.delete('animation');
-    window.history.replaceState(window.history.state, '', url.toString());
+    url.searchParams.delete("animation");
+    window.history.replaceState(window.history.state, "", url.toString());
 }
 
 /**
@@ -60,11 +60,11 @@ function removeAnimationParameter(url) {
  * @returns {void}
  */
 function startMobileAnimation() {
-    const animationIn = document.getElementById('login-animation-on');
-    const animationOut = document.getElementById('login-animation-out');
+    const animationIn = document.getElementById("login-animation-on");
+    const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.add('animation-in');
-    animationOut.classList.add('animation-out');
+    animationIn.classList.add("animation-in");
+    animationOut.classList.add("animation-out");
 
     lockSummaryDuringGreeting();
     setTimeout(finishMobileAnimation, 4000);
@@ -78,12 +78,11 @@ function startMobileAnimation() {
  */
 function lockSummaryDuringGreeting() {
     const greeting = document.getElementById("login-animation-out");
-    const animation = greeting.getAnimations()
-        .find(animation => animation.animationName === "greetingFadeOut");
+    const animation = greeting.getAnimations().find((animation) => animation.animationName === "greetingFadeOut");
     if (!animation) return;
     const elements = document.querySelectorAll(".header, .navbar, .section-container");
-    elements.forEach(element => element.inert = true);
-    const unlock = () => elements.forEach(element => element.inert = false);
+    elements.forEach((element) => (element.inert = true));
+    const unlock = () => elements.forEach((element) => (element.inert = false));
     animation.finished.then(unlock, unlock);
 }
 
@@ -93,13 +92,13 @@ function lockSummaryDuringGreeting() {
  * @returns {void}
  */
 function finishMobileAnimation() {
-    const animationIn = document.getElementById('login-animation-on');
-    const animationOut = document.getElementById('login-animation-out');
+    const animationIn = document.getElementById("login-animation-on");
+    const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.remove('animation-in');
-    animationOut.classList.remove('animation-out');
+    animationIn.classList.remove("animation-in");
+    animationOut.classList.remove("animation-out");
 
-    document.body.classList.add('mobile-animation-finished');
+    document.body.classList.add("mobile-animation-finished");
 }
 
 /**
@@ -146,11 +145,9 @@ function updateSummaryHtml(user, taskSummaryData, greeting) {
         }
     });
 
-    document.getElementById("greeting").textContent =
-        user.type === "guest" ? `${greeting}!` : `${greeting},`;
+    document.getElementById("greeting").textContent = user.type === "guest" ? `${greeting}!` : `${greeting},`;
 
-    document.getElementById("userNames").textContent =
-        user.type === "guest" ? "" : user.name;
+    document.getElementById("userNames").textContent = user.type === "guest" ? "" : user.name;
 }
 
 /**
@@ -167,8 +164,7 @@ function updateSummaryDeadline(element, taskSummaryData) {
     if (deadline) element.dateTime = deadline;
     else element.removeAttribute("datetime");
     element.setAttribute("aria-hidden", String(!deadline));
-    document.getElementById("summary-deadline-description").textContent =
-        deadline ? "" : "No upcoming deadline.";
+    document.getElementById("summary-deadline-description").textContent = deadline ? "" : "No upcoming deadline.";
 }
 
 /**

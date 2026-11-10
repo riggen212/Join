@@ -216,7 +216,7 @@ function getTaskMovePopupHtml(taskId, currentStatus) {
 
     Object.entries(board).forEach(([status, column]) => {
         if (status !== currentStatus) {
-            optionHtml += getTaskCardMoveOptionsTemplate(taskId ,status, currentStatus ,column.name);
+            optionHtml += getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, column.name);
         }
     });
 
@@ -358,6 +358,7 @@ function searchTasks(searchTerm) {
     window.clearTimeout(boardSearchAnnouncementTimeout);
     boardSearchAnnouncementTimeout = window.setTimeout(announceBoardSearchResults, 400);
 }
+
 /**
  * Creates column objects containing tasks matching the active search term.
  * Preserves column IDs and names without modifying the original task directories.

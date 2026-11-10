@@ -93,8 +93,6 @@ function preventEnterSubmit(event) {
     }
 }
 
-// ---------- Fill form (edit mode) ----------
-
 /**
  * Fills the form with the data of an existing task.
  *
@@ -145,8 +143,6 @@ function fillCategory(form, category) {
     }
 }
 
-// ---------- Reset ----------
-
 /**
  * Resets priority, category text, subtasks, and field errors.
  * Schedules a form update after the browser finishes its native reset.
@@ -163,8 +159,6 @@ function resetTaskForm(form) {
     // The browser resets the inputs after this function, so the form is updated afterwards
     setTimeout(() => updateTaskForm(form), 0);
 }
-
-// ---------- Save ----------
 
 /**
  * Prevents native submission and ignores submissions while isTaskSaving is true.

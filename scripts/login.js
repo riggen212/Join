@@ -105,7 +105,7 @@ async function loadAndCheckLoginCredentials() {
     const email = document.getElementById("emailField").value.trim();
     const password = document.getElementById("passwortField").value;
 
-    if (!validateLoginData({email, password})) return;
+    if (!validateLoginData({ email, password })) return;
 
     const users = await getData(DB_USERS);
     checkLoginData(users, email, password);
@@ -247,8 +247,12 @@ function updatePasswordIcon() {
         toggleButton.setAttribute("aria-pressed", "false");
         toggleButton.setAttribute("aria-label", "Show password");
     }
-    
-    toggleButton.disabled = !passwordInput.value;
-    eyeIcon.src = passwordInput.type === "text" ? "./assets/icons/eyeOpen.svg" : passwordInput.value ? "./assets/icons/eyeClose.svg" : "./assets/icons/showPassword.svg";
-}
 
+    toggleButton.disabled = !passwordInput.value;
+    eyeIcon.src =
+        passwordInput.type === "text"
+            ? "./assets/icons/eyeOpen.svg"
+            : passwordInput.value
+              ? "./assets/icons/eyeClose.svg"
+              : "./assets/icons/showPassword.svg";
+}

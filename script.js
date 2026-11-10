@@ -77,8 +77,6 @@ async function patchData(path = "", value = {}) {
 function deleteData(path) {
     return putData(path, null);
 }
-        
-
 
 /**
  * Plays the contact details slide-in animation again if it already exists.

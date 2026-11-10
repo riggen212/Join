@@ -15,27 +15,10 @@ const MAX_VISIBLE_BADGES = 4;
  * @returns {Promise<void>} Resolves after options and badges render; rejects if loading or rendering fails.
  */
 async function loadAssignedContacts(form, task) {
-        const [contacts, loggedUserEmail] = await Promise.all([
-            getData(DB_CONTACTS),
-            getLoggedInUserEmail(),
-        ]);
+    const [contacts, loggedUserEmail] = await Promise.all([getData(DB_CONTACTS), getLoggedInUserEmail()]);
 
-        renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
+    renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
 }
-// async function loadAssignedContacts(form, task) {
-//     try {
-//         const [contacts, loggedUserEmail] = await Promise.all([
-//             getData(DB_CONTACTS),
-//             getLoggedInUserEmail(),
-//         ]);
-
-//         renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
-//     }
-//     catch (error) {
-//         showNotification("Saving the assignees failed.", "error");
-//     }
-// }
-
 
 /**
  * Renders the contacts in the "Assigned to" list.
@@ -54,7 +37,13 @@ function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
     for (let i = 0; i < contactIds.length; i++) {
         const contact = contacts[contactIds[i]];
         const initials = contact.initials || getInitialsFromName(contact.name);
-        html += getAssignedOptionTemplate(contactIds[i], contact, initials, assignedTo[contactIds[i]] === true, loggedUserEmail);
+        html += getAssignedOptionTemplate(
+            contactIds[i],
+            contact,
+            initials,
+            assignedTo[contactIds[i]] === true,
+            loggedUserEmail,
+        );
     }
 
     form.querySelector("#assigned-options").innerHTML = html;
@@ -139,8 +128,6 @@ function getInitialsFromName(name) {
 
     return initials.toUpperCase();
 }
-
-// ---------- Dropdowns ----------
 
 /**
  * Opens or closes the "Assigned to" list when the field or arrow is clicked.
@@ -266,12 +253,10 @@ function closeDropdownsOnOutsideClick(event) {
     }
 }
 
-// ---------- Category and priority ----------
-
 /**
  * Shows the selected category in the field and closes the list.
  * Moves focus to the subtask input after selecting a category.
-* Keeps focus within the list when selection changes through arrow keys.
+ * Keeps focus within the list when selection changes through arrow keys.
  * Closes the list after an option is activated through a click event.
  *
  * @param {Event} event - The change or click event of the category field.
@@ -299,9 +284,8 @@ function moveCategoryFocus(event) {
     const options = Array.from(event.currentTarget.querySelectorAll('input[name="category"]'));
     const index = options.indexOf(event.target);
     const direction = ["ArrowDown", "ArrowRight"].includes(event.key) ? 1 : -1;
-    const nextIndex = index < 0
-        ? (direction === 1 ? 0 : options.length - 1)
-        : (index + direction + options.length) % options.length;
+    const nextIndex =
+        index < 0 ? (direction === 1 ? 0 : options.length - 1) : (index + direction + options.length) % options.length;
 
     event.preventDefault();
     event.stopPropagation();

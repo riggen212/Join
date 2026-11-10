@@ -1,5 +1,3 @@
-
-
 /**
  * Returns the HTML of the task form.
  *
@@ -129,10 +127,14 @@ function renderAddTask(isEditMode = false) {
                             </p>
 
                             <div class="submit-task-send">
-                                ${isEditMode ? "" : `<button class="button button-bright" type="reset">
+                                ${
+                                    isEditMode
+                                        ? ""
+                                        : `<button class="button button-bright" type="reset">
                                     <span>Clear</span>
                                     <img src="../assets/icons/cancel.svg" alt="">
-                                </button>`}
+                                </button>`
+                                }
 
                                 <button class="button button-dark" type="submit">
                                     <span>${isEditMode ? "Ok" : "Create Task"}</span>
@@ -155,11 +157,8 @@ function renderAddTask(isEditMode = false) {
  * @param {string|null} loggedUserEmail - Email of the logged-in user.
  * @returns {string} The HTML of the list entry.
  */
-function getAssignedOptionTemplate( contactId, contact, initials, isChecked, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(
-        contact.email,
-        loggedUserEmail
-    );
+function getAssignedOptionTemplate(contactId, contact, initials, isChecked, loggedUserEmail) {
+    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
     return `
         <li>
@@ -172,7 +171,6 @@ function getAssignedOptionTemplate( contactId, contact, initials, isChecked, log
         </li>
     `;
 }
-
 
 /**
  * Returns the HTML for the badge of an assigned contact.

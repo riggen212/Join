@@ -159,10 +159,7 @@ function renderEditContactTemplate(contact) {
  * @returns {string} The contact card HTML.
  */
 function getContactCardTemplate(contactId, contact, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(
-        contact.email,
-        loggedUserEmail
-    );
+    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
     return `
         <article class="contact-card" data-contact-id="${contactId}" tabindex="0" role="button" onclick="showContactDetails(this)" onkeydown="handleContactCardKeydown(this, event)">
@@ -202,10 +199,7 @@ function getContactGroupTemplate(initial, contactCardsHtml) {
  * @returns {string} The contact details HTML.
  */
 function getContactDetailsTemplate(contact, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(
-        contact.email,
-        loggedUserEmail
-    );
+    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
     return `
         <div>

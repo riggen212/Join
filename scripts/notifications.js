@@ -80,7 +80,7 @@ function getNotificationContainer(containerId) {
  * Sets the text, style, and accessibility attributes of a notification.
  * Hides the visual notification from assistive technology to prevent duplicate announcements.
  * Adds a task-created presentation for the matching success message.
- * 
+ *
  * @param {HTMLElement} notification - The notification element.
  * @param {string} message - The text displayed in the notification.
  * @param {"success" | "error"} type - The notification type.
@@ -188,9 +188,11 @@ function announceNotification(container, message, type) {
     region.textContent = "";
     region.dataset.message = message;
 
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (region.isConnected && region.dataset.message === message) {
-            region.textContent = message;
-        }
-    }));
+    requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+            if (region.isConnected && region.dataset.message === message) {
+                region.textContent = message;
+            }
+        }),
+    );
 }

@@ -44,7 +44,6 @@ function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-
 /**
  * Displays or clears the validation feedback of a contact form.
  *
