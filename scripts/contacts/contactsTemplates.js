@@ -1,4 +1,91 @@
 /**
+ * Creates the HTML for a group of contacts sharing the same initial.
+ *
+ * @param {string} initial - The first letter of the contact names.
+ * @param {string} contactCardsHtml - The HTML for the contact cards.
+ * @returns {string} The complete contact group HTML.
+ */
+function getContactGroupTemplate(initial, contactCardsHtml) {
+    return `
+        <section class="contact-group">
+            <h2>${initial}</h2>
+            ${contactCardsHtml}
+        </section>
+    `;
+}
+
+/**
+ * Creates the HTML for one contact card.
+ *
+ * @param {ContactId} contactId - The unique ID of the contact.
+ * @param {Contact} contact - The contact displayed in the card.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
+ * @returns {string} The contact card HTML.
+ */
+function getContactCardTemplate(contactId, contact, loggedUserEmail) {
+    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
+
+    return `
+        <article class="contact-card" data-contact-id="${contactId}" tabindex="0" role="button" onclick="showContactDetails(this)" onkeydown="handleContactCardKeydown(this, event)">
+            <div class="badge-user ${contact.colorClass}">
+                <span>${contact.initials}</span>
+            </div>
+
+            <div>
+                <p class="hover-bright">${contact.name}${currentUserSuffix}</p>
+                <p class="adress">${contact.email}</p>
+            </div>
+        </article>
+    `;
+}
+
+/**
+ * Creates the detail view for the selected contact.
+ *
+ * @param {Contact} contact - The contact whose information is displayed.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
+ * @returns {string} The contact details HTML.
+ */
+function getContactDetailsTemplate(contact, loggedUserEmail) {
+    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
+
+    return `
+        <div>
+            <div class="badge-user ${contact.colorClass}">
+                <span>${contact.initials}</span>
+            </div>
+            <h3>${contact.name}${currentUserSuffix}</h3>
+            ${getContactActionsTemplate()}
+        </div>
+        <p>Contact Information</p>
+        <h4>Email</h4>
+        <span class="detail-info">${contact.email}</span>
+        <h4>Phone</h4>
+        <span>${contact.phone}</span>
+    `;
+}
+
+/**
+ * Creates the action buttons of the contact detail view.
+ *
+ * @returns {string} The contact action buttons HTML.
+ */
+function getContactActionsTemplate() {
+    return `
+        <div id="contact-actions">
+            <button class="button button-task-overlay" onclick="editContact()">
+                <img src="../assets/icons/edit.svg" alt="">
+                <span>Edit</span>
+            </button>
+            <button class="button button-task-overlay" onclick="deleteContact()">
+                <img src="../assets/icons/delete.svg" alt="">
+                <span>Delete</span>
+            </button>
+        </div>
+    `;
+}
+
+/**
  * Creates the HTML for the Add Contact dialog.
  *
  * @returns {string} The Add Contact dialog HTML.
@@ -148,97 +235,4 @@ function renderEditContactTemplate(contact) {
                 </div>
             </form>
             `;
-}
-
-/**
- * Creates the HTML for one contact card.
- *
- * @param {ContactId} contactId - The unique ID of the contact.
- * @param {Contact} contact - The contact displayed in the card.
- * @param {string|null} loggedUserEmail - Email of the logged-in user.
- * @returns {string} The contact card HTML.
- */
-function getContactCardTemplate(contactId, contact, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(
-        contact.email,
-        loggedUserEmail
-    );
-
-    return `
-        <article class="contact-card" data-contact-id="${contactId}" tabindex="0" role="button" onclick="showContactDetails(this)" onkeydown="handleContactCardKeydown(this, event)">
-            <div class="badge-user ${contact.colorClass}">
-                <span>${contact.initials}</span>
-            </div>
-
-            <div>
-                <p class="hover-bright">${contact.name}${currentUserSuffix}</p>
-                <p class="adress">${contact.email}</p>
-            </div>
-        </article>
-    `;
-}
-
-/**
- * Creates the HTML for a group of contacts sharing the same initial.
- *
- * @param {string} initial - The first letter of the contact names.
- * @param {string} contactCardsHtml - The HTML for the contact cards.
- * @returns {string} The complete contact group HTML.
- */
-function getContactGroupTemplate(initial, contactCardsHtml) {
-    return `
-        <section class="contact-group">
-            <h2 class="section-heading">${initial}</h2>
-            ${contactCardsHtml}
-        </section>
-    `;
-}
-
-/**
- * Creates the detail view for the selected contact.
- *
- * @param {Contact} contact - The contact whose information is displayed.
- * @param {string|null} loggedUserEmail - Email of the logged-in user.
- * @returns {string} The contact details HTML.
- */
-function getContactDetailsTemplate(contact, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(
-        contact.email,
-        loggedUserEmail
-    );
-
-    return `
-        <div>
-            <div class="badge-user ${contact.colorClass}">
-                <span>${contact.initials}</span>
-            </div>
-            <h3>${contact.name}${currentUserSuffix}</h3>
-            ${getContactActionsTemplate()}
-        </div>
-        <p>Contact Information</p>
-        <h4>Email</h4>
-        <span class="detail-info">${contact.email}</span>
-        <h4>Phone</h4>
-        <span>${contact.phone}</span>
-    `;
-}
-
-/**
- * Creates the action buttons of the contact detail view.
- *
- * @returns {string} The contact action buttons HTML.
- */
-function getContactActionsTemplate() {
-    return `
-        <div id="contact-actions">
-            <button class="button button-task-overlay" onclick="editContact()">
-                <img src="../assets/icons/edit.svg" alt="">
-                <span>Edit</span>
-            </button>
-            <button class="button button-task-overlay" onclick="deleteContact()">
-                <img src="../assets/icons/delete.svg" alt="">
-                <span>Delete</span>
-            </button>
-        </div>
-    `;
 }

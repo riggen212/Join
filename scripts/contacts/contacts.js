@@ -1,60 +1,58 @@
 /** @type {ContactDirectory} */
 const contacts = {};
 
+/**
+ * Current user's email address, used to mark their matching contact.
+ * Null before loading or when using the guest account.
+ *
+ * @type {string|null}
+ */
 let loggedInUserEmail = null;
 
 /**
- * Enables or disables all action buttons of the contacts page.
+ * Initializes the current user and loads the contact list.
+ * Stops if no valid user is available and displays loading errors.
+ * Disables contact buttons during initialization and restores them afterwards.
  *
- * @param {boolean} isDisabled - True while a database request is running.
- * @returns {void}
- */
-function setContactButtonsDisabled(isDisabled) {
-  const buttons = document.querySelectorAll(".contacts-content button, #contact button");
-
-  for (let i = 0; i < buttons.length; i++) {
-    buttons[i].disabled = isDisabled;
-  }
-}
-
-/**
- * Runs a database request while contact buttons are disabled.
- *
- * @param {() => Promise<void>} request - The database request to run.
- * @returns {Promise<void>}
- */
-async function runWithDisabledContactButtons(request) {
-  setContactButtonsDisabled(true);
-
-  try {
-    await request();
-  } finally {
-    setContactButtonsDisabled(false);
-  }
-}
-
-/**
- * Loads the shared contacts from Firebase and renders the list.
- * Stops initialization if no valid user is available.
- *
- * @returns {Promise<void>} Resolves after rendering, error handling or an early return.
+ * @returns {Promise<void>} Resolves after initialization, error handling or an early return.
  */
 async function initContacts() {
   setContactButtonsDisabled(true);
 
-  try {
-    loggedUserId = await loadCurrentUser(false);
-    if (!loggedUserId) return;
-    loggedInUserEmail = await getLoggedInUserEmail();
+    try {
+        if (!(await initializeCurrentUser())) return;
+        loggedInUserEmail = await getLoggedInUserEmail();
+        await loadAndRenderContacts();
+    } catch (error) {
+        showNotification("Contacts could not be loaded.", "error");
+    } finally {
+        setContactButtonsDisabled(false);
+    }
+}
 
+/**
+ * Loads shared contacts from Firebase, updates the local directory and renders the list.
+ *
+ * @returns {Promise<void>} Resolves after loading and rendering the contacts.
+ * @throws {Error} If loading or rendering the contacts fails.
+ */
+async function loadAndRenderContacts() {
     const firebaseContacts = await getData(getContactPath());
     Object.assign(contacts, firebaseContacts ?? {});
     renderContactList(contacts);
-  } catch (error) {
-    showNotification("Contacts could not be loaded.", "error");
-  } finally {
-    setContactButtonsDisabled(false);
-  }
+}
+
+/**
+ * Renders all contacts inside the contact list.
+ *
+ * @param {ContactDirectory} contactDirectory - The contacts to render.
+ * @returns {void}
+ */
+function renderContactList(contactDirectory) {
+    const container = document.getElementById("contact-groups");
+    const groups = groupContactsByInitial(contactDirectory);
+
+    container.innerHTML = getContactGroupsHtml(groups, loggedInUserEmail);
 }
 
 /**
@@ -76,19 +74,6 @@ function groupContactsByInitial(contactDirectory) {
 }
 
 /**
- * Creates the HTML for the contact cards of one group.
- *
- * @param {ContactListEntry[]} contactEntries - Contacts with their IDs.
- * @param {string|null} loggedUserEmail - Email of the logged-in user.
- * @returns {string} The HTML for the contact cards.
- */
-function getContactCardsHtml(contactEntries, loggedUserEmail) {
-  return contactEntries
-    .map(([contactId, contact]) => getContactCardTemplate(contactId, contact, loggedUserEmail))
-    .join("");
-}
-
-/**
  * Creates the HTML for all grouped contacts.
  *
  * @param {ContactGroups} contactGroups - The grouped contacts.
@@ -105,55 +90,31 @@ function getContactGroupsHtml(contactGroups, loggedUserEmail) {
 }
 
 /**
- * Renders all contacts inside the contact list.
+ * Creates the HTML for the contact cards of one group.
  *
- * @param {ContactDirectory} contactDirectory - The contacts to render.
- * @returns {void}
+ * @param {ContactListEntry[]} contactEntries - Contacts with their IDs.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
+ * @returns {string} The HTML for the contact cards.
  */
-function renderContactList(contactDirectory) {
-  const container = document.getElementById("contact-groups");
-  const groups = groupContactsByInitial(contactDirectory);
-
-  container.innerHTML = getContactGroupsHtml(groups, loggedInUserEmail);
+function getContactCardsHtml(contactEntries, loggedUserEmail) {
+    return contactEntries
+        .map(([contactId, contact]) => getContactCardTemplate(contactId, contact, loggedUserEmail))
+        .join("");
 }
 
 /**
- * Closes a contact form dialog and schedules its success notification.
+ * Opens the dialog for creating a new contact.
  *
- * @param {HTMLFormElement} form - The submitted contact form.
- * @param {string} message - The success message to show after closing.
  * @returns {void}
  */
-function closeContactFormWithNotification(form, message) {
-  const dialog = form.closest("dialog");
+function addNewContact() {
+    const dialog = document.getElementById("contact");
 
-  dialog.dataset.notification = message;
-  dialog.dataset.notificationContainer = "show-details";
-  dialog.requestClose();
-}
-
-/**
- * Validates, saves, and confirms the submitted changes of the selected contact.
- *
- * @param {SubmitEvent} event - The Edit Contact form submit event.
- * @returns {Promise<void>}
- */
-async function saveContact(event) {
-  event.preventDefault();
-  
-  const form = /** @type {HTMLFormElement} */ (event.currentTarget);
-  const selectedContact = getSelectedContactEntry();
-  const formValues = getValidContactFormValues(form);
-
-  if (!selectedContact || !formValues) return;
-
-  const contact = { ...selectedContact.contact, ...formValues };
-  try {
-    await runWithDisabledContactButtons(() => saveEditedContact(selectedContact.id, contact));
-    closeContactFormWithNotification(form, "Contact successfully updated");
-  } catch (error) {
-    showNotification("Contact could not be updated. Please try again.", "error");
-  }
+    if (!dialog.open) {
+        dialog.classList.remove("contact-edit");
+        dialog.innerHTML = renderAddContactTemplate();
+        openDialog("contact");
+    }
 }
 
 /**
@@ -179,16 +140,6 @@ async function createContact(event) {
 }
 
 /**
- * Returns the Firebase path for the contacts collection or a single contact.
- *
- * @param {ContactId} [contactId] - The optional ID of one contact.
- * @returns {string} The database path without the `.json` suffix.
- */
-function getContactPath(contactId) {
-  return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
-}
-
-/**
  * Generates a UUID and saves the new contact via PUT.
  * Adds the contact to the local directory, refreshes the list and shows its details.
  *
@@ -202,6 +153,43 @@ async function saveNewContact(contact) {
     contacts[contactId] = contact;
     renderContactList(contacts);
     showContactById(contactId);
+}
+
+/**
+ * Validates the submitted form and starts saving the selected contact.
+ * Stops if no contact is selected or the form values are invalid.
+ *
+ * @param {SubmitEvent} event - The Edit Contact form submit event.
+ * @returns {Promise<void>} Resolves after saving, error handling or an early return.
+ */
+async function saveContact(event) {
+    event.preventDefault();
+    const form = /** @type {HTMLFormElement} */ (event.currentTarget);
+    const selectedContact = getSelectedContactEntry();
+    const formValues = getValidContactFormValues(form);
+    if (!selectedContact || !formValues) return;
+
+    await handleSaveContact(form, formValues, selectedContact);
+}
+
+/**
+ * Saves the validated contact changes while contact buttons are disabled.
+ * Closes the form with a success notification or displays an error.
+ *
+ * @param {HTMLFormElement} form - The submitted Edit Contact form.
+ * @param {ContactFormValues} formValues - The validated contact form values.
+ * @param {ContactEntry} selectedContact - The selected contact and its ID.
+ * @returns {Promise<void>} Resolves after saving and confirmation or error handling.
+ */
+async function handleSaveContact(form, formValues, selectedContact) {
+    const contact = { ...selectedContact.contact, ...formValues };
+
+    try {
+        await runWithDisabledContactButtons(() => saveEditedContact(selectedContact.id, contact));
+        closeContactFormWithNotification(form, "Contact successfully updated");
+    } catch (error) {
+        showNotification("Contact could not be updated. Please try again.", "error");
+    }
 }
 
 /**
@@ -219,6 +207,22 @@ async function saveEditedContact(contactId, contact) {
   renderContactList(contacts);
   renderContactDetails(contactId);
   markContactCardSelected(contactId);
+}
+
+/**
+ * Deletes the currently selected contact.
+ *
+ * @returns {Promise<void>}
+ */
+async function deleteContact() {
+    const selectedContact = getSelectedContactEntry();
+    if (!selectedContact) return;
+
+    try {
+        await runWithDisabledContactButtons(() => removeContact(selectedContact.id));
+    } catch (error) {
+        showNotification("Contact could not be deleted. Please try again.", "error");
+    }
 }
 
 /**
@@ -283,19 +287,58 @@ function closeDialogAfterContactDeletion(message) {
 }
 
 /**
- * Deletes the currently selected contact.
+ * Closes a contact form dialog and schedules its success notification.
  *
+ * @param {HTMLFormElement} form - The submitted contact form.
+ * @param {string} message - The success message to show after closing.
+ * @returns {void}
+ */
+function closeContactFormWithNotification(form, message) {
+    const dialog = form.closest("dialog");
+
+    dialog.dataset.notification = message;
+    dialog.dataset.notificationContainer = "show-details";
+    dialog.requestClose();
+}
+
+/**
+ * Runs a database request while contact buttons are disabled.
+ *
+ * @param {() => Promise<void>} request - The database request to run.
  * @returns {Promise<void>}
  */
-async function deleteContact() {
-  const selectedContact = getSelectedContactEntry();
-  if (!selectedContact) return;
+async function runWithDisabledContactButtons(request) {
+    setContactButtonsDisabled(true);
 
-  try {
-    await runWithDisabledContactButtons(() => removeContact(selectedContact.id));
-  } catch (error) {
-    showNotification("Contact could not be deleted. Please try again.", "error");
-  }
+    try {
+        await request();
+    } finally {
+        setContactButtonsDisabled(false);
+    }
+}
+
+/**
+ * Enables or disables all action buttons of the contacts page.
+ *
+ * @param {boolean} isDisabled - True while a database request is running.
+ * @returns {void}
+ */
+function setContactButtonsDisabled(isDisabled) {
+    const buttons = document.querySelectorAll(".contacts-content button, #contact button");
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = isDisabled;
+    }
+}
+
+/**
+ * Returns the Firebase path for the contacts collection or a single contact.
+ *
+ * @param {ContactId} [contactId] - The optional ID of one contact.
+ * @returns {string} The database path without the `.json` suffix.
+ */
+function getContactPath(contactId) {
+    return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
 }
 
 initContacts();

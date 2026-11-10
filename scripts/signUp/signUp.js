@@ -1,4 +1,19 @@
+/**
+ * Whether registration is in progress.
+ * Prevents repeated submissions and controls the form's busy state.
+ *
+ * @type {boolean}
+ */
 let isSignUpSaving = false;
+
+/**
+ * Moves focus to the name input after navigating to the sign-up page.
+ *
+ * @returns {void}
+ */
+function initSignUpPage() {
+    document.getElementById("nameField").focus();
+}
 
 /**
  * Prevents native submission and starts sign-up for valid form data.
@@ -13,6 +28,20 @@ async function signUp(event) {
     if (!validateSignUpData(data)) return;
 
     await handleSignUp(data);
+}
+
+/**
+ * Reads the input values from the sign-up form.
+ * @returns {Object} User registration data.
+ */
+function getSignUpData() {
+    return {
+        name: document.getElementById("nameField").value.trim(),
+        email: document.getElementById("emailField").value.trim().toLowerCase(),
+        password: document.getElementById("passwordField").value,
+        confirmPassword: document.getElementById("confirmPasswordField").value,
+        acceptPolicy: document.getElementById("acceptPolicy").checked,
+    };
 }
 
 /**
@@ -35,34 +64,6 @@ async function handleSignUp(data) {
 }
 
 /**
- * Updates the saving state and refreshes the sign-up button.
- * Sets the form busy state and announces the current saving status.
- * Updates the password visibility buttons.
- *
- * @param {boolean} isSaving - Whether registration is being saved.
- * @returns {void}
- */
-function setSignUpSaving(isSaving) {
-    const form = document.getElementById("signUpForm");
-
-    isSignUpSaving = isSaving;
-    form.setAttribute("aria-busy", String(isSaving));
-    document.getElementById("sign-up-status").textContent = isSaving ? "Creating account…" : "";
-    updateSignUpButton();
-    updateSignUpPasswordButtons();
-}
-
-/**
- * Refreshes both password visibility buttons.
- *
- * @returns {void}
- */
-function updateSignUpPasswordButtons() {
-    updateSignUpPasswordIcon("passwordField", "passwordEyeIcon");
-    updateSignUpPasswordIcon("confirmPasswordField", "confirmPasswordEyeIcon");
-}
-
-/**
  * Processes registration, redirects on success and displays errors.
  *
  * @param {Object} data - Validated registration data.
@@ -81,20 +82,6 @@ async function attemptSignUp(data) {
 }
 
 /**
- * Reads the input values from the sign-up form.
- * @returns {Object} User registration data.
- */
-function getSignUpData() {
-    return {
-        name: document.getElementById("nameField").value.trim(),
-        email: document.getElementById("emailField").value.trim().toLowerCase(),
-        password: document.getElementById("passwordField").value,
-        confirmPassword: document.getElementById("confirmPasswordField").value,
-        acceptPolicy: document.getElementById("acceptPolicy").checked,
-    };
-}
-
-/**
  * Checks email availability and saves the new user and contact.
  * Displays a field error if the email is already registered.
  * Moves focus to the email field when the address is already registered.
@@ -107,11 +94,7 @@ async function processSignUp(data) {
     const exists = await doesEmailAlreadyExist(data.email);
 
     if (exists) {
-        const form = document.getElementById("signUpForm");
-        showFormFieldErrors(form, {
-            emailField: "This email address is already registered.",
-        });
-        document.getElementById("emailField").focus();
+        showEmailAlreadyRegisteredError();
         return false;
     }
 
@@ -135,18 +118,18 @@ async function doesEmailAlreadyExist(email) {
 }
 
 /**
- * Creates initials from the user's name.
+ * Displays an error for an already registered email and focuses the field.
  *
- * @param {string} name - Full name of the user.
- * @returns {string} User initials.
+ * @returns {void}
  */
-function getUserInitials(name) {
-    const names = name.trim().split(/\s+/);
+function showEmailAlreadyRegisteredError() {
+    const form = document.getElementById("signUpForm");
 
-    return names
-        .slice(0, 2)
-        .map((part) => part.charAt(0).toUpperCase())
-        .join("");
+    showFormFieldErrors(form, {
+        emailField: "This email address is already registered.",
+    });
+
+    document.getElementById("emailField").focus();
 }
 
 /**
@@ -159,7 +142,7 @@ function createUserObject(data) {
         name: data.name,
         email: data.email,
         password: data.password,
-        initials: getUserInitials(data.name),
+        initials: getInitialsFromName(data.name),
         colorClass: "badge-user-blue-light",
     };
 }
@@ -204,6 +187,46 @@ async function saveSignUpUser(user, contact) {
         [`${DB_USERS}${userId}`]: user,
         [`${DB_CONTACTS}${contactId}`]: contact,
     });
+}
+
+/**
+ * Updates the saving state and refreshes the sign-up button.
+ * Sets the form busy state and announces the current saving status.
+ * Updates the password visibility buttons.
+ *
+ * @param {boolean} isSaving - Whether registration is being saved.
+ * @returns {void}
+ */
+function setSignUpSaving(isSaving) {
+    const form = document.getElementById("signUpForm");
+
+    isSignUpSaving = isSaving;
+    form.setAttribute("aria-busy", String(isSaving));
+    document.getElementById("sign-up-status").textContent = isSaving ? "Creating account…" : "";
+    updateSignUpButton();
+    updateSignUpPasswordButtons();
+}
+
+/**
+ * Enables sign-up when all required fields are filled and policy is accepted.
+ *
+ * @returns {void}
+ */
+function updateSignUpButton() {
+    const data = getSignUpData();
+    const isComplete = data.name && data.email && data.password && data.confirmPassword && data.acceptPolicy;
+
+    document.getElementById("signUpButton").disabled = !isComplete || isSignUpSaving;
+}
+
+/**
+ * Refreshes both password visibility buttons.
+ *
+ * @returns {void}
+ */
+function updateSignUpPasswordButtons() {
+    updateSignUpPasswordIcon("passwordField", "passwordEyeIcon");
+    updateSignUpPasswordIcon("confirmPasswordField", "confirmPasswordEyeIcon");
 }
 
 /**
@@ -277,27 +300,6 @@ function updateSignUpEyeIcon(input, icon, button, hasPassword) {
         : isVisible
           ? "../assets/icons/eyeOpen.svg"
           : "../assets/icons/eyeClose.svg";
-}
-
-/**
- * Enables sign-up when all required fields are filled and policy is accepted.
- *
- * @returns {void}
- */
-function updateSignUpButton() {
-    const data = getSignUpData();
-    const isComplete = data.name && data.email && data.password && data.confirmPassword && data.acceptPolicy;
-
-    document.getElementById("signUpButton").disabled = !isComplete || isSignUpSaving;
-}
-
-/**
- * Moves focus to the name input after navigating to the sign-up page.
- *
- * @returns {void}
- */
-function initSignUpPage() {
-    document.getElementById("nameField").focus();
 }
 
 initSignUpPage();

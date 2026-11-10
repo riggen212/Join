@@ -54,6 +54,29 @@ function handleKeyboardTaskCardOperation(event, taskId, taskStatus) {
 }
 
 /**
+ * Calls startDraggingTask() to select the task.
+ * If draggingTask is set, enables keyboard movement, sets
+ * highlightedColumnIndex from taskStatus, and highlights
+ * the column identified by draggingTask.status.
+ *
+ * @param {TaskId} taskId - ID of the task to select.
+ * @param {Task["status"]} taskStatus - Current status of the task.
+ * @param {KeyboardEvent} event - The keydown event starting the movement.
+ * @returns {void}
+ */
+function startMovingTaskWithKeyboard(taskId, taskStatus, event) {
+    startDraggingTask(taskId, taskStatus, event);
+
+    if (draggingTask) {
+        isKeyboardMoveActive = true;
+        highlightedColumnIndex = Object.keys(board).findIndex((column) => column === taskStatus);
+
+        addHighlightDroppableColumn(draggingTask.status);
+        announceBoardMoveStatus(`Moving task. Selected column: ${board[taskStatus].name}.`);
+    }
+}
+
+/**
  * Prevents default behavior and ignores repeated Space, Enter,
  * ArrowRight, and ArrowLeft events during keyboard movement.
  * Passes all other events to keyboardMovement().
@@ -119,71 +142,6 @@ function getKeyboardActions(event, taskId) {
 }
 
 /**
- * Calls startDraggingTask() to select the task.
- * If draggingTask is set, enables keyboard movement, sets
- * highlightedColumnIndex from taskStatus, and highlights
- * the column identified by draggingTask.status.
- *
- * @param {TaskId} taskId - ID of the task to select.
- * @param {Task["status"]} taskStatus - Current status of the task.
- * @param {KeyboardEvent} event - The keydown event starting the movement.
- * @returns {void}
- */
-function startMovingTaskWithKeyboard(taskId, taskStatus, event) {
-    startDraggingTask(taskId, taskStatus, event);
-
-    if (draggingTask) {
-        isKeyboardMoveActive = true;
-        highlightedColumnIndex = Object.keys(board).findIndex((column) => column === taskStatus);
-
-        addHighlightDroppableColumn(draggingTask.status);
-        announceBoardMoveStatus(`Moving task. Selected column: ${board[taskStatus].name}.`);
-    }
-}
-
-/**
- * Moves the task and passes its result to the focus restoration.
- *
- * @param {TaskId} taskId - ID of the task being moved.
- * @returns {Promise<void>} Resolves after movement and focus restoration.
- */
-async function confirmMovingTaskWithKeyboard(taskId) {
-    const destinationStatus = Object.keys(board)[highlightedColumnIndex];
-    let message = "";
-    isKeyboardMoveActive = false;
-    try {
-        const wasSaved = await moveTask(taskId, destinationStatus, draggingTask?.status);
-        message = wasSaved === undefined ? "Task remains in its current column."
-            : wasSaved ? `Task moved to ${board[destinationStatus].name}.`
-            : "Task could not be moved. Its original column has been restored.";
-    } finally {
-        finishMovingTaskWithKeyboard(taskId, message);
-    }
-}
-
-/**
- * Ends movement, sets the result description and restores focus to the task's opening button.
- *
- * @param {TaskId} taskId - ID of the task card.
- * @param {string} [message=""] - Result to include in the card description.
- * @returns {void}
- */
-function finishMovingTaskWithKeyboard(taskId, message = "") {
-    isKeyboardMoveActive = false;
-    removeHighlightDroppableColumn(Object.keys(board)[highlightedColumnIndex]);
-    highlightedColumnIndex = null;
-    endDraggingTask(taskId);
-    const card = document.getElementById(taskId);
-    const openButton = card.querySelector(".task-card-open");
-    const alreadyFocused = document.activeElement === openButton;
-    card.querySelector(".task-move-result").textContent = message;
-    openButton.setAttribute("aria-describedby",
-        message ? `${taskId}-move-result` : "task-keyboard-help");
-    openButton.focus();
-    if (alreadyFocused && message) announceBoardMoveStatus(message);
-}
-
-/**
  * Increments highlightedColumnIndex and moves the highlight
  * to that column without moving the task.
  * Wraps from the last column to the first.
@@ -219,4 +177,59 @@ function moveToPreviousColumn() {
 
     addHighlightDroppableColumn(columns[highlightedColumnIndex]);
     announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
+}
+
+/**
+ * Moves the task and passes its result to the focus restoration.
+ *
+ * @param {TaskId} taskId - ID of the task being moved.
+ * @returns {Promise<void>} Resolves after movement and focus restoration.
+ */
+async function confirmMovingTaskWithKeyboard(taskId) {
+    const destinationStatus = Object.keys(board)[highlightedColumnIndex];
+    let message = "";
+    isKeyboardMoveActive = false;
+
+    try {
+        const wasSaved = await moveTask(taskId, destinationStatus, draggingTask?.status);
+        message = getConfirmMovingTaskWithKeyboardMessage(wasSaved, destinationStatus);
+    } finally {
+        finishMovingTaskWithKeyboard(taskId, message);
+    }
+}
+
+/**
+ * Returns the keyboard movement result message.
+ *
+ * @param {boolean|undefined} wasSaved - True on success, false on failure, undefined if unchanged.
+ * @param {Task["status"]} destinationStatus - The selected destination column.
+ * @returns {string} The message describing the movement result.
+ */
+function getConfirmMovingTaskWithKeyboardMessage(wasSaved, destinationStatus) {
+    return wasSaved === undefined
+        ? "Task remains in its current column."
+        : wasSaved
+          ? `Task moved to ${board[destinationStatus].name}.`
+          : "Task could not be moved. Its original column has been restored.";
+}
+
+/**
+ * Ends movement, sets the result description and restores focus to the task's opening button.
+ *
+ * @param {TaskId} taskId - ID of the task card.
+ * @param {string} [message=""] - Result to include in the card description.
+ * @returns {void}
+ */
+function finishMovingTaskWithKeyboard(taskId, message = "") {
+    isKeyboardMoveActive = false;
+    removeHighlightDroppableColumn(Object.keys(board)[highlightedColumnIndex]);
+    highlightedColumnIndex = null;
+    endDraggingTask(taskId);
+    const card = document.getElementById(taskId);
+    const openButton = card.querySelector(".task-card-open");
+    const alreadyFocused = document.activeElement === openButton;
+    card.querySelector(".task-move-result").textContent = message;
+    openButton.setAttribute("aria-describedby", message ? `${taskId}-move-result` : "task-keyboard-help");
+    openButton.focus();
+    if (alreadyFocused && message) announceBoardMoveStatus(message);
 }

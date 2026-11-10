@@ -45,9 +45,7 @@ function showFormFieldErrors(form, errors) {
  * @returns {void}
  */
 function clearFormError(form) {
-    for (const error of form.querySelectorAll(
-        "[data-form-error], [data-error-for]"
-    )) {
+    for (const error of form.querySelectorAll("[data-form-error], [data-error-for]")) {
         error.textContent = "";
     }
 

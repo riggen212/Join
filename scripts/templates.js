@@ -128,9 +128,9 @@ function renderAddTask(isEditMode = false) {
 
                             <div class="submit-task-send">
                                 ${
-                                  isEditMode
-                                    ? ""
-                                    : `<button class="button button-bright" type="reset">
+                                    isEditMode
+                                        ? ""
+                                        : `<button class="button button-bright" type="reset">
                                     <span>Clear</span>
                                     <img src="../assets/icons/cancel.svg" alt="">
                                 </button>`
@@ -158,7 +158,7 @@ function renderAddTask(isEditMode = false) {
  * @returns {string} The HTML of the list entry.
  */
 function getAssignedOptionTemplate(contactId, contact, initials, isChecked, loggedUserEmail) {
-  const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
+    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
   return `
         <li>
@@ -233,83 +233,4 @@ function getSubtaskTemplate(subtaskId, title, completed) {
 function getSubtaskEditTemplate() {
   return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
                 onkeydown="handleSubtaskEditKeydown(event)" onblur="saveSubtaskEdit(this)">`;
-}
-
-/**
- * Creates the HTML for one contact card.
- *
- * @param {ContactId} contactId - The unique ID of the contact.
- * @param {Contact} contact - The contact displayed in the card.
- * @returns {string} The contact card HTML.
- */
-function getContactCardTemplate(contactId, contact) {
-  return `
-        <article class="contact-card" data-contact-id="${contactId}"
-            onclick="showContactDetails(this)">
-            <div class="badge-user ${contact.colorClass}">
-                <span>${contact.initials}</span>
-            </div>
-            <div>
-                <p class="hover-bright">${contact.name}</p>
-                <p class="adress">${contact.email}</p>
-            </div>
-        </article>
-    `;
-}
-
-/**
- * Creates the HTML for a group of contacts sharing the same initial.
- *
- * @param {string} initial - The first letter of the contact names.
- * @param {string} contactCardsHtml - The HTML for the contact cards.
- * @returns {string} The complete contact group HTML.
- */
-function getContactGroupTemplate(initial, contactCardsHtml) {
-  return `
-        <section class="contact-group">
-            <h2 class="section-heading">${initial}</h2>
-            ${contactCardsHtml}
-        </section>
-    `;
-}
-
-/**
- * Creates the detail view for the selected contact.
- *
- * @param {Contact} contact - The contact whose information is displayed.
- * @returns {string} The contact details HTML.
- */
-function getContactDetailsTemplate(contact) {
-  return `
-        <div>
-            <div class="badge-user ${contact.colorClass}"><span>${contact.initials}</span></div>
-            <h3>${contact.name}</h3>
-            ${getContactActionsTemplate()}
-        </div>
-        <p>Contact Information</p>
-        <h4>Email</h4>
-        <span class="detail-info">${contact.email}</span>
-        <h4>Phone</h4>
-        <span>${contact.phone}</span>
-    `;
-}
-
-/**
- * Creates the action buttons of the contact detail view.
- *
- * @returns {string} The contact action buttons HTML.
- */
-function getContactActionsTemplate() {
-  return `
-        <div id="contact-actions">
-            <button class="button button-task-overlay" onclick="editContact()">
-                <img src="../assets/icons/edit.svg" alt="">
-                <span>Edit</span>
-            </button>
-            <button class="button button-task-overlay" onclick="deleteContact()">
-                <img src="../assets/icons/cancel.svg" alt="">
-                <span>Delete</span>
-            </button>
-        </div>
-    `;
 }
