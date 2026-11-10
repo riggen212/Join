@@ -107,11 +107,7 @@ async function processSignUp(data) {
     const exists = await doesEmailAlreadyExist(data.email);
 
     if (exists) {
-        const form = document.getElementById("signUpForm");
-        showFormFieldErrors(form, {
-            emailField: "This email address is already registered.",
-        });
-        document.getElementById("emailField").focus();
+        showEmailAlreadyRegisteredError();
         return false;
     }
 
@@ -132,6 +128,21 @@ async function doesEmailAlreadyExist(email) {
     }
 
     return Object.values(users).some((user) => user.email?.toLowerCase() === email);
+}
+
+/**
+ * Displays an error for an already registered email and focuses the field.
+ *
+ * @returns {void}
+ */
+function showEmailAlreadyRegisteredError() {
+    const form = document.getElementById("signUpForm");
+
+    showFormFieldErrors(form, {
+        emailField: "This email address is already registered.",
+    });
+
+    document.getElementById("emailField").focus();
 }
 
 /**

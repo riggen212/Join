@@ -242,17 +242,35 @@ function updatePasswordIcon() {
     const toggleButton = document.getElementById("toggle-login-password");
     const eyeIcon = document.getElementById("augeIcon");
 
-    if (!passwordInput.value) {
-        passwordInput.type = "password";
-        toggleButton.setAttribute("aria-pressed", "false");
-        toggleButton.setAttribute("aria-label", "Show password");
-    }
+    if (!passwordInput.value) resetPasswordVisibility(passwordInput, toggleButton);
 
     toggleButton.disabled = !passwordInput.value;
-    eyeIcon.src =
-        passwordInput.type === "text"
-            ? "./assets/icons/eyeOpen.svg"
-            : passwordInput.value
-              ? "./assets/icons/eyeClose.svg"
-              : "./assets/icons/showPassword.svg";
+    eyeIcon.src = getPasswordIconPath(passwordInput);
+}
+
+/**
+ * Hides the password and resets the visibility button's ARIA state.
+ *
+ * @param {HTMLInputElement} passwordInput - The password field.
+ * @param {HTMLButtonElement} toggleButton - The password visibility button.
+ * @returns {void}
+ */
+function resetPasswordVisibility(passwordInput, toggleButton) {
+    passwordInput.type = "password";
+    toggleButton.setAttribute("aria-pressed", "false");
+    toggleButton.setAttribute("aria-label", "Show password");
+}
+
+/**
+ * Returns the icon path based on password visibility and field contents.
+ *
+ * @param {HTMLInputElement} passwordInput - The password field.
+ * @returns {string} The relative path to the password icon.
+ */
+function getPasswordIconPath(passwordInput) {
+    return passwordInput.type === "text"
+        ? "./assets/icons/eyeOpen.svg"
+        : passwordInput.value
+          ? "./assets/icons/eyeClose.svg"
+          : "./assets/icons/showPassword.svg";
 }

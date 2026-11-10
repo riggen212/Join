@@ -8,8 +8,8 @@
 async function initSummary() {
     try {
         showAnimationLogin();
-        loggedUserId = await loadCurrentUser(false);
-        if (!loggedUserId) return;
+        if (!(await initializeCurrentUser())) return;
+        
         const user = await getData(DB_USERS, loggedUserId);
         const tasks = await loadTasks();
         const today = getLocalDate();

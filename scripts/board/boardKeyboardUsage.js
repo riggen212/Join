@@ -151,17 +151,28 @@ async function confirmMovingTaskWithKeyboard(taskId) {
     const destinationStatus = Object.keys(board)[highlightedColumnIndex];
     let message = "";
     isKeyboardMoveActive = false;
+
     try {
         const wasSaved = await moveTask(taskId, destinationStatus, draggingTask?.status);
-        message =
-            wasSaved === undefined
-                ? "Task remains in its current column."
-                : wasSaved
-                  ? `Task moved to ${board[destinationStatus].name}.`
-                  : "Task could not be moved. Its original column has been restored.";
+        message = getConfirmMovingTaskWithKeyboardMessage(wasSaved, destinationStatus);
     } finally {
         finishMovingTaskWithKeyboard(taskId, message);
     }
+}
+
+/**
+ * Returns the keyboard movement result message.
+ *
+ * @param {boolean|undefined} wasSaved - True on success, false on failure, undefined if unchanged.
+ * @param {Task["status"]} destinationStatus - The selected destination column.
+ * @returns {string} The message describing the movement result.
+ */
+function getConfirmMovingTaskWithKeyboardMessage(wasSaved, destinationStatus) {
+    return wasSaved === undefined
+        ? "Task remains in its current column."
+        : wasSaved
+          ? `Task moved to ${board[destinationStatus].name}.`
+          : "Task could not be moved. Its original column has been restored.";
 }
 
 /**

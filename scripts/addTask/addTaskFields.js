@@ -32,22 +32,55 @@ async function loadAssignedContacts(form, task) {
 function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
     const assignedTo = task && task.assignedTo ? task.assignedTo : {};
     const contactIds = getSortedContactIds(contacts);
-    let html = "";
 
-    for (let i = 0; i < contactIds.length; i++) {
-        const contact = contacts[contactIds[i]];
-        const initials = contact.initials || getInitialsFromName(contact.name);
-        html += getAssignedOptionTemplate(
-            contactIds[i],
-            contact,
-            initials,
-            assignedTo[contactIds[i]] === true,
+    form.querySelector("#assigned-options").innerHTML = getAssignedOptionsHtml(
+        contacts,
+        contactIds,
+        assignedTo,
+        loggedUserEmail,
+    );
+
+    renderAssignedBadges(form);
+}
+
+/**
+ * Builds the assignment options HTML in the supplied contact order.
+ *
+ * @param {ContactDirectory} contacts - Contacts indexed by ID.
+ * @param {ContactId[]} contactIds - Contact IDs in display order.
+ * @param {Object.<ContactId, boolean>} assignedTo - Existing contact assignments.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
+ * @returns {string} The combined HTML of all assignment options.
+ */
+function getAssignedOptionsHtml(contacts, contactIds, assignedTo, loggedUserEmail) {
+    let assignedOptionsHtml = "";
+
+    for (const contactId of contactIds) {
+        assignedOptionsHtml += getAssignedContactOptionHtml(
+            contactId,
+            contacts[contactId],
+            assignedTo,
             loggedUserEmail,
         );
     }
 
-    form.querySelector("#assigned-options").innerHTML = html;
-    renderAssignedBadges(form);
+    return assignedOptionsHtml;
+}
+
+/**
+ * Builds one assignment option using the contact's initials and selection state.
+ * Generates initials from the contact's name if none are stored.
+ *
+ * @param {ContactId} contactId - The contact's ID.
+ * @param {Contact} contact - The contact to display.
+ * @param {Object.<ContactId, boolean>} assignedTo - Existing contact assignments.
+ * @param {string|null} loggedUserEmail - Email of the logged-in user.
+ * @returns {string} The HTML of the contact's assignment option.
+ */
+function getAssignedContactOptionHtml(contactId, contact, assignedTo, loggedUserEmail) {
+    const initials = contact.initials || getInitialsFromName(contact.name);
+
+    return getAssignedOptionTemplate(contactId, contact, initials, assignedTo[contactId] === true, loggedUserEmail);
 }
 
 /**

@@ -299,6 +299,21 @@ function checkLoginStateOnPageShow(event) {
 }
 
 /**
+ * Initializes the current user on a protected page.
+ * Stores the validated user ID in loggedUserId and updates the profile button.
+ * Redirects to login if the user is missing or invalid.
+ *
+ * @returns {Promise<boolean>} True if a valid user was loaded; otherwise false.
+ * @throws {Error} If loading the user or updating the profile fails.
+ */
+async function initializeCurrentUser() {
+    loggedUserId = await loadCurrentUser(false);
+
+    if (!loggedUserId) return false;
+    else return true;
+}
+
+/**
  * Reloads legal and privacy pages to refresh their logged-out navigation.
  * Replaces all other current pages with the login page.
  *

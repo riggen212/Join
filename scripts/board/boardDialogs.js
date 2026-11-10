@@ -203,29 +203,42 @@ function updateBoardAfterTaskCreation(taskId, task) {
 }
 
 /**
- * Coordinates task deletion and prevents repeated clicks.
- * Re-enables the button if database deletion fails.
- * On success, updates the board and schedules dialog closing through a notification.
+ * Deletes a task unless its delete button is already disabled.
+ * Updates the board and schedules dialog closing after successful deletion.
  *
  * @param {TaskId} taskId - ID of the task to delete.
  * @param {Task["status"]} taskStatus - Column containing the task.
  * @param {HTMLButtonElement} button - The clicked delete button.
- * @returns {Promise<void>} Resolves after deletion handling, without waiting for notification or dialog animations.
+ * @returns {Promise<void>} Resolves after deletion handling, without waiting for dialog animations.
  */
 async function deleteTask(taskId, taskStatus, button) {
     const dialog = button.closest("dialog");
     if (button.disabled) return;
 
+    const deletionSuccess = await handleDeleteTask(taskId, button);
+    if (!deletionSuccess) return;
+
+    updateBoardAfterTaskDeletion(taskId, taskStatus, dialog);
+}
+
+/**
+ * Disables the delete button and attempts to delete the task from Firebase.
+ * Re-enables the button and shows a notification if deletion fails.
+ *
+ * @param {TaskId} taskId - ID of the task to delete.
+ * @param {HTMLButtonElement} button - The delete button to disable.
+ * @returns {Promise<boolean>} True if deletion succeeds, otherwise false.
+ */
+async function handleDeleteTask(taskId, button) {
     button.disabled = true;
 
     try {
         await deleteTaskFromDatabase(taskId);
+        return true;
     } catch (error) {
         handleTaskDeletionError(button);
-        return;
+        return false;
     }
-
-    updateBoardAfterTaskDeletion(taskId, taskStatus, dialog);
 }
 
 /**

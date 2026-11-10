@@ -34,27 +34,36 @@ async function runWithDisabledContactButtons(request) {
 }
 
 /**
- * Loads the shared contacts from Firebase and renders the list.
- * Stops initialization if no valid user is available.
+ * Initializes the current user and loads the contact list.
+ * Stops if no valid user is available and displays loading errors.
+ * Disables contact buttons during initialization and restores them afterwards.
  *
- * @returns {Promise<void>} Resolves after rendering, error handling or an early return.
+ * @returns {Promise<void>} Resolves after initialization, error handling or an early return.
  */
 async function initContacts() {
     setContactButtonsDisabled(true);
 
     try {
-        loggedUserId = await loadCurrentUser(false);
-        if (!loggedUserId) return;
+        if (!(await initializeCurrentUser())) return;
         loggedInUserEmail = await getLoggedInUserEmail();
-
-        const firebaseContacts = await getData(getContactPath());
-        Object.assign(contacts, firebaseContacts ?? {});
-        renderContactList(contacts);
+        await loadAndRenderContacts();
     } catch (error) {
         showNotification("Contacts could not be loaded.", "error");
     } finally {
         setContactButtonsDisabled(false);
     }
+}
+
+/**
+ * Loads shared contacts from Firebase, updates the local directory and renders the list.
+ *
+ * @returns {Promise<void>} Resolves after loading and rendering the contacts.
+ * @throws {Error} If loading or rendering the contacts fails.
+ */
+async function loadAndRenderContacts() {
+    const firebaseContacts = await getData(getContactPath());
+    Object.assign(contacts, firebaseContacts ?? {});
+    renderContactList(contacts);
 }
 
 /**
@@ -133,10 +142,11 @@ function closeContactFormWithNotification(form, message) {
 }
 
 /**
- * Validates, saves, and confirms the submitted changes of the selected contact.
+ * Validates the submitted form and starts saving the selected contact.
+ * Stops if no contact is selected or the form values are invalid.
  *
  * @param {SubmitEvent} event - The Edit Contact form submit event.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Resolves after saving, error handling or an early return.
  */
 async function saveContact(event) {
     event.preventDefault();
@@ -145,7 +155,21 @@ async function saveContact(event) {
     const formValues = getValidContactFormValues(form);
     if (!selectedContact || !formValues) return;
 
+    await handleSaveContact(form, formValues, selectedContact);
+}
+
+/**
+ * Saves the validated contact changes while contact buttons are disabled.
+ * Closes the form with a success notification or displays an error.
+ *
+ * @param {HTMLFormElement} form - The submitted Edit Contact form.
+ * @param {ContactFormValues} formValues - The validated contact form values.
+ * @param {ContactEntry} selectedContact - The selected contact and its ID.
+ * @returns {Promise<void>} Resolves after saving and confirmation or error handling.
+ */
+async function handleSaveContact(form, formValues, selectedContact) {
     const contact = { ...selectedContact.contact, ...formValues };
+
     try {
         await runWithDisabledContactButtons(() => saveEditedContact(selectedContact.id, contact));
         closeContactFormWithNotification(form, "Contact successfully updated");

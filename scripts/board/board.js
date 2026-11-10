@@ -58,8 +58,8 @@ let boardSearchAnnouncementTimeout;
  */
 async function initBoard() {
     try {
-        loggedUserId = await loadCurrentUser(false);
-        if (!loggedUserId) return;
+        if (!(await initializeCurrentUser())) return;
+        
         await loadBoardData();
         renderBoard(Object.values(board));
         announceCreatedTask();
