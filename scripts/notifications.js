@@ -1,3 +1,8 @@
+/**
+ * Timer used to close the currently displayed notification.
+ *
+ * @type {number|undefined}
+ */
 let notificationTimeout;
 
 /**
@@ -80,7 +85,7 @@ function getNotificationContainer(containerId) {
  * Sets the text, style, and accessibility attributes of a notification.
  * Hides the visual notification from assistive technology to prevent duplicate announcements.
  * Adds a task-created presentation for the matching success message.
- * 
+ *
  * @param {HTMLElement} notification - The notification element.
  * @param {string} message - The text displayed in the notification.
  * @param {"success" | "error"} type - The notification type.
@@ -155,6 +160,28 @@ function showDialogNotification(dialog) {
 }
 
 /**
+ * Announces a notification independently of its visible display duration.
+ *
+ * @param {HTMLElement} container - The active notification container.
+ * @param {string} message - The text to announce.
+ * @param {"success"|"error"} type - The notification type.
+ * @returns {void}
+ */
+function announceNotification(container, message, type) {
+    const region = getNotificationAnnouncer(container, type);
+    region.textContent = "";
+    region.dataset.message = message;
+
+    requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+            if (region.isConnected && region.dataset.message === message) {
+                region.textContent = message;
+            }
+        }),
+    );
+}
+
+/**
  * Returns a persistent live region within the notification's container.
  *
  * @param {HTMLElement} container - The active notification container.
@@ -173,24 +200,4 @@ function getNotificationAnnouncer(container, type) {
     region.setAttribute("aria-atomic", "true");
     container.append(region);
     return region;
-}
-
-/**
- * Announces a notification independently of its visible display duration.
- *
- * @param {HTMLElement} container - The active notification container.
- * @param {string} message - The text to announce.
- * @param {"success"|"error"} type - The notification type.
- * @returns {void}
- */
-function announceNotification(container, message, type) {
-    const region = getNotificationAnnouncer(container, type);
-    region.textContent = "";
-    region.dataset.message = message;
-
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (region.isConnected && region.dataset.message === message) {
-            region.textContent = message;
-        }
-    }));
 }

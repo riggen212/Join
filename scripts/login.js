@@ -25,8 +25,6 @@ function initLoginPage() {
     }
 }
 
-initLoginPage();
-
 /**
  * Prevents native submission and starts a regular or guest login attempt.
  * Clears previous errors and blocks repeated submissions while pending.
@@ -43,37 +41,6 @@ async function login(event) {
     setLoginBusy(true);
 
     await handleLoginAttempt(event);
-}
-
-/**
- * Updates the login form's busy state, buttons and loading announcement.
- *
- * @param {boolean} busy - Whether a login request is pending.
- * @returns {void}
- */
-function setLoginBusy(busy) {
-    const form = document.getElementById("emailField").form;
-    isLoginPending = busy;
-    form.setAttribute("aria-busy", String(busy));
-    form.querySelectorAll("button").forEach((button) => {
-        button.disabled = busy;
-    });
-    document.getElementById("login-status").textContent = busy ? "Logging in…" : "";
-}
-
-/**
- * Loads the guest account before storing its ID and redirecting to the summary page.
- *
- * @returns {Promise<void>} Resolves after initiating the redirect.
- * @throws {Error} If loading fails or the guest account does not exist.
- */
-async function guestLogin() {
-    const guestUser = await getData(DB_USERS + DB_GUEST_USER_ID);
-
-    if (!guestUser) throw new Error("Guest user does not exist.");
-
-    putToSessionStorage("userId", DB_GUEST_USER_ID);
-    window.location.href = "./pages/summaryPage.html?animation=true";
 }
 
 /**
@@ -96,6 +63,21 @@ async function handleLoginAttempt(event) {
 }
 
 /**
+ * Loads the guest account before storing its ID and redirecting to the summary page.
+ *
+ * @returns {Promise<void>} Resolves after initiating the redirect.
+ * @throws {Error} If loading fails or the guest account does not exist.
+ */
+async function guestLogin() {
+    const guestUser = await getData(DB_USERS + DB_GUEST_USER_ID);
+
+    if (!guestUser) throw new Error("Guest user does not exist.");
+
+    putToSessionStorage("userId", DB_GUEST_USER_ID);
+    window.location.href = "./pages/summaryPage.html?animation=true";
+}
+
+/**
  * Reads and validates credentials before loading users and checking the login.
  *
  * @returns {Promise<void>} Resolves after checking the login or a validation return.
@@ -105,7 +87,7 @@ async function loadAndCheckLoginCredentials() {
     const email = document.getElementById("emailField").value.trim();
     const password = document.getElementById("passwortField").value;
 
-    if (!validateLoginData({email, password})) return;
+    if (!validateLoginData({ email, password })) return;
 
     const users = await getData(DB_USERS);
     checkLoginData(users, email, password);
@@ -151,18 +133,6 @@ function validateLoginData(data) {
 }
 
 /**
- * Focuses the first login field without a value.
- *
- * @param {{email: string, password: string}} data - The entered credentials.
- * @returns {void}
- */
-function focusFirstInvalidLoginField(data) {
-    const fieldId = !data.email ? "emailField" : "passwortField";
-
-    document.getElementById(fieldId).focus();
-}
-
-/**
  * Checks whether email and password are filled.
  *
  * @param {{email: string, password: string}} data - The entered credentials.
@@ -174,6 +144,18 @@ function getLoginValidationError(data) {
     }
 
     return "";
+}
+
+/**
+ * Focuses the first login field without a value.
+ *
+ * @param {{email: string, password: string}} data - The entered credentials.
+ * @returns {void}
+ */
+function focusFirstInvalidLoginField(data) {
+    const fieldId = !data.email ? "emailField" : "passwortField";
+
+    document.getElementById(fieldId).focus();
 }
 
 /**
@@ -196,6 +178,22 @@ function showLoginError(message) {
 function showLoginConnectionError() {
     const form = document.getElementById("emailField").form;
     showFormError(form, "Login is currently unavailable. Please try again later.");
+}
+
+/**
+ * Updates the login form's busy state, buttons and loading announcement.
+ *
+ * @param {boolean} busy - Whether a login request is pending.
+ * @returns {void}
+ */
+function setLoginBusy(busy) {
+    const form = document.getElementById("emailField").form;
+    isLoginPending = busy;
+    form.setAttribute("aria-busy", String(busy));
+    form.querySelectorAll("button").forEach((button) => {
+        button.disabled = busy;
+    });
+    document.getElementById("login-status").textContent = busy ? "Logging in…" : "";
 }
 
 /**
@@ -242,13 +240,37 @@ function updatePasswordIcon() {
     const toggleButton = document.getElementById("toggle-login-password");
     const eyeIcon = document.getElementById("augeIcon");
 
-    if (!passwordInput.value) {
-        passwordInput.type = "password";
-        toggleButton.setAttribute("aria-pressed", "false");
-        toggleButton.setAttribute("aria-label", "Show password");
-    }
-    
+    if (!passwordInput.value) resetPasswordVisibility(passwordInput, toggleButton);
+
     toggleButton.disabled = !passwordInput.value;
-    eyeIcon.src = passwordInput.type === "text" ? "./assets/icons/eyeOpen.svg" : passwordInput.value ? "./assets/icons/eyeClose.svg" : "./assets/icons/showPassword.svg";
+    eyeIcon.src = getPasswordIconPath(passwordInput);
 }
 
+/**
+ * Hides the password and resets the visibility button's ARIA state.
+ *
+ * @param {HTMLInputElement} passwordInput - The password field.
+ * @param {HTMLButtonElement} toggleButton - The password visibility button.
+ * @returns {void}
+ */
+function resetPasswordVisibility(passwordInput, toggleButton) {
+    passwordInput.type = "password";
+    toggleButton.setAttribute("aria-pressed", "false");
+    toggleButton.setAttribute("aria-label", "Show password");
+}
+
+/**
+ * Returns the icon path based on password visibility and field contents.
+ *
+ * @param {HTMLInputElement} passwordInput - The password field.
+ * @returns {string} The relative path to the password icon.
+ */
+function getPasswordIconPath(passwordInput) {
+    return passwordInput.type === "text"
+        ? "./assets/icons/eyeOpen.svg"
+        : passwordInput.value
+          ? "./assets/icons/eyeClose.svg"
+          : "./assets/icons/showPassword.svg";
+}
+
+initLoginPage();

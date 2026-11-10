@@ -34,20 +34,6 @@ const board = {
 };
 
 /**
- * Current search term, converted to lowercase with surrounding whitespace removed.
- *
- * @type {SearchTerm}
- *
- */
-let activeSearchTerm = "";
-
-/**
- * Timer for announcing search results after a short typing pause.
- * @type {number|undefined}
- */
-let boardSearchAnnouncementTimeout;
-
-/**
  * Loads the current user, tasks, and contacts, then renders the board.
  * Caches the user ID globally and replaces the board content with a persistent
  * error message if loading or rendering fails.
@@ -58,8 +44,8 @@ let boardSearchAnnouncementTimeout;
  */
 async function initBoard() {
     try {
-        loggedUserId = await loadCurrentUser(false);
-        if (!loggedUserId) return;
+        if (!(await initializeCurrentUser())) return;
+        
         await loadBoardData();
         renderBoard(Object.values(board));
         announceCreatedTask();
@@ -88,8 +74,6 @@ function announceCreatedTask() {
     button.setAttribute("aria-label", "Task added to board. Add Task");
     button.focus();
 }
-
-initBoard();
 
 /**
  * Renders the supplied columns, applying activeSearchTerm when it is not empty.
@@ -204,198 +188,4 @@ function getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeT
     return assigneesHtml;
 }
 
-/**
- * Builds the move popup excluding the task's current column.
- *
- * @param {TaskId} taskId - ID of the task.
- * @param {Task["status"]} currentStatus - Current task status.
- * @returns {string} HTML for the move popup.
- */
-function getTaskMovePopupHtml(taskId, currentStatus) {
-    let optionHtml = "";
-
-    Object.entries(board).forEach(([status, column]) => {
-        if (status !== currentStatus) {
-            optionHtml += getTaskCardMoveOptionsTemplate(taskId ,status, currentStatus ,column.name);
-        }
-    });
-
-    return getTaskCardMovePopupTemplate(taskId, optionHtml);
-}
-
-/**
- * Toggles a subtask's completion status, refreshes the task card,
- * and saves the change. Reverts the change if saving fails.
- *
- * @param {HTMLInputElement} checkbox - The changed checkbox.
- * @param {TaskId} taskId - ID of the task containing the subtask.
- * @param {Task["status"]} taskStatus - Current board column of the task.
- * @param {SubtaskId} subtaskId - ID of the subtask being toggled.
- * @returns {Promise<void>} Resolves after saving or reverting the change.
- */
-async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtaskId) {
-    const task = getTaskById(taskId, taskStatus);
-    const subtask = task.subtasks[subtaskId];
-
-    toggleSubtaskCompletion(taskId, task, subtask);
-
-    await saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask);
-}
-
-/**
- * Saves the subtask's completion status to the database.
- * Reverts the local state and checkbox and shows an error notification if saving fails.
- *
- * @param {HTMLInputElement} checkbox - The changed checkbox.
- * @param {TaskId} taskId - ID of the task containing the subtask.
- * @param {Task} task - The task containing the subtask.
- * @param {SubtaskId} subtaskId - ID of the subtask to update.
- * @param {Subtask} subtask - The subtask with the updated completion status.
- * @returns {Promise<void>} Resolves after saving or reverting the change.
- */
-async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask) {
-    try {
-        await updateSubtaskInDatabase(taskId, subtaskId, {
-            completed: subtask.completed,
-        });
-    } catch (error) {
-        revertSubtaskCompletion(checkbox, taskId, task, subtask);
-        showNotification("Subtask could not be updated. Your change was reverted.", "error");
-    }
-}
-
-/**
- * Inverts the subtask's completion status and refreshes the task card.
- *
- * @param {TaskId} taskId - ID of the task containing the subtask.
- * @param {Task} task - The task whose card is refreshed.
- * @param {Subtask} subtask - The subtask to toggle.
- * @returns {void}
- */
-function toggleSubtaskCompletion(taskId, task, subtask) {
-    subtask.completed = !subtask.completed;
-    updateTaskCardSubtasksState(taskId, task);
-}
-
-/**
- * Reverts a subtask completion toggle, refreshes the task card,
- * and restores the checkbox state.
- *
- * @param {HTMLInputElement} checkbox - The checkbox to restore.
- * @param {TaskId} taskId - ID of the task containing the subtask.
- * @param {Task} task - The task whose card is refreshed.
- * @param {Subtask} subtask - The subtask whose toggle is reverted.
- * @returns {void}
- */
-function revertSubtaskCompletion(checkbox, taskId, task, subtask) {
-    toggleSubtaskCompletion(taskId, task, subtask);
-    checkbox.checked = subtask.completed;
-}
-
-/**
- * Updates the subtask summary and progress bar of the specified task card.
- *
- * @param {TaskId} taskId - ID of the task whose card is updated.
- * @param {Task} task - The task whose subtask state is updated.
- * @returns {void}
- */
-function updateTaskCardSubtasksState(taskId, task) {
-    const subtaskData = getSubtasksCardData(task);
-    const subtasksRef = getTaskCardSubtasksHtmlElement(taskId, task.status);
-    const subtasksSummaryRef = subtasksRef.querySelector(".task-card-subtasks-summary");
-    const subtasksProgressBarRef = subtasksRef.querySelector(".task-card-subtasks-progress-bar");
-
-    subtasksSummaryRef.textContent = `${subtaskData.completedAmount}/${subtaskData.amount} Subtasks`;
-    subtasksProgressBarRef.style.width = `${subtaskData.progressInPercent}%`;
-}
-
-/**
- * Finds the subtask container within the specified task card.
- * Requires the column and task card to exist in the DOM.
- *
- * @param {TaskId} taskId - ID of the task whose card is queried.
- * @param {Task["status"]} taskStatus - Current status identifying the task's board column.
- * @returns {HTMLElement|null} The subtask container,
- * or null if the card has no matching subtask element.
- */
-function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
-    const columnRef = document.querySelector(`[data-column-id="${taskStatus}"]`);
-    const taskCardRef = columnRef.querySelector(`[data-task-id="${taskId}"]`);
-    const subtaskRef = taskCardRef.querySelector(".task-card-subtasks");
-
-    return subtaskRef;
-}
-
-/**
- * Announces the number of task cards currently shown after a search.
- *
- * @returns {void}
- */
-function announceBoardSearchResults() {
-    const status = document.getElementById("board-search-status");
-    const count = document.querySelectorAll("#board-content .task-card").length;
-    const taskLabel = count === 1 ? "task" : "tasks";
-
-    if (activeSearchTerm === "") {
-        status.textContent = `Search cleared. ${count} ${taskLabel} shown.`;
-        return;
-    }
-
-    status.textContent = count === 0 ? "No matching tasks found." : `${count} matching ${taskLabel} found.`;
-}
-
-/**
- * Converts the search term to lowercase, trims surrounding whitespace,
- * stores it in activeSearchTerm, and renders all board columns.
- * Announces the result count after a 400 ms typing pause.
- *
- * @param {SearchTerm} searchTerm - The search term getting from the HTML input element.
- * @returns {void}
- */
-function searchTasks(searchTerm) {
-    activeSearchTerm = searchTerm.toLowerCase().trim();
-    renderBoard(Object.values(board));
-    window.clearTimeout(boardSearchAnnouncementTimeout);
-    boardSearchAnnouncementTimeout = window.setTimeout(announceBoardSearchResults, 400);
-}
-/**
- * Creates column objects containing tasks matching the active search term.
- * Preserves column IDs and names without modifying the original task directories.
- *
- * @param {BoardColumn[]} columns - Columns to filter.
- * @returns {BoardColumn[]} New column objects referencing matching tasks.
- */
-function getFilteredColumns(columns) {
-    /** @type {BoardColumn[]} */
-    const filteredColumns = [];
-
-    columns.forEach((column) => {
-        filteredColumns.push({
-            id: column.id,
-            name: column.name,
-            tasks: getFilteredTasks(column.tasks),
-        });
-    });
-    return filteredColumns;
-}
-
-/**
- * Returns tasks whose title or description contains the active search term.
- *
- * @param {TaskDirectory} tasks - Tasks to filter.
- * @returns {TaskDirectory} A new directory referencing the matching tasks.
- */
-function getFilteredTasks(tasks) {
-    /** @type {TaskDirectory} */
-    const filteredTasks = {};
-
-    Object.entries(tasks).forEach(([taskId, task]) => {
-        if (
-            task.title.toLowerCase().includes(activeSearchTerm) ||
-            task.description.toLowerCase().includes(activeSearchTerm)
-        ) {
-            filteredTasks[taskId] = task;
-        }
-    });
-    return filteredTasks;
-}
+initBoard();

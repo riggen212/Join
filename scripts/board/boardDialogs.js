@@ -203,41 +203,42 @@ function updateBoardAfterTaskCreation(taskId, task) {
 }
 
 /**
- * Coordinates task deletion and prevents repeated clicks.
- * Re-enables the button if database deletion fails.
- * On success, updates the board and schedules dialog closing through a notification.
+ * Deletes a task unless its delete button is already disabled.
+ * Updates the board and schedules dialog closing after successful deletion.
  *
  * @param {TaskId} taskId - ID of the task to delete.
  * @param {Task["status"]} taskStatus - Column containing the task.
  * @param {HTMLButtonElement} button - The clicked delete button.
- * @returns {Promise<void>} Resolves after deletion handling, without waiting for notification or dialog animations.
+ * @returns {Promise<void>} Resolves after deletion handling, without waiting for dialog animations.
  */
 async function deleteTask(taskId, taskStatus, button) {
     const dialog = button.closest("dialog");
     if (button.disabled) return;
 
-    button.disabled = true;
-
-    try {
-        await deleteTaskFromDatabase(taskId);
-    } catch (error) {
-        handleTaskDeletionError(button);
-        return;
-    }
+    const deletionSuccess = await handleDeleteTask(taskId, button);
+    if (!deletionSuccess) return;
 
     updateBoardAfterTaskDeletion(taskId, taskStatus, dialog);
 }
 
 /**
- * Deletes a task from Firebase.
- * Propagates errors to the caller for handling.
+ * Disables the delete button and attempts to delete the task from Firebase.
+ * Re-enables the button and shows a notification if deletion fails.
  *
  * @param {TaskId} taskId - ID of the task to delete.
- * @returns {Promise<void>} Resolves after the task has been deleted.
- * @throws {Error} If the database deletion fails.
+ * @param {HTMLButtonElement} button - The delete button to disable.
+ * @returns {Promise<boolean>} True if deletion succeeds, otherwise false.
  */
-async function deleteTaskFromDatabase(taskId) {
-    await deleteData(DB_TASKS + taskId);
+async function handleDeleteTask(taskId, button) {
+    button.disabled = true;
+
+    try {
+        await deleteTaskFromDatabase(taskId);
+        return true;
+    } catch (error) {
+        handleTaskDeletionError(button);
+        return false;
+    }
 }
 
 /**
@@ -269,26 +270,6 @@ function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
     } catch (error) {
         showNotification("Task successfully deleted!\nReload required!", "error");
     }
-}
-
-/**
- * Restores board focus after closing a task dialog.
- *
- * @param {TaskId} taskId - ID of the previously opened task.
- * @param {Task["status"]} taskStatus - The task's board column.
- * @returns {void}
- */
-function restoreBoardTaskFocus(taskId, taskStatus) {
-    if (!taskId) return;
-
-    const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
-    const target =
-        document.getElementById(taskId)?.querySelector(".task-card-open") ??
-        column?.querySelector(".task-card-open") ??
-        column?.querySelector(".board-column-header button") ??
-        document.getElementById("search");
-
-    target?.focus();
 }
 
 /**
@@ -331,4 +312,24 @@ function resetTaskCreationState(dialog) {
         delete form.dataset.taskCreated;
         setTaskSavingState(form, false);
     }
+}
+
+/**
+ * Restores board focus after closing a task dialog.
+ *
+ * @param {TaskId} taskId - ID of the previously opened task.
+ * @param {Task["status"]} taskStatus - The task's board column.
+ * @returns {void}
+ */
+function restoreBoardTaskFocus(taskId, taskStatus) {
+    if (!taskId) return;
+
+    const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
+    const target =
+        document.getElementById(taskId)?.querySelector(".task-card-open") ??
+        column?.querySelector(".task-card-open") ??
+        column?.querySelector(".board-column-header button") ??
+        document.getElementById("search");
+
+    target?.focus();
 }

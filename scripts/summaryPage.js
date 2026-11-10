@@ -8,8 +8,8 @@
 async function initSummary() {
     try {
         showAnimationLogin();
-        loggedUserId = await loadCurrentUser(false);
-        if (!loggedUserId) return;
+        if (!(await initializeCurrentUser())) return;
+        
         const user = await getData(DB_USERS, loggedUserId);
         const tasks = await loadTasks();
         const today = getLocalDate();
@@ -20,8 +20,6 @@ async function initSummary() {
     }
 }
 
-initSummary();
-
 /**
  * Checks the URL parameter and starts the mobile login animation.
  * The animation only runs on screens smaller than 1280px.
@@ -30,7 +28,7 @@ initSummary();
  */
 function showAnimationLogin() {
     const url = new URL(window.location.href);
-    if (url.searchParams.get('animation') !== 'true') return;
+    if (url.searchParams.get("animation") !== "true") return;
 
     removeAnimationParameter(url);
 
@@ -48,8 +46,8 @@ function showAnimationLogin() {
  * @returns {void}
  */
 function removeAnimationParameter(url) {
-    url.searchParams.delete('animation');
-    window.history.replaceState(window.history.state, '', url.toString());
+    url.searchParams.delete("animation");
+    window.history.replaceState(window.history.state, "", url.toString());
 }
 
 /**
@@ -60,11 +58,11 @@ function removeAnimationParameter(url) {
  * @returns {void}
  */
 function startMobileAnimation() {
-    const animationIn = document.getElementById('login-animation-on');
-    const animationOut = document.getElementById('login-animation-out');
+    const animationIn = document.getElementById("login-animation-on");
+    const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.add('animation-in');
-    animationOut.classList.add('animation-out');
+    animationIn.classList.add("animation-in");
+    animationOut.classList.add("animation-out");
 
     lockSummaryDuringGreeting();
     setTimeout(finishMobileAnimation, 4000);
@@ -78,12 +76,11 @@ function startMobileAnimation() {
  */
 function lockSummaryDuringGreeting() {
     const greeting = document.getElementById("login-animation-out");
-    const animation = greeting.getAnimations()
-        .find(animation => animation.animationName === "greetingFadeOut");
+    const animation = greeting.getAnimations().find((animation) => animation.animationName === "greetingFadeOut");
     if (!animation) return;
     const elements = document.querySelectorAll(".header, .navbar, .section-container");
-    elements.forEach(element => element.inert = true);
-    const unlock = () => elements.forEach(element => element.inert = false);
+    elements.forEach((element) => (element.inert = true));
+    const unlock = () => elements.forEach((element) => (element.inert = false));
     animation.finished.then(unlock, unlock);
 }
 
@@ -93,13 +90,13 @@ function lockSummaryDuringGreeting() {
  * @returns {void}
  */
 function finishMobileAnimation() {
-    const animationIn = document.getElementById('login-animation-on');
-    const animationOut = document.getElementById('login-animation-out');
+    const animationIn = document.getElementById("login-animation-on");
+    const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.remove('animation-in');
-    animationOut.classList.remove('animation-out');
+    animationIn.classList.remove("animation-in");
+    animationOut.classList.remove("animation-out");
 
-    document.body.classList.add('mobile-animation-finished');
+    document.body.classList.add("mobile-animation-finished");
 }
 
 /**
@@ -125,50 +122,6 @@ function updateSummary(user, tasks, today) {
     const greeting = getGreetingByTime();
 
     updateSummaryHtml(user, taskSummaryData, greeting);
-}
-
-/**
- * Displays task counts, the upcoming deadline, the user's name and a greeting based on time.
- * Displays zero for missing task counts.
- *
- * @param {User} user - The current user.
- * @param {TaskSummaryData} taskSummaryData - The summary values to display.
- * @param {string} greeting - The greeting to display.
- * @returns {void}
- */
-function updateSummaryHtml(user, taskSummaryData, greeting) {
-    const summaryHtmlElementList = document.querySelectorAll("[data-summary]");
-
-    summaryHtmlElementList.forEach((element) => {
-        element.textContent = taskSummaryData[element.dataset.summary] ?? 0;
-        if (element.dataset.summary === "upcomingDeadline") {
-            updateSummaryDeadline(element, taskSummaryData);
-        }
-    });
-
-    document.getElementById("greeting").textContent =
-        user.type === "guest" ? `${greeting}!` : `${greeting},`;
-
-    document.getElementById("userNames").textContent =
-        user.type === "guest" ? "" : user.name;
-}
-
-/**
- * Displays the upcoming deadline and provides an accessible empty state.
- * Keeps the visible dash when no deadline exists.
- *
- * @param {HTMLTimeElement} element - The deadline's time element.
- * @param {TaskSummaryData} taskSummaryData - The summary values to display.
- * @returns {void}
- */
-function updateSummaryDeadline(element, taskSummaryData) {
-    const deadline = taskSummaryData.upcomingDeadline ?? "";
-    element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "-";
-    if (deadline) element.dateTime = deadline;
-    else element.removeAttribute("datetime");
-    element.setAttribute("aria-hidden", String(!deadline));
-    document.getElementById("summary-deadline-description").textContent =
-        deadline ? "" : "No upcoming deadline.";
 }
 
 /**
@@ -211,6 +164,89 @@ function calculateTaskSummaryData(tasks, upcomingDeadline, today) {
     });
 
     return taskSummaryData;
+}
+
+/**
+ * Finds the earliest due date on or after today.
+ * Ignores completed tasks and past due dates.
+ *
+ * @param {TaskDirectory} tasks - The tasks to inspect.
+ * @param {string} today - Today's local date in YYYY-MM-DD format.
+ * @returns {string} The earliest qualifying date, or an empty string if no task qualifies.
+ */
+function getUpcomingDeadline(tasks, today) {
+    let upcomingDeadline = "";
+
+    Object.values(tasks).forEach((task) => {
+        if (task.status !== "done") {
+            upcomingDeadline = selectUpcomingDeadline(upcomingDeadline, task.dueDate, today);
+        }
+    });
+
+    return upcomingDeadline;
+}
+
+/**
+ * Selects the earlier deadline, ignoring candidate dates before the reference date.
+ * All non-empty dates must use YYYY-MM-DD format.
+ *
+ * @param {string} savedDeadline - The previously selected deadline,
+ * or an empty string if none has been selected.
+ * @param {string} newDueDate - The candidate due date.
+ * @param {string} currentDate - The reference date in YYYY-MM-DD format.
+ * @returns {string} The selected deadline, or an empty string if no deadline qualifies.
+ */
+function selectUpcomingDeadline(savedDeadline, newDueDate, currentDate) {
+    if (newDueDate < currentDate) {
+        return savedDeadline;
+    }
+
+    if (!savedDeadline || newDueDate < savedDeadline) {
+        return newDueDate;
+    }
+
+    return savedDeadline;
+}
+
+/**
+ * Displays task counts, the upcoming deadline, the user's name and a greeting based on time.
+ * Displays zero for missing task counts.
+ *
+ * @param {User} user - The current user.
+ * @param {TaskSummaryData} taskSummaryData - The summary values to display.
+ * @param {string} greeting - The greeting to display.
+ * @returns {void}
+ */
+function updateSummaryHtml(user, taskSummaryData, greeting) {
+    const summaryHtmlElementList = document.querySelectorAll("[data-summary]");
+
+    summaryHtmlElementList.forEach((element) => {
+        element.textContent = taskSummaryData[element.dataset.summary] ?? 0;
+        if (element.dataset.summary === "upcomingDeadline") {
+            updateSummaryDeadline(element, taskSummaryData);
+        }
+    });
+
+    document.getElementById("greeting").textContent = user.type === "guest" ? `${greeting}!` : `${greeting},`;
+
+    document.getElementById("userNames").textContent = user.type === "guest" ? "" : user.name;
+}
+
+/**
+ * Displays the upcoming deadline and provides an accessible empty state.
+ * Keeps the visible dash when no deadline exists.
+ *
+ * @param {HTMLTimeElement} element - The deadline's time element.
+ * @param {TaskSummaryData} taskSummaryData - The summary values to display.
+ * @returns {void}
+ */
+function updateSummaryDeadline(element, taskSummaryData) {
+    const deadline = taskSummaryData.upcomingDeadline ?? "";
+    element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "-";
+    if (deadline) element.dateTime = deadline;
+    else element.removeAttribute("datetime");
+    element.setAttribute("aria-hidden", String(!deadline));
+    document.getElementById("summary-deadline-description").textContent = deadline ? "" : "No upcoming deadline.";
 }
 
 /**
@@ -268,44 +304,4 @@ function getDateWritten(date) {
     return `${monthName} ${localDate.getDate()}, ${localDate.getFullYear()}`;
 }
 
-/**
- * Finds the earliest due date on or after today.
- * Ignores completed tasks and past due dates.
- *
- * @param {TaskDirectory} tasks - The tasks to inspect.
- * @param {string} today - Today's local date in YYYY-MM-DD format.
- * @returns {string} The earliest qualifying date, or an empty string if no task qualifies.
- */
-function getUpcomingDeadline(tasks, today) {
-    let upcomingDeadline = "";
-
-    Object.values(tasks).forEach((task) => {
-        if (task.status !== "done") {
-            upcomingDeadline = selectUpcomingDeadline(upcomingDeadline, task.dueDate, today);
-        }
-    });
-
-    return upcomingDeadline;
-}
-
-/**
- * Selects the earlier deadline, ignoring candidate dates before the reference date.
- * All non-empty dates must use YYYY-MM-DD format.
- *
- * @param {string} savedDeadline - The previously selected deadline,
- * or an empty string if none has been selected.
- * @param {string} newDueDate - The candidate due date.
- * @param {string} currentDate - The reference date in YYYY-MM-DD format.
- * @returns {string} The selected deadline, or an empty string if no deadline qualifies.
- */
-function selectUpcomingDeadline(savedDeadline, newDueDate, currentDate) {
-    if (newDueDate < currentDate) {
-        return savedDeadline;
-    }
-
-    if (!savedDeadline || newDueDate < savedDeadline) {
-        return newDueDate;
-    }
-
-    return savedDeadline;
-}
+initSummary();
