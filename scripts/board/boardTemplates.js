@@ -93,6 +93,7 @@ function getTaskCardMovePopupTemplate(taskId, optionHtml) {
     return `<div
             id="move-task-${taskId}"
             class="task-move-popover"
+            onbeforetoggle="positionTaskMoveMenu(event)"
             onclick="event.stopPropagation()"
             onkeydown="event.stopPropagation()"
             popover="auto"
@@ -140,7 +141,7 @@ function getTaskOverlayTemplate(taskData) {
                             <img src="../assets/icons/cancel.svg" alt="" />
                         </button>
                     </div>
-                    <h2 class="section-heading" id="task-dialog-title" class="scrollbar">${taskData.task.title}</h2>
+                    <h2 class="section-heading scrollbar" id="task-dialog-title">${taskData.task.title}</h2>
                 </header>
 
                 <div class="task-overlay-body">

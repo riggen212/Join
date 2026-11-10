@@ -10,7 +10,7 @@ function renderAddTask(isEditMode = false) {
                 <section class="add-task${isEditMode ? " edit-task" : ""}">
                     <form class="task-form-wrapper" novalidate onsubmit="submitTaskForm(event)" onreset="resetTaskForm(this)"
                         oninput="updateTaskForm(this)" onchange="updateTaskForm(this)" onkeydown="preventEnterSubmit(event)">
-                        <div class="add-task-form">
+                        <div class="add-task-form${isEditMode ? " scrollbar" : ""}">
                             <!-- Left column -->
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
@@ -28,8 +28,14 @@ function renderAddTask(isEditMode = false) {
                                 </div>
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
+                                <div class="date-input-wrapper">
                                     <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
-                                        aria-describedby="task-due-date-error" aria-required="true" onblur="validateDueDate(this.form)">
+                                        aria-describedby="task-due-date-error" aria-required="true" onblur="validateDueDate(this.form)" />
+                                    <button class="date-picker-button" type="button" onclick="openDatePicker(this)"
+                                        aria-label="Open date picker">
+                                        <img src="../assets/icons/calender.svg" alt="" />
+                                    </button>
+                                </div>
                                 <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 

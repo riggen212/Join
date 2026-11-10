@@ -55,7 +55,7 @@
 
 .category-options label:hover,
 .category-options label:focus-within {
-    background-color: #f5f5f5;
+    background-color: var(--color-option-hover);
 }
 
 .category-options input {
@@ -78,7 +78,7 @@
 
 .assigned-option:hover,
 .assigned-option:focus-within {
-    background-color: #f5f5f5;
+    background-color: var(--color-option-hover);
 }
 
 .assigned-option:has(input:checked) {
@@ -136,7 +136,7 @@
     color: inherit;
     background-color: var(--color-white);
     border: none;
-    box-shadow: 0 0 4px rgb(0, 0, 0, 0.4);
+    box-shadow: 0 0 4px rgb(0 0 0 / 40%);
     font-size: var(--font-input);
     font-weight: 400;
 }
@@ -151,7 +151,7 @@
 
 .task-priority button.urgent {
     color: var(--color-white);
-    background-color: #ff3d00;
+    background-color: var(--color-error);
 }
 
 .task-priority button.medium {
@@ -171,29 +171,18 @@
 }
 
 .input-date[type="date"] {
-    position: relative;
     padding-right: 48px;
 
     font: inherit;
     font-size: var(--font-input);
 
     color: var(--color-input-muted);
-    background-image: url("../../assets/icons/calender.svg");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-size: 20px;
     -webkit-text-fill-color: var(--color-input-muted);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 48px;
-    height: 100%;
-    margin: 0;
     opacity: 0;
-    cursor: pointer;
+    pointer-events: none;
 }
 
 .task-priority,
@@ -201,7 +190,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #task-category,
 #subtask {
     width: 100%;
-    max-width: none;
 }
 
 .assigned-badges {
@@ -226,9 +214,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 1;
 }
 
-.date-input-wrapper .input-date {
+.date-input-wrapper {
     position: relative;
-    z-index: 0;
+    width: 100%;
+}
+
+.date-picker-button {
+    position: absolute;
+    inset: 1px 1px 1px auto;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 46px;
+    padding: 0;
+    background-color: var(--color-white);
+    border: 0;
+    border-radius: 0 var(--border-radius-middle) var(--border-radius-middle) 0;
+    cursor: pointer;
+}
+
+.date-picker-button > img {
+    width: 20px;
+    height: 20px;
+}
+
+@supports (-moz-appearance: none) {
+    .input-date[type="date"] {
+        padding-right: var(--space-md);
+    }
+
+    .date-picker-button {
+        display: none;
+    }
 }
 
 .assigned-options > li[hidden] {

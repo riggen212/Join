@@ -17,7 +17,9 @@
         <link rel="stylesheet" href="../styles/root.css" />
         <link rel="stylesheet" href="../style.css" />
         <link rel="stylesheet" href="../styles/utilities.css" />
-        <link rel="stylesheet" href="../styles/components.css" />
+        <link rel="stylesheet" href="../styles/components/components.css" />
+        <link rel="stylesheet" href="../styles/components/forms.css" />
+        <link rel="stylesheet" href="../styles/components/dialogs.css" />
         <link rel="stylesheet" href="../styles/login.css" />
         <link rel="stylesheet" href="../styles/addTask/addTask.css" />
         <link rel="stylesheet" href="../styles/fonts.css" />
@@ -30,7 +32,7 @@
 
     <body onpageshow="checkLoginStateOnPageShow(event)">
         <header class="header">
-            <div class="header-wrapper">
+            <div class="header-wrapper d-flex-between">
                 <div>
                     <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
@@ -148,7 +150,7 @@
             </nav>
             <main class="board">
                 <div class="contacts-content">
-                    <div class="contact-list">
+                    <div class="contact-list scrollbar">
                         <button id="addNewContactButton" class="button button-dark detail-view" type="button" onclick="addNewContact()">
                             <span>Add new contact</span>
                             <img src="../assets/icons/personAdd.svg" alt="" />

@@ -84,7 +84,7 @@
     min-height: 16px;
     margin: var(--space-xxs) 0 0;
 
-    color: #ff8190;
+    color: var(--color-error-light);
     font-size: 12px;
     line-height: 16px;
 }
@@ -93,8 +93,10 @@
     visibility: hidden;
 }
 
-.input-wrapper.is-invalid {
-    border-color: #ff8190;
+.input-wrapper.is-invalid,
+.input-wrapper.is-invalid:hover,
+.input-wrapper.is-invalid:focus-within {
+    border-color: var(--color-error-light);
 }
 
 .submit-task p {
@@ -189,5 +191,11 @@
         bottom: 28px;
         width: 2px;
         background-color: var(--color-grey-bright);
+    }
+}
+
+@supports (-moz-appearance: none) {
+    .textarea-resize-icon {
+        display: none;
     }
 }

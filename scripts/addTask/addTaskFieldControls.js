@@ -204,3 +204,16 @@ function closeDropdownsOnOutsideClick(event) {
         }
     }
 }
+
+/**
+ * Opens the native date picker of the related date input.
+ *
+ * @param {HTMLButtonElement} button - The calendar button beside the date input.
+ * @returns {void}
+ */
+function openDatePicker(button) {
+    const input = button.closest(".date-input-wrapper").querySelector(".input-date");
+
+    if ("showPicker" in input) input.showPicker();
+    else input.focus();
+}

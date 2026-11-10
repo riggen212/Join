@@ -1,0 +1,291 @@
+/* Dialogs */
+#dialog-task[open],
+#dialog-add-task[open] {
+    top: 50%;
+    left: 50%;
+
+    width: 90dvw;
+    max-width: 530px;
+    max-height: 90dvh;
+    padding: 0;
+
+    background-color: unset;
+    border: unset;
+    border-radius: var(--border-radius-high);
+    overflow: hidden;
+
+    &:not(.dialog-task-closing) {
+        animation: slide-in-from-right-to-center 256ms linear forwards;
+    }
+}
+
+#dialog-add-task[open] {
+    display: flex;
+    flex-direction: column;
+
+    width: 90dvw;
+    max-width: 1000px;
+    height: min(90dvh, 940px);
+    padding: 64px;
+
+    background-color: var(--color-white);
+}
+
+#dialog-add-task > .add-task {
+    flex: 1;
+    min-height: 0;
+    margin-right: -64px;
+    padding-right: 64px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+#contact[open] {
+    top: 50%;
+    left: 50%;
+
+    &:not(.contact-closing) {
+        animation: slide-in-from-bottom-to-center 256ms linear forwards;
+    }
+}
+
+#dialog-profile[open],
+#dialog-edit-contact[open] {
+    position: fixed;
+    right: var(--space-xs);
+    left: auto;
+    margin: 0;
+    padding: var(--space-xs);
+
+    border: unset;
+    border-radius: 20px 0 20px 20px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 50%);
+
+    &:not(.dialog-profile-closing) {
+        animation: slide-in-from-right 256ms linear forwards;
+    }
+
+    & ul {
+        padding: var(--space-xs);
+        list-style-type: none;
+    }
+}
+
+#dialog-profile[open] {
+    top: var(--mobile-header-footer-height);
+    bottom: auto;
+
+    background-color: var(--background-dark-color);
+
+    & .link-navbar {
+        align-items: unset;
+        width: unset;
+        height: unset;
+        padding-block: 16px;
+        padding-inline: var(--space-xs);
+    }
+}
+
+#dialog-edit-contact[open] {
+    top: auto;
+    bottom: calc(var(--mobile-header-footer-height) + 16px);
+
+    & .button-task-overlay {
+        display: flex;
+        justify-content: flex-start;
+        width: 100px;
+        padding-block: 16px;
+        padding-inline: var(--space-md);
+    }
+
+    & .button-task-overlay:hover {
+        text-shadow: unset;
+    }
+
+    & .button-task-overlay:active {
+        color: var(--color-brand);
+        background-color: var(--color-surface-hover);
+        border-radius: var(--border-radius-middle);
+        text-shadow:
+            0.3px 0 currentColor,
+            -0.3px 0 currentColor;
+    }
+}
+
+.dialog-task-closing {
+    animation: slide-out-from-center-to-right 256ms linear forwards;
+}
+
+.contact-closing {
+    animation: slide-out-from-center-to-bottom 256ms linear forwards;
+}
+
+.dialog-profile-closing {
+    animation: slide-out-to-right 256ms linear forwards;
+}
+
+/* Notifications */
+#notification {
+    --notification-transform: translate(-50%, -50%);
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    display: none;
+    padding: 20px 24px;
+
+    color: var(--color-white);
+    font-size: 16px;
+    background-color: var(--background-dark-color);
+    border-radius: var(--border-radius-middle);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+    transform: var(--notification-transform);
+    pointer-events: none;
+}
+
+#notification.is-error {
+    background-color: #b3261e;
+}
+
+#notification.is-visible {
+    display: block;
+    animation: notification-slide-in-mobile 160ms linear forwards;
+}
+
+#notification.is-closing {
+    animation: notification-slide-out-mobile 160ms linear forwards;
+}
+
+#notification.notification-task-created.is-visible {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+#notification.notification-task-created::after {
+    content: "";
+    flex: 0 0 auto;
+    width: 24px;
+    height: 20px;
+
+    background: url("../../assets/icons/board.svg") center / contain no-repeat;
+}
+
+@keyframes slide-in-from-right-to-center {
+    from {
+        transform: translate(50vw, -50%);
+    }
+
+    to {
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slide-out-from-center-to-right {
+    from {
+        transform: translate(-50%, -50%);
+    }
+
+    to {
+        transform: translate(50vw, -50%);
+    }
+}
+
+@keyframes slide-in-from-bottom-to-center {
+    from {
+        transform: translate(-50%, 50dvh);
+    }
+
+    to {
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slide-out-from-center-to-bottom {
+    from {
+        transform: translate(-50%, -50%);
+    }
+
+    to {
+        transform: translate(-50%, 50dvh);
+    }
+}
+
+@keyframes slide-in-from-right {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-out-to-right {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes notification-slide-in-mobile {
+    from {
+        transform: translateY(100dvh) var(--notification-transform);
+    }
+
+    to {
+        transform: var(--notification-transform);
+    }
+}
+
+@keyframes notification-slide-out-mobile {
+    from {
+        transform: var(--notification-transform);
+    }
+
+    to {
+        transform: translateY(100dvh) var(--notification-transform);
+    }
+}
+
+@keyframes notification-slide-in-desktop {
+    from {
+        transform: translateX(100vw) var(--notification-transform);
+    }
+
+    to {
+        transform: var(--notification-transform);
+    }
+}
+
+@keyframes notification-slide-out-desktop {
+    from {
+        transform: var(--notification-transform);
+    }
+
+    to {
+        transform: translateX(100vw) var(--notification-transform);
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    #contact[open]:not(.contact-closing) {
+        animation: slide-in-from-right-to-center 256ms linear forwards;
+    }
+
+    .contact-closing {
+        animation: slide-out-from-center-to-right 256ms linear forwards;
+    }
+
+    #notification.is-visible {
+        animation: notification-slide-in-desktop 160ms linear forwards;
+    }
+
+    #notification.is-closing {
+        animation: notification-slide-out-desktop 160ms linear forwards;
+    }
+}

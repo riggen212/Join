@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../styles/root.css" />
         <link rel="stylesheet" href="../style.css" />
         <link rel="stylesheet" href="../styles/utilities.css" />
-        <link rel="stylesheet" href="../styles/components.css" />
+        <link rel="stylesheet" href="../styles/components/components.css" />
+        <link rel="stylesheet" href="../styles/components/forms.css" />
+        <link rel="stylesheet" href="../styles/components/dialogs.css" />
         <link rel="stylesheet" href="../styles/fonts.css" />
         <link rel="stylesheet" href="../styles/addTask/taskForm.css" />
         <link rel="stylesheet" href="../styles/addTask/taskControls.css" />
@@ -34,11 +36,12 @@
         <link rel="stylesheet" href="../styles/addTask/addTask.css" />
         <link rel="stylesheet" href="../styles/board/board.css" />
         <link rel="stylesheet" href="../styles/board/boardTask.css" />
+        <link rel="stylesheet" href="../styles/board/boardTaskEdit.css" />
         <title>Join</title>
     </head>
     <body onpageshow="checkLoginStateOnPageShow(event)" onmousedown="closeDropdownsOnOutsideClick(event)">
         <header class="header">
-            <div class="header-wrapper">
+            <div class="header-wrapper d-flex-between">
                 <div>
                     <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>

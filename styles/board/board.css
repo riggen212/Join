@@ -80,14 +80,6 @@
     border-radius: var(--border-radius-middle);
 }
 
-.board-search:hover {
-    border-color: #e7e7e7;
-}
-
-.board-search:focus-within {
-    border-color: var(--color-brand);
-}
-
 .board-search-input {
     margin-inline-start: var(--space-lg);
 

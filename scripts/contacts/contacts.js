@@ -127,7 +127,6 @@ async function createContact(event) {
   event.preventDefault();
   const form = /** @type {HTMLFormElement} */ (event.currentTarget);
   const formValues = getValidContactFormValues(form);
-
   if (!formValues) return;
 
     const contact = createContactData(formValues, contacts);
