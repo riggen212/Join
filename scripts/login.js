@@ -12,17 +12,17 @@ let isLoginPending = false;
  * @returns {void}
  */
 function initLoginPage() {
-    const url = new URL(window.location.href);
+  const url = new URL(window.location.href);
 
-    if (url.searchParams.get("signup") === "success") {
-        showNotification("You Signed Up successfully");
-        url.searchParams.delete("signup");
-        window.history.replaceState(null, "", url);
-    }
+  if (url.searchParams.get("signup") === "success") {
+    showNotification("You Signed Up successfully");
+    url.searchParams.delete("signup");
+    window.history.replaceState(null, "", url);
+  }
 
-    if (window.location.hash === "#login") {
-        requestAnimationFrame(() => document.getElementById("emailField").focus());
-    }
+  if (window.location.hash === "#login") {
+    requestAnimationFrame(() => document.getElementById("emailField").focus());
+  }
 }
 
 /**
@@ -33,14 +33,14 @@ function initLoginPage() {
  * @returns {Promise<void>} Resolves after the attempt and cleanup, or an early return.
  */
 async function login(event) {
-    event.preventDefault();
-    if (isLoginPending) return;
+  event.preventDefault();
+  if (isLoginPending) return;
 
-    const form = event.currentTarget;
-    clearFormError(form);
-    setLoginBusy(true);
+  const form = event.currentTarget;
+  clearFormError(form);
+  setLoginBusy(true);
 
-    await handleLoginAttempt(event);
+  await handleLoginAttempt(event);
 }
 
 /**
@@ -52,14 +52,14 @@ async function login(event) {
  * @returns {Promise<void>} Resolves after the attempt and cleanup.
  */
 async function handleLoginAttempt(event) {
-    try {
-        if (event.submitter?.value === "guest") await guestLogin();
-        else if (event.submitter?.value === "regular") await loadAndCheckLoginCredentials();
-    } catch (error) {
-        showLoginConnectionError();
-    } finally {
-        finishLoginAttempt(event.submitter);
-    }
+  try {
+    if (event.submitter?.value === "guest") await guestLogin();
+    else if (event.submitter?.value === "regular") await loadAndCheckLoginCredentials();
+  } catch (error) {
+    showLoginConnectionError();
+  } finally {
+    finishLoginAttempt(event.submitter);
+  }
 }
 
 /**
@@ -69,12 +69,12 @@ async function handleLoginAttempt(event) {
  * @throws {Error} If loading fails or the guest account does not exist.
  */
 async function guestLogin() {
-    const guestUser = await getData(DB_USERS + DB_GUEST_USER_ID);
+  const guestUser = await getData(DB_USERS + DB_GUEST_USER_ID);
 
-    if (!guestUser) throw new Error("Guest user does not exist.");
+  if (!guestUser) throw new Error("Guest user does not exist.");
 
-    putToSessionStorage("userId", DB_GUEST_USER_ID);
-    window.location.href = "./pages/summaryPage.html?animation=true";
+  putToSessionStorage("userId", DB_GUEST_USER_ID);
+  window.location.href = "./pages/summaryPage.html?animation=true";
 }
 
 /**
@@ -84,13 +84,13 @@ async function guestLogin() {
  * @throws {Error} If loading users fails.
  */
 async function loadAndCheckLoginCredentials() {
-    const email = document.getElementById("emailField").value.trim();
-    const password = document.getElementById("passwortField").value;
+  const email = document.getElementById("emailField").value.trim();
+  const password = document.getElementById("passwortField").value;
 
-    if (!validateLoginData({ email, password })) return;
+  if (!validateLoginData({ email, password })) return;
 
-    const users = await getData(DB_USERS);
-    checkLoginData(users, email, password);
+  const users = await getData(DB_USERS);
+  checkLoginData(users, email, password);
 }
 
 /**
@@ -103,17 +103,17 @@ async function loadAndCheckLoginCredentials() {
  * @returns {void}
  */
 function checkLoginData(users, email, password) {
-    let loginSuccessful = false;
+  let loginSuccessful = false;
 
-    for (let key in users) {
-        if (users[key].email === email && users[key].password === password) {
-            loginSuccessful = true;
-            putToSessionStorage("userId", key);
-            window.location.href = `./pages/summaryPage.html?animation=true`;
-        }
+  for (let key in users) {
+    if (users[key].email === email && users[key].password === password) {
+      loginSuccessful = true;
+      putToSessionStorage("userId", key);
+      window.location.href = `./pages/summaryPage.html?animation=true`;
     }
+  }
 
-    if (!loginSuccessful) showLoginError("Check your email and password. Please try again.");
+  if (!loginSuccessful) showLoginError("Check your email and password. Please try again.");
 }
 
 /**
@@ -124,12 +124,12 @@ function checkLoginData(users, email, password) {
  * @returns {boolean} Whether both required fields are filled.
  */
 function validateLoginData(data) {
-    const error = getLoginValidationError(data);
-    if (!error) return true;
+  const error = getLoginValidationError(data);
+  if (!error) return true;
 
-    showLoginError(error);
-    focusFirstInvalidLoginField(data);
-    return false;
+  showLoginError(error);
+  focusFirstInvalidLoginField(data);
+  return false;
 }
 
 /**
@@ -139,11 +139,11 @@ function validateLoginData(data) {
  * @returns {string} The error message, or an empty string if valid.
  */
 function getLoginValidationError(data) {
-    if (!data.email || !data.password) {
-        return "Please enter your email and password.";
-    }
+  if (!data.email || !data.password) {
+    return "Please enter your email and password.";
+  }
 
-    return "";
+  return "";
 }
 
 /**
@@ -153,9 +153,9 @@ function getLoginValidationError(data) {
  * @returns {void}
  */
 function focusFirstInvalidLoginField(data) {
-    const fieldId = !data.email ? "emailField" : "passwortField";
+  const fieldId = !data.email ? "emailField" : "passwortField";
 
-    document.getElementById(fieldId).focus();
+  document.getElementById(fieldId).focus();
 }
 
 /**
@@ -165,8 +165,8 @@ function focusFirstInvalidLoginField(data) {
  * @returns {void}
  */
 function showLoginError(message) {
-    const form = document.getElementById("emailField").form;
-    showFormError(form, message, ["emailField", "passwortField"]);
+  const form = document.getElementById("emailField").form;
+  showFormError(form, message, ["emailField", "passwortField"]);
 }
 
 /**
@@ -176,8 +176,8 @@ function showLoginError(message) {
  * @returns {void}
  */
 function showLoginConnectionError() {
-    const form = document.getElementById("emailField").form;
-    showFormError(form, "Login is currently unavailable. Please try again later.");
+  const form = document.getElementById("emailField").form;
+  showFormError(form, "Login is currently unavailable. Please try again later.");
 }
 
 /**
@@ -187,13 +187,13 @@ function showLoginConnectionError() {
  * @returns {void}
  */
 function setLoginBusy(busy) {
-    const form = document.getElementById("emailField").form;
-    isLoginPending = busy;
-    form.setAttribute("aria-busy", String(busy));
-    form.querySelectorAll("button").forEach((button) => {
-        button.disabled = busy;
-    });
-    document.getElementById("login-status").textContent = busy ? "Logging in…" : "";
+  const form = document.getElementById("emailField").form;
+  isLoginPending = busy;
+  form.setAttribute("aria-busy", String(busy));
+  form.querySelectorAll("button").forEach((button) => {
+    button.disabled = busy;
+  });
+  document.getElementById("login-status").textContent = busy ? "Logging in…" : "";
 }
 
 /**
@@ -203,10 +203,10 @@ function setLoginBusy(busy) {
  * @returns {void}
  */
 function finishLoginAttempt(submitter) {
-    setLoginBusy(false);
-    if (document.activeElement === document.body) {
-        submitter?.focus();
-    }
+  setLoginBusy(false);
+  if (document.activeElement === document.body) {
+    submitter?.focus();
+  }
 }
 
 /**
@@ -216,16 +216,16 @@ function finishLoginAttempt(submitter) {
  * @returns {void}
  */
 function toggleLoginPasswordVisibility() {
-    const passwordInput = document.getElementById("passwortField");
-    const toggleButton = document.getElementById("toggle-login-password");
-    const passwordIsHidden = passwordInput.type === "password";
-    const eyeIcon = document.getElementById("augeIcon");
+  const passwordInput = document.getElementById("passwortField");
+  const toggleButton = document.getElementById("toggle-login-password");
+  const passwordIsHidden = passwordInput.type === "password";
+  const eyeIcon = document.getElementById("augeIcon");
 
-    passwordInput.type = passwordIsHidden ? "text" : "password";
-    toggleButton.setAttribute("aria-pressed", String(passwordIsHidden));
-    toggleButton.setAttribute("aria-label", passwordIsHidden ? "Hide password" : "Show password");
+  passwordInput.type = passwordIsHidden ? "text" : "password";
+  toggleButton.setAttribute("aria-pressed", String(passwordIsHidden));
+  toggleButton.setAttribute("aria-label", passwordIsHidden ? "Hide password" : "Show password");
 
-    eyeIcon.src = passwordIsHidden ? "./assets/icons/eyeOpen.svg" : "./assets/icons/eyeClose.svg";
+  eyeIcon.src = passwordIsHidden ? "./assets/icons/eyeOpen.svg" : "./assets/icons/eyeClose.svg";
 }
 
 /**
@@ -236,14 +236,14 @@ function toggleLoginPasswordVisibility() {
  * @returns {void}
  */
 function updatePasswordIcon() {
-    const passwordInput = document.getElementById("passwortField");
-    const toggleButton = document.getElementById("toggle-login-password");
-    const eyeIcon = document.getElementById("augeIcon");
+  const passwordInput = document.getElementById("passwortField");
+  const toggleButton = document.getElementById("toggle-login-password");
+  const eyeIcon = document.getElementById("augeIcon");
 
-    if (!passwordInput.value) resetPasswordVisibility(passwordInput, toggleButton);
+  if (!passwordInput.value) resetPasswordVisibility(passwordInput, toggleButton);
 
-    toggleButton.disabled = !passwordInput.value;
-    eyeIcon.src = getPasswordIconPath(passwordInput);
+  toggleButton.disabled = !passwordInput.value;
+  eyeIcon.src = getPasswordIconPath(passwordInput);
 }
 
 /**
@@ -254,9 +254,9 @@ function updatePasswordIcon() {
  * @returns {void}
  */
 function resetPasswordVisibility(passwordInput, toggleButton) {
-    passwordInput.type = "password";
-    toggleButton.setAttribute("aria-pressed", "false");
-    toggleButton.setAttribute("aria-label", "Show password");
+  passwordInput.type = "password";
+  toggleButton.setAttribute("aria-pressed", "false");
+  toggleButton.setAttribute("aria-label", "Show password");
 }
 
 /**
@@ -266,11 +266,11 @@ function resetPasswordVisibility(passwordInput, toggleButton) {
  * @returns {string} The relative path to the password icon.
  */
 function getPasswordIconPath(passwordInput) {
-    return passwordInput.type === "text"
-        ? "./assets/icons/eyeOpen.svg"
-        : passwordInput.value
-          ? "./assets/icons/eyeClose.svg"
-          : "./assets/icons/showPassword.svg";
+  return passwordInput.type === "text"
+    ? "./assets/icons/eyeOpen.svg"
+    : passwordInput.value
+      ? "./assets/icons/eyeClose.svg"
+      : "./assets/icons/showPassword.svg";
 }
 
 initLoginPage();

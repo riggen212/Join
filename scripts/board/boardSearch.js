@@ -21,10 +21,10 @@ let boardSearchAnnouncementTimeout;
  * @returns {void}
  */
 function searchTasks(searchTerm) {
-    activeSearchTerm = searchTerm.toLowerCase().trim();
-    renderBoard(Object.values(board));
-    window.clearTimeout(boardSearchAnnouncementTimeout);
-    boardSearchAnnouncementTimeout = window.setTimeout(announceBoardSearchResults, 400);
+  activeSearchTerm = searchTerm.toLowerCase().trim();
+  renderBoard(Object.values(board));
+  window.clearTimeout(boardSearchAnnouncementTimeout);
+  boardSearchAnnouncementTimeout = window.setTimeout(announceBoardSearchResults, 400);
 }
 
 /**
@@ -35,17 +35,17 @@ function searchTasks(searchTerm) {
  * @returns {BoardColumn[]} New column objects referencing matching tasks.
  */
 function getFilteredColumns(columns) {
-    /** @type {BoardColumn[]} */
-    const filteredColumns = [];
+  /** @type {BoardColumn[]} */
+  const filteredColumns = [];
 
-    columns.forEach((column) => {
-        filteredColumns.push({
-            id: column.id,
-            name: column.name,
-            tasks: getFilteredTasks(column.tasks),
-        });
+  columns.forEach((column) => {
+    filteredColumns.push({
+      id: column.id,
+      name: column.name,
+      tasks: getFilteredTasks(column.tasks),
     });
-    return filteredColumns;
+  });
+  return filteredColumns;
 }
 
 /**
@@ -55,18 +55,18 @@ function getFilteredColumns(columns) {
  * @returns {TaskDirectory} A new directory referencing the matching tasks.
  */
 function getFilteredTasks(tasks) {
-    /** @type {TaskDirectory} */
-    const filteredTasks = {};
+  /** @type {TaskDirectory} */
+  const filteredTasks = {};
 
-    Object.entries(tasks).forEach(([taskId, task]) => {
-        if (
-            task.title.toLowerCase().includes(activeSearchTerm) ||
-            task.description.toLowerCase().includes(activeSearchTerm)
-        ) {
-            filteredTasks[taskId] = task;
-        }
-    });
-    return filteredTasks;
+  Object.entries(tasks).forEach(([taskId, task]) => {
+    if (
+      task.title.toLowerCase().includes(activeSearchTerm) ||
+      task.description.toLowerCase().includes(activeSearchTerm)
+    ) {
+      filteredTasks[taskId] = task;
+    }
+  });
+  return filteredTasks;
 }
 
 /**
@@ -75,14 +75,14 @@ function getFilteredTasks(tasks) {
  * @returns {void}
  */
 function announceBoardSearchResults() {
-    const status = document.getElementById("board-search-status");
-    const count = document.querySelectorAll("#board-content .task-card").length;
-    const taskLabel = count === 1 ? "task" : "tasks";
+  const status = document.getElementById("board-search-status");
+  const count = document.querySelectorAll("#board-content .task-card").length;
+  const taskLabel = count === 1 ? "task" : "tasks";
 
-    if (activeSearchTerm === "") {
-        status.textContent = `Search cleared. ${count} ${taskLabel} shown.`;
-        return;
-    }
+  if (activeSearchTerm === "") {
+    status.textContent = `Search cleared. ${count} ${taskLabel} shown.`;
+    return;
+  }
 
-    status.textContent = count === 0 ? "No matching tasks found." : `${count} matching ${taskLabel} found.`;
+  status.textContent = count === 0 ? "No matching tasks found." : `${count} matching ${taskLabel} found.`;
 }

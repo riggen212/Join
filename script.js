@@ -28,10 +28,10 @@ let loggedUserId = null;
  * @throws {Error} If loading the user or updating the profile fails.
  */
 async function initializeCurrentUser() {
-    loggedUserId = await loadCurrentUser(false);
+  loggedUserId = await loadCurrentUser(false);
 
-    if (!loggedUserId) return false;
-    else return true;
+  if (!loggedUserId) return false;
+  else return true;
 }
 
 /**
@@ -42,18 +42,18 @@ async function initializeCurrentUser() {
  * @returns {Promise<UserId|null>} The valid user ID, or null if validation fails.
  */
 async function loadCurrentUser(isMetaPage) {
-    const userId = getFromSessionStorage("userId");
-    const user = await loadUserById(userId, isMetaPage);
+  const userId = getFromSessionStorage("userId");
+  const user = await loadUserById(userId, isMetaPage);
 
-    if (!user) {
-        if (!isMetaPage) {
-            window.location.href = `../index.html`;
-        }
-        return null;
+  if (!user) {
+    if (!isMetaPage) {
+      window.location.href = `../index.html`;
     }
+    return null;
+  }
 
-    setInitialsToProfileButton(user);
-    return userId;
+  setInitialsToProfileButton(user);
+  return userId;
 }
 
 /**
@@ -67,14 +67,14 @@ async function loadCurrentUser(isMetaPage) {
  * @throws {Error} If loading fails on a non-public page.
  */
 async function loadUserById(userId, isMetaPage = false) {
-    if (!userId) return null;
+  if (!userId) return null;
 
-    try {
-        return await getData(DB_USERS, userId);
-    } catch (error) {
-        if (!isMetaPage) throw error;
-        return null;
-    }
+  try {
+    return await getData(DB_USERS, userId);
+  } catch (error) {
+    if (!isMetaPage) throw error;
+    return null;
+  }
 }
 
 /**
@@ -84,11 +84,11 @@ async function loadUserById(userId, isMetaPage = false) {
  * @returns {Promise<string|null>} Email address or null for guest access.
  */
 async function getLoggedInUserEmail() {
-    const userId = getFromSessionStorage("userId");
+  const userId = getFromSessionStorage("userId");
 
-    if (userId === DB_GUEST_USER_ID) return null;
+  if (userId === DB_GUEST_USER_ID) return null;
 
-    return getData(DB_USERS + userId + "/email");
+  return getData(DB_USERS + userId + "/email");
 }
 
 /**
@@ -98,15 +98,15 @@ async function getLoggedInUserEmail() {
  * @returns {void}
  */
 function setInitialsToProfileButton(user) {
-    const button = document.querySelector(".header-profile-initials-button");
-    const userInitials = user.initials;
+  const button = document.querySelector(".header-profile-initials-button");
+  const userInitials = user.initials;
 
-    if (user.type === "guest") {
-        button.classList.add(user.type);
-    }
+  if (user.type === "guest") {
+    button.classList.add(user.type);
+  }
 
-    button.textContent = userInitials;
-    button.setAttribute("aria-label", "Open service links and log out");
+  button.textContent = userInitials;
+  button.setAttribute("aria-label", "Open service links and log out");
 }
 
 /**
@@ -117,9 +117,9 @@ function setInitialsToProfileButton(user) {
  * @returns {string} The "(you)" suffix or an empty string.
  */
 function getCurrentUserSuffix(contactEmail, loggedUserEmail) {
-    const isCurrentUser = contactEmail?.toLowerCase() === loggedUserEmail?.toLowerCase();
+  const isCurrentUser = contactEmail?.toLowerCase() === loggedUserEmail?.toLowerCase();
 
-    return isCurrentUser ? " (you)" : "";
+  return isCurrentUser ? " (you)" : "";
 }
 
 /**
@@ -130,9 +130,9 @@ function getCurrentUserSuffix(contactEmail, loggedUserEmail) {
  * @returns {void}
  */
 function checkLoginStateOnPageShow(event) {
-    if (!event.persisted || getFromSessionStorage("userId")) return;
+  if (!event.persisted || getFromSessionStorage("userId")) return;
 
-    handleLoggedOutPage();
+  handleLoggedOutPage();
 }
 
 /**
@@ -142,15 +142,15 @@ function checkLoginStateOnPageShow(event) {
  * @returns {void}
  */
 function handleLoggedOutPage() {
-    const path = window.location.pathname;
-    const isMetaPage = path.endsWith("legalNotice.html") || path.endsWith("privacyPolicy.html");
+  const path = window.location.pathname;
+  const isMetaPage = path.endsWith("legalNotice.html") || path.endsWith("privacyPolicy.html");
 
-    if (isMetaPage) {
-        window.location.reload();
-        return;
-    }
+  if (isMetaPage) {
+    window.location.reload();
+    return;
+  }
 
-    window.location.replace("../index.html");
+  window.location.replace("../index.html");
 }
 
 /**
@@ -162,13 +162,13 @@ function handleLoggedOutPage() {
  * @throws {Error} If the HTTP response is not successful.
  */
 async function getData(path = "", id = "") {
-    const response = await fetch(DB_BASE_URL + path + id + ".json");
+  const response = await fetch(DB_BASE_URL + path + id + ".json");
 
-    if (!response.ok) {
-        throw new Error(`HTTP-Fehler: ${response.status}`);
-    }
+  if (!response.ok) {
+    throw new Error(`HTTP-Fehler: ${response.status}`);
+  }
 
-    return await response.json();
+  return await response.json();
 }
 
 /**
@@ -180,17 +180,17 @@ async function getData(path = "", id = "") {
  * @throws {Error} If the HTTP response is not successful.
  */
 async function putData(path, value) {
-    const response = await fetch(DB_BASE_URL + path + ".json", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(value),
-    });
+  const response = await fetch(DB_BASE_URL + path + ".json", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(value),
+  });
 
-    if (!response.ok) {
-        throw new Error(`HTTP-Fehler: ${response.status}`);
-    }
+  if (!response.ok) {
+    throw new Error(`HTTP-Fehler: ${response.status}`);
+  }
 
-    return await response.json();
+  return await response.json();
 }
 
 /**
@@ -202,17 +202,17 @@ async function putData(path, value) {
  * @throws {Error} If the HTTP response is not successful.
  */
 async function patchData(path = "", value = {}) {
-    const response = await fetch(DB_BASE_URL + path + ".json", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(value),
-    });
+  const response = await fetch(DB_BASE_URL + path + ".json", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(value),
+  });
 
-    if (!response.ok) {
-        throw new Error(`HTTP-Fehler: ${response.status}`);
-    }
+  if (!response.ok) {
+    throw new Error(`HTTP-Fehler: ${response.status}`);
+  }
 
-    return await response.json();
+  return await response.json();
 }
 
 /**
@@ -222,7 +222,7 @@ async function patchData(path = "", value = {}) {
  * @returns {Promise<null>} Resolves after the data has been deleted.
  */
 function deleteData(path) {
-    return putData(path, null);
+  return putData(path, null);
 }
 
 /**
@@ -233,7 +233,7 @@ function deleteData(path) {
  * @returns {void}
  */
 function putToSessionStorage(key, value) {
-    sessionStorage.setItem(key, JSON.stringify(value));
+  sessionStorage.setItem(key, JSON.stringify(value));
 }
 
 /**
@@ -244,11 +244,11 @@ function putToSessionStorage(key, value) {
  * @returns {*} The parsed value, or null if the key is missing or reading fails.
  */
 function getFromSessionStorage(key) {
-    try {
-        return JSON.parse(sessionStorage.getItem(key));
-    } catch (error) {
-        return null;
-    }
+  try {
+    return JSON.parse(sessionStorage.getItem(key));
+  } catch (error) {
+    return null;
+  }
 }
 
 /**
@@ -258,12 +258,12 @@ function getFromSessionStorage(key) {
  * @returns {void}
  */
 function openDialog(dialogId) {
-    const dialog = document.getElementById(dialogId);
+  const dialog = document.getElementById(dialogId);
 
-    document.body.classList.add("overflow-hidden");
+  document.body.classList.add("overflow-hidden");
 
-    dialog.showModal();
-    document.querySelector(`[aria-controls="${dialogId}"]`)?.setAttribute("aria-expanded", "true");
+  dialog.showModal();
+  document.querySelector(`[aria-controls="${dialogId}"]`)?.setAttribute("aria-expanded", "true");
 }
 
 /**
@@ -273,7 +273,7 @@ function openDialog(dialogId) {
  * @returns {void}
  */
 function closeProfileDialog(event) {
-    closeAnimatedDialog(event, "dialog-profile-closing");
+  closeAnimatedDialog(event, "dialog-profile-closing");
 }
 
 /**
@@ -284,8 +284,8 @@ function closeProfileDialog(event) {
  * @returns {void}
  */
 function dialogSlideOut(event, closingClass) {
-    event.preventDefault();
-    event.currentTarget.classList.add(closingClass);
+  event.preventDefault();
+  event.currentTarget.classList.add(closingClass);
 }
 
 /**
@@ -296,18 +296,18 @@ function dialogSlideOut(event, closingClass) {
  * @returns {void}
  */
 function closeAnimatedDialog(event, closingClass) {
-    const dialog = event.currentTarget;
+  const dialog = event.currentTarget;
 
-    if (event.target !== dialog || !dialog.classList.contains(closingClass)) {
-        return;
-    }
+  if (event.target !== dialog || !dialog.classList.contains(closingClass)) {
+    return;
+  }
 
-    dialog.classList.remove(closingClass);
-    document.body.classList.remove("overflow-hidden");
-    dialog.close();
-    document.querySelector(`[aria-controls="${dialog.id}"]`)?.setAttribute("aria-expanded", "false");
-    dialog.querySelector("#notification")?.classList.remove("is-visible", "is-closing");
-    showDialogNotification(dialog);
+  dialog.classList.remove(closingClass);
+  document.body.classList.remove("overflow-hidden");
+  dialog.close();
+  document.querySelector(`[aria-controls="${dialog.id}"]`)?.setAttribute("aria-expanded", "false");
+  dialog.querySelector("#notification")?.classList.remove("is-visible", "is-closing");
+  showDialogNotification(dialog);
 }
 
 /**
@@ -317,11 +317,11 @@ function closeAnimatedDialog(event, closingClass) {
  * @returns {string} The uppercase initials.
  */
 function getInitialsFromName(name) {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((part) => part.charAt(0))
-        .join("")
-        .toUpperCase();
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join("")
+    .toUpperCase();
 }

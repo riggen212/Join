@@ -6,22 +6,22 @@
  *
  * @param {HTMLFormElement} form - The rendered task form.
  * @param {Task["status"]} [status="toDo"] - Status used when saving the task.
- * @param {Task|null} [task=null] - Existing task to populate, or null for creation.
+ * @param {Task|null} [task=null] - Existing task to populate, or null for creation.F
  * @returns {Promise<void>} Resolves when the form is initialized and interactive; rejects on initialization failure.
  */
 async function initAddTaskForm(form, status = "toDo", task = null) {
-    form.inert = true;
-    form.dataset.taskStatus = status;
-    setMinDueDate(form);
+  form.inert = true;
+  form.dataset.taskStatus = status;
+  setMinDueDate(form);
 
-    await loadAssignedContacts(form, task);
+  await loadAssignedContacts(form, task);
 
-    if (task) {
-        fillTaskForm(form, task);
-    }
+  if (task) {
+    fillTaskForm(form, task);
+  }
 
-    updateCreateTaskButton(form);
-    form.inert = false;
+  updateCreateTaskButton(form);
+  form.inert = false;
 }
 
 /**
@@ -34,9 +34,9 @@ async function initAddTaskForm(form, status = "toDo", task = null) {
  * @returns {Promise<void>} Resolves after initialization; rejects if initialization fails.
  */
 async function initEditTaskForm(form, taskId, task) {
-    form.dataset.taskId = taskId;
-    form.dataset.originalDueDate = task.dueDate || "";
-    await initAddTaskForm(form, task.status, task);
+  form.dataset.taskId = taskId;
+  form.dataset.originalDueDate = task.dueDate || "";
+  await initAddTaskForm(form, task.status, task);
 }
 
 /**
@@ -47,12 +47,12 @@ async function initEditTaskForm(form, taskId, task) {
  * @returns {void}
  */
 function fillTaskForm(form, task) {
-    form.querySelector("#task-title").value = task.title;
-    form.querySelector("#task-description").value = task.description || "";
-    form.querySelector("#task-due-date").value = task.dueDate;
-    fillPriority(form, task.priority);
-    fillCategory(form, task.category);
-    fillSubtasks(form, task.subtasks);
+  form.querySelector("#task-title").value = task.title;
+  form.querySelector("#task-description").value = task.description || "";
+  form.querySelector("#task-due-date").value = task.dueDate;
+  fillPriority(form, task.priority);
+  fillCategory(form, task.category);
+  fillSubtasks(form, task.subtasks);
 }
 
 /**
@@ -62,10 +62,10 @@ function fillTaskForm(form, task) {
  * @returns {void}
  */
 function updateTaskForm(form) {
-    renderAssignedBadges(form);
-    filterAssignedOptions(form);
-    updateCreateTaskButton(form);
-    revalidateInvalidFields(form);
+  renderAssignedBadges(form);
+  filterAssignedOptions(form);
+  updateCreateTaskButton(form);
+  revalidateInvalidFields(form);
 }
 
 /**
@@ -76,13 +76,13 @@ function updateTaskForm(form) {
  * @returns {void}
  */
 function resetTaskForm(form) {
-    selectTaskPriority(form.querySelector("#priority-medium"), "medium");
-    form.querySelector("#task-category button span").textContent = "Select task category";
-    form.querySelector("#subtask-list").innerHTML = "";
-    clearFieldErrors(form);
+  selectTaskPriority(form.querySelector("#priority-medium"), "medium");
+  form.querySelector("#task-category button span").textContent = "Select task category";
+  form.querySelector("#subtask-list").innerHTML = "";
+  clearFieldErrors(form);
 
-    // The browser resets the inputs after this function, so the form is updated afterwards
-    setTimeout(() => updateTaskForm(form), 0);
+  // The browser resets the inputs after this function, so the form is updated afterwards
+  setTimeout(() => updateTaskForm(form), 0);
 }
 
 /**
@@ -93,18 +93,18 @@ function resetTaskForm(form) {
  * @returns {void}
  */
 function submitTaskForm(event) {
-    const form = event.target;
-    event.preventDefault();
+  const form = event.target;
+  event.preventDefault();
 
-    if (isTaskSaving) return;
+  if (isTaskSaving) return;
 
-    if (!isTaskFormValid(form)) {
-        showAllFieldErrors(form);
-    } else if (form.dataset.taskId) {
-        updateTask(form);
-    } else {
-        createTask(form);
-    }
+  if (!isTaskFormValid(form)) {
+    showAllFieldErrors(form);
+  } else if (form.dataset.taskId) {
+    updateTask(form);
+  } else {
+    createTask(form);
+  }
 }
 
 /**
@@ -114,16 +114,16 @@ function submitTaskForm(event) {
  * @returns {Task} The task.
  */
 function getTaskFromForm(form) {
-    return {
-        title: form.querySelector("#task-title").value.trim(),
-        description: form.querySelector("#task-description").value.trim(),
-        dueDate: form.querySelector("#task-due-date").value,
-        priority: getSelectedPriority(form),
-        category: form.querySelector('input[name="category"]:checked').value,
-        status: form.dataset.taskStatus,
-        assignedTo: getAssignedContacts(form),
-        subtasks: getTaskSubtasks(form),
-    };
+  return {
+    title: form.querySelector("#task-title").value.trim(),
+    description: form.querySelector("#task-description").value.trim(),
+    dueDate: form.querySelector("#task-due-date").value,
+    priority: getSelectedPriority(form),
+    category: form.querySelector('input[name="category"]:checked').value,
+    status: form.dataset.taskStatus,
+    assignedTo: getAssignedContacts(form),
+    subtasks: getTaskSubtasks(form),
+  };
 }
 
 /**
@@ -133,9 +133,9 @@ function getTaskFromForm(form) {
  * @returns {void}
  */
 function preventEnterSubmit(event) {
-    if (event.key === "Enter" && event.target.tagName === "INPUT") {
-        event.preventDefault();
-    }
+  if (event.key === "Enter" && event.target.tagName === "INPUT") {
+    event.preventDefault();
+  }
 }
 
 /**
@@ -147,14 +147,14 @@ function preventEnterSubmit(event) {
  * @returns {void}
  */
 function setTaskSavingState(form, saving) {
-    const button = form.querySelector('button[type="submit"]');
-    if (saving) {
-        form.dataset.restoreSubmitFocus = String(document.activeElement === button);
-    }
-    isTaskSaving = saving;
-    form.setAttribute("aria-busy", String(saving));
-    updateCreateTaskButton(form);
-    if (!saving) restoreTaskSubmitFocus(form);
+  const button = form.querySelector('button[type="submit"]');
+  if (saving) {
+    form.dataset.restoreSubmitFocus = String(document.activeElement === button);
+  }
+  isTaskSaving = saving;
+  form.setAttribute("aria-busy", String(saving));
+  updateCreateTaskButton(form);
+  if (!saving) restoreTaskSubmitFocus(form);
 }
 
 /**
@@ -165,12 +165,12 @@ function setTaskSavingState(form, saving) {
  * @returns {void}
  */
 function restoreTaskSubmitFocus(form) {
-    const button = form.querySelector('button[type="submit"]');
-    if (form.dataset.restoreSubmitFocus !== "true") return;
-    if (!form.isConnected || button.disabled) return;
-    if (form.closest(".dialog-task-closing")) return;
-    if (document.activeElement !== document.body) return;
-    button.focus();
+  const button = form.querySelector('button[type="submit"]');
+  if (form.dataset.restoreSubmitFocus !== "true") return;
+  if (!form.isConnected || button.disabled) return;
+  if (form.closest(".dialog-task-closing")) return;
+  if (document.activeElement !== document.body) return;
+  button.focus();
 }
 
 /**
@@ -180,5 +180,5 @@ function restoreTaskSubmitFocus(form) {
  * @returns {void}
  */
 function updateCreateTaskButton(form) {
-    form.querySelector('button[type="submit"]').disabled = !isTaskFormValid(form) || isTaskSaving;
+  form.querySelector('button[type="submit"]').disabled = !isTaskFormValid(form) || isTaskSaving;
 }

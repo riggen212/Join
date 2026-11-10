@@ -1,287 +1,287 @@
 /* Buttons */
 .button {
-    min-height: 48px;
-    padding: var(--space-sm) var(--space-lg);
+  min-height: 48px;
+  padding: var(--space-sm) var(--space-lg);
 
-    font-size: var(--font-button);
-    font-weight: 700;
+  font-size: var(--font-button);
+  font-weight: 700;
 
-    border-radius: var(--border-radius-middle);
-    cursor: pointer;
+  border-radius: var(--border-radius-middle);
+  cursor: pointer;
 }
 
 .button:disabled,
 .button:disabled:hover {
-    color: var(--color-white);
-    background-color: #bdbdbd;
-    border-color: transparent;
-    box-shadow: none;
-    cursor: not-allowed;
-    opacity: 0.7;
+  color: var(--color-white);
+  background-color: #bdbdbd;
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .button-dark {
-    color: var(--color-white);
-    background-color: var(--background-dark-color);
-    border: 1px solid transparent;
+  color: var(--color-white);
+  background-color: var(--background-dark-color);
+  border: 1px solid transparent;
 }
 
 .button-width {
-    width: 60%;
+  width: 60%;
 }
 
 .button-dark:hover {
-    background-color: var(--color-brand);
-    box-shadow: var(--button-hover-shadow);
+  background-color: var(--color-brand);
+  box-shadow: var(--button-hover-shadow);
 }
 
 .button-dark:active {
-    background-color: var(--button-dark-active-background-color);
+  background-color: var(--button-dark-active-background-color);
 }
 
 .button-bright {
-    color: var(--background-dark-color);
-    background-color: var(--color-white);
-    border: 1px solid var(--background-dark-color);
+  color: var(--background-dark-color);
+  background-color: var(--color-white);
+  border: 1px solid var(--background-dark-color);
 }
 
 .button-bright:hover {
-    color: var(--color-brand);
-    border-color: var(--color-brand);
-    outline: 2px solid var(--color-brand);
-    box-shadow: var(--button-hover-shadow);
+  color: var(--color-brand);
+  border-color: var(--color-brand);
+  outline: 2px solid var(--color-brand);
+  box-shadow: var(--button-hover-shadow);
 }
 
 .button-bright:active {
-    outline: none;
+  outline: none;
 }
 
 .button-arrow,
 .button-close,
 .button-task-overlay,
 .button-move-task {
-    background-color: transparent;
-    border: unset;
+  background-color: transparent;
+  border: unset;
 }
 
 .button-arrow {
-    width: 32px;
-    height: 32px;
-    min-height: unset;
-    margin-top: var(--space-xl);
-    padding: 0;
+  width: 32px;
+  height: 32px;
+  min-height: unset;
+  margin-top: var(--space-xl);
+  padding: 0;
 }
 
 .button-arrow,
 .button-add,
 .button-task-overlay,
 .button-move-task {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .button-arrow > img,
 .button-close > img,
 .button-task-overlay img,
 .button-move-task > img {
-    display: block;
+  display: block;
 }
 
 .button-add,
 .button-close,
 .button-move-task {
-    min-height: unset;
+  min-height: unset;
 }
 
 .button-move-task {
-    position: relative;
-    z-index: 2;
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    padding: 4px;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
 
-    border-radius: var(--border-radius-small);
+  border-radius: var(--border-radius-small);
 }
 
 .button-arrow > img {
-    width: 50%;
-    aspect-ratio: 1 / 1;
+  width: 50%;
+  aspect-ratio: 1 / 1;
 }
 
 .button-close {
-    padding: var(--space-xs);
-    border-radius: 50%;
+  padding: var(--space-xs);
+  border-radius: 50%;
 
-    & > img {
-        height: 14px;
-        aspect-ratio: 1 / 1;
-    }
+  & > img {
+    height: 14px;
+    aspect-ratio: 1 / 1;
+  }
 }
 
 .button-add {
-    padding: var(--space-sm);
+  padding: var(--space-sm);
 }
 
 .button-add-icon-mobile {
-    display: block;
+  display: block;
 }
 
 .button-add-icon-desktop,
 .button-add-span-desktop {
-    display: none;
+  display: none;
 }
 
 .button-add-dark-mobile {
-    max-width: var(--size-button-add-mobile-dark);
-    max-height: var(--size-button-add-mobile-dark);
+  max-width: var(--size-button-add-mobile-dark);
+  max-height: var(--size-button-add-mobile-dark);
 }
 
 .button-add-bright-mobile {
-    max-width: var(--size-button-add-mobile-bright);
-    max-height: var(--size-button-add-mobile-bright);
+  max-width: var(--size-button-add-mobile-bright);
+  max-height: var(--size-button-add-mobile-bright);
 }
 
 .button-task-overlay {
-    min-height: 0;
-    padding-block: 0;
-    padding-inline: var(--space-xs);
-    gap: var(--space-xs);
+  min-height: 0;
+  padding-block: 0;
+  padding-inline: var(--space-xs);
+  gap: var(--space-xs);
 
-    color: var(--background-dark-color);
-    font-weight: 400;
-    border-radius: 0;
+  color: var(--background-dark-color);
+  font-weight: 400;
+  border-radius: 0;
 
-    &:hover {
-        text-shadow:
-            0.5px 0 currentColor,
-            -0.5px 0 currentColor;
-    }
+  &:hover {
+    text-shadow:
+      0.5px 0 currentColor,
+      -0.5px 0 currentColor;
+  }
 }
 
 .button-close:hover,
 .button-move-task:hover {
-    background-color: var(--color-surface-hover);
+  background-color: var(--color-surface-hover);
 }
 
 .button-move-task > img {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 /* Badges */
 .badge-user {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: var(--size-badge-user);
-    height: var(--size-badge-user);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--size-badge-user);
+  height: var(--size-badge-user);
 
-    color: var(--color-white);
-    font-size: 16px;
-    border: solid 2px var(--color-white);
-    border-radius: 50%;
+  color: var(--color-white);
+  font-size: 16px;
+  border: solid 2px var(--color-white);
+  border-radius: 50%;
 }
 
 .badge-user-orange {
-    background-color: var(--color-badge-user-orange);
+  background-color: var(--color-badge-user-orange);
 }
 
 .badge-user-red {
-    background-color: var(--color-badge-user-red);
+  background-color: var(--color-badge-user-red);
 }
 
 .badge-user-purple {
-    background-color: var(--color-badge-user-purple);
+  background-color: var(--color-badge-user-purple);
 }
 
 .badge-user-blue-light {
-    background-color: var(--color-badge-user-blue-light);
+  background-color: var(--color-badge-user-blue-light);
 }
 
 .badge-user-blue-dark {
-    background-color: var(--color-badge-user-blue-dark);
+  background-color: var(--color-badge-user-blue-dark);
 }
 
 .badge-user-blue-medium {
-    background-color: var(--color-badge-user-blue-medium);
+  background-color: var(--color-badge-user-blue-medium);
 }
 
 .badge-user-pink {
-    background-color: var(--color-badge-user-pink);
+  background-color: var(--color-badge-user-pink);
 }
 
 .badge-user-yellow {
-    background-color: var(--color-badge-user-yellow);
+  background-color: var(--color-badge-user-yellow);
 }
 
 .badge-user-mint {
-    background-color: var(--color-mint);
+  background-color: var(--color-mint);
 }
 
 .badge-type {
-    margin-inline-end: auto;
-    padding-block: var(--space-xxs);
-    padding-inline: var(--space-xs);
+  margin-inline-end: auto;
+  padding-block: var(--space-xxs);
+  padding-inline: var(--space-xs);
 
-    color: var(--color-white);
-    font-weight: 400;
-    text-align: start;
-    text-wrap: nowrap;
-    border-radius: var(--border-radius-small);
+  color: var(--color-white);
+  font-weight: 400;
+  text-align: start;
+  text-wrap: nowrap;
+  border-radius: var(--border-radius-small);
 }
 
 .badge-type-user {
-    background-color: var(--color-badge-type-blue);
+  background-color: var(--color-badge-type-blue);
 }
 
 .badge-type-technical {
-    background-color: var(--color-mint);
+  background-color: var(--color-mint);
 }
 
 /* Generic elements */
 .scrollbar {
-    scrollbar-width: auto;
-    scrollbar-color: var(--color-grey-bright) transparent;
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-grey-bright) transparent;
 }
 
 .scrollbar::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .scrollbar::-webkit-scrollbar-track {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-    background-color: var(--color-grey-bright);
-    background-clip: content-box;
-    border: 2px solid transparent;
-    border-radius: 999px;
+  background-color: var(--color-grey-bright);
+  background-clip: content-box;
+  border: 2px solid transparent;
+  border-radius: 999px;
 }
 
 .scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #808080;
+  background-color: #808080;
 }
 
 .page-heading {
-    font-size: var(--font-heading);
-    font-weight: 700;
+  font-size: var(--font-heading);
+  font-weight: 700;
 }
 
 .section-heading {
-    color: var(--background-dark-color);
-    font-size: var(--font-heading-two-mobile);
-    font-weight: 700;
+  color: var(--background-dark-color);
+  font-size: var(--font-heading-two-mobile);
+  font-weight: 700;
 }
 
 @media screen and (min-width: 1280px) {
-    .button-move-task {
-        display: none;
-    }
+  .button-move-task {
+    display: none;
+  }
 
-    .section-heading {
-        font-size: var(--font-heading-two-desktop);
-    }
+  .section-heading {
+    font-size: var(--font-heading-two-desktop);
+  }
 }

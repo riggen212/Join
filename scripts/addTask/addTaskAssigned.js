@@ -13,9 +13,9 @@ const MAX_VISIBLE_BADGES = 4;
  * @returns {Promise<void>} Resolves after options and badges render; rejects if loading or rendering fails.
  */
 async function loadAssignedContacts(form, task) {
-    const [contacts, loggedUserEmail] = await Promise.all([getData(DB_CONTACTS), getLoggedInUserEmail()]);
+  const [contacts, loggedUserEmail] = await Promise.all([getData(DB_CONTACTS), getLoggedInUserEmail()]);
 
-    renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
+  renderAssignedOptions(form, contacts ?? {}, task, loggedUserEmail);
 }
 
 /**
@@ -28,17 +28,17 @@ async function loadAssignedContacts(form, task) {
  * @returns {void}
  */
 function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
-    const assignedTo = task && task.assignedTo ? task.assignedTo : {};
-    const contactIds = getSortedContactIds(contacts);
+  const assignedTo = task && task.assignedTo ? task.assignedTo : {};
+  const contactIds = getSortedContactIds(contacts);
 
-    form.querySelector("#assigned-options").innerHTML = getAssignedOptionsHtml(
-        contacts,
-        contactIds,
-        assignedTo,
-        loggedUserEmail,
-    );
+  form.querySelector("#assigned-options").innerHTML = getAssignedOptionsHtml(
+    contacts,
+    contactIds,
+    assignedTo,
+    loggedUserEmail,
+  );
 
-    renderAssignedBadges(form);
+  renderAssignedBadges(form);
 }
 
 /**
@@ -48,8 +48,8 @@ function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
  * @returns {ContactId[]} IDs of named contacts in alphabetical order.
  */
 function getSortedContactIds(contacts) {
-    const contactIds = Object.keys(contacts).filter((id) => contacts[id].name);
-    return contactIds.sort((a, b) => contacts[a].name.localeCompare(contacts[b].name));
+  const contactIds = Object.keys(contacts).filter((id) => contacts[id].name);
+  return contactIds.sort((a, b) => contacts[a].name.localeCompare(contacts[b].name));
 }
 
 /**
@@ -62,18 +62,13 @@ function getSortedContactIds(contacts) {
  * @returns {string} The combined HTML of all assignment options.
  */
 function getAssignedOptionsHtml(contacts, contactIds, assignedTo, loggedUserEmail) {
-    let assignedOptionsHtml = "";
+  let assignedOptionsHtml = "";
 
-    for (const contactId of contactIds) {
-        assignedOptionsHtml += getAssignedContactOptionHtml(
-            contactId,
-            contacts[contactId],
-            assignedTo,
-            loggedUserEmail,
-        );
-    }
+  for (const contactId of contactIds) {
+    assignedOptionsHtml += getAssignedContactOptionHtml(contactId, contacts[contactId], assignedTo, loggedUserEmail);
+  }
 
-    return assignedOptionsHtml;
+  return assignedOptionsHtml;
 }
 
 /**
@@ -87,9 +82,9 @@ function getAssignedOptionsHtml(contacts, contactIds, assignedTo, loggedUserEmai
  * @returns {string} The HTML of the contact's assignment option.
  */
 function getAssignedContactOptionHtml(contactId, contact, assignedTo, loggedUserEmail) {
-    const initials = contact.initials || getInitialsFromName(contact.name);
+  const initials = contact.initials || getInitialsFromName(contact.name);
 
-    return getAssignedOptionTemplate(contactId, contact, initials, assignedTo[contactId] === true, loggedUserEmail);
+  return getAssignedOptionTemplate(contactId, contact, initials, assignedTo[contactId] === true, loggedUserEmail);
 }
 
 /**
@@ -99,18 +94,18 @@ function getAssignedContactOptionHtml(contactId, contact, assignedTo, loggedUser
  * @returns {void}
  */
 function renderAssignedBadges(form) {
-    const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
-    let html = "";
+  const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
+  let html = "";
 
-    for (let i = 0; i < checkedBoxes.length && i < MAX_VISIBLE_BADGES; i++) {
-        html += getBadgeHtmlFromCheckbox(checkedBoxes[i]);
-    }
+  for (let i = 0; i < checkedBoxes.length && i < MAX_VISIBLE_BADGES; i++) {
+    html += getBadgeHtmlFromCheckbox(checkedBoxes[i]);
+  }
 
-    if (checkedBoxes.length > MAX_VISIBLE_BADGES) {
-        html += getMoreBadgeTemplate(checkedBoxes.length - MAX_VISIBLE_BADGES);
-    }
+  if (checkedBoxes.length > MAX_VISIBLE_BADGES) {
+    html += getMoreBadgeTemplate(checkedBoxes.length - MAX_VISIBLE_BADGES);
+  }
 
-    form.querySelector("#assigned-badges").innerHTML = html;
+  form.querySelector("#assigned-badges").innerHTML = html;
 }
 
 /**
@@ -120,11 +115,11 @@ function renderAssignedBadges(form) {
  * @returns {string} The HTML of the badge.
  */
 function getBadgeHtmlFromCheckbox(checkbox) {
-    const option = checkbox.closest(".assigned-option");
-    const badge = option.querySelector(".badge-user");
-    const name = option.querySelectorAll("span")[1].textContent;
+  const option = checkbox.closest(".assigned-option");
+  const badge = option.querySelector(".badge-user");
+  const name = option.querySelectorAll("span")[1].textContent;
 
-    return getAssignedBadgeTemplate(badge.className, badge.textContent, name);
+  return getAssignedBadgeTemplate(badge.className, badge.textContent, name);
 }
 
 /**
@@ -134,13 +129,13 @@ function getBadgeHtmlFromCheckbox(checkbox) {
  * @returns {void}
  */
 function filterAssignedOptions(form) {
-    const searchText = form.querySelector("#task-assigned").value.trim().toLowerCase();
-    const options = form.querySelectorAll("#assigned-options > li");
+  const searchText = form.querySelector("#task-assigned").value.trim().toLowerCase();
+  const options = form.querySelectorAll("#assigned-options > li");
 
-    for (let i = 0; i < options.length; i++) {
-        const name = options[i].textContent.toLowerCase();
-        options[i].hidden = !name.includes(searchText);
-    }
+  for (let i = 0; i < options.length; i++) {
+    const name = options[i].textContent.toLowerCase();
+    options[i].hidden = !name.includes(searchText);
+  }
 }
 
 /**
@@ -152,15 +147,15 @@ function filterAssignedOptions(form) {
  * @returns {void}
  */
 function toggleAssignedDropdown(event) {
-    const searchInput = event.currentTarget.querySelector("#task-assigned");
-    const field = searchInput.closest("fieldset");
-    const wasOpen = field.matches(":focus-within") && !field.classList.contains("is-collapsed");
+  const searchInput = event.currentTarget.querySelector("#task-assigned");
+  const field = searchInput.closest("fieldset");
+  const wasOpen = field.matches(":focus-within") && !field.classList.contains("is-collapsed");
 
-    if (event.target === searchInput && searchInput.value !== "" && wasOpen) return;
+  if (event.target === searchInput && searchInput.value !== "" && wasOpen) return;
 
-    event.preventDefault();
-    searchInput.focus();
-    field.classList.toggle("is-collapsed", wasOpen);
+  event.preventDefault();
+  searchInput.focus();
+  field.classList.toggle("is-collapsed", wasOpen);
 }
 
 /**
@@ -171,16 +166,16 @@ function toggleAssignedDropdown(event) {
  * @returns {void}
  */
 function handleAssignedKeydown(event) {
-    if (event.key === "Escape") return closeAssignedOnEscape(event);
-    if (event.key !== "Enter") return;
+  if (event.key === "Escape") return closeAssignedOnEscape(event);
+  if (event.key !== "Enter") return;
 
-    const input = event.target;
-    if (input.id !== "task-assigned" && !input.matches('input[name="assignedTo"]')) return;
+  const input = event.target;
+  if (input.id !== "task-assigned" && !input.matches('input[name="assignedTo"]')) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-    if (input.id === "task-assigned") event.currentTarget.classList.remove("is-collapsed");
-    else input.click();
+  event.preventDefault();
+  event.stopPropagation();
+  if (input.id === "task-assigned") event.currentTarget.classList.remove("is-collapsed");
+  else input.click();
 }
 
 /**
@@ -192,15 +187,15 @@ function handleAssignedKeydown(event) {
  * @returns {void}
  */
 function closeAssignedOnEscape(event) {
-    if (event.key !== "Escape") return;
+  if (event.key !== "Escape") return;
 
-    const field = event.currentTarget;
-    if (field.classList.contains("is-collapsed")) return;
+  const field = event.currentTarget;
+  if (field.classList.contains("is-collapsed")) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-    field.querySelector("#task-assigned").focus();
-    field.classList.add("is-collapsed");
+  event.preventDefault();
+  event.stopPropagation();
+  field.querySelector("#task-assigned").focus();
+  field.classList.add("is-collapsed");
 }
 
 /**
@@ -210,13 +205,13 @@ function closeAssignedOnEscape(event) {
  * @returns {Object.<ContactId, true>} Selected contact IDs mapped to true; empty if none are selected.
  */
 function getAssignedContacts(form) {
-    const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
-    /** @type {Object.<ContactId, true>} */
-    const assignedTo = {};
+  const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
+  /** @type {Object.<ContactId, true>} */
+  const assignedTo = {};
 
-    for (let i = 0; i < checkedBoxes.length; i++) {
-        assignedTo[checkedBoxes[i].value] = true;
-    }
+  for (let i = 0; i < checkedBoxes.length; i++) {
+    assignedTo[checkedBoxes[i].value] = true;
+  }
 
-    return assignedTo;
+  return assignedTo;
 }

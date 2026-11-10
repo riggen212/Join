@@ -23,12 +23,12 @@ let isTaskMovePending = false;
  * @returns {Promise<boolean|undefined>} Save result, or undefined if skipped.
  */
 async function moveTask(taskId, destinationStatus, currentStatus) {
-    if (!taskId || !currentStatus || isTaskMovePending) return;
-    if (currentStatus === destinationStatus) return;
+  if (!taskId || !currentStatus || isTaskMovePending) return;
+  if (currentStatus === destinationStatus) return;
 
-    const moveData = getDataToMoveTask(taskId, destinationStatus, currentStatus);
+  const moveData = getDataToMoveTask(taskId, destinationStatus, currentStatus);
 
-    return await moveAndSaveTask(moveData);
+  return await moveAndSaveTask(moveData);
 }
 
 /**
@@ -41,12 +41,12 @@ async function moveTask(taskId, destinationStatus, currentStatus) {
  * @returns {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} Data needed to move the task.
  */
 function getDataToMoveTask(taskId, destinationStatus, currentStatus) {
-    return {
-        id: taskId,
-        task: board[currentStatus].tasks[taskId],
-        oldStatus: currentStatus,
-        newStatus: destinationStatus,
-    };
+  return {
+    id: taskId,
+    task: board[currentStatus].tasks[taskId],
+    oldStatus: currentStatus,
+    newStatus: destinationStatus,
+  };
 }
 
 /**
@@ -58,16 +58,16 @@ function getDataToMoveTask(taskId, destinationStatus, currentStatus) {
  * @returns {Promise<boolean>} Whether the task move was saved successfully.
  */
 async function moveAndSaveTask(moveData) {
-    isTaskMovePending = true;
+  isTaskMovePending = true;
 
-    try {
-        moveTaskBetweenColumns(moveData, moveData.newStatus, moveData.oldStatus);
-        const wasSaved = await saveTaskMove(moveData);
-        renderBoard([board[moveData.oldStatus], board[moveData.newStatus]]);
-        return wasSaved;
-    } finally {
-        isTaskMovePending = false;
-    }
+  try {
+    moveTaskBetweenColumns(moveData, moveData.newStatus, moveData.oldStatus);
+    const wasSaved = await saveTaskMove(moveData);
+    renderBoard([board[moveData.oldStatus], board[moveData.newStatus]]);
+    return wasSaved;
+  } finally {
+    isTaskMovePending = false;
+  }
 }
 
 /**
@@ -81,9 +81,9 @@ async function moveAndSaveTask(moveData) {
  * @returns {void}
  */
 function moveTaskBetweenColumns(moveData, destinationColumn, sourceColumn) {
-    moveData.task.status = destinationColumn;
-    board[destinationColumn].tasks[moveData.id] = moveData.task;
-    delete board[sourceColumn].tasks[moveData.id];
+  moveData.task.status = destinationColumn;
+  board[destinationColumn].tasks[moveData.id] = moveData.task;
+  delete board[sourceColumn].tasks[moveData.id];
 }
 
 /**
@@ -93,16 +93,16 @@ function moveTaskBetweenColumns(moveData, destinationColumn, sourceColumn) {
  * @returns {Promise<boolean>} Whether the task move was saved successfully.
  */
 async function saveTaskMove(moveData) {
-    try {
-        await updateTaskInDatabase(moveData.id, {
-            status: moveData.newStatus,
-        });
-        return true;
-    } catch (error) {
-        moveTaskBetweenColumns(moveData, moveData.oldStatus, moveData.newStatus);
-        showNotification("Task could not be moved. Please try again.", "error");
-        return false;
-    }
+  try {
+    await updateTaskInDatabase(moveData.id, {
+      status: moveData.newStatus,
+    });
+    return true;
+  } catch (error) {
+    moveTaskBetweenColumns(moveData, moveData.oldStatus, moveData.newStatus);
+    showNotification("Task could not be moved. Please try again.", "error");
+    return false;
+  }
 }
 
 /**
@@ -112,7 +112,7 @@ async function saveTaskMove(moveData) {
  * @returns {void}
  */
 function allowDrop(event) {
-    event.preventDefault();
+  event.preventDefault();
 }
 
 /**
@@ -127,17 +127,17 @@ function allowDrop(event) {
  * @returns {void}
  */
 function startDraggingTask(taskId, taskStatus, event) {
-    if (draggingTask || isTaskMovePending) {
-        event.preventDefault();
-        return;
-    }
+  if (draggingTask || isTaskMovePending) {
+    event.preventDefault();
+    return;
+  }
 
-    addFlipCard(taskId);
+  addFlipCard(taskId);
 
-    draggingTask = {
-        id: taskId,
-        status: taskStatus,
-    };
+  draggingTask = {
+    id: taskId,
+    status: taskStatus,
+  };
 }
 
 /**
@@ -147,8 +147,8 @@ function startDraggingTask(taskId, taskStatus, event) {
  * @returns {void}
  */
 function endDraggingTask(taskId) {
-    removeFlipCard(taskId);
-    draggingTask = null;
+  removeFlipCard(taskId);
+  draggingTask = null;
 }
 
 /**
@@ -158,11 +158,11 @@ function endDraggingTask(taskId) {
  * @returns {Promise<void>}
  */
 async function moveTaskFromDrop(destinationStatus) {
-    const wasSaved = await moveTask(draggingTask?.id, destinationStatus, draggingTask?.status);
+  const wasSaved = await moveTask(draggingTask?.id, destinationStatus, draggingTask?.status);
 
-    if (wasSaved) {
-        announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
-    }
+  if (wasSaved) {
+    announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
+  }
 }
 
 /**
@@ -175,9 +175,9 @@ async function moveTaskFromDrop(destinationStatus) {
  * @returns {void}
  */
 function handleColumnDragLeaveOrDrop(columnStatus, event) {
-    if (event.type === "drop" || (event.type === "dragleave" && !event.currentTarget.contains(event.relatedTarget))) {
-        removeHighlightDroppableColumn(columnStatus);
-    }
+  if (event.type === "drop" || (event.type === "dragleave" && !event.currentTarget.contains(event.relatedTarget))) {
+    removeHighlightDroppableColumn(columnStatus);
+  }
 }
 
 /**
@@ -188,15 +188,15 @@ function handleColumnDragLeaveOrDrop(columnStatus, event) {
  * @returns {string} HTML for the move popup.
  */
 function getTaskMovePopupHtml(taskId, currentStatus) {
-    let optionHtml = "";
+  let optionHtml = "";
 
-    Object.entries(board).forEach(([status, column]) => {
-        if (status !== currentStatus) {
-            optionHtml += getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, column.name);
-        }
-    });
+  Object.entries(board).forEach(([status, column]) => {
+    if (status !== currentStatus) {
+      optionHtml += getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, column.name);
+    }
+  });
 
-    return getTaskCardMovePopupTemplate(taskId, optionHtml);
+  return getTaskCardMovePopupTemplate(taskId, optionHtml);
 }
 
 /**
@@ -207,13 +207,13 @@ function getTaskMovePopupHtml(taskId, currentStatus) {
  * @returns {void}
  */
 function positionTaskMoveMenu(event) {
-    if (event.newState !== "open") return;
-    const menu = event.currentTarget;
-    const button = menu.closest(".task-card").querySelector(".button-move-task");
-    const bounds = button.getBoundingClientRect();
+  if (event.newState !== "open") return;
+  const menu = event.currentTarget;
+  const button = menu.closest(".task-card").querySelector(".button-move-task");
+  const bounds = button.getBoundingClientRect();
 
-    menu.style.top = `${bounds.top}px`;
-    menu.style.right = `${document.documentElement.clientWidth - bounds.right}px`;
+  menu.style.top = `${bounds.top}px`;
+  menu.style.right = `${document.documentElement.clientWidth - bounds.right}px`;
 }
 
 /**
@@ -225,17 +225,17 @@ function positionTaskMoveMenu(event) {
  * @returns {Promise<void>}
  */
 async function moveTaskFromPopup(taskId, destinationStatus, currentStatus) {
-    let wasSaved;
+  let wasSaved;
 
-    try {
-        wasSaved = await moveTask(taskId, destinationStatus, currentStatus);
-    } finally {
-        document.getElementById(taskId)?.querySelector(".button-move-task")?.focus();
-    }
+  try {
+    wasSaved = await moveTask(taskId, destinationStatus, currentStatus);
+  } finally {
+    document.getElementById(taskId)?.querySelector(".button-move-task")?.focus();
+  }
 
-    if (wasSaved) {
-        announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
-    }
+  if (wasSaved) {
+    announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
+  }
 }
 
 /**
@@ -245,8 +245,8 @@ async function moveTaskFromPopup(taskId, destinationStatus, currentStatus) {
  * @returns {void}
  */
 function addHighlightDroppableColumn(columnStatus) {
-    const column = document.getElementById(`${columnStatus}-content`);
-    column.classList.add("board-column-highlight");
+  const column = document.getElementById(`${columnStatus}-content`);
+  column.classList.add("board-column-highlight");
 }
 
 /**
@@ -256,8 +256,8 @@ function addHighlightDroppableColumn(columnStatus) {
  * @returns {void}
  */
 function removeHighlightDroppableColumn(columnStatus) {
-    const column = document.getElementById(`${columnStatus}-content`);
-    column.classList.remove("board-column-highlight");
+  const column = document.getElementById(`${columnStatus}-content`);
+  column.classList.remove("board-column-highlight");
 }
 
 /**
@@ -267,8 +267,8 @@ function removeHighlightDroppableColumn(columnStatus) {
  * @returns {void}
  */
 function addFlipCard(taskId) {
-    const card = document.getElementById(taskId);
-    card.classList.add("card-task-flip");
+  const card = document.getElementById(taskId);
+  card.classList.add("card-task-flip");
 }
 
 /**
@@ -278,8 +278,8 @@ function addFlipCard(taskId) {
  * @returns {void}
  */
 function removeFlipCard(taskId) {
-    const card = document.getElementById(taskId);
-    card.classList.remove("card-task-flip");
+  const card = document.getElementById(taskId);
+  card.classList.remove("card-task-flip");
 }
 
 /**
@@ -289,5 +289,5 @@ function removeFlipCard(taskId) {
  * @returns {void}
  */
 function announceBoardMoveStatus(message) {
-    document.getElementById("board-move-status").textContent = message;
+  document.getElementById("board-move-status").textContent = message;
 }

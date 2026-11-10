@@ -12,7 +12,7 @@ let isSignUpSaving = false;
  * @returns {void}
  */
 function initSignUpPage() {
-    document.getElementById("nameField").focus();
+  document.getElementById("nameField").focus();
 }
 
 /**
@@ -22,12 +22,12 @@ function initSignUpPage() {
  * @returns {Promise<void>} Resolves after the attempt or an early validation return.
  */
 async function signUp(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const data = getSignUpData();
-    if (!validateSignUpData(data)) return;
+  const data = getSignUpData();
+  if (!validateSignUpData(data)) return;
 
-    await handleSignUp(data);
+  await handleSignUp(data);
 }
 
 /**
@@ -35,13 +35,13 @@ async function signUp(event) {
  * @returns {Object} User registration data.
  */
 function getSignUpData() {
-    return {
-        name: document.getElementById("nameField").value.trim(),
-        email: document.getElementById("emailField").value.trim().toLowerCase(),
-        password: document.getElementById("passwordField").value,
-        confirmPassword: document.getElementById("confirmPasswordField").value,
-        acceptPolicy: document.getElementById("acceptPolicy").checked,
-    };
+  return {
+    name: document.getElementById("nameField").value.trim(),
+    email: document.getElementById("emailField").value.trim().toLowerCase(),
+    password: document.getElementById("passwordField").value,
+    confirmPassword: document.getElementById("confirmPasswordField").value,
+    acceptPolicy: document.getElementById("acceptPolicy").checked,
+  };
 }
 
 /**
@@ -52,15 +52,15 @@ function getSignUpData() {
  * @returns {Promise<void>} Resolves after the attempt and cleanup.
  */
 async function handleSignUp(data) {
-    if (isSignUpSaving) return;
+  if (isSignUpSaving) return;
 
-    setSignUpSaving(true);
+  setSignUpSaving(true);
 
-    try {
-        await attemptSignUp(data);
-    } finally {
-        setSignUpSaving(false);
-    }
+  try {
+    await attemptSignUp(data);
+  } finally {
+    setSignUpSaving(false);
+  }
 }
 
 /**
@@ -70,15 +70,15 @@ async function handleSignUp(data) {
  * @returns {Promise<void>}
  */
 async function attemptSignUp(data) {
-    try {
-        const successful = await processSignUp(data);
-        if (successful) {
-            window.location.href = "../index.html?signup=success#login";
-        }
-    } catch (error) {
-        const form = document.getElementById("signUpForm");
-        showFormError(form, "Registration failed. Please try again.");
+  try {
+    const successful = await processSignUp(data);
+    if (successful) {
+      window.location.href = "../index.html?signup=success#login";
     }
+  } catch (error) {
+    const form = document.getElementById("signUpForm");
+    showFormError(form, "Registration failed. Please try again.");
+  }
 }
 
 /**
@@ -91,15 +91,15 @@ async function attemptSignUp(data) {
  * @throws {Error} If a database request fails.
  */
 async function processSignUp(data) {
-    const exists = await doesEmailAlreadyExist(data.email);
+  const exists = await doesEmailAlreadyExist(data.email);
 
-    if (exists) {
-        showEmailAlreadyRegisteredError();
-        return false;
-    }
+  if (exists) {
+    showEmailAlreadyRegisteredError();
+    return false;
+  }
 
-    await signUpUser(createUserObject(data));
-    return true;
+  await signUpUser(createUserObject(data));
+  return true;
 }
 
 /**
@@ -108,13 +108,13 @@ async function processSignUp(data) {
  * @returns {Promise<boolean>} True if email exists.
  */
 async function doesEmailAlreadyExist(email) {
-    const users = await getData(DB_USERS);
+  const users = await getData(DB_USERS);
 
-    if (!users) {
-        return false;
-    }
+  if (!users) {
+    return false;
+  }
 
-    return Object.values(users).some((user) => user.email?.toLowerCase() === email);
+  return Object.values(users).some((user) => user.email?.toLowerCase() === email);
 }
 
 /**
@@ -123,13 +123,13 @@ async function doesEmailAlreadyExist(email) {
  * @returns {void}
  */
 function showEmailAlreadyRegisteredError() {
-    const form = document.getElementById("signUpForm");
+  const form = document.getElementById("signUpForm");
 
-    showFormFieldErrors(form, {
-        emailField: "This email address is already registered.",
-    });
+  showFormFieldErrors(form, {
+    emailField: "This email address is already registered.",
+  });
 
-    document.getElementById("emailField").focus();
+  document.getElementById("emailField").focus();
 }
 
 /**
@@ -138,13 +138,13 @@ function showEmailAlreadyRegisteredError() {
  * @returns {Object} New user.
  */
 function createUserObject(data) {
-    return {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        initials: getInitialsFromName(data.name),
-        colorClass: "badge-user-blue-light",
-    };
+  return {
+    name: data.name,
+    email: data.email,
+    password: data.password,
+    initials: getInitialsFromName(data.name),
+    colorClass: "badge-user-blue-light",
+  };
 }
 
 /**
@@ -155,8 +155,8 @@ function createUserObject(data) {
  * @throws {Error} If preparing or saving the data fails.
  */
 async function signUpUser(user) {
-    const contact = await getContactData(user);
-    await saveSignUpUser(user, contact);
+  const contact = await getContactData(user);
+  await saveSignUpUser(user, contact);
 }
 
 /**
@@ -167,8 +167,8 @@ async function signUpUser(user) {
  * @throws {Error} If loading the contacts fails.
  */
 async function getContactData(user) {
-    const existingContacts = (await getData(DB_CONTACTS)) || {};
-    return createContactData(user, existingContacts);
+  const existingContacts = (await getData(DB_CONTACTS)) || {};
+  return createContactData(user, existingContacts);
 }
 
 /**
@@ -180,13 +180,13 @@ async function getContactData(user) {
  * @throws {Error} If the database update fails.
  */
 async function saveSignUpUser(user, contact) {
-    const userId = crypto.randomUUID();
-    const contactId = crypto.randomUUID();
+  const userId = crypto.randomUUID();
+  const contactId = crypto.randomUUID();
 
-    await patchData("", {
-        [`${DB_USERS}${userId}`]: user,
-        [`${DB_CONTACTS}${contactId}`]: contact,
-    });
+  await patchData("", {
+    [`${DB_USERS}${userId}`]: user,
+    [`${DB_CONTACTS}${contactId}`]: contact,
+  });
 }
 
 /**
@@ -198,13 +198,13 @@ async function saveSignUpUser(user, contact) {
  * @returns {void}
  */
 function setSignUpSaving(isSaving) {
-    const form = document.getElementById("signUpForm");
+  const form = document.getElementById("signUpForm");
 
-    isSignUpSaving = isSaving;
-    form.setAttribute("aria-busy", String(isSaving));
-    document.getElementById("sign-up-status").textContent = isSaving ? "Creating account…" : "";
-    updateSignUpButton();
-    updateSignUpPasswordButtons();
+  isSignUpSaving = isSaving;
+  form.setAttribute("aria-busy", String(isSaving));
+  document.getElementById("sign-up-status").textContent = isSaving ? "Creating account…" : "";
+  updateSignUpButton();
+  updateSignUpPasswordButtons();
 }
 
 /**
@@ -213,10 +213,10 @@ function setSignUpSaving(isSaving) {
  * @returns {void}
  */
 function updateSignUpButton() {
-    const data = getSignUpData();
-    const isComplete = data.name && data.email && data.password && data.confirmPassword && data.acceptPolicy;
+  const data = getSignUpData();
+  const isComplete = data.name && data.email && data.password && data.confirmPassword && data.acceptPolicy;
 
-    document.getElementById("signUpButton").disabled = !isComplete || isSignUpSaving;
+  document.getElementById("signUpButton").disabled = !isComplete || isSignUpSaving;
 }
 
 /**
@@ -225,8 +225,8 @@ function updateSignUpButton() {
  * @returns {void}
  */
 function updateSignUpPasswordButtons() {
-    updateSignUpPasswordIcon("passwordField", "passwordEyeIcon");
-    updateSignUpPasswordIcon("confirmPasswordField", "confirmPasswordEyeIcon");
+  updateSignUpPasswordIcon("passwordField", "passwordEyeIcon");
+  updateSignUpPasswordIcon("confirmPasswordField", "confirmPasswordEyeIcon");
 }
 
 /**
@@ -237,16 +237,16 @@ function updateSignUpPasswordButtons() {
  * @returns {void}
  */
 function toggleSignUpPassword(fieldId, iconId) {
-    const passwordInput = document.getElementById(fieldId);
-    const eyeIcon = document.getElementById(iconId);
-    const button = eyeIcon.closest("button");
-    const isHidden = passwordInput.type === "password";
+  const passwordInput = document.getElementById(fieldId);
+  const eyeIcon = document.getElementById(iconId);
+  const button = eyeIcon.closest("button");
+  const isHidden = passwordInput.type === "password";
 
-    passwordInput.type = isHidden ? "text" : "password";
-    eyeIcon.src = isHidden ? "../assets/icons/eyeOpen.svg" : "../assets/icons/eyeClose.svg";
+  passwordInput.type = isHidden ? "text" : "password";
+  eyeIcon.src = isHidden ? "../assets/icons/eyeOpen.svg" : "../assets/icons/eyeClose.svg";
 
-    button.setAttribute("aria-pressed", String(isHidden));
-    button.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+  button.setAttribute("aria-pressed", String(isHidden));
+  button.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
 }
 
 /**
@@ -258,15 +258,15 @@ function toggleSignUpPassword(fieldId, iconId) {
  * @returns {void}
  */
 function updateSignUpPasswordIcon(fieldId, iconId) {
-    const input = document.getElementById(fieldId);
-    const icon = document.getElementById(iconId);
-    const button = icon.closest("button");
-    const canShowPassword = input.value.length > 0;
+  const input = document.getElementById(fieldId);
+  const icon = document.getElementById(iconId);
+  const button = icon.closest("button");
+  const canShowPassword = input.value.length > 0;
 
-    button.disabled = !canShowPassword || isSignUpSaving;
+  button.disabled = !canShowPassword || isSignUpSaving;
 
-    if (!canShowPassword) resetSignUpPassword(input, button);
-    updateSignUpEyeIcon(input, icon, button, canShowPassword);
+  if (!canShowPassword) resetSignUpPassword(input, button);
+  updateSignUpEyeIcon(input, icon, button, canShowPassword);
 }
 
 /**
@@ -277,8 +277,8 @@ function updateSignUpPasswordIcon(fieldId, iconId) {
  * @returns {void}
  */
 function resetSignUpPassword(input, button) {
-    input.type = "password";
-    button.setAttribute("aria-pressed", "false");
+  input.type = "password";
+  button.setAttribute("aria-pressed", "false");
 }
 
 /**
@@ -291,15 +291,15 @@ function resetSignUpPassword(input, button) {
  * @returns {void}
  */
 function updateSignUpEyeIcon(input, icon, button, hasPassword) {
-    const isVisible = input.type === "text";
+  const isVisible = input.type === "text";
 
-    button.setAttribute("aria-label", !hasPassword ? "Password empty" : isVisible ? "Hide password" : "Show password");
+  button.setAttribute("aria-label", !hasPassword ? "Password empty" : isVisible ? "Hide password" : "Show password");
 
-    icon.src = !hasPassword
-        ? "../assets/icons/showPassword.svg"
-        : isVisible
-          ? "../assets/icons/eyeOpen.svg"
-          : "../assets/icons/eyeClose.svg";
+  icon.src = !hasPassword
+    ? "../assets/icons/showPassword.svg"
+    : isVisible
+      ? "../assets/icons/eyeOpen.svg"
+      : "../assets/icons/eyeClose.svg";
 }
 
 initSignUpPage();

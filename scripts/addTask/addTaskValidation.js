@@ -5,11 +5,11 @@
  * @returns {boolean} Whether the required values and due date are valid; ignores saving and loading states.
  */
 function isTaskFormValid(form) {
-    const title = form.querySelector("#task-title").value.trim();
-    const dueDate = form.querySelector("#task-due-date").value;
-    const category = form.querySelector('input[name="category"]:checked');
+  const title = form.querySelector("#task-title").value.trim();
+  const dueDate = form.querySelector("#task-due-date").value;
+  const category = form.querySelector('input[name="category"]:checked');
 
-    return title !== "" && dueDate !== "" && category !== null && getPastDateError(form) === "";
+  return title !== "" && dueDate !== "" && category !== null && getPastDateError(form) === "";
 }
 
 /**
@@ -20,15 +20,15 @@ function isTaskFormValid(form) {
  * @returns {void}
  */
 function setMinDueDate(form) {
-    const today = getTodayAsIsoDate();
-    const originalDate = form.dataset.originalDueDate;
-    let minDate = today;
+  const today = getTodayAsIsoDate();
+  const originalDate = form.dataset.originalDueDate;
+  let minDate = today;
 
-    if (originalDate && originalDate < today) {
-        minDate = originalDate;
-    }
+  if (originalDate && originalDate < today) {
+    minDate = originalDate;
+  }
 
-    form.querySelector("#task-due-date").min = minDate;
+  form.querySelector("#task-due-date").min = minDate;
 }
 
 /**
@@ -38,15 +38,15 @@ function setMinDueDate(form) {
  * @returns {string} The error message or an empty string.
  */
 function getPastDateError(form) {
-    const dueDate = form.querySelector("#task-due-date").value;
-    const isPast = dueDate !== "" && dueDate < getTodayAsIsoDate();
-    const isOriginalDate = dueDate === form.dataset.originalDueDate;
+  const dueDate = form.querySelector("#task-due-date").value;
+  const isPast = dueDate !== "" && dueDate < getTodayAsIsoDate();
+  const isOriginalDate = dueDate === form.dataset.originalDueDate;
 
-    if (isPast && !isOriginalDate) {
-        return "The due date cannot be in the past.";
-    }
+  if (isPast && !isOriginalDate) {
+    return "The due date cannot be in the past.";
+  }
 
-    return "";
+  return "";
 }
 
 /**
@@ -55,12 +55,12 @@ function getPastDateError(form) {
  * @returns {string} The date of today.
  */
 function getTodayAsIsoDate() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
 
-    return year + "-" + month + "-" + day;
+  return year + "-" + month + "-" + day;
 }
 
 /**
@@ -70,9 +70,9 @@ function getTodayAsIsoDate() {
  * @returns {void}
  */
 function showAllFieldErrors(form) {
-    validateTitle(form);
-    validateDueDate(form);
-    validateCategory(form);
+  validateTitle(form);
+  validateDueDate(form);
+  validateCategory(form);
 }
 
 /**
@@ -83,9 +83,9 @@ function showAllFieldErrors(form) {
  * @returns {void}
  */
 function revalidateInvalidFields(form) {
-    if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
-    if (form.querySelector("#task-due-date.is-invalid")) validateDueDate(form);
-    if (form.querySelector("#task-category > button.is-invalid")) validateCategory(form);
+  if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
+  if (form.querySelector("#task-due-date.is-invalid")) validateDueDate(form);
+  if (form.querySelector("#task-category > button.is-invalid")) validateCategory(form);
 }
 
 /**
@@ -95,14 +95,14 @@ function revalidateInvalidFields(form) {
  * @returns {void}
  */
 function validateTitle(form) {
-    const input = form.querySelector("#task-title");
-    let message = "";
+  const input = form.querySelector("#task-title");
+  let message = "";
 
-    if (input.value.trim() === "") {
-        message = "This field is required";
-    }
+  if (input.value.trim() === "") {
+    message = "This field is required";
+  }
 
-    showFieldError(input, form.querySelector("#task-title-error"), message);
+  showFieldError(input, form.querySelector("#task-title-error"), message);
 }
 
 /**
@@ -112,14 +112,14 @@ function validateTitle(form) {
  * @returns {void}
  */
 function validateDueDate(form) {
-    const input = form.querySelector("#task-due-date");
-    let message = getPastDateError(form);
+  const input = form.querySelector("#task-due-date");
+  let message = getPastDateError(form);
 
-    if (input.value === "") {
-        message = "This field is required";
-    }
+  if (input.value === "") {
+    message = "This field is required";
+  }
 
-    showFieldError(input, form.querySelector("#task-due-date-error"), message);
+  showFieldError(input, form.querySelector("#task-due-date-error"), message);
 }
 
 /**
@@ -129,14 +129,14 @@ function validateDueDate(form) {
  * @returns {void}
  */
 function validateCategory(form) {
-    const category = form.querySelector('input[name="category"]:checked');
-    let message = "";
+  const category = form.querySelector('input[name="category"]:checked');
+  let message = "";
 
-    if (category === null) {
-        message = "This field is required";
-    }
+  if (category === null) {
+    message = "This field is required";
+  }
 
-    showFieldError(form.querySelector("#task-category > button"), form.querySelector("#task-category-error"), message);
+  showFieldError(form.querySelector("#task-category > button"), form.querySelector("#task-category-error"), message);
 }
 
 /**
@@ -147,12 +147,12 @@ function validateCategory(form) {
  * @returns {void}
  */
 function checkCategoryOnLeave(event) {
-    const field = event.currentTarget;
+  const field = event.currentTarget;
 
-    if (!field.contains(event.relatedTarget)) {
-        setCategoryExpanded(field, false);
-        validateCategory(field.form);
-    }
+  if (!field.contains(event.relatedTarget)) {
+    setCategoryExpanded(field, false);
+    validateCategory(field.form);
+  }
 }
 
 /**
@@ -165,14 +165,14 @@ function checkCategoryOnLeave(event) {
  * @returns {void}
  */
 function showFieldError(field, errorElement, message) {
-    if (message === "") {
-        field.classList.remove("is-invalid");
-    } else {
-        field.classList.add("is-invalid");
-    }
+  if (message === "") {
+    field.classList.remove("is-invalid");
+  } else {
+    field.classList.add("is-invalid");
+  }
 
-    field.setAttribute("aria-invalid", String(message !== ""));
-    errorElement.textContent = message;
+  field.setAttribute("aria-invalid", String(message !== ""));
+  errorElement.textContent = message;
 }
 
 /**
@@ -183,15 +183,15 @@ function showFieldError(field, errorElement, message) {
  * @returns {void}
  */
 function clearFieldErrors(form) {
-    const invalidFields = form.querySelectorAll(".is-invalid");
-    const errorMessages = form.querySelectorAll(".field-error");
+  const invalidFields = form.querySelectorAll(".is-invalid");
+  const errorMessages = form.querySelectorAll(".field-error");
 
-    for (let i = 0; i < invalidFields.length; i++) {
-        invalidFields[i].classList.remove("is-invalid");
-        invalidFields[i].removeAttribute("aria-invalid");
-    }
+  for (let i = 0; i < invalidFields.length; i++) {
+    invalidFields[i].classList.remove("is-invalid");
+    invalidFields[i].removeAttribute("aria-invalid");
+  }
 
-    for (let i = 0; i < errorMessages.length; i++) {
-        errorMessages[i].textContent = "";
-    }
+  for (let i = 0; i < errorMessages.length; i++) {
+    errorMessages[i].textContent = "";
+  }
 }

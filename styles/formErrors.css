@@ -1,21 +1,21 @@
 .form-field {
-    width: 100%;
+  width: 100%;
 }
 
 .form-error,
 .form-field-error {
-    min-height: 18px;
-    margin-block: 4px;
+  min-height: 18px;
+  margin-block: 4px;
 
-    color: red;
-    font-size: 14px;
+  color: red;
+  font-size: 14px;
 
-    text-align: left;
-    line-height: 18px;
+  text-align: left;
+  line-height: 18px;
 }
 
 .input-wrapper.has-error,
 .input-wrapper.has-error:hover,
 .input-wrapper.has-error:focus-within {
-    border-color: red;
+  border-color: red;
 }

@@ -1,14 +1,14 @@
 /** @type {ContactColorClass[]} */
 const CONTACT_COLOR_CLASSES = [
-    "badge-user-orange",
-    "badge-user-purple",
-    "badge-user-pink",
-    "badge-user-blue-medium",
-    "badge-user-yellow",
-    "badge-user-mint",
-    "badge-user-blue-light",
-    "badge-user-red",
-    "badge-user-blue-dark",
+  "badge-user-orange",
+  "badge-user-purple",
+  "badge-user-pink",
+  "badge-user-blue-medium",
+  "badge-user-yellow",
+  "badge-user-mint",
+  "badge-user-blue-light",
+  "badge-user-red",
+  "badge-user-blue-dark",
 ];
 
 /**
@@ -22,15 +22,15 @@ const CONTACT_COLOR_CLASSES = [
  * @returns {Contact} The prepared contact data.
  */
 function createContactData(data, existingContacts) {
-    const contact = {
-        name: data.name,
-        email: data.email,
-        phone: data.phone ?? "",
-        initials: getInitialsFromName(data.name),
-        colorClass: getNextContactColorClass(existingContacts),
-    };
+  const contact = {
+    name: data.name,
+    email: data.email,
+    phone: data.phone ?? "",
+    initials: getInitialsFromName(data.name),
+    colorClass: getNextContactColorClass(existingContacts),
+  };
 
-    return contact;
+  return contact;
 }
 
 /**
@@ -40,7 +40,7 @@ function createContactData(data, existingContacts) {
  * @returns {ContactColorClass} The selected badge color CSS class.
  */
 function getNextContactColorClass(existingContacts) {
-    const colorIndex = Object.keys(existingContacts).length % CONTACT_COLOR_CLASSES.length;
+  const colorIndex = Object.keys(existingContacts).length % CONTACT_COLOR_CLASSES.length;
 
-    return CONTACT_COLOR_CLASSES[colorIndex];
+  return CONTACT_COLOR_CLASSES[colorIndex];
 }

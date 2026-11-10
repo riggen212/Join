@@ -1,234 +1,254 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <script src="../script.js" defer></script>
-        <script src="../scripts/notifications.js" defer></script>
-        <script src="../scripts/infoPages.js" defer></script>
-        <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
+    <script src="../script.js" defer></script>
+    <script src="../scripts/notifications.js" defer></script>
+    <script src="../scripts/infoPages.js" defer></script>
+    <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
-        <link rel="stylesheet" href="../styles/root.css" />
-        <link rel="stylesheet" href="../style.css" />
-        <link rel="stylesheet" href="../styles/utilities.css" />
-        <link rel="stylesheet" href="../styles/components/components.css" />
-        <link rel="stylesheet" href="../styles/components/forms.css" />
-        <link rel="stylesheet" href="../styles/components/dialogs.css" />
-        <link rel="stylesheet" href="../styles/fonts.css" />
-        <link rel="stylesheet" href="../styles/meta.css" />
+    <link rel="stylesheet" href="../styles/root.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../styles/utilities.css" />
+    <link rel="stylesheet" href="../styles/components/components.css" />
+    <link rel="stylesheet" href="../styles/components/forms.css" />
+    <link rel="stylesheet" href="../styles/components/dialogs.css" />
+    <link rel="stylesheet" href="../styles/fonts.css" />
+    <link rel="stylesheet" href="../styles/infoPages.css" />
 
-        <title>Legal Notice</title>
-    </head>
+    <title>Legal Notice</title>
+  </head>
 
-    <body onpageshow="checkLoginStateOnPageShow(event)">
-        <header class="header">
-            <div class="header-wrapper d-flex-between">
-                <div>
-                    <img src="../assets/icons/logoDark.svg" alt="Join logo" class="header-logo" />
-                    <p class="header-headline">Kanban Project Management Tool</p>
-                </div>
-
-                <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" data-nav-link class="header-link d-none">
-                        <img src="../assets/icons/help.svg" alt="Help" />
-                    </a>
-                    <button class="header-profile-initials-button" onclick="openDialog('dialog-profile')"
-                        aria-label="Open service links and log out"
-                        aria-haspopup="dialog"
-                        aria-controls="dialog-profile"
-                        aria-expanded="false"
-                        >
-                    </button>
-                </div>
-            </div>
-
-            <dialog
-                id="dialog-profile"
-                closedby="any"
-                oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event)"
-                aria-label="Service links and log out"
-            >
-                <nav aria-label="Service links">
-                    <ul>
-                        <li>
-                            <a
-                                id="link-help-profile-dialog"
-                                href="../pages/help.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Help</a
-                            >
-                        </li>
-                        <li>
-                            <a
-                                href="../pages/legalNotice.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                aria-current="page"
-                                >Legal Notice</a
-                            >
-                        </li>
-                        <li>
-                            <a
-                                href="../pages/privacyPolicy.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Privacy Policy</a
-                            >
-                        </li>
-                        <li>
-                            <a
-                                href="../index.html"
-                                class="link-navbar"
-                                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
-                                >Log out</a
-                            >
-                        </li>
-                    </ul>
-                </nav>
-            </dialog>
-        </header>
-
-        <div class="app-wrapper">
-            <nav class="navbar navbar-loading" aria-label="Main navigation">
-                <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join logo" />
-                    <ul class="navbar-links">
-                        <li>
-                            <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="" />
-                                <span>Summary</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/addTask.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/addTask.svg" alt="" />
-                                <span>Add Task</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/board.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="" />
-                                <span>Board</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/contacts.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="" />
-                                <span>Contacts</span>
-                            </a>
-                        </li>
-                        <li class="d-none">
-                            <a id="nav-login" href="../index.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/login.svg" alt="" />
-                                <span>Log In</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <footer>
-                    <ul class="navbar-links">
-                        <li>
-                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
-                                <span>Privacy Policy</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/legalNotice.html" data-nav-link class="link-navbar active" aria-current="page">
-                                <span>Legal notice</span>
-                            </a>
-                        </li>
-                    </ul>
-                </footer>
-            </nav>
-            <main class="privacy-policy">
-                <div class="privacy-policy-wrapper">
-                    <div class="privacy-policy-wrapper-headline-container">
-                        <h1>Legal Notice</h1>
-                        <button class="button button-arrow button-close" onclick="window.history.back()" aria-label="Back">
-                            <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="" />
-                        </button>
-                    </div>
-
-                    <section aria-labelledby="legal-imprint">
-                        <h2 id="legal-imprint">Imprint</h2>
-
-                        <ul>
-                            <li>Calvin Lamel, Sebastian Stock, Norman Walter Domann, Patrick Lorenz</li>
-                            <li>Bogenstrasse 6a</li>
-                            <li>85649 Brunnthal</li>
-                        </ul>
-                    </section>
-
-                    <section aria-labelledby="legal-board">
-                        <h2 id="legal-board">Exploring the Board</h2>
-
-                        <p>E-Mail: <a href="mailto:calvinlamel@outlook.de">calvinlamel@outlook.de</a></p>
-                    </section>
-                    
-                    <section aria-labelledby="legal-terms">
-                        <h2 id="legal-terms">Acceptance of terms</h2>
-
-                        <p>By accessing and using <span class="link-color-text">Join</span> (Product), you acknowledge and agree to the following terms and conditions, and any policies,
-                            guidelines, and amendments thereto that may be presented to you from time to time. We, the listed students,
-                            may update or change the terms and conditions from time to time without notice.</p>
-                    </section>
-
-                    <section aria-labelledby="legal-scope">
-                        <h2 id="legal-scope">Scope and ownership of the product</h2>
-
-                        <p><span class="link-color-text">Join</span> has been developed as part of a student group project in a web development bootcamp at the <span class="link-color-text">Developer Akademie GmbH</span>.
-                            It has an educational purpose and is not intended for extensive personal & business usage. As such, we cannot guarantee consistent availability,
-                            reliability, accuracy, or any other aspect of quality regarding this Product.
-                        </p>
-
-                        <p>The design of <span class="link-color-text">Join</span> is owned by the <span class="link-color-text">Developer Akademie GmbH</span>.
-                            Unauthorized use, reproduction, modification, distribution, or replication of the design is strictly prohibited.
-                        </p>
-                    </section>
-
-                    <section aria-labelledby="legal-rights">
-                        <h2 id="legal-rights">Proprietary rights</h2>
-
-                        <p>Aside from the design owned by <span class="link-color-text">Developer Akademie GmbH</span>, we, the listed students, retain all proprietary rights in <span class="link-color-text">Join</span>,
-                            including any associated copyrighted material, trademarks, and other proprietary information.
-                        </p>
-                    </section>
-
-                    <section aria-labelledby="legal-use">
-                        <h2 id="legal-use">Use of the product</h2>
-
-                        <p><span class="link-color-text">Join</span> is intended to be used for lawful purposes only, in accordance with all applicable laws and regulations.
-                            Any use of <span class="link-color-text">Join</span> for illegal activities, or to harass, harm, threaten, or intimidate another person, is strictly prohibited.
-                            You are solely responsible for your interactions with other users of <span class="link-color-text">Join</span>.
-                        </p>
-                    </section>
-
-                    <section aria-labelledby="legal-disclaimer">
-                        <h2 id="legal-disclaimer">Disclaimer of warranties and limitation of liability</h2>
-
-                        <p><span class="link-color-text">Join</span> is provided "as is" without warranty of any kind, whether express or implied, including but not limited to the implied warranties of merchantability,
-                            fitness for a particular purpose, and non-infringement. In no event will we, the listed students, or the <span class="link-color-text">Developer Akademie GmbH</span>,
-                            be liable for any direct, indirect, incidental, special, consequential or exemplary damages, including but not limited to, damages for loss of profits,
-                            goodwill, use, data, or other intangible losses, even if we have been advised of the possibility of such damages, arising out of or in connection with the use or performance of Join.
-                        </p>
-                    </section>
-
-                    <section aria-labelledby="legal-indemnity">
-                        <h2 id="legal-indemnity">Indemnity</h2>
-
-                        <p>You agree to indemnify, defend and hold harmless us, the listed students, the <span class="link-color-text">Developer Akademie GmbH</span>, and our affiliates, partners,
-                            officers, directors, agents, and employees, from and against any claim, demand, loss, damage, cost, or liability (including reasonable legal fees)
-                            arising out of or relating to your use of <span class="link-color-text">Join</span> and/or your breach of this Legal Notice.
-                        </p>
-                    </section>
-                </div>
-            </main>
+  <body onpageshow="checkLoginStateOnPageShow(event)">
+    <header class="header">
+      <div class="header-wrapper d-flex-between">
+        <div>
+          <img src="../assets/icons/logoDark.svg" alt="Join logo" class="header-logo" />
+          <p class="header-headline">Kanban Project Management Tool</p>
         </div>
-    </body>
+
+        <div class="d-flex-align-center gap-lg">
+          <a href="../pages/help.html" data-nav-link class="header-link d-none">
+            <img src="../assets/icons/help.svg" alt="Help" />
+          </a>
+          <button
+            class="header-profile-initials-button"
+            onclick="openDialog('dialog-profile')"
+            aria-label="Open service links and log out"
+            aria-haspopup="dialog"
+            aria-controls="dialog-profile"
+            aria-expanded="false"
+          ></button>
+        </div>
+      </div>
+
+      <dialog
+        id="dialog-profile"
+        closedby="any"
+        oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
+        onanimationend="closeProfileDialog(event)"
+        aria-label="Service links and log out"
+      >
+        <nav aria-label="Service links">
+          <ul>
+            <li>
+              <a
+                id="link-help-profile-dialog"
+                href="../pages/help.html"
+                data-nav-link
+                class="link-navbar"
+                onclick="event.target.closest('dialog').close()"
+                >Help</a
+              >
+            </li>
+            <li>
+              <a
+                href="../pages/legalNotice.html"
+                data-nav-link
+                class="link-navbar"
+                onclick="event.target.closest('dialog').close()"
+                aria-current="page"
+                >Legal Notice</a
+              >
+            </li>
+            <li>
+              <a
+                href="../pages/privacyPolicy.html"
+                data-nav-link
+                class="link-navbar"
+                onclick="event.target.closest('dialog').close()"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a
+                href="../index.html"
+                class="link-navbar"
+                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                >Log out</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </dialog>
+    </header>
+
+    <div class="app-wrapper">
+      <nav class="navbar navbar-loading" aria-label="Main navigation">
+        <div class="navbar-wrapper">
+          <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join logo" />
+          <ul class="navbar-links">
+            <li>
+              <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/summary.svg" alt="" />
+                <span>Summary</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/addTask.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/addTask.svg" alt="" />
+                <span>Add Task</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/board.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/board.svg" alt="" />
+                <span>Board</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/contacts.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/contacts.svg" alt="" />
+                <span>Contacts</span>
+              </a>
+            </li>
+            <li class="d-none">
+              <a id="nav-login" href="../index.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/login.svg" alt="" />
+                <span>Log In</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <footer>
+          <ul class="navbar-links">
+            <li>
+              <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
+                <span>Privacy Policy</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/legalNotice.html" data-nav-link class="link-navbar active" aria-current="page">
+                <span>Legal notice</span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+      <main class="privacy-policy">
+        <div class="privacy-policy-wrapper">
+          <div class="privacy-policy-wrapper-headline-container">
+            <h1>Legal Notice</h1>
+            <button class="button button-arrow button-close" onclick="window.history.back()" aria-label="Back">
+              <img class="back-to-previous-page" src="../assets/icons/arrow.svg" alt="" />
+            </button>
+          </div>
+
+          <section aria-labelledby="legal-imprint">
+            <h2 id="legal-imprint">Imprint</h2>
+
+            <ul>
+              <li>Calvin Lamel, Sebastian Stock, Norman Walter Domann, Patrick Lorenz</li>
+              <li>Bogenstrasse 6a</li>
+              <li>85649 Brunnthal</li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="legal-board">
+            <h2 id="legal-board">Exploring the Board</h2>
+
+            <p>E-Mail: <a href="mailto:calvinlamel@outlook.de">calvinlamel@outlook.de</a></p>
+          </section>
+
+          <section aria-labelledby="legal-terms">
+            <h2 id="legal-terms">Acceptance of terms</h2>
+
+            <p>
+              By accessing and using <span class="link-color-text">Join</span> (Product), you acknowledge and agree to
+              the following terms and conditions, and any policies, guidelines, and amendments thereto that may be
+              presented to you from time to time. We, the listed students, may update or change the terms and conditions
+              from time to time without notice.
+            </p>
+          </section>
+
+          <section aria-labelledby="legal-scope">
+            <h2 id="legal-scope">Scope and ownership of the product</h2>
+
+            <p>
+              <span class="link-color-text">Join</span> has been developed as part of a student group project in a web
+              development bootcamp at the <span class="link-color-text">Developer Akademie GmbH</span>. It has an
+              educational purpose and is not intended for extensive personal & business usage. As such, we cannot
+              guarantee consistent availability, reliability, accuracy, or any other aspect of quality regarding this
+              Product.
+            </p>
+
+            <p>
+              The design of <span class="link-color-text">Join</span> is owned by the
+              <span class="link-color-text">Developer Akademie GmbH</span>. Unauthorized use, reproduction,
+              modification, distribution, or replication of the design is strictly prohibited.
+            </p>
+          </section>
+
+          <section aria-labelledby="legal-rights">
+            <h2 id="legal-rights">Proprietary rights</h2>
+
+            <p>
+              Aside from the design owned by <span class="link-color-text">Developer Akademie GmbH</span>, we, the
+              listed students, retain all proprietary rights in <span class="link-color-text">Join</span>, including any
+              associated copyrighted material, trademarks, and other proprietary information.
+            </p>
+          </section>
+
+          <section aria-labelledby="legal-use">
+            <h2 id="legal-use">Use of the product</h2>
+
+            <p>
+              <span class="link-color-text">Join</span> is intended to be used for lawful purposes only, in accordance
+              with all applicable laws and regulations. Any use of <span class="link-color-text">Join</span> for illegal
+              activities, or to harass, harm, threaten, or intimidate another person, is strictly prohibited. You are
+              solely responsible for your interactions with other users of <span class="link-color-text">Join</span>.
+            </p>
+          </section>
+
+          <section aria-labelledby="legal-disclaimer">
+            <h2 id="legal-disclaimer">Disclaimer of warranties and limitation of liability</h2>
+
+            <p>
+              <span class="link-color-text">Join</span> is provided "as is" without warranty of any kind, whether
+              express or implied, including but not limited to the implied warranties of merchantability, fitness for a
+              particular purpose, and non-infringement. In no event will we, the listed students, or the
+              <span class="link-color-text">Developer Akademie GmbH</span>, be liable for any direct, indirect,
+              incidental, special, consequential or exemplary damages, including but not limited to, damages for loss of
+              profits, goodwill, use, data, or other intangible losses, even if we have been advised of the possibility
+              of such damages, arising out of or in connection with the use or performance of Join.
+            </p>
+          </section>
+
+          <section aria-labelledby="legal-indemnity">
+            <h2 id="legal-indemnity">Indemnity</h2>
+
+            <p>
+              You agree to indemnify, defend and hold harmless us, the listed students, the
+              <span class="link-color-text">Developer Akademie GmbH</span>, and our affiliates, partners, officers,
+              directors, agents, and employees, from and against any claim, demand, loss, damage, cost, or liability
+              (including reasonable legal fees) arising out of or relating to your use of
+              <span class="link-color-text">Join</span> and/or your breach of this Legal Notice.
+            </p>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
 </html>

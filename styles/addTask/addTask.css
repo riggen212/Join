@@ -1,97 +1,93 @@
-
 html:has(.add-task-page),
 .add-task-page :is(.assigned-options, .assigned-badges, .category-options, textarea) {
-    scrollbar-width: none;
+  scrollbar-width: none;
 }
 
 .board-inner.add-task-inner {
-    padding-inline: var(--space-lg);
+  padding-inline: var(--space-lg);
 }
 
 .add-task-inner {
-    --add-task-sticky-cover-height: clamp(48px, 6vw, 96px);
+  --add-task-sticky-cover-height: clamp(48px, 6vw, 96px);
 
-    position: relative;
-    isolation: isolate;
+  position: relative;
+  isolation: isolate;
 }
 
 .add-task-inner::before {
-    content: "";
+  content: "";
 
-    position: fixed;
-    top: var(--mobile-header-footer-height);
-    right: 0;
-    left: 0;
-    z-index: 2;
+  position: fixed;
+  top: var(--mobile-header-footer-height);
+  right: 0;
+  left: 0;
+  z-index: 2;
 
-    height: var(--add-task-sticky-cover-height);
+  height: var(--add-task-sticky-cover-height);
 
-    background-color: var(--background-bright-color);
-    pointer-events: none;
+  background-color: var(--background-bright-color);
+  pointer-events: none;
 }
 
 .add-task-inner > h1 {
-    position: sticky;
-    top: calc(
-        var(--mobile-header-footer-height)
-        + var(--add-task-sticky-cover-height)
-    );
-    z-index: 3;
+  position: sticky;
+  top: calc(var(--mobile-header-footer-height) + var(--add-task-sticky-cover-height));
+  z-index: 3;
 
-    padding-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
 
-    isolation: isolate;
+  isolation: isolate;
 
-    background-color: var(--background-bright-color);
+  background-color: var(--background-bright-color);
 }
 
 .board.add-task-page {
-    padding-bottom: calc(var(--mobile-header-footer-height) + 150px);
-    background-color: var(--background-bright-color);
+  padding-bottom: calc(var(--mobile-header-footer-height) + 150px);
+  background-color: var(--background-bright-color);
 }
 
 body:has(.add-task-inner) #notification {
-    top: auto;
-    bottom: calc(96px + clamp(48px, 14vw, 64px) + 16px);
-    left: 50%;
-    width: calc(100% - 32px);
-    max-width: 360px;
-    text-align: center;
-    --notification-transform: translateX(-50%);
+  top: auto;
+  bottom: calc(96px + clamp(48px, 14vw, 64px) + 16px);
+  left: 50%;
+  width: calc(100% - 32px);
+  max-width: 360px;
+  text-align: center;
+  --notification-transform: translateX(-50%);
 }
 
 @media screen and (min-width: 1280px) {
-    body:has(.add-task-inner) #notification {
-        top: 50%;
-        bottom: auto;
-        width: auto;
-        max-width: none;
-        text-align: left;
-        --notification-transform: translate(-50%, -50%);
-    }
+  body:has(.add-task-inner) #notification {
+    top: 50%;
+    bottom: auto;
+    width: auto;
+    max-width: none;
+    text-align: left;
+    --notification-transform: translate(-50%, -50%);
+  }
 
-    html:has(.add-task-page),
-    .add-task-page :is(.assigned-options, .assigned-badges, .category-options, textarea) {
-        scrollbar-width: auto;
-    }
+  html:has(.add-task-page),
+  .add-task-page :is(.assigned-options, .assigned-badges, .category-options, textarea) {
+    scrollbar-width: auto;
+  }
 
-    .board.add-task-page {
-        padding-bottom: 0;
-        height: auto;
-    }
+  .board.add-task-page {
+    padding-bottom: 0;
+    height: auto;
+  }
 
-    .board-inner.add-task-inner {
-        margin-top: 0;
-        padding-block-start: 64px;
-        padding-inline-start: var(--space-xl);
-        padding-inline-end: var(--space-xl);
-    }
+  .board-inner.add-task-inner {
+    margin-top: 0;
+    padding-block-start: 64px;
+    padding-inline-start: var(--space-xl);
+    padding-inline-end: var(--space-xl);
+  }
 
-    .add-task-inner::before {
-        content: none;
-    }
+  .add-task-inner::before {
+    content: none;
+  }
 
-    .add-task-inner > h1 {
-        position: static;
-    }
+  .add-task-inner > h1 {
+    position: static;
+  }
 }

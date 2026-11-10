@@ -7,14 +7,14 @@
  * @returns {boolean} Whether the registration data is valid.
  */
 function validateSignUpData(data) {
-    const errors = getSignUpValidationErrors(data);
-    const form = document.getElementById("signUpForm");
+  const errors = getSignUpValidationErrors(data);
+  const form = document.getElementById("signUpForm");
 
-    clearFormError(form);
-    showFormFieldErrors(form, errors);
-    if (Object.keys(errors).length) focusFirstInvalidSignUpField(errors);
+  clearFormError(form);
+  showFormFieldErrors(form, errors);
+  if (Object.keys(errors).length) focusFirstInvalidSignUpField(errors);
 
-    return Object.keys(errors).length === 0;
+  return Object.keys(errors).length === 0;
 }
 
 /**
@@ -24,14 +24,14 @@ function validateSignUpData(data) {
  * @returns {Object.<string, string>} Errors indexed by field ID.
  */
 function getSignUpValidationErrors(data) {
-    const fieldIds = ["nameField", "emailField", "passwordField", "confirmPasswordField", "acceptPolicy"];
-    const errors = {};
+  const fieldIds = ["nameField", "emailField", "passwordField", "confirmPasswordField", "acceptPolicy"];
+  const errors = {};
 
-    for (const fieldId of fieldIds) {
-        const message = getSignUpFieldError(fieldId, data);
-        if (message) errors[fieldId] = message;
-    }
-    return errors;
+  for (const fieldId of fieldIds) {
+    const message = getSignUpFieldError(fieldId, data);
+    if (message) errors[fieldId] = message;
+  }
+  return errors;
 }
 
 /**
@@ -42,17 +42,17 @@ function getSignUpValidationErrors(data) {
  * @returns {string} Error message or an empty string.
  */
 function getSignUpFieldError(fieldId, data) {
-    const passwordErrors = getSignUpPasswordErrors(data);
+  const passwordErrors = getSignUpPasswordErrors(data);
 
-    const errors = {
-        nameField: data.name ? "" : "Please enter your name.",
-        emailField: getSignUpEmailError(data.email),
-        passwordField: passwordErrors.passwordField ?? "",
-        confirmPasswordField: passwordErrors.confirmPasswordField ?? "",
-        acceptPolicy: data.acceptPolicy ? "" : "Please accept the Privacy Policy.",
-    };
+  const errors = {
+    nameField: data.name ? "" : "Please enter your name.",
+    emailField: getSignUpEmailError(data.email),
+    passwordField: passwordErrors.passwordField ?? "",
+    confirmPasswordField: passwordErrors.confirmPasswordField ?? "",
+    acceptPolicy: data.acceptPolicy ? "" : "Please accept the Privacy Policy.",
+  };
 
-    return errors[fieldId] ?? "";
+  return errors[fieldId] ?? "";
 }
 
 /**
@@ -62,9 +62,9 @@ function getSignUpFieldError(fieldId, data) {
  * @returns {string} Error message or an empty string.
  */
 function getSignUpEmailError(email) {
-    if (!email) return "Please enter your email.";
-    if (!isValidEmail(email)) return "Please enter a valid email address.";
-    return "";
+  if (!email) return "Please enter your email.";
+  if (!isValidEmail(email)) return "Please enter a valid email address.";
+  return "";
 }
 
 /**
@@ -77,14 +77,14 @@ function getSignUpEmailError(email) {
  * or an empty object if valid.
  */
 function getSignUpPasswordErrors(data) {
-    if (!data.password) return { passwordField: "Please enter a password." };
-    if (!data.confirmPassword) return { confirmPasswordField: "Please confirm your password." };
-    if (data.password !== data.confirmPassword)
-        return {
-            passwordField: "Passwords do not match.",
-            confirmPasswordField: "Passwords do not match.",
-        };
-    return {};
+  if (!data.password) return { passwordField: "Please enter a password." };
+  if (!data.confirmPassword) return { confirmPasswordField: "Please confirm your password." };
+  if (data.password !== data.confirmPassword)
+    return {
+      passwordField: "Passwords do not match.",
+      confirmPasswordField: "Passwords do not match.",
+    };
+  return {};
 }
 
 /**
@@ -94,9 +94,9 @@ function getSignUpPasswordErrors(data) {
  * @returns {void}
  */
 function focusFirstInvalidSignUpField(errors) {
-    const firstInvalidField = Object.keys(errors)[0];
+  const firstInvalidField = Object.keys(errors)[0];
 
-    document.getElementById(firstInvalidField)?.focus();
+  document.getElementById(firstInvalidField)?.focus();
 }
 
 /**
@@ -107,13 +107,13 @@ function focusFirstInvalidSignUpField(errors) {
  * @returns {void}
  */
 function handleSignUpFieldValidation(input, markTouched = false) {
-    if (markTouched) input.dataset.touched = "true";
+  if (markTouched) input.dataset.touched = "true";
 
-    if (input.id === "passwordField" || input.id === "confirmPasswordField") {
-        revalidateSignUpPasswords(input.form);
-    } else if (input.dataset.touched === "true" || input.hasAttribute("aria-invalid")) {
-        validateSignUpField(input);
-    }
+  if (input.id === "passwordField" || input.id === "confirmPasswordField") {
+    revalidateSignUpPasswords(input.form);
+  } else if (input.dataset.touched === "true" || input.hasAttribute("aria-invalid")) {
+    validateSignUpField(input);
+  }
 }
 
 /**
@@ -123,12 +123,12 @@ function handleSignUpFieldValidation(input, markTouched = false) {
  * @returns {void}
  */
 function revalidateSignUpPasswords(form) {
-    for (const fieldId of ["passwordField", "confirmPasswordField"]) {
-        const input = form.querySelector(`#${fieldId}`);
-        if (input.dataset.touched === "true" || input.hasAttribute("aria-invalid")) {
-            validateSignUpField(input);
-        }
+  for (const fieldId of ["passwordField", "confirmPasswordField"]) {
+    const input = form.querySelector(`#${fieldId}`);
+    if (input.dataset.touched === "true" || input.hasAttribute("aria-invalid")) {
+      validateSignUpField(input);
     }
+  }
 }
 
 /**
@@ -138,10 +138,10 @@ function revalidateSignUpPasswords(form) {
  * @returns {void}
  */
 function validateSignUpField(input) {
-    const message = getSignUpFieldError(input.id, getSignUpData());
+  const message = getSignUpFieldError(input.id, getSignUpData());
 
-    clearFormFieldError(input.form, input.id);
-    if (message) {
-        showFormFieldErrors(input.form, { [input.id]: message });
-    }
+  clearFormFieldError(input.form, input.id);
+  if (message) {
+    showFormFieldErrors(input.form, { [input.id]: message });
+  }
 }

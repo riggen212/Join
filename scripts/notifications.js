@@ -16,12 +16,12 @@ let notificationTimeout;
  * @returns {void}
  */
 function showNotification(message, containerIdOrType, type = "success", closeNotificationWithDialog) {
-    const options = getNotificationOptions(containerIdOrType, type);
-    const notification = getNotificationElement(options.containerId);
+  const options = getNotificationOptions(containerIdOrType, type);
+  const notification = getNotificationElement(options.containerId);
 
-    prepareNotification(notification, message, options.type);
-    displayNotification(notification, closeNotificationWithDialog);
-    announceNotification(notification.parentElement, message, options.type);
+  prepareNotification(notification, message, options.type);
+  displayNotification(notification, closeNotificationWithDialog);
+  announceNotification(notification.parentElement, message, options.type);
 }
 
 /**
@@ -32,14 +32,14 @@ function showNotification(message, containerIdOrType, type = "success", closeNot
  * @returns {{containerId: string | undefined, type: "success" | "error"}}
  */
 function getNotificationOptions(containerIdOrType, type) {
-    if (containerIdOrType === "error") {
-        return { containerId: undefined, type: "error" };
-    }
+  if (containerIdOrType === "error") {
+    return { containerId: undefined, type: "error" };
+  }
 
-    return {
-        containerId: containerIdOrType,
-        type: type === "error" ? "error" : "success",
-    };
+  return {
+    containerId: containerIdOrType,
+    type: type === "error" ? "error" : "success",
+  };
 }
 
 /**
@@ -49,18 +49,18 @@ function getNotificationOptions(containerIdOrType, type) {
  * @returns {HTMLElement} The notification element.
  */
 function getNotificationElement(containerId) {
-    let notification = document.getElementById("notification");
-    const container = getNotificationContainer(containerId);
+  let notification = document.getElementById("notification");
+  const container = getNotificationContainer(containerId);
 
-    if (notification) {
-        container.append(notification);
-        return notification;
-    }
-
-    notification = document.createElement("div");
-    notification.id = "notification";
+  if (notification) {
     container.append(notification);
     return notification;
+  }
+
+  notification = document.createElement("div");
+  notification.id = "notification";
+  container.append(notification);
+  return notification;
 }
 
 /**
@@ -72,13 +72,13 @@ function getNotificationElement(containerId) {
  * @returns {HTMLElement} The element that contains the notification.
  */
 function getNotificationContainer(containerId) {
-    const container = document.getElementById(containerId);
-    const openDialog = document.querySelector("dialog[open]");
-    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+  const container = document.getElementById(containerId);
+  const openDialog = document.querySelector("dialog[open]");
+  const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
 
-    if (openDialog) return openDialog;
-    if (!containerId || !isDesktop) return document.body;
-    return container ?? document.body;
+  if (openDialog) return openDialog;
+  if (!containerId || !isDesktop) return document.body;
+  return container ?? document.body;
 }
 
 /**
@@ -92,13 +92,13 @@ function getNotificationContainer(containerId) {
  * @returns {void}
  */
 function prepareNotification(notification, message, type) {
-    notification.classList.toggle("is-error", type === "error");
-    notification.classList.toggle("notification-task-created", message === "Task added to board");
-    notification.setAttribute("aria-hidden", "true");
-    notification.removeAttribute("role");
-    notification.removeAttribute("aria-live");
-    notification.removeAttribute("aria-atomic");
-    notification.textContent = message;
+  notification.classList.toggle("is-error", type === "error");
+  notification.classList.toggle("notification-task-created", message === "Task added to board");
+  notification.setAttribute("aria-hidden", "true");
+  notification.removeAttribute("role");
+  notification.removeAttribute("aria-live");
+  notification.removeAttribute("aria-atomic");
+  notification.textContent = message;
 }
 
 /**
@@ -109,12 +109,12 @@ function prepareNotification(notification, message, type) {
  * @returns {void}
  */
 function displayNotification(notification, closeNotificationWithDialog) {
-    window.clearTimeout(notificationTimeout);
-    notification.onanimationend = null;
-    notification.classList.remove("is-visible", "is-closing");
-    void notification.offsetWidth;
-    notification.classList.add("is-visible");
-    notificationTimeout = window.setTimeout(() => closeNotification(notification, closeNotificationWithDialog), 1800);
+  window.clearTimeout(notificationTimeout);
+  notification.onanimationend = null;
+  notification.classList.remove("is-visible", "is-closing");
+  void notification.offsetWidth;
+  notification.classList.add("is-visible");
+  notificationTimeout = window.setTimeout(() => closeNotification(notification, closeNotificationWithDialog), 1800);
 }
 
 /**
@@ -127,18 +127,18 @@ function displayNotification(notification, closeNotificationWithDialog) {
  * @returns {void}
  */
 function closeNotification(notification = document.getElementById("notification"), closeNotificationWithDialog) {
-    if (!notification?.classList.contains("is-visible")) return;
+  if (!notification?.classList.contains("is-visible")) return;
 
-    if (closeNotificationWithDialog) {
-        closeNotificationWithDialog();
-        return;
-    }
+  if (closeNotificationWithDialog) {
+    closeNotificationWithDialog();
+    return;
+  }
 
-    notification.classList.add("is-closing");
-    notification.onanimationend = () => {
-        notification.classList.remove("is-visible", "is-closing");
-        notification.onanimationend = null;
-    };
+  notification.classList.add("is-closing");
+  notification.onanimationend = () => {
+    notification.classList.remove("is-visible", "is-closing");
+    notification.onanimationend = null;
+  };
 }
 
 /**
@@ -148,15 +148,15 @@ function closeNotification(notification = document.getElementById("notification"
  * @returns {void}
  */
 function showDialogNotification(dialog) {
-    const message = dialog.dataset.notification;
-    const containerId = dialog.dataset.notificationContainer;
-    const type = dialog.dataset.notificationType;
+  const message = dialog.dataset.notification;
+  const containerId = dialog.dataset.notificationContainer;
+  const type = dialog.dataset.notificationType;
 
-    if (!message) return;
-    delete dialog.dataset.notification;
-    delete dialog.dataset.notificationContainer;
-    delete dialog.dataset.notificationType;
-    showNotification(message, containerId, type);
+  if (!message) return;
+  delete dialog.dataset.notification;
+  delete dialog.dataset.notificationContainer;
+  delete dialog.dataset.notificationType;
+  showNotification(message, containerId, type);
 }
 
 /**
@@ -168,17 +168,17 @@ function showDialogNotification(dialog) {
  * @returns {void}
  */
 function announceNotification(container, message, type) {
-    const region = getNotificationAnnouncer(container, type);
-    region.textContent = "";
-    region.dataset.message = message;
+  const region = getNotificationAnnouncer(container, type);
+  region.textContent = "";
+  region.dataset.message = message;
 
-    requestAnimationFrame(() =>
-        requestAnimationFrame(() => {
-            if (region.isConnected && region.dataset.message === message) {
-                region.textContent = message;
-            }
-        }),
-    );
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      if (region.isConnected && region.dataset.message === message) {
+        region.textContent = message;
+      }
+    }),
+  );
 }
 
 /**
@@ -189,15 +189,15 @@ function announceNotification(container, message, type) {
  * @returns {HTMLElement} The live region used for announcements.
  */
 function getNotificationAnnouncer(container, type) {
-    let region = container.querySelector(`:scope > [data-notification-live="${type}"]`);
-    if (region) return region;
+  let region = container.querySelector(`:scope > [data-notification-live="${type}"]`);
+  if (region) return region;
 
-    region = document.createElement("div");
-    region.className = "visually-hidden";
-    region.dataset.notificationLive = type;
-    region.setAttribute("role", type === "error" ? "alert" : "status");
-    region.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
-    region.setAttribute("aria-atomic", "true");
-    container.append(region);
-    return region;
+  region = document.createElement("div");
+  region.className = "visually-hidden";
+  region.dataset.notificationLive = type;
+  region.setAttribute("role", type === "error" ? "alert" : "status");
+  region.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
+  region.setAttribute("aria-atomic", "true");
+  container.append(region);
+  return region;
 }

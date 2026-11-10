@@ -19,15 +19,15 @@ let loggedInUserEmail = null;
 async function initContacts() {
   setContactButtonsDisabled(true);
 
-    try {
-        if (!(await initializeCurrentUser())) return;
-        loggedInUserEmail = await getLoggedInUserEmail();
-        await loadAndRenderContacts();
-    } catch (error) {
-        showNotification("Contacts could not be loaded.", "error");
-    } finally {
-        setContactButtonsDisabled(false);
-    }
+  try {
+    if (!(await initializeCurrentUser())) return;
+    loggedInUserEmail = await getLoggedInUserEmail();
+    await loadAndRenderContacts();
+  } catch (error) {
+    showNotification("Contacts could not be loaded.", "error");
+  } finally {
+    setContactButtonsDisabled(false);
+  }
 }
 
 /**
@@ -37,9 +37,9 @@ async function initContacts() {
  * @throws {Error} If loading or rendering the contacts fails.
  */
 async function loadAndRenderContacts() {
-    const firebaseContacts = await getData(getContactPath());
-    Object.assign(contacts, firebaseContacts ?? {});
-    renderContactList(contacts);
+  const firebaseContacts = await getData(getContactPath());
+  Object.assign(contacts, firebaseContacts ?? {});
+  renderContactList(contacts);
 }
 
 /**
@@ -49,10 +49,10 @@ async function loadAndRenderContacts() {
  * @returns {void}
  */
 function renderContactList(contactDirectory) {
-    const container = document.getElementById("contact-groups");
-    const groups = groupContactsByInitial(contactDirectory);
+  const container = document.getElementById("contact-groups");
+  const groups = groupContactsByInitial(contactDirectory);
 
-    container.innerHTML = getContactGroupsHtml(groups, loggedInUserEmail);
+  container.innerHTML = getContactGroupsHtml(groups, loggedInUserEmail);
 }
 
 /**
@@ -97,9 +97,9 @@ function getContactGroupsHtml(contactGroups, loggedUserEmail) {
  * @returns {string} The HTML for the contact cards.
  */
 function getContactCardsHtml(contactEntries, loggedUserEmail) {
-    return contactEntries
-        .map(([contactId, contact]) => getContactCardTemplate(contactId, contact, loggedUserEmail))
-        .join("");
+  return contactEntries
+    .map(([contactId, contact]) => getContactCardTemplate(contactId, contact, loggedUserEmail))
+    .join("");
 }
 
 /**
@@ -108,13 +108,13 @@ function getContactCardsHtml(contactEntries, loggedUserEmail) {
  * @returns {void}
  */
 function addNewContact() {
-    const dialog = document.getElementById("contact");
+  const dialog = document.getElementById("contact");
 
-    if (!dialog.open) {
-        dialog.classList.remove("contact-edit");
-        dialog.innerHTML = renderAddContactTemplate();
-        openDialog("contact");
-    }
+  if (!dialog.open) {
+    dialog.classList.remove("contact-edit");
+    dialog.innerHTML = renderAddContactTemplate();
+    openDialog("contact");
+  }
 }
 
 /**
@@ -129,13 +129,13 @@ async function createContact(event) {
   const formValues = getValidContactFormValues(form);
   if (!formValues) return;
 
-    const contact = createContactData(formValues, contacts);
-    try {
-        await runWithDisabledContactButtons(() => saveNewContact(contact));
-        closeContactFormWithNotification(form, "Contact successfully created");
-    } catch (error) {
-        showNotification("Contact could not be created. Please try again.", "error");
-    }
+  const contact = createContactData(formValues, contacts);
+  try {
+    await runWithDisabledContactButtons(() => saveNewContact(contact));
+    closeContactFormWithNotification(form, "Contact successfully created");
+  } catch (error) {
+    showNotification("Contact could not be created. Please try again.", "error");
+  }
 }
 
 /**
@@ -147,11 +147,11 @@ async function createContact(event) {
  * @throws {Error} If ID generation, saving or updating the local view fails.
  */
 async function saveNewContact(contact) {
-    const contactId = crypto.randomUUID();
-    await putData(DB_CONTACTS + contactId, contact);
-    contacts[contactId] = contact;
-    renderContactList(contacts);
-    showContactById(contactId);
+  const contactId = crypto.randomUUID();
+  await putData(DB_CONTACTS + contactId, contact);
+  contacts[contactId] = contact;
+  renderContactList(contacts);
+  showContactById(contactId);
 }
 
 /**
@@ -162,13 +162,13 @@ async function saveNewContact(contact) {
  * @returns {Promise<void>} Resolves after saving, error handling or an early return.
  */
 async function saveContact(event) {
-    event.preventDefault();
-    const form = /** @type {HTMLFormElement} */ (event.currentTarget);
-    const selectedContact = getSelectedContactEntry();
-    const formValues = getValidContactFormValues(form);
-    if (!selectedContact || !formValues) return;
+  event.preventDefault();
+  const form = /** @type {HTMLFormElement} */ (event.currentTarget);
+  const selectedContact = getSelectedContactEntry();
+  const formValues = getValidContactFormValues(form);
+  if (!selectedContact || !formValues) return;
 
-    await handleSaveContact(form, formValues, selectedContact);
+  await handleSaveContact(form, formValues, selectedContact);
 }
 
 /**
@@ -181,14 +181,14 @@ async function saveContact(event) {
  * @returns {Promise<void>} Resolves after saving and confirmation or error handling.
  */
 async function handleSaveContact(form, formValues, selectedContact) {
-    const contact = { ...selectedContact.contact, ...formValues };
+  const contact = { ...selectedContact.contact, ...formValues };
 
-    try {
-        await runWithDisabledContactButtons(() => saveEditedContact(selectedContact.id, contact));
-        closeContactFormWithNotification(form, "Contact successfully updated");
-    } catch (error) {
-        showNotification("Contact could not be updated. Please try again.", "error");
-    }
+  try {
+    await runWithDisabledContactButtons(() => saveEditedContact(selectedContact.id, contact));
+    closeContactFormWithNotification(form, "Contact successfully updated");
+  } catch (error) {
+    showNotification("Contact could not be updated. Please try again.", "error");
+  }
 }
 
 /**
@@ -214,14 +214,14 @@ async function saveEditedContact(contactId, contact) {
  * @returns {Promise<void>}
  */
 async function deleteContact() {
-    const selectedContact = getSelectedContactEntry();
-    if (!selectedContact) return;
+  const selectedContact = getSelectedContactEntry();
+  if (!selectedContact) return;
 
-    try {
-        await runWithDisabledContactButtons(() => removeContact(selectedContact.id));
-    } catch (error) {
-        showNotification("Contact could not be deleted. Please try again.", "error");
-    }
+  try {
+    await runWithDisabledContactButtons(() => removeContact(selectedContact.id));
+  } catch (error) {
+    showNotification("Contact could not be deleted. Please try again.", "error");
+  }
 }
 
 /**
@@ -293,11 +293,11 @@ function closeDialogAfterContactDeletion(message) {
  * @returns {void}
  */
 function closeContactFormWithNotification(form, message) {
-    const dialog = form.closest("dialog");
+  const dialog = form.closest("dialog");
 
-    dialog.dataset.notification = message;
-    dialog.dataset.notificationContainer = "show-details";
-    dialog.requestClose();
+  dialog.dataset.notification = message;
+  dialog.dataset.notificationContainer = "show-details";
+  dialog.requestClose();
 }
 
 /**
@@ -307,13 +307,13 @@ function closeContactFormWithNotification(form, message) {
  * @returns {Promise<void>}
  */
 async function runWithDisabledContactButtons(request) {
-    setContactButtonsDisabled(true);
+  setContactButtonsDisabled(true);
 
-    try {
-        await request();
-    } finally {
-        setContactButtonsDisabled(false);
-    }
+  try {
+    await request();
+  } finally {
+    setContactButtonsDisabled(false);
+  }
 }
 
 /**
@@ -323,11 +323,11 @@ async function runWithDisabledContactButtons(request) {
  * @returns {void}
  */
 function setContactButtonsDisabled(isDisabled) {
-    const buttons = document.querySelectorAll(".contacts-content button, #contact button");
+  const buttons = document.querySelectorAll(".contacts-content button, #contact button");
 
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = isDisabled;
-    }
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].disabled = isDisabled;
+  }
 }
 
 /**
@@ -337,7 +337,7 @@ function setContactButtonsDisabled(isDisabled) {
  * @returns {string} The database path without the `.json` suffix.
  */
 function getContactPath(contactId) {
-    return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
+  return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
 }
 
 initContacts();

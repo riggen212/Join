@@ -1,159 +1,169 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <script src="../script.js" defer></script>
-        <script src="../scripts/notifications.js" defer></script>
-        <script src="../scripts/templates.js" defer></script>
-        <script src="../scripts/addTask/addTaskFieldControls.js" defer></script>
-        <script src="../scripts/addTask/addTaskAssigned.js" defer></script>
-        <script src="../scripts/addTask/addTaskSubtasks.js" defer></script>
-        <script src="../scripts/addTask/addTaskValidation.js" defer></script>
-        <script src="../scripts/addTask/addTaskForm.js" defer></script>
-        <script src="../scripts/addTask/addTask.js" defer></script>
-        <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
+    <script src="../script.js" defer></script>
+    <script src="../scripts/notifications.js" defer></script>
+    <script src="../scripts/templates.js" defer></script>
+    <script src="../scripts/addTask/addTaskFieldControls.js" defer></script>
+    <script src="../scripts/addTask/addTaskAssigned.js" defer></script>
+    <script src="../scripts/addTask/addTaskSubtasks.js" defer></script>
+    <script src="../scripts/addTask/addTaskValidation.js" defer></script>
+    <script src="../scripts/addTask/addTaskForm.js" defer></script>
+    <script src="../scripts/addTask/addTask.js" defer></script>
+    <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
 
-        <link rel="stylesheet" href="../styles/root.css" />
-        <link rel="stylesheet" href="../style.css" />
-        <link rel="stylesheet" href="../styles/utilities.css" />
-        <link rel="stylesheet" href="../styles/components/components.css" />
-        <link rel="stylesheet" href="../styles/components/forms.css" />
-        <link rel="stylesheet" href="../styles/components/dialogs.css" />
-        <link rel="stylesheet" href="../styles/login.css" />
-        <link rel="stylesheet" href="../styles/addTask/taskForm.css" />
-        <link rel="stylesheet" href="../styles/addTask/taskControls.css" />
-        <link rel="stylesheet" href="../styles/addTask/taskSubtasks.css" />
-        <link rel="stylesheet" href="../styles/addTask/addTask.css" />
-        <link rel="stylesheet" href="../styles/fonts.css" />
-        <link rel="stylesheet" href="../styles/board/board.css" />
+    <link rel="stylesheet" href="../styles/root.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../styles/utilities.css" />
+    <link rel="stylesheet" href="../styles/components/components.css" />
+    <link rel="stylesheet" href="../styles/components/forms.css" />
+    <link rel="stylesheet" href="../styles/components/dialogs.css" />
+    <link rel="stylesheet" href="../styles/login.css" />
+    <link rel="stylesheet" href="../styles/addTask/taskForm.css" />
+    <link rel="stylesheet" href="../styles/addTask/taskControls.css" />
+    <link rel="stylesheet" href="../styles/addTask/taskSubtasks.css" />
+    <link rel="stylesheet" href="../styles/addTask/addTask.css" />
+    <link rel="stylesheet" href="../styles/fonts.css" />
+    <link rel="stylesheet" href="../styles/board/board.css" />
 
-        <title>Join</title>
-    </head>
+    <title>Join</title>
+  </head>
 
-    <body onpageshow="checkLoginStateOnPageShow(event)" onmousedown="closeDropdownsOnOutsideClick(event)">
-        <header class="header">
-            <div class="header-wrapper d-flex-between">
-                <div>
-                    <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
-                    <p class="header-headline">Kanban Project Management Tool</p>
-                </div>
-
-                <div class="d-flex-align-center gap-lg">
-                    <a href="../pages/help.html" data-nav-link class="header-link">
-                        <img src="../assets/icons/help.svg" alt="Help" />
-                    </a>
-
-                    <button class="header-profile-initials-button" type="button" onclick="openDialog('dialog-profile')"
-                        aria-label="Open service links and log out"
-                        aria-haspopup="dialog"
-                        aria-controls="dialog-profile"
-                        aria-expanded="false"
-                    ></button>
-                </div>
-            </div>
-
-            <dialog
-                id="dialog-profile"
-                closedby="any"
-                oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-                onanimationend="closeProfileDialog(event)"
-                aria-label="Service links and log out"
-            >
-                <nav aria-label="Service links">
-                    <ul>
-                        <li>
-                            <a id="link-help-profile-dialog"
-                                href="../pages/help.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Help</a
-                            >
-                        </li>
-                        <li>
-                            <a
-                                href="../pages/legalNotice.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Legal Notice</a
-                            >
-                        </li>
-                        <li>
-                            <a
-                                href="../pages/privacyPolicy.html"
-                                data-nav-link
-                                class="link-navbar"
-                                onclick="event.target.closest('dialog').close()"
-                                >Privacy Policy</a
-                            >
-                        </li>
-                        <li>
-                            <a
-                                href="../index.html"
-                                class="link-navbar"
-                                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
-                                >Log out</a
-                            >
-                        </li>
-                    </ul>
-                </nav>
-            </dialog>
-        </header>
-
-        <div class="app-wrapper">
-            <nav class="navbar" aria-label="Main navigation">
-                <div class="navbar-wrapper">
-                    <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
-                    <ul class="navbar-links">
-                        <li>
-                            <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/summary.svg" alt="" />
-                                <span>Summary</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/addTask.html" data-nav-link class="link-navbar active" aria-current="page">
-                                <img src="../assets/icons/addTask.svg" alt="" />
-                                <span>Add Task</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/board.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/board.svg" alt="" />
-                                <span>Board</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/contacts.html" data-nav-link class="link-navbar">
-                                <img src="../assets/icons/contacts.svg" alt="" />
-                                <span>Contacts</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <footer>
-                    <ul class="navbar-links">
-                        <li>
-                            <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
-                                <span>Privacy Policy</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="../pages/legalNotice.html" data-nav-link class="link-navbar">
-                                <span>Legal notice</span>
-                            </a>
-                        </li>
-                    </ul>
-                </footer>
-            </nav>
-            <main class="board add-task-page">
-                <div class="board-inner add-task-inner"></div>
-            </main>
+  <body onpageshow="checkLoginStateOnPageShow(event)" onmousedown="closeDropdownsOnOutsideClick(event)">
+    <header class="header">
+      <div class="header-wrapper d-flex-between">
+        <div>
+          <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
+          <p class="header-headline">Kanban Project Management Tool</p>
         </div>
 
-        <div class="visually-hidden" data-notification-live="success" role="status" aria-live="polite" aria-atomic="true"></div>
-    </body>
+        <div class="d-flex-align-center gap-lg">
+          <a href="../pages/help.html" data-nav-link class="header-link">
+            <img src="../assets/icons/help.svg" alt="Help" />
+          </a>
+
+          <button
+            class="header-profile-initials-button"
+            type="button"
+            onclick="openDialog('dialog-profile')"
+            aria-label="Open service links and log out"
+            aria-haspopup="dialog"
+            aria-controls="dialog-profile"
+            aria-expanded="false"
+          ></button>
+        </div>
+      </div>
+
+      <dialog
+        id="dialog-profile"
+        closedby="any"
+        oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
+        onanimationend="closeProfileDialog(event)"
+        aria-label="Service links and log out"
+      >
+        <nav aria-label="Service links">
+          <ul>
+            <li>
+              <a
+                id="link-help-profile-dialog"
+                href="../pages/help.html"
+                data-nav-link
+                class="link-navbar"
+                onclick="event.target.closest('dialog').close()"
+                >Help</a
+              >
+            </li>
+            <li>
+              <a
+                href="../pages/legalNotice.html"
+                data-nav-link
+                class="link-navbar"
+                onclick="event.target.closest('dialog').close()"
+                >Legal Notice</a
+              >
+            </li>
+            <li>
+              <a
+                href="../pages/privacyPolicy.html"
+                data-nav-link
+                class="link-navbar"
+                onclick="event.target.closest('dialog').close()"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a
+                href="../index.html"
+                class="link-navbar"
+                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                >Log out</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </dialog>
+    </header>
+
+    <div class="app-wrapper">
+      <nav class="navbar" aria-label="Main navigation">
+        <div class="navbar-wrapper">
+          <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
+          <ul class="navbar-links">
+            <li>
+              <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/summary.svg" alt="" />
+                <span>Summary</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/addTask.html" data-nav-link class="link-navbar active" aria-current="page">
+                <img src="../assets/icons/addTask.svg" alt="" />
+                <span>Add Task</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/board.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/board.svg" alt="" />
+                <span>Board</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/contacts.html" data-nav-link class="link-navbar">
+                <img src="../assets/icons/contacts.svg" alt="" />
+                <span>Contacts</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <footer>
+          <ul class="navbar-links">
+            <li>
+              <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
+                <span>Privacy Policy</span>
+              </a>
+            </li>
+            <li>
+              <a href="../pages/legalNotice.html" data-nav-link class="link-navbar">
+                <span>Legal notice</span>
+              </a>
+            </li>
+          </ul>
+        </footer>
+      </nav>
+      <main class="board add-task-page">
+        <div class="board-inner add-task-inner"></div>
+      </main>
+    </div>
+
+    <div
+      class="visually-hidden"
+      data-notification-live="success"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+  </body>
 </html>

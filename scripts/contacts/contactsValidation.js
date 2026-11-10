@@ -6,17 +6,17 @@
  * @returns {ContactFormValues|null} The valid form values, or null on errors.
  */
 function getValidContactFormValues(form) {
-    const values = getContactFormValues(form);
-    const errors = getContactValidationErrors(values);
+  const values = getContactFormValues(form);
+  const errors = getContactValidationErrors(values);
 
-    renderContactValidationErrors(form, errors);
-    if (Object.keys(errors).length !== 0) {
-        const firstInvalidField = Object.keys(errors)[0];
-        form.querySelector(`[name="${firstInvalidField}"]`)?.focus();
-        return null;
-    }
+  renderContactValidationErrors(form, errors);
+  if (Object.keys(errors).length !== 0) {
+    const firstInvalidField = Object.keys(errors)[0];
+    form.querySelector(`[name="${firstInvalidField}"]`)?.focus();
+    return null;
+  }
 
-    return values;
+  return values;
 }
 
 /**
@@ -26,15 +26,15 @@ function getValidContactFormValues(form) {
  * @returns {ContactFormValues} The entered contact information.
  */
 function getContactFormValues(form) {
-    const formData = new FormData(form);
-    const name = String(formData.get("name")).trim();
+  const formData = new FormData(form);
+  const name = String(formData.get("name")).trim();
 
-    return {
-        name,
-        email: String(formData.get("email")).trim(),
-        phone: String(formData.get("phone")).trim(),
-        initials: getInitialsFromName(name),
-    };
+  return {
+    name,
+    email: String(formData.get("email")).trim(),
+    phone: String(formData.get("phone")).trim(),
+    initials: getInitialsFromName(name),
+  };
 }
 
 /**
@@ -44,15 +44,15 @@ function getContactFormValues(form) {
  * @returns {ContactValidationErrors} The validation errors by field name.
  */
 function getContactValidationErrors(contact) {
-    const errors = {};
-    const isValidPhone = /^[+\d\s()/-]+$/.test(contact.phone) && /\d/.test(contact.phone);
+  const errors = {};
+  const isValidPhone = /^[+\d\s()/-]+$/.test(contact.phone) && /\d/.test(contact.phone);
 
-    if (!contact.name) errors.name = "Please enter a name.";
-    if (!contact.email) errors.email = "Please enter an email address.";
-    else if (!isValidEmail(contact.email)) errors.email = "Please enter a valid email address.";
-    if (!contact.phone) errors.phone = "Please enter a phone number.";
-    else if (!isValidPhone) errors.phone = "Please enter a valid phone number.";
-    return errors;
+  if (!contact.name) errors.name = "Please enter a name.";
+  if (!contact.email) errors.email = "Please enter an email address.";
+  else if (!isValidEmail(contact.email)) errors.email = "Please enter a valid email address.";
+  if (!contact.phone) errors.phone = "Please enter a phone number.";
+  else if (!isValidPhone) errors.phone = "Please enter a valid phone number.";
+  return errors;
 }
 
 /**
@@ -62,7 +62,7 @@ function getContactValidationErrors(contact) {
  * @returns {boolean} Whether the email address matches the expected format.
  */
 function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 /**
@@ -73,10 +73,10 @@ function isValidEmail(email) {
  * @returns {void}
  */
 function renderContactValidationErrors(form, errors) {
-    ["name", "email", "phone"].forEach((fieldName) => {
-        const input = form.querySelector(`[name="${fieldName}"]`);
-        renderContactValidationError(input, errors[fieldName] ?? "");
-    });
+  ["name", "email", "phone"].forEach((fieldName) => {
+    const input = form.querySelector(`[name="${fieldName}"]`);
+    renderContactValidationError(input, errors[fieldName] ?? "");
+  });
 }
 
 /**
@@ -87,12 +87,12 @@ function renderContactValidationErrors(form, errors) {
  * @returns {void}
  */
 function renderContactValidationError(input, message) {
-    const wrapper = input.closest(".input-wrapper");
-    const error = input.form.querySelector(`#contact-${input.name}-error`);
+  const wrapper = input.closest(".input-wrapper");
+  const error = input.form.querySelector(`#contact-${input.name}-error`);
 
-    wrapper.classList.toggle("has-error", !!message);
-    input.setAttribute("aria-invalid", String(!!message));
-    error.textContent = message;
+  wrapper.classList.toggle("has-error", !!message);
+  input.setAttribute("aria-invalid", String(!!message));
+  error.textContent = message;
 }
 
 /**
@@ -102,9 +102,9 @@ function renderContactValidationError(input, message) {
  * @returns {void}
  */
 function validateContactField(input) {
-    if (input.name === "phone") input.value = input.value.replace(/[^\d+\s()/-]/g, "");
-    const values = getContactFormValues(input.form);
-    const errors = getContactValidationErrors(values);
+  if (input.name === "phone") input.value = input.value.replace(/[^\d+\s()/-]/g, "");
+  const values = getContactFormValues(input.form);
+  const errors = getContactValidationErrors(values);
 
-    renderContactValidationError(input, errors[input.name] ?? "");
+  renderContactValidationError(input, errors[input.name] ?? "");
 }

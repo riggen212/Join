@@ -5,7 +5,7 @@
  * @returns {string} HTML for the task card.
  */
 function getTaskCardTemplate(taskData) {
-    return `<article
+  return `<article
                 id="${taskData.id}"
                 data-task-id="${taskData.id}"
                 class="task-card"
@@ -60,7 +60,7 @@ function getTaskCardTemplate(taskData) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskCardUserBadgeTemplate(contact) {
-    return `<li class="badge-user ${contact.colorClass}" aria-label="${contact.name}">${contact.initials}</li>`;
+  return `<li class="badge-user ${contact.colorClass}" aria-label="${contact.name}">${contact.initials}</li>`;
 }
 
 /**
@@ -70,7 +70,7 @@ function getTaskCardUserBadgeTemplate(contact) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskCardEmptyBadge(columnName) {
-    return `<span class="board-column-feedback">No tasks ${columnName}</span>`;
+  return `<span class="board-column-feedback">No tasks ${columnName}</span>`;
 }
 
 /**
@@ -79,7 +79,7 @@ function getTaskCardEmptyBadge(columnName) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskCardMatchingBadge() {
-    return `<span class="board-column-feedback">No matching tasks</span>`;
+  return `<span class="board-column-feedback">No matching tasks</span>`;
 }
 
 /**
@@ -90,7 +90,7 @@ function getTaskCardMatchingBadge() {
  * @returns {string} HTML for the move popup.
  */
 function getTaskCardMovePopupTemplate(taskId, optionHtml) {
-    return `<div
+  return `<div
             id="move-task-${taskId}"
             class="task-move-popover"
             onbeforetoggle="positionTaskMoveMenu(event)"
@@ -116,7 +116,7 @@ function getTaskCardMovePopupTemplate(taskId, optionHtml) {
  * @returns {string} HTML for one destination option.
  */
 function getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, name) {
-    return `<li>
+  return `<li>
             <button
             type="button"
             class="task-move-option" data-status="${status}"
@@ -133,7 +133,7 @@ function getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, name) {
  * @returns {string} HTML for the task overlay.
  */
 function getTaskOverlayTemplate(taskData) {
-    return `<article class="task-overlay">
+  return `<article class="task-overlay">
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
@@ -199,7 +199,7 @@ function getTaskOverlayTemplate(taskData) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskOverlayUserBadgeTemplate(contact) {
-    return `<li>
+  return `<li>
             <span class="badge-user ${contact.colorClass}">${contact.initials}</span>
             <span>${contact.name}</span>
         </li>`;
@@ -214,7 +214,7 @@ function getTaskOverlayUserBadgeTemplate(contact) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
-    return `<li>
+  return `<li>
             <input
             type="checkbox"
             data-subtask-id="${subtaskId}"
@@ -231,7 +231,7 @@ function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
  * @returns {string} HTML for the close button.
  */
 function getAddTaskDialogCloseButtonTemplate() {
-    return `<button class="button button-close add-task-dialog-close" type="button"
+  return `<button class="button button-close add-task-dialog-close" type="button"
                 onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                 <img src="../assets/icons/cancel.svg" alt="">
             </button>`;
@@ -243,7 +243,7 @@ function getAddTaskDialogCloseButtonTemplate() {
  * @returns {string} HTML paragraph with error styling and role="alert".
  */
 function getBoardLoadingFailureTemplate() {
-    return `<p class="board-loading-error" role="alert">
+  return `<p class="board-loading-error" role="alert">
         Board could not be loaded. Please reload the page.
     </p>`;
 }

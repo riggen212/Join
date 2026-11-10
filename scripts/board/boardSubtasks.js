@@ -16,18 +16,18 @@ const pendingSubtaskUpdates = new Set();
  * @returns {Promise<void>} Resolves after saving, reverting, or ignoring a repeated change.
  */
 async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtaskId) {
-    const task = getTaskById(taskId, taskStatus);
-    const subtask = task.subtasks[subtaskId];
-    const key = `${taskId}/${subtaskId}`;
+  const task = getTaskById(taskId, taskStatus);
+  const subtask = task.subtasks[subtaskId];
+  const key = `${taskId}/${subtaskId}`;
 
-    if (pendingSubtaskUpdates.has(key)) {
-        checkbox.checked = Boolean(subtask.completed);
-        return;
-    }
+  if (pendingSubtaskUpdates.has(key)) {
+    checkbox.checked = Boolean(subtask.completed);
+    return;
+  }
 
-    const previousCompleted = Boolean(subtask.completed);
-    pendingSubtaskUpdates.add(key);
-    await saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask, previousCompleted);
+  const previousCompleted = Boolean(subtask.completed);
+  pendingSubtaskUpdates.add(key);
+  await saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask, previousCompleted);
 }
 
 /**
@@ -39,8 +39,8 @@ async function handleSubtaskCheckboxChange(checkbox, taskId, taskStatus, subtask
  * @returns {void}
  */
 function toggleSubtaskCompletion(taskId, task, subtask) {
-    subtask.completed = !subtask.completed;
-    updateTaskCardSubtasksState(taskId, task);
+  subtask.completed = !subtask.completed;
+  updateTaskCardSubtasksState(taskId, task);
 }
 
 /**
@@ -56,17 +56,17 @@ function toggleSubtaskCompletion(taskId, task, subtask) {
  * @returns {Promise<void>} Resolves after saving or reverting the change.
  */
 async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask, previousCompleted) {
-    try {
-        toggleSubtaskCompletion(taskId, task, subtask);
-        syncSubtaskCheckboxes(checkbox, taskId, subtaskId, subtask.completed, true);
-        await updateSubtaskInDatabase(taskId, subtaskId, { completed: subtask.completed });
-    } catch (error) {
-        revertSubtaskCompletion(checkbox, taskId, task, subtask, previousCompleted);
-        showNotification("Subtask could not be updated. Your change was reverted.", "error");
-    } finally {
-        pendingSubtaskUpdates.delete(`${taskId}/${subtaskId}`);
-        syncSubtaskCheckboxes(checkbox, taskId, subtaskId, subtask.completed, false);
-    }
+  try {
+    toggleSubtaskCompletion(taskId, task, subtask);
+    syncSubtaskCheckboxes(checkbox, taskId, subtaskId, subtask.completed, true);
+    await updateSubtaskInDatabase(taskId, subtaskId, { completed: subtask.completed });
+  } catch (error) {
+    revertSubtaskCompletion(checkbox, taskId, task, subtask, previousCompleted);
+    showNotification("Subtask could not be updated. Your change was reverted.", "error");
+  } finally {
+    pendingSubtaskUpdates.delete(`${taskId}/${subtaskId}`);
+    syncSubtaskCheckboxes(checkbox, taskId, subtaskId, subtask.completed, false);
+  }
 }
 
 /**
@@ -80,9 +80,9 @@ async function saveSubtaskCompletion(checkbox, taskId, task, subtaskId, subtask,
  * @returns {void}
  */
 function revertSubtaskCompletion(checkbox, taskId, task, subtask, previousCompleted) {
-    subtask.completed = previousCompleted;
-    checkbox.checked = previousCompleted;
-    updateTaskCardSubtasksState(taskId, task);
+  subtask.completed = previousCompleted;
+  checkbox.checked = previousCompleted;
+  updateTaskCardSubtasksState(taskId, task);
 }
 
 /**
@@ -96,17 +96,17 @@ function revertSubtaskCompletion(checkbox, taskId, task, subtask, previousComple
  * @returns {void}
  */
 function syncSubtaskCheckboxes(checkbox, taskId, subtaskId, completed, disabled) {
-    const dialog = document.getElementById("dialog-task");
-    const currentCheckbox =
-        dialog?.dataset.taskId === taskId
-            ? dialog.querySelector(`input[data-subtask-id="${CSS.escape(subtaskId)}"]`)
-            : null;
+  const dialog = document.getElementById("dialog-task");
+  const currentCheckbox =
+    dialog?.dataset.taskId === taskId
+      ? dialog.querySelector(`input[data-subtask-id="${CSS.escape(subtaskId)}"]`)
+      : null;
 
-    for (const input of new Set([checkbox, currentCheckbox])) {
-        if (!input) continue;
-        input.checked = completed;
-        input.disabled = disabled;
-    }
+  for (const input of new Set([checkbox, currentCheckbox])) {
+    if (!input) continue;
+    input.checked = completed;
+    input.disabled = disabled;
+  }
 }
 
 /**
@@ -117,13 +117,13 @@ function syncSubtaskCheckboxes(checkbox, taskId, subtaskId, completed, disabled)
  * @returns {void}
  */
 function updateTaskCardSubtasksState(taskId, task) {
-    const subtaskData = getSubtasksCardData(task);
-    const subtasksRef = getTaskCardSubtasksHtmlElement(taskId, task.status);
-    const subtasksSummaryRef = subtasksRef.querySelector(".task-card-subtasks-summary");
-    const subtasksProgressBarRef = subtasksRef.querySelector(".task-card-subtasks-progress-bar");
+  const subtaskData = getSubtasksCardData(task);
+  const subtasksRef = getTaskCardSubtasksHtmlElement(taskId, task.status);
+  const subtasksSummaryRef = subtasksRef.querySelector(".task-card-subtasks-summary");
+  const subtasksProgressBarRef = subtasksRef.querySelector(".task-card-subtasks-progress-bar");
 
-    subtasksSummaryRef.textContent = `${subtaskData.completedAmount}/${subtaskData.amount} Subtasks`;
-    subtasksProgressBarRef.style.width = `${subtaskData.progressInPercent}%`;
+  subtasksSummaryRef.textContent = `${subtaskData.completedAmount}/${subtaskData.amount} Subtasks`;
+  subtasksProgressBarRef.style.width = `${subtaskData.progressInPercent}%`;
 }
 
 /**
@@ -136,9 +136,9 @@ function updateTaskCardSubtasksState(taskId, task) {
  * or null if the card has no matching subtask element.
  */
 function getTaskCardSubtasksHtmlElement(taskId, taskStatus) {
-    const columnRef = document.querySelector(`[data-column-id="${taskStatus}"]`);
-    const taskCardRef = columnRef.querySelector(`[data-task-id="${taskId}"]`);
-    const subtaskRef = taskCardRef.querySelector(".task-card-subtasks");
+  const columnRef = document.querySelector(`[data-column-id="${taskStatus}"]`);
+  const taskCardRef = columnRef.querySelector(`[data-task-id="${taskId}"]`);
+  const subtaskRef = taskCardRef.querySelector(".task-card-subtasks");
 
-    return subtaskRef;
+  return subtaskRef;
 }

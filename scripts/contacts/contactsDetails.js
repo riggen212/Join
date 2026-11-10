@@ -8,18 +8,18 @@
  * @returns {void}
  */
 function showContactDetails(card) {
-    const contactDetails = document.getElementById("show-details");
-    const selectedContact = document.querySelector(".contact-card.is-selected");
+  const contactDetails = document.getElementById("show-details");
+  const selectedContact = document.querySelector(".contact-card.is-selected");
 
-    if (selectedContact === card) return hideContactDetails();
-    selectedContact?.classList.remove("is-selected");
-    card.classList.add("is-selected");
-    renderContactDetails(card.dataset.contactId);
-    restartContactDetailsAnimation(contactDetails);
-    contactDetails.classList.add("is-open");
-    focusContactDetailsControl(contactDetails);
-    document.documentElement.classList.add("contact-details-open");
-    document.body.classList.add("contact-details-open");
+  if (selectedContact === card) return hideContactDetails();
+  selectedContact?.classList.remove("is-selected");
+  card.classList.add("is-selected");
+  renderContactDetails(card.dataset.contactId);
+  restartContactDetailsAnimation(contactDetails);
+  contactDetails.classList.add("is-open");
+  focusContactDetailsControl(contactDetails);
+  document.documentElement.classList.add("contact-details-open");
+  document.body.classList.add("contact-details-open");
 }
 
 /**
@@ -29,13 +29,13 @@ function showContactDetails(card) {
  * @returns {void}
  */
 function renderContactDetails(contactId) {
-    const contact = contacts[contactId];
-    const contactDetails = document.getElementById("show-details");
+  const contact = contacts[contactId];
+  const contactDetails = document.getElementById("show-details");
 
-    if (!contact) return;
+  if (!contact) return;
 
-    contactDetails.dataset.contactId = contactId;
-    document.getElementById("contact-details-info").innerHTML = getContactDetailsTemplate(contact, loggedInUserEmail);
+  contactDetails.dataset.contactId = contactId;
+  document.getElementById("contact-details-info").innerHTML = getContactDetailsTemplate(contact, loggedInUserEmail);
 }
 
 /**
@@ -46,15 +46,15 @@ function renderContactDetails(contactId) {
  * @returns {void}
  */
 function restartContactDetailsAnimation(contactDetails) {
-    const animation = contactDetails
-        .querySelector(".contact-details-info")
-        .getAnimations()
-        .find((animation) => animation.animationName === "contact-details-slide-in");
+  const animation = contactDetails
+    .querySelector(".contact-details-info")
+    .getAnimations()
+    .find((animation) => animation.animationName === "contact-details-slide-in");
 
-    if (!animation) return;
+  if (!animation) return;
 
-    animation.currentTime = 0;
-    animation.play();
+  animation.currentTime = 0;
+  animation.play();
 }
 
 /**
@@ -65,16 +65,16 @@ function restartContactDetailsAnimation(contactDetails) {
  * @returns {void}
  */
 function focusContactDetailsControl(contactDetails) {
-    if (window.innerWidth < 1280) {
-        const backToListView = contactDetails.querySelector("button.button-close");
-        const contactList = document.getElementById("contact-groups");
-        backToListView.focus();
-        contactList.inert = true;
-    } else {
-        const editButton = document.getElementById("contact-actions").querySelector(".button-task-overlay");
-        editButton.focus({ preventScroll: true });
-        editButton.focus();
-    }
+  if (window.innerWidth < 1280) {
+    const backToListView = contactDetails.querySelector("button.button-close");
+    const contactList = document.getElementById("contact-groups");
+    backToListView.focus();
+    contactList.inert = true;
+  } else {
+    const editButton = document.getElementById("contact-actions").querySelector(".button-task-overlay");
+    editButton.focus({ preventScroll: true });
+    editButton.focus();
+  }
 }
 
 /**
@@ -84,9 +84,9 @@ function focusContactDetailsControl(contactDetails) {
  * @returns {void}
  */
 function showContactById(contactId) {
-    const contactCard = document.querySelector(`[data-contact-id="${contactId}"]`);
+  const contactCard = document.querySelector(`[data-contact-id="${contactId}"]`);
 
-    if (contactCard) showContactDetails(contactCard);
+  if (contactCard) showContactDetails(contactCard);
 }
 
 /**
@@ -96,8 +96,8 @@ function showContactById(contactId) {
  * @returns {void}
  */
 function markContactCardSelected(contactId) {
-    const card = document.querySelector(`[data-contact-id="${contactId}"]`);
-    card?.classList.add("is-selected");
+  const card = document.querySelector(`[data-contact-id="${contactId}"]`);
+  card?.classList.add("is-selected");
 }
 
 /**
@@ -109,10 +109,10 @@ function markContactCardSelected(contactId) {
  * @returns {void}
  */
 function handleContactCardKeydown(card, event) {
-    if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        showContactDetails(card);
-    }
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    showContactDetails(card);
+  }
 }
 
 /**
@@ -123,14 +123,14 @@ function handleContactCardKeydown(card, event) {
  * @returns {void}
  */
 function hideContactDetails() {
-    const contactDetails = document.getElementById("show-details");
-    const selectedContact = document.querySelector(".contact-card.is-selected");
+  const contactDetails = document.getElementById("show-details");
+  const selectedContact = document.querySelector(".contact-card.is-selected");
 
-    selectedContact?.classList.remove("is-selected");
+  selectedContact?.classList.remove("is-selected");
 
-    resetContactDetailsView(contactDetails);
+  resetContactDetailsView(contactDetails);
 
-    selectedContact?.focus();
+  selectedContact?.focus();
 }
 
 /**
@@ -140,16 +140,16 @@ function hideContactDetails() {
  * @returns {void}
  */
 function resetContactDetailsView(contactDetails) {
-    contactDetails.classList.remove("is-open");
-    document.documentElement.classList.remove("contact-details-open");
-    document.body.classList.remove("contact-details-open");
+  contactDetails.classList.remove("is-open");
+  document.documentElement.classList.remove("contact-details-open");
+  document.body.classList.remove("contact-details-open");
 
-    hideContactActions();
+  hideContactActions();
 
-    delete contactDetails.dataset.contactId;
-    
-    document.getElementById("contact-details-info").innerHTML = "";
-    document.getElementById("contact-groups").inert = false;
+  delete contactDetails.dataset.contactId;
+
+  document.getElementById("contact-details-info").innerHTML = "";
+  document.getElementById("contact-groups").inert = false;
 }
 
 /**
@@ -158,11 +158,11 @@ function resetContactDetailsView(contactDetails) {
  * @returns {void}
  */
 function hideContactActions() {
-    const actions = document.getElementById("contact-actions");
-    const menuButton = document.querySelector(".contact-details > .contact-add");
+  const actions = document.getElementById("contact-actions");
+  const menuButton = document.querySelector(".contact-details > .contact-add");
 
-    actions?.classList.remove("is-open");
-    menuButton?.setAttribute("aria-expanded", "false");
+  actions?.classList.remove("is-open");
+  menuButton?.setAttribute("aria-expanded", "false");
 }
 
 /**
@@ -171,13 +171,13 @@ function hideContactActions() {
  * @returns {void}
  */
 function setNewFocusOnFirstContactcard() {
-    const firstContactCard = document.getElementById("contact-groups").querySelector(".contact-card");
+  const firstContactCard = document.getElementById("contact-groups").querySelector(".contact-card");
 
-    if (firstContactCard) {
-        firstContactCard.focus();
-    } else {
-        document.getElementById("addNewContactButton").focus();
-    }
+  if (firstContactCard) {
+    firstContactCard.focus();
+  } else {
+    document.getElementById("addNewContactButton").focus();
+  }
 }
 
 /**
@@ -186,11 +186,11 @@ function setNewFocusOnFirstContactcard() {
  * @returns {ContactEntry|null} The selected contact entry.
  */
 function getSelectedContactEntry() {
-    const details = document.getElementById("show-details");
-    const contactId = details.dataset.contactId;
-    const contact = contacts[contactId];
+  const details = document.getElementById("show-details");
+  const contactId = details.dataset.contactId;
+  const contact = contacts[contactId];
 
-    return contact ? { id: contactId, contact } : null;
+  return contact ? { id: contactId, contact } : null;
 }
 
 /**
@@ -200,16 +200,16 @@ function getSelectedContactEntry() {
  * @returns {void}
  */
 function editContact() {
-    const dialog = document.getElementById("contact");
-    const actionsDialog = document.getElementById("dialog-edit-contact");
-    const selectedContact = getSelectedContactEntry();
+  const dialog = document.getElementById("contact");
+  const actionsDialog = document.getElementById("dialog-edit-contact");
+  const selectedContact = getSelectedContactEntry();
 
-    if (!selectedContact || dialog.open) return;
-    if (actionsDialog.open) actionsDialog.close();
+  if (!selectedContact || dialog.open) return;
+  if (actionsDialog.open) actionsDialog.close();
 
-    dialog.classList.add("contact-edit");
-    dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);
-    openDialog("contact");
+  dialog.classList.add("contact-edit");
+  dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);
+  openDialog("contact");
 }
 
 /**
@@ -220,12 +220,12 @@ function editContact() {
  * @returns {void}
  */
 function closeContactDialog(event) {
-    const dialog = event.currentTarget;
-    const pointMenuButton = document.getElementById("pointMenu");
+  const dialog = event.currentTarget;
+  const pointMenuButton = document.getElementById("pointMenu");
 
-    closeAnimatedDialog(event, "contact-closing");
+  closeAnimatedDialog(event, "contact-closing");
 
-    if (dialog.classList.contains("contact-edit") && !dialog.open) {
-        pointMenuButton.focus();
-    }
+  if (dialog.classList.contains("contact-edit") && !dialog.open) {
+    pointMenuButton.focus();
+  }
 }

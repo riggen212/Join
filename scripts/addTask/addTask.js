@@ -13,10 +13,10 @@ let isTaskSaving = false;
  * @returns {Promise<void>} Resolves after initialization, error handling, or an early return.
  */
 async function initAddTaskPage() {
-    const container = document.querySelector(".board-inner.add-task-inner");
-    if (!container) return;
+  const container = document.querySelector(".board-inner.add-task-inner");
+  if (!container) return;
 
-    await handleInitAddTaskPage(container);
+  await handleInitAddTaskPage(container);
 }
 
 /**
@@ -29,18 +29,18 @@ async function initAddTaskPage() {
  * @returns {Promise<void>} Resolves after initialization, error handling, or an early return.
  */
 async function handleInitAddTaskPage(container) {
-    try {
-        if (!(await initializeCurrentUser())) return;
-        container.innerHTML = renderAddTask();
+  try {
+    if (!(await initializeCurrentUser())) return;
+    container.innerHTML = renderAddTask();
 
-        await initAddTaskForm(
-            container.querySelector(".task-form-wrapper"),
-            new URLSearchParams(window.location.search).get("status") ?? "toDo",
-        );
-    } catch (error) {
-        container.innerHTML = `<p class="board-loading-error" role="alert">
+    await initAddTaskForm(
+      container.querySelector(".task-form-wrapper"),
+      new URLSearchParams(window.location.search).get("status") ?? "toDo",
+    );
+  } catch (error) {
+    container.innerHTML = `<p class="board-loading-error" role="alert">
         Task form could not be loaded. Please reload the page.</p>`;
-    }
+  }
 }
 
 /**
@@ -52,10 +52,10 @@ async function handleInitAddTaskPage(container) {
  * @returns {Promise<void>} Resolves after saving and post-save handling.
  */
 async function createTask(form) {
-    const task = getTaskFromForm(form);
-    setTaskSavingState(form, true);
+  const task = getTaskFromForm(form);
+  setTaskSavingState(form, true);
 
-    await handleCreateTask(form, task);
+  await handleCreateTask(form, task);
 }
 
 /**
@@ -67,18 +67,18 @@ async function createTask(form) {
  * @returns {Promise<void>} Resolves after saving and completion handling.
  */
 async function handleCreateTask(form, task) {
-    let taskWasCreated = false;
+  let taskWasCreated = false;
 
-    try {
-        const taskId = await saveNewTask(task);
-        if (taskId == false) return;
-        taskWasCreated = true;
-        completeTaskCreation(form, taskId, task);
-    } catch (error) {
-        showNotification("Task is created but couldn't be rendered. Please refresh the page.", "error");
-    } finally {
-        if (!taskWasCreated) setTaskSavingState(form, false);
-    }
+  try {
+    const taskId = await saveNewTask(task);
+    if (taskId == false) return;
+    taskWasCreated = true;
+    completeTaskCreation(form, taskId, task);
+  } catch (error) {
+    showNotification("Task is created but couldn't be rendered. Please refresh the page.", "error");
+  } finally {
+    if (!taskWasCreated) setTaskSavingState(form, false);
+  }
 }
 
 /**
@@ -89,15 +89,15 @@ async function handleCreateTask(form, task) {
  * @returns {Promise<TaskId|false>} The generated task ID, or false if creation fails.
  */
 async function saveNewTask(task) {
-    try {
-        const taskId = crypto.randomUUID();
-        await putData(DB_TASKS + taskId, task);
+  try {
+    const taskId = crypto.randomUUID();
+    await putData(DB_TASKS + taskId, task);
 
-        return taskId;
-    } catch (error) {
-        showNotification("Saving task to the database has failed.", "error");
-        return false;
-    }
+    return taskId;
+  } catch (error) {
+    showNotification("Saving task to the database has failed.", "error");
+    return false;
+  }
 }
 
 /**
@@ -110,8 +110,8 @@ async function saveNewTask(task) {
  * @throws {Error} If synchronous post-save processing fails.
  */
 function completeTaskCreation(form, taskId, task) {
-    form.dataset.taskCreated = "true";
-    finishTaskCreation(form, taskId, task);
+  form.dataset.taskCreated = "true";
+  finishTaskCreation(form, taskId, task);
 }
 
 /**
@@ -126,16 +126,16 @@ function completeTaskCreation(form, taskId, task) {
  * @throws {Error} If synchronous post-save processing fails.
  */
 function finishTaskCreation(form, taskId, task) {
-    const dialog = form.closest("dialog");
+  const dialog = form.closest("dialog");
 
-    if (dialog) {
-        updateBoardAfterTaskCreation(taskId, task);
-        dialog.dataset.notification = "Task added to board";
-        dialog.classList.add("dialog-task-closing");
-    } else {
-        showNotification("Task added to board");
-        setTimeout(goToBoard, 1200);
-    }
+  if (dialog) {
+    updateBoardAfterTaskCreation(taskId, task);
+    dialog.dataset.notification = "Task added to board";
+    dialog.classList.add("dialog-task-closing");
+  } else {
+    showNotification("Task added to board");
+    setTimeout(goToBoard, 1200);
+  }
 }
 
 /**
@@ -145,7 +145,7 @@ function finishTaskCreation(form, taskId, task) {
  * @returns {void}
  */
 function goToBoard() {
-    window.location.href = "./board.html?taskCreated=true";
+  window.location.href = "./board.html?taskCreated=true";
 }
 
 /**
@@ -156,11 +156,11 @@ function goToBoard() {
  * @returns {Promise<void>} Resolves after saving and board-update handling.
  */
 async function updateTask(form) {
-    const taskId = form.dataset.taskId;
-    const task = getTaskFromForm(form);
+  const taskId = form.dataset.taskId;
+  const task = getTaskFromForm(form);
 
-    setTaskSavingState(form, true);
-    await handleUpdateTask(form, taskId, task);
+  setTaskSavingState(form, true);
+  await handleUpdateTask(form, taskId, task);
 }
 
 /**
@@ -174,15 +174,15 @@ async function updateTask(form) {
  * @returns {Promise<void>} Resolves after saving and board-update handling.
  */
 async function handleUpdateTask(form, taskId, task) {
-    try {
-        let isTaskSaved = await saveUpdatedTask(taskId, task);
-        if (isTaskSaved) {
-            let isBoardUpdated = updateBoardAfterTaskEdit(taskId, task);
-            if (isBoardUpdated) showNotification("Task successfully updated.");
-        }
-    } finally {
-        setTaskSavingState(form, false);
+  try {
+    let isTaskSaved = await saveUpdatedTask(taskId, task);
+    if (isTaskSaved) {
+      let isBoardUpdated = updateBoardAfterTaskEdit(taskId, task);
+      if (isBoardUpdated) showNotification("Task successfully updated.");
     }
+  } finally {
+    setTaskSavingState(form, false);
+  }
 }
 
 /**
@@ -194,13 +194,13 @@ async function handleUpdateTask(form, taskId, task) {
  * @returns {Promise<boolean>} True if saving succeeds; false if the write fails.
  */
 async function saveUpdatedTask(taskId, task) {
-    try {
-        await putData(DB_TASKS + taskId, task);
-        return true;
-    } catch (error) {
-        showNotification("Saving task to the database has failed.", "error");
-        return false;
-    }
+  try {
+    await putData(DB_TASKS + taskId, task);
+    return true;
+  } catch (error) {
+    showNotification("Saving task to the database has failed.", "error");
+    return false;
+  }
 }
 
 initAddTaskPage();

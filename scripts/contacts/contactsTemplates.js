@@ -6,7 +6,7 @@
  * @returns {string} The complete contact group HTML.
  */
 function getContactGroupTemplate(initial, contactCardsHtml) {
-    return `
+  return `
         <section class="contact-group">
             <h2>${initial}</h2>
             ${contactCardsHtml}
@@ -23,9 +23,9 @@ function getContactGroupTemplate(initial, contactCardsHtml) {
  * @returns {string} The contact card HTML.
  */
 function getContactCardTemplate(contactId, contact, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
+  const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
-    return `
+  return `
         <article class="contact-card" data-contact-id="${contactId}" tabindex="0" role="button" onclick="showContactDetails(this)" onkeydown="handleContactCardKeydown(this, event)">
             <div class="badge-user ${contact.colorClass}">
                 <span>${contact.initials}</span>
@@ -47,9 +47,9 @@ function getContactCardTemplate(contactId, contact, loggedUserEmail) {
  * @returns {string} The contact details HTML.
  */
 function getContactDetailsTemplate(contact, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
+  const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
-    return `
+  return `
         <div>
             <div class="badge-user ${contact.colorClass}">
                 <span>${contact.initials}</span>
@@ -71,7 +71,7 @@ function getContactDetailsTemplate(contact, loggedUserEmail) {
  * @returns {string} The contact action buttons HTML.
  */
 function getContactActionsTemplate() {
-    return `
+  return `
         <div id="contact-actions">
             <button class="button button-task-overlay" onclick="editContact()">
                 <img src="../assets/icons/edit.svg" alt="">
@@ -91,7 +91,7 @@ function getContactActionsTemplate() {
  * @returns {string} The Add Contact dialog HTML.
  */
 function renderAddContactTemplate() {
-    return `<div>
+  return `<div>
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
@@ -168,7 +168,7 @@ function renderAddContactTemplate() {
  * @returns {string} The Edit Contact dialog HTML.
  */
 function renderEditContactTemplate(contact) {
-    return `<div>
+  return `<div>
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>

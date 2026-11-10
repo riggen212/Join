@@ -5,11 +5,11 @@
  * @returns {Promise<void>} Resolves after initialization or error handling.
  */
 async function initInfoPages() {
-    try {
-        await loadInfoPage();
-    } catch (error) {
-        showNotification("Page could not be loaded. Please reload the page.", "error");
-    }
+  try {
+    await loadInfoPage();
+  } catch (error) {
+    showNotification("Page could not be loaded. Please reload the page.", "error");
+  }
 }
 
 /**
@@ -22,18 +22,18 @@ async function initInfoPages() {
  * @throws {Error} If loading the user or preparing the page fails.
  */
 async function loadInfoPage() {
-    const isHelpPage = window.location.pathname.endsWith("help.html");
-    loggedUserId = await loadCurrentUser(!isHelpPage);
+  const isHelpPage = window.location.pathname.endsWith("help.html");
+  loggedUserId = await loadCurrentUser(!isHelpPage);
 
-    if (!loggedUserId && isHelpPage) return;
-    document.querySelector(".header-link")?.classList.toggle("d-none", !loggedUserId);
+  if (!loggedUserId && isHelpPage) return;
+  document.querySelector(".header-link")?.classList.toggle("d-none", !loggedUserId);
 
-    if (!loggedUserId) {
-        setLoggedOutNavbar();
-        hideProfileButton();
-    }
+  if (!loggedUserId) {
+    setLoggedOutNavbar();
+    hideProfileButton();
+  }
 
-    document.querySelector(".navbar").classList.remove("navbar-loading");
+  document.querySelector(".navbar").classList.remove("navbar-loading");
 }
 
 /**
@@ -42,11 +42,11 @@ async function loadInfoPage() {
  * @returns {void}
  */
 function setLoggedOutNavbar() {
-    const navbar = document.querySelector(".navbar");
-    const navbarLinks = document.querySelectorAll(".navbar-wrapper .link-navbar");
-    const footer = document.querySelector("footer");
+  const navbar = document.querySelector(".navbar");
+  const navbarLinks = document.querySelectorAll(".navbar-wrapper .link-navbar");
+  const footer = document.querySelector("footer");
 
-    applyLoggedOutNavbarState(navbar, navbarLinks, footer);
+  applyLoggedOutNavbarState(navbar, navbarLinks, footer);
 }
 
 /**
@@ -59,17 +59,17 @@ function setLoggedOutNavbar() {
  * @returns {void}
  */
 function applyLoggedOutNavbarState(navbar, navbarLinks, footer) {
-    navbar.dataset.isLoggedIn = "false";
+  navbar.dataset.isLoggedIn = "false";
 
-    navbarLinks.forEach((link) => {
-        if (link.id === "nav-login") {
-            link.closest("li").classList.remove("d-none");
-        } else {
-            link.closest("li").classList.add("d-none");
-        }
-    });
+  navbarLinks.forEach((link) => {
+    if (link.id === "nav-login") {
+      link.closest("li").classList.remove("d-none");
+    } else {
+      link.closest("li").classList.add("d-none");
+    }
+  });
 
-    footer.classList.add("d-unset");
+  footer.classList.add("d-unset");
 }
 
 /**
@@ -78,8 +78,8 @@ function applyLoggedOutNavbarState(navbar, navbarLinks, footer) {
  * @returns {void}
  */
 function hideProfileButton() {
-    const profileButton = document.querySelector(".header-profile-initials-button");
-    profileButton.classList.add("d-none");
+  const profileButton = document.querySelector(".header-profile-initials-button");
+  profileButton.classList.add("d-none");
 }
 
 initInfoPages();

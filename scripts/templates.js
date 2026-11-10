@@ -1,4 +1,4 @@
-/**
+F; /**
  * Returns the HTML of the task form.
  *
  * @param {boolean} [isEditMode=false] - True renders the form for editing an existing task
@@ -134,9 +134,9 @@ function renderAddTask(isEditMode = false) {
 
                             <div class="submit-task-send">
                                 ${
-                                    isEditMode
-                                        ? ""
-                                        : `<button class="button button-bright" type="reset">
+                                  isEditMode
+                                    ? ""
+                                    : `<button class="button button-bright" type="reset">
                                     <span>Clear</span>
                                     <img src="../assets/icons/cancel.svg" alt="">
                                 </button>`
@@ -164,7 +164,7 @@ function renderAddTask(isEditMode = false) {
  * @returns {string} The HTML of the list entry.
  */
 function getAssignedOptionTemplate(contactId, contact, initials, isChecked, loggedUserEmail) {
-    const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
+  const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
   return `
         <li>
@@ -209,7 +209,7 @@ function getMoreBadgeTemplate(count) {
  * @returns {string} The HTML of the subtask.
  */
 function getSubtaskTemplate(subtaskId, title, completed) {
-    return `
+  return `
         <li class="subtask-item" data-subtask-id="${subtaskId}" data-completed="${completed}">
             <span class="subtask-title" onclick="editSubtask(this)">${title}</span>
             <div class="subtask-actions">

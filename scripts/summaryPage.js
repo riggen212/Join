@@ -1,4 +1,4 @@
-/**
+F; /**
  * Loads the current user and tasks, then updates the summary page.
  * Displays and announces a notification if initialization fails.
  * Stops initialization if no valid user is available.
@@ -6,18 +6,18 @@
  * @returns {Promise<void>}
  */
 async function initSummary() {
-    try {
-        showAnimationLogin();
-        if (!(await initializeCurrentUser())) return;
-        
-        const user = await getData(DB_USERS, loggedUserId);
-        const tasks = await loadTasks();
-        const today = getLocalDate();
+  try {
+    showAnimationLogin();
+    if (!(await initializeCurrentUser())) return;
 
-        updateSummary(user, tasks, today);
-    } catch (error) {
-        showNotification("Summary could not be loaded. Please try again.", "error");
-    }
+    const user = await getData(DB_USERS, loggedUserId);
+    const tasks = await loadTasks();
+    const today = getLocalDate();
+
+    updateSummary(user, tasks, today);
+  } catch (error) {
+    showNotification("Summary could not be loaded. Please try again.", "error");
+  }
 }
 
 /**
@@ -27,16 +27,16 @@ async function initSummary() {
  * @returns {void}
  */
 function showAnimationLogin() {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("animation") !== "true") return;
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("animation") !== "true") return;
 
-    removeAnimationParameter(url);
+  removeAnimationParameter(url);
 
-    if (window.innerWidth < 1280) {
-        startMobileAnimation();
-    } else {
-        finishMobileAnimation();
-    }
+  if (window.innerWidth < 1280) {
+    startMobileAnimation();
+  } else {
+    finishMobileAnimation();
+  }
 }
 
 /**
@@ -46,8 +46,8 @@ function showAnimationLogin() {
  * @returns {void}
  */
 function removeAnimationParameter(url) {
-    url.searchParams.delete("animation");
-    window.history.replaceState(window.history.state, "", url.toString());
+  url.searchParams.delete("animation");
+  window.history.replaceState(window.history.state, "", url.toString());
 }
 
 /**
@@ -58,14 +58,14 @@ function removeAnimationParameter(url) {
  * @returns {void}
  */
 function startMobileAnimation() {
-    const animationIn = document.getElementById("login-animation-on");
-    const animationOut = document.getElementById("login-animation-out");
+  const animationIn = document.getElementById("login-animation-on");
+  const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.add("animation-in");
-    animationOut.classList.add("animation-out");
+  animationIn.classList.add("animation-in");
+  animationOut.classList.add("animation-out");
 
-    lockSummaryDuringGreeting();
-    setTimeout(finishMobileAnimation, 4000);
+  lockSummaryDuringGreeting();
+  setTimeout(finishMobileAnimation, 4000);
 }
 
 /**
@@ -75,13 +75,13 @@ function startMobileAnimation() {
  * @returns {void}
  */
 function lockSummaryDuringGreeting() {
-    const greeting = document.getElementById("login-animation-out");
-    const animation = greeting.getAnimations().find((animation) => animation.animationName === "greetingFadeOut");
-    if (!animation) return;
-    const elements = document.querySelectorAll(".header, .navbar, .section-container");
-    elements.forEach((element) => (element.inert = true));
-    const unlock = () => elements.forEach((element) => (element.inert = false));
-    animation.finished.then(unlock, unlock);
+  const greeting = document.getElementById("login-animation-out");
+  const animation = greeting.getAnimations().find((animation) => animation.animationName === "greetingFadeOut");
+  if (!animation) return;
+  const elements = document.querySelectorAll(".header, .navbar, .section-container");
+  elements.forEach((element) => (element.inert = true));
+  const unlock = () => elements.forEach((element) => (element.inert = false));
+  animation.finished.then(unlock, unlock);
 }
 
 /**
@@ -90,13 +90,13 @@ function lockSummaryDuringGreeting() {
  * @returns {void}
  */
 function finishMobileAnimation() {
-    const animationIn = document.getElementById("login-animation-on");
-    const animationOut = document.getElementById("login-animation-out");
+  const animationIn = document.getElementById("login-animation-on");
+  const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.remove("animation-in");
-    animationOut.classList.remove("animation-out");
+  animationIn.classList.remove("animation-in");
+  animationOut.classList.remove("animation-out");
 
-    document.body.classList.add("mobile-animation-finished");
+  document.body.classList.add("mobile-animation-finished");
 }
 
 /**
@@ -106,7 +106,7 @@ function finishMobileAnimation() {
  * @throws {Error} If loading or parsing the task data fails.
  */
 async function loadTasks() {
-    return (await getData(DB_TASKS)) ?? {};
+  return (await getData(DB_TASKS)) ?? {};
 }
 
 /**
@@ -118,10 +118,10 @@ async function loadTasks() {
  * @returns {void}
  */
 function updateSummary(user, tasks, today) {
-    const taskSummaryData = getTaskSummaryData(tasks, today);
-    const greeting = getGreetingByTime();
+  const taskSummaryData = getTaskSummaryData(tasks, today);
+  const greeting = getGreetingByTime();
 
-    updateSummaryHtml(user, taskSummaryData, greeting);
+  updateSummaryHtml(user, taskSummaryData, greeting);
 }
 
 /**
@@ -132,13 +132,13 @@ function updateSummary(user, tasks, today) {
  * @returns {TaskSummaryData} The complete task summary.
  */
 function getTaskSummaryData(tasks, today) {
-    const upcomingDeadline = getUpcomingDeadline(tasks, today);
-    const taskSummaryData = calculateTaskSummaryData(tasks, upcomingDeadline, today);
+  const upcomingDeadline = getUpcomingDeadline(tasks, today);
+  const taskSummaryData = calculateTaskSummaryData(tasks, upcomingDeadline, today);
 
-    taskSummaryData.upcomingDeadline = upcomingDeadline;
-    taskSummaryData.upcomingDeadlineWritten = getDateWritten(upcomingDeadline);
+  taskSummaryData.upcomingDeadline = upcomingDeadline;
+  taskSummaryData.upcomingDeadlineWritten = getDateWritten(upcomingDeadline);
 
-    return taskSummaryData;
+  return taskSummaryData;
 }
 
 /**
@@ -152,18 +152,18 @@ function getTaskSummaryData(tasks, today) {
  * @returns {TaskSummaryCounts} The calculated task counts.
  */
 function calculateTaskSummaryData(tasks, upcomingDeadline, today) {
-    const taskSummaryData = {};
+  const taskSummaryData = {};
 
-    Object.values(tasks).forEach((task) => {
-        taskSummaryData[task.status] = (taskSummaryData[task.status] ?? 0) + 1;
-        taskSummaryData.board = (taskSummaryData.board ?? 0) + 1;
+  Object.values(tasks).forEach((task) => {
+    taskSummaryData[task.status] = (taskSummaryData[task.status] ?? 0) + 1;
+    taskSummaryData.board = (taskSummaryData.board ?? 0) + 1;
 
-        if (task.status !== "done" && (task.dueDate <= upcomingDeadline || task.dueDate < today)) {
-            taskSummaryData.urgent = (taskSummaryData.urgent ?? 0) + 1;
-        }
-    });
+    if (task.status !== "done" && (task.dueDate <= upcomingDeadline || task.dueDate < today)) {
+      taskSummaryData.urgent = (taskSummaryData.urgent ?? 0) + 1;
+    }
+  });
 
-    return taskSummaryData;
+  return taskSummaryData;
 }
 
 /**
@@ -175,15 +175,15 @@ function calculateTaskSummaryData(tasks, upcomingDeadline, today) {
  * @returns {string} The earliest qualifying date, or an empty string if no task qualifies.
  */
 function getUpcomingDeadline(tasks, today) {
-    let upcomingDeadline = "";
+  let upcomingDeadline = "";
 
-    Object.values(tasks).forEach((task) => {
-        if (task.status !== "done") {
-            upcomingDeadline = selectUpcomingDeadline(upcomingDeadline, task.dueDate, today);
-        }
-    });
+  Object.values(tasks).forEach((task) => {
+    if (task.status !== "done") {
+      upcomingDeadline = selectUpcomingDeadline(upcomingDeadline, task.dueDate, today);
+    }
+  });
 
-    return upcomingDeadline;
+  return upcomingDeadline;
 }
 
 /**
@@ -197,15 +197,15 @@ function getUpcomingDeadline(tasks, today) {
  * @returns {string} The selected deadline, or an empty string if no deadline qualifies.
  */
 function selectUpcomingDeadline(savedDeadline, newDueDate, currentDate) {
-    if (newDueDate < currentDate) {
-        return savedDeadline;
-    }
-
-    if (!savedDeadline || newDueDate < savedDeadline) {
-        return newDueDate;
-    }
-
+  if (newDueDate < currentDate) {
     return savedDeadline;
+  }
+
+  if (!savedDeadline || newDueDate < savedDeadline) {
+    return newDueDate;
+  }
+
+  return savedDeadline;
 }
 
 /**
@@ -218,18 +218,18 @@ function selectUpcomingDeadline(savedDeadline, newDueDate, currentDate) {
  * @returns {void}
  */
 function updateSummaryHtml(user, taskSummaryData, greeting) {
-    const summaryHtmlElementList = document.querySelectorAll("[data-summary]");
+  const summaryHtmlElementList = document.querySelectorAll("[data-summary]");
 
-    summaryHtmlElementList.forEach((element) => {
-        element.textContent = taskSummaryData[element.dataset.summary] ?? 0;
-        if (element.dataset.summary === "upcomingDeadline") {
-            updateSummaryDeadline(element, taskSummaryData);
-        }
-    });
+  summaryHtmlElementList.forEach((element) => {
+    element.textContent = taskSummaryData[element.dataset.summary] ?? 0;
+    if (element.dataset.summary === "upcomingDeadline") {
+      updateSummaryDeadline(element, taskSummaryData);
+    }
+  });
 
-    document.getElementById("greeting").textContent = user.type === "guest" ? `${greeting}!` : `${greeting},`;
+  document.getElementById("greeting").textContent = user.type === "guest" ? `${greeting}!` : `${greeting},`;
 
-    document.getElementById("userNames").textContent = user.type === "guest" ? "" : user.name;
+  document.getElementById("userNames").textContent = user.type === "guest" ? "" : user.name;
 }
 
 /**
@@ -241,12 +241,12 @@ function updateSummaryHtml(user, taskSummaryData, greeting) {
  * @returns {void}
  */
 function updateSummaryDeadline(element, taskSummaryData) {
-    const deadline = taskSummaryData.upcomingDeadline ?? "";
-    element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "-";
-    if (deadline) element.dateTime = deadline;
-    else element.removeAttribute("datetime");
-    element.setAttribute("aria-hidden", String(!deadline));
-    document.getElementById("summary-deadline-description").textContent = deadline ? "" : "No upcoming deadline.";
+  const deadline = taskSummaryData.upcomingDeadline ?? "";
+  element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "-";
+  if (deadline) element.dateTime = deadline;
+  else element.removeAttribute("datetime");
+  element.setAttribute("aria-hidden", String(!deadline));
+  document.getElementById("summary-deadline-description").textContent = deadline ? "" : "No upcoming deadline.";
 }
 
 /**
@@ -255,15 +255,15 @@ function updateSummaryDeadline(element, taskSummaryData) {
  * @returns {string} The greeting including a trailing comma.
  */
 function getGreetingByTime() {
-    const date = new Date();
+  const date = new Date();
 
-    if (date.getHours() >= 5 && date.getHours() < 12) {
-        return "Good morning";
-    } else if (date.getHours() >= 12 && date.getHours() < 18) {
-        return "Good afternoon";
-    }
+  if (date.getHours() >= 5 && date.getHours() < 12) {
+    return "Good morning";
+  } else if (date.getHours() >= 12 && date.getHours() < 18) {
+    return "Good afternoon";
+  }
 
-    return "Good evening";
+  return "Good evening";
 }
 
 /**
@@ -274,15 +274,15 @@ function getGreetingByTime() {
  * @returns {string} The local calendar date in YYYY-MM-DD format.
  */
 function getLocalDate(date) {
-    if (!date) {
-        date = new Date();
-    }
+  if (!date) {
+    date = new Date();
+  }
 
-    return [
-        date.getFullYear(),
-        String(date.getMonth() + 1).padStart(2, "0"),
-        String(date.getDate()).padStart(2, "0"),
-    ].join("-");
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
 }
 
 /**
@@ -293,15 +293,15 @@ function getLocalDate(date) {
  * @returns {string} The formatted date, or "-" for an empty input.
  */
 function getDateWritten(date) {
-    if (date.length === 0) {
-        return "-";
-    }
+  if (date.length === 0) {
+    return "-";
+  }
 
-    const [year, month, day] = date.split("-").map(Number);
-    const localDate = new Date(year, month - 1, day);
-    const monthName = localDate.toLocaleDateString("en-US", { month: "long" });
+  const [year, month, day] = date.split("-").map(Number);
+  const localDate = new Date(year, month - 1, day);
+  const monthName = localDate.toLocaleDateString("en-US", { month: "long" });
 
-    return `${monthName} ${localDate.getDate()}, ${localDate.getFullYear()}`;
+  return `${monthName} ${localDate.getDate()}, ${localDate.getFullYear()}`;
 }
 
 initSummary();

@@ -1,314 +1,314 @@
 .assigned-dropdown,
 .category-field {
-    position: relative;
-    min-width: 0;
-    padding: 0;
-    border: 0;
+  position: relative;
+  min-width: 0;
+  padding: 0;
+  border: 0;
 }
 
 #task-assigned:focus::placeholder {
-    color: transparent;
+  color: transparent;
 }
 
 .assigned-options,
 .category-options,
 .assigned-badges {
-    padding: 0;
-    list-style: none;
+  padding: 0;
+  list-style: none;
 }
 
 .assigned-options,
 .category-options {
-    position: absolute;
-    left: 0;
-    z-index: 2;
-    display: none;
-    width: 100%;
-    max-height: 280px;
-    overflow-y: auto;
-    background-color: var(--color-white);
-    border-radius: var(--border-radius-middle);
-    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  position: absolute;
+  left: 0;
+  z-index: 2;
+  display: none;
+  width: 100%;
+  max-height: 280px;
+  overflow-y: auto;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-middle);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
 }
 
 .assigned-options > li {
-    padding-block: 2px;
+  padding-block: 2px;
 }
 
 .category-field > .input-wrapper {
-    justify-content: space-between;
-    font-size: var(--font-input);
-    cursor: pointer;
-    color: var(--color-input-muted);
+  justify-content: space-between;
+  font-size: var(--font-input);
+  cursor: pointer;
+  color: var(--color-input-muted);
 }
 
 .category-field:has(input:checked) > .input-wrapper {
-    color: var(--color-black);
+  color: var(--color-black);
 }
 
 .category-options label {
-    display: block;
-    padding: var(--space-sm) var(--space-md);
-    font-size: var(--font-input);
-    cursor: pointer;
+  display: block;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-input);
+  cursor: pointer;
 }
 
 .category-options label:hover,
 .category-options label:focus-within {
-    background-color: var(--color-option-hover);
+  background-color: var(--color-option-hover);
 }
 
 .category-options input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }
 
 .assigned-option {
-    display: grid;
-    grid-template-columns: var(--size-badge-user) minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--space-md);
-    min-height: 56px;
-    padding-inline: var(--space-md);
-    font-size: var(--font-input);
-    cursor: pointer;
+  display: grid;
+  grid-template-columns: var(--size-badge-user) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-md);
+  min-height: 56px;
+  padding-inline: var(--space-md);
+  font-size: var(--font-input);
+  cursor: pointer;
 }
 
 .assigned-option:hover,
 .assigned-option:focus-within {
-    background-color: var(--color-option-hover);
+  background-color: var(--color-option-hover);
 }
 
 .assigned-option:has(input:checked) {
-    color: var(--color-white);
-    background-color: var(--background-dark-color);
-    border-radius: var(--border-radius-middle);
+  color: var(--color-white);
+  background-color: var(--background-dark-color);
+  border-radius: var(--border-radius-middle);
 }
 
 .assigned-option input:checked {
-    filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1);
 }
 
 .assigned-option input:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .assigned-dropdown:focus-within:not(.is-collapsed) .assigned-options,
 .category-field:has(> button[aria-expanded="true"]) .category-options {
-    display: block;
+  display: block;
 }
 
 .assigned-dropdown .input-wrapper img,
 .category-field .input-wrapper img {
-    width: 8px;
+  width: 8px;
 }
 
 .assigned-dropdown:focus-within:not(.is-collapsed) .input-wrapper img,
 .category-field:has(> button[aria-expanded="true"]) > button img {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .task-priority {
-    display: flex;
-    align-items: center;
-    gap: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
 
-    padding-inline: 4px;
+  padding-inline: 4px;
 }
 
 .task-priority > div {
-    flex: 1 1 0;
-    min-width: 0;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .task-priority button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-xs);
-    width: 100%;
-    min-height: 42px;
-    height: 56px;
-    padding-inline: var(--space-xs);
-    color: inherit;
-    background-color: var(--color-white);
-    border: none;
-    box-shadow: 0 0 4px rgb(0 0 0 / 40%);
-    font-size: var(--font-input);
-    font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  width: 100%;
+  min-height: 42px;
+  height: 56px;
+  padding-inline: var(--space-xs);
+  color: inherit;
+  background-color: var(--color-white);
+  border: none;
+  box-shadow: 0 0 4px rgb(0 0 0 / 40%);
+  font-size: var(--font-input);
+  font-weight: 400;
 }
 
 .task-priority button:is(.urgent, .medium, .low) {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .task-priority button:hover {
-    box-shadow: var(--button-hover-shadow);
+  box-shadow: var(--button-hover-shadow);
 }
 
 .task-priority button.urgent {
-    color: var(--color-white);
-    background-color: var(--color-error);
+  color: var(--color-white);
+  background-color: var(--color-error);
 }
 
 .task-priority button.medium {
-    color: var(--color-white);
-    background-color: #ffa800;
+  color: var(--color-white);
+  background-color: #ffa800;
 }
 
 .task-priority button.low {
-    color: var(--color-white);
-    background-color: #7ae229;
+  color: var(--color-white);
+  background-color: #7ae229;
 }
 
 .task-priority button.urgent img,
 .task-priority button.medium img,
 .task-priority button.low img {
-    filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1);
 }
 
 .input-date[type="date"] {
-    padding-right: 48px;
+  padding-right: 48px;
 
-    font: inherit;
-    font-size: var(--font-input);
+  font: inherit;
+  font-size: var(--font-input);
 
-    color: var(--color-input-muted);
-    -webkit-text-fill-color: var(--color-input-muted);
+  color: var(--color-input-muted);
+  -webkit-text-fill-color: var(--color-input-muted);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .task-priority,
 .assigned-dropdown,
 #task-category,
 #subtask {
-    width: 100%;
+  width: 100%;
 }
 
 .assigned-badges {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-xs);
-    height: calc(var(--size-badge-user) + var(--space-xs));
-    margin-top: var(--space-xs);
-    overflow-x: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  height: calc(var(--size-badge-user) + var(--space-xs));
+  margin-top: var(--space-xs);
+  overflow-x: auto;
 }
 
 .assigned-badges > .badge-user {
-    flex: 0 0 var(--size-badge-user);
+  flex: 0 0 var(--size-badge-user);
 }
 
 .assigned-dropdown {
-    margin-top: var(--space-xl);
+  margin-top: var(--space-xl);
 }
 
 .input-wrapper::placeholder {
-    color: var(--color-input-muted);
-    opacity: 1;
+  color: var(--color-input-muted);
+  opacity: 1;
 }
 
 .date-input-wrapper {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .date-picker-button {
-    position: absolute;
-    inset: 1px 1px 1px auto;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 46px;
-    padding: 0;
-    background-color: var(--color-white);
-    border: 0;
-    border-radius: 0 var(--border-radius-middle) var(--border-radius-middle) 0;
-    cursor: pointer;
+  position: absolute;
+  inset: 1px 1px 1px auto;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 46px;
+  padding: 0;
+  background-color: var(--color-white);
+  border: 0;
+  border-radius: 0 var(--border-radius-middle) var(--border-radius-middle) 0;
+  cursor: pointer;
 }
 
 .date-picker-button > img {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 @supports (-moz-appearance: none) {
-    .input-date[type="date"] {
-        padding-right: var(--space-md);
-    }
+  .input-date[type="date"] {
+    padding-right: var(--space-md);
+  }
 
-    .date-picker-button {
-        display: none;
-    }
+  .date-picker-button {
+    display: none;
+  }
 }
 
 .assigned-options > li[hidden] {
-    display: none;
+  display: none;
 }
 
 .assigned-dropdown > .input-wrapper {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .badge-user-more {
-    background-color: var(--background-dark-color);
+  background-color: var(--background-dark-color);
 }
 
 @media (max-width: 380px) {
-    .task-priority {
-        gap: var(--space-xs);
-    }
+  .task-priority {
+    gap: var(--space-xs);
+  }
 
-    .task-priority > div:not(:nth-child(2)) {
-        flex: 0.95 1 0;
-    }
+  .task-priority > div:not(:nth-child(2)) {
+    flex: 0.95 1 0;
+  }
 
-    .task-priority > div:nth-child(2) {
-        flex: 1.1 1 0;
-    }
+  .task-priority > div:nth-child(2) {
+    flex: 1.1 1 0;
+  }
 
-    .task-priority button {
-        gap: 4px;
-        padding-inline: 4px;
-        max-height: 40px;
-        white-space: nowrap;
-    }
+  .task-priority button {
+    gap: 4px;
+    padding-inline: 4px;
+    max-height: 40px;
+    white-space: nowrap;
+  }
 
-    .task-priority button img {
-        flex: 0 0 12px;
-        width: 14px;
-        height: 14px;
-    }
+  .task-priority button img {
+    flex: 0 0 12px;
+    width: 14px;
+    height: 14px;
+  }
 }
 
 @media screen and (min-width: 1280px) {
-    .task-priority {
-        justify-content: space-between;
-    }
+  .task-priority {
+    justify-content: space-between;
+  }
 
-    .task-priority > div {
-        max-width: 135px;
-    }
+  .task-priority > div {
+    max-width: 135px;
+  }
 
-    .category-field {
-        margin-bottom: var(--space-sm);
-    }
+  .category-field {
+    margin-bottom: var(--space-sm);
+  }
 
-    .assigned-dropdown {
-        margin-top: var(--space-lg);
-    }
+  .assigned-dropdown {
+    margin-top: var(--space-lg);
+  }
 
-    .task-priority,
-    .assigned-dropdown,
-    #task-category,
-    #subtask {
-        max-width: var(--task-fields-max-width);
-    }
+  .task-priority,
+  .assigned-dropdown,
+  #task-category,
+  #subtask {
+    max-width: var(--task-fields-max-width);
+  }
 }

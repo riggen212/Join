@@ -11,26 +11,26 @@ const localContacts = {};
  * @type {Board}
  */
 const board = {
-    toDo: {
-        id: "toDo-content",
-        name: "To Do",
-        tasks: {},
-    },
-    inProgress: {
-        id: "inProgress-content",
-        name: "In progress",
-        tasks: {},
-    },
-    awaitFeedback: {
-        id: "awaitFeedback-content",
-        name: "Await feedback",
-        tasks: {},
-    },
-    done: {
-        id: "done-content",
-        name: "Done",
-        tasks: {},
-    },
+  toDo: {
+    id: "toDo-content",
+    name: "To Do",
+    tasks: {},
+  },
+  inProgress: {
+    id: "inProgress-content",
+    name: "In progress",
+    tasks: {},
+  },
+  awaitFeedback: {
+    id: "awaitFeedback-content",
+    name: "Await feedback",
+    tasks: {},
+  },
+  done: {
+    id: "done-content",
+    name: "Done",
+    tasks: {},
+  },
 };
 
 /**
@@ -43,16 +43,16 @@ const board = {
  * @returns {Promise<void>} Resolves after rendering, error handling or an early return.
  */
 async function initBoard() {
-    try {
-        if (!(await initializeCurrentUser())) return;
-        
-        await loadBoardData();
-        renderBoard(Object.values(board));
-        announceCreatedTask();
-    } catch (error) {
-        const boardContainer = document.querySelector(".board");
-        boardContainer.innerHTML = getBoardLoadingFailureTemplate();
-    }
+  try {
+    if (!(await initializeCurrentUser())) return;
+
+    await loadBoardData();
+    renderBoard(Object.values(board));
+    announceCreatedTask();
+  } catch (error) {
+    const boardContainer = document.querySelector(".board");
+    boardContainer.innerHTML = getBoardLoadingFailureTemplate();
+  }
 }
 
 /**
@@ -63,16 +63,16 @@ async function initBoard() {
  * @returns {void}
  */
 function announceCreatedTask() {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("taskCreated") !== "true") return;
-    const result = document.getElementById("board-creation-result");
-    const button = document.querySelector("#board-header > button");
-    if (!result || !button) return;
-    url.searchParams.delete("taskCreated");
-    window.history.replaceState(window.history.state, "", url.href);
-    result.textContent = "Task added to board";
-    button.setAttribute("aria-label", "Task added to board. Add Task");
-    button.focus();
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("taskCreated") !== "true") return;
+  const result = document.getElementById("board-creation-result");
+  const button = document.querySelector("#board-header > button");
+  if (!result || !button) return;
+  url.searchParams.delete("taskCreated");
+  window.history.replaceState(window.history.state, "", url.href);
+  result.textContent = "Task added to board";
+  button.setAttribute("aria-label", "Task added to board. Add Task");
+  button.focus();
 }
 
 /**
@@ -82,13 +82,13 @@ function announceCreatedTask() {
  * @returns {void}
  */
 function renderBoard(columns) {
-    if (activeSearchTerm.length > 0) {
-        const filteredColumns = getFilteredColumns(columns);
+  if (activeSearchTerm.length > 0) {
+    const filteredColumns = getFilteredColumns(columns);
 
-        filteredColumns.forEach((column) => renderBoardColumn(column));
-    } else {
-        columns.forEach((column) => renderBoardColumn(column));
-    }
+    filteredColumns.forEach((column) => renderBoardColumn(column));
+  } else {
+    columns.forEach((column) => renderBoardColumn(column));
+  }
 }
 
 /**
@@ -99,15 +99,15 @@ function renderBoard(columns) {
  * @returns {void}
  */
 function renderBoardColumn(column) {
-    const columnContent = document.getElementById(column.id);
-    const getEmptyTaskBadgeTemplate = activeSearchTerm.length > 0 ? getTaskCardMatchingBadge : getTaskCardEmptyBadge;
+  const columnContent = document.getElementById(column.id);
+  const getEmptyTaskBadgeTemplate = activeSearchTerm.length > 0 ? getTaskCardMatchingBadge : getTaskCardEmptyBadge;
 
-    if (Object.keys(column.tasks).length === 0) {
-        columnContent.innerHTML = getEmptyTaskBadgeTemplate(column.name);
-    } else {
-        const columnContentHtml = getColumnContentHtml(column.tasks);
-        columnContent.innerHTML = columnContentHtml;
-    }
+  if (Object.keys(column.tasks).length === 0) {
+    columnContent.innerHTML = getEmptyTaskBadgeTemplate(column.name);
+  } else {
+    const columnContentHtml = getColumnContentHtml(column.tasks);
+    columnContent.innerHTML = columnContentHtml;
+  }
 }
 
 /**
@@ -117,16 +117,16 @@ function renderBoardColumn(column) {
  * @returns {string} HTML string containing the task cards.
  */
 function getColumnContentHtml(columnTasksObject) {
-    const tasksArray = Object.entries(columnTasksObject);
-    let columnContentHtml = "";
+  const tasksArray = Object.entries(columnTasksObject);
+  let columnContentHtml = "";
 
-    tasksArray.forEach(([taskId, task]) => {
-        const taskData = getTaskCardData(taskId, task);
+  tasksArray.forEach(([taskId, task]) => {
+    const taskData = getTaskCardData(taskId, task);
 
-        columnContentHtml += getTaskCardTemplate(taskData);
-    });
+    columnContentHtml += getTaskCardTemplate(taskData);
+  });
 
-    return columnContentHtml;
+  return columnContentHtml;
 }
 
 /**
@@ -137,13 +137,13 @@ function getColumnContentHtml(columnTasksObject) {
  * @returns {TaskCardData} Task data with subtask summary, assignee HTML and move popup HTML.
  */
 function getTaskCardData(taskId, task) {
-    return {
-        id: taskId,
-        task: task,
-        subtasksData: getSubtasksCardData(task),
-        assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
-        popupHtml: getTaskMovePopupHtml(taskId, task.status),
-    };
+  return {
+    id: taskId,
+    task: task,
+    subtasksData: getSubtasksCardData(task),
+    assigneesHtml: getAssigneesHtml(task, getTaskCardUserBadgeTemplate),
+    popupHtml: getTaskMovePopupHtml(taskId, task.status),
+  };
 }
 
 /**
@@ -156,13 +156,13 @@ function getTaskCardData(taskId, task) {
  * @returns {string} HTML string containing the assignees of the task.
  */
 function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
-    const maxVisible = 3;
-    const assignees = Object.keys(task.assignedTo ?? {}).filter((id) => localContacts[id]);
-    const isTaskCard = getUserBadgeTemplateFunction === getTaskCardUserBadgeTemplate;
-    const visibleAssignees = isTaskCard ? assignees.slice(0, maxVisible) : assignees;
-    const remainingCount = assignees.length - visibleAssignees.length;
+  const maxVisible = 3;
+  const assignees = Object.keys(task.assignedTo ?? {}).filter((id) => localContacts[id]);
+  const isTaskCard = getUserBadgeTemplateFunction === getTaskCardUserBadgeTemplate;
+  const visibleAssignees = isTaskCard ? assignees.slice(0, maxVisible) : assignees;
+  const remainingCount = assignees.length - visibleAssignees.length;
 
-    return getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeTemplateFunction);
+  return getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeTemplateFunction);
 }
 
 /**
@@ -175,17 +175,17 @@ function getAssigneesHtml(task, getUserBadgeTemplateFunction) {
  * @returns {string} HTML containing the visible assignee badges and optional remaining-count badge.
  */
 function getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeTemplateFunction) {
-    let assigneesHtml = "";
+  let assigneesHtml = "";
 
-    visibleAssignees.forEach((id) => {
-        assigneesHtml += getUserBadgeTemplateFunction(localContacts[id]);
-    });
+  visibleAssignees.forEach((id) => {
+    assigneesHtml += getUserBadgeTemplateFunction(localContacts[id]);
+  });
 
-    if (remainingCount > 0) {
-        assigneesHtml += getMoreBadgeTemplate(remainingCount);
-    }
+  if (remainingCount > 0) {
+    assigneesHtml += getMoreBadgeTemplate(remainingCount);
+  }
 
-    return assigneesHtml;
+  return assigneesHtml;
 }
 
 initBoard();
