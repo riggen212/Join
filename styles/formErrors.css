@@ -15,10 +15,7 @@
 }
 
 .input-wrapper.has-error,
+.input-wrapper.has-error:hover,
 .input-wrapper.has-error:focus-within {
     border-color: red;
-}
-
-.input-wrapper.has-error:focus-within {
-    box-shadow: 0 0 0 2px rgb(255 0 0 / 25%);
 }

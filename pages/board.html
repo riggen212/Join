@@ -25,7 +25,10 @@
         <link rel="shortcut icon" href="../assets/icons/logoDark.svg" type="image/x-icon" />
         <link rel="stylesheet" href="../styles/root.css" />
         <link rel="stylesheet" href="../style.css" />
-        <link rel="stylesheet" href="../styles/components.css" />
+        <link rel="stylesheet" href="../styles/utilities.css" />
+        <link rel="stylesheet" href="../styles/components/components.css" />
+        <link rel="stylesheet" href="../styles/components/forms.css" />
+        <link rel="stylesheet" href="../styles/components/dialogs.css" />
         <link rel="stylesheet" href="../styles/fonts.css" />
         <link rel="stylesheet" href="../styles/addTask/taskForm.css" />
         <link rel="stylesheet" href="../styles/addTask/taskControls.css" />
@@ -33,11 +36,12 @@
         <link rel="stylesheet" href="../styles/addTask/addTask.css" />
         <link rel="stylesheet" href="../styles/board/board.css" />
         <link rel="stylesheet" href="../styles/board/boardTask.css" />
+        <link rel="stylesheet" href="../styles/board/boardTaskEdit.css" />
         <title>Join</title>
     </head>
     <body onpageshow="checkLoginStateOnPageShow(event)" onmousedown="closeDropdownsOnOutsideClick(event)">
         <header class="header">
-            <div class="header-wrapper">
+            <div class="header-wrapper d-flex-between">
                 <div>
                     <img src="../assets/icons/logoDark.svg" alt="Dark join logo" class="header-logo" />
                     <p class="header-headline">Kanban Project Management Tool</p>
@@ -163,7 +167,7 @@
             <main class="board">
                 <div class="board-inner">
                     <header id="board-header">
-                        <h1>Board</h1>
+                        <h1 class="page-heading board-heading">Board</h1>
 
                         <p id="board-creation-result" class="visually-hidden"></p>
 
@@ -203,7 +207,7 @@
                     <div id="board-content">
                         <section data-column-id="toDo" class="board-column">
                             <header class="board-column-header">
-                                <h2>To do</h2>
+                                <h2 class="section-heading">To do</h2>
 
                                 <button
                                     class="button button-bright button-add button-add-bright-mobile"
@@ -230,7 +234,7 @@
 
                         <section data-column-id="inProgress" class="board-column">
                             <header class="board-column-header">
-                                <h2>In progress</h2>
+                                <h2 class="section-heading">In progress</h2>
 
                                 <button
                                     class="button button-bright button-add button-add-bright-mobile"
@@ -257,7 +261,7 @@
 
                         <section data-column-id="awaitFeedback" class="board-column">
                             <header class="board-column-header">
-                                <h2>Await feedback</h2>
+                                <h2 class="section-heading">Await feedback</h2>
 
                                 <button
                                     class="button button-bright button-add button-add-bright-mobile"
@@ -284,7 +288,7 @@
 
                         <section data-column-id="done" class="board-column">
                             <header class="board-column-header">
-                                <h2>Done</h2>
+                                <h2 class="section-heading">Done</h2>
                             </header>
 
                             <div

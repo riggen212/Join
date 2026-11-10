@@ -127,7 +127,9 @@ function hideContactDetails() {
     const selectedContact = document.querySelector(".contact-card.is-selected");
 
     selectedContact?.classList.remove("is-selected");
+
     resetContactDetailsView(contactDetails);
+
     selectedContact?.focus();
 }
 
@@ -141,8 +143,11 @@ function resetContactDetailsView(contactDetails) {
     contactDetails.classList.remove("is-open");
     document.documentElement.classList.remove("contact-details-open");
     document.body.classList.remove("contact-details-open");
+
     hideContactActions();
+
     delete contactDetails.dataset.contactId;
+    
     document.getElementById("contact-details-info").innerHTML = "";
     document.getElementById("contact-groups").inert = false;
 }

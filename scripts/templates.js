@@ -6,11 +6,11 @@
  * @returns {string} The task form HTML.
  */
 function renderAddTask(isEditMode = false) {
-    return `${isEditMode ? "" : '<h1 id="add-task-dialog-title">Add Task</h1>'}
+  return `${isEditMode ? "" : '<h1 id="add-task-dialog-title" class="page-heading">Add Task</h1>'}
                 <section class="add-task${isEditMode ? " edit-task" : ""}">
                     <form class="task-form-wrapper" novalidate onsubmit="submitTaskForm(event)" onreset="resetTaskForm(this)"
                         oninput="updateTaskForm(this)" onchange="updateTaskForm(this)" onkeydown="preventEnterSubmit(event)">
-                        <div class="add-task-form">
+                        <div class="add-task-form${isEditMode ? " scrollbar" : ""}">
                             <!-- Left column -->
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
@@ -28,8 +28,14 @@ function renderAddTask(isEditMode = false) {
                                 </div>
 
                                 <label for="task-due-date"> Due date<span class="required">*</span> </label>
+                                <div class="date-input-wrapper">
                                     <input class="input-wrapper no-flex input-date" id="task-due-date" name="dueDate" type="date"
-                                        aria-describedby="task-due-date-error" aria-required="true" onblur="validateDueDate(this.form)">
+                                        aria-describedby="task-due-date-error" aria-required="true" onblur="validateDueDate(this.form)" />
+                                    <button class="date-picker-button" type="button" onclick="openDatePicker(this)"
+                                        aria-label="Open date picker">
+                                        <img src="../assets/icons/calender.svg" alt="" />
+                                    </button>
+                                </div>
                                 <p class="field-error" id="task-due-date-error" aria-live="polite"></p>
                             </div>
 
@@ -160,7 +166,7 @@ function renderAddTask(isEditMode = false) {
 function getAssignedOptionTemplate(contactId, contact, initials, isChecked, loggedUserEmail) {
     const currentUserSuffix = getCurrentUserSuffix(contact.email, loggedUserEmail);
 
-    return `
+  return `
         <li>
             <label class="assigned-option">
                 <span class="badge-user ${contact.colorClass || ""}">${initials}</span>
@@ -181,7 +187,7 @@ function getAssignedOptionTemplate(contactId, contact, initials, isChecked, logg
  * @returns {string} The HTML of the badge.
  */
 function getAssignedBadgeTemplate(badgeClass, initials, name) {
-    return `<li class="${badgeClass}" aria-label="${name}">${initials}</li>`;
+  return `<li class="${badgeClass}" aria-label="${name}">${initials}</li>`;
 }
 
 /**
@@ -191,7 +197,7 @@ function getAssignedBadgeTemplate(badgeClass, initials, name) {
  * @returns {string} The HTML of the badge.
  */
 function getMoreBadgeTemplate(count) {
-    return `<li class="badge-user badge-user-more" aria-label="${count} more contacts">+${count}</li>`;
+  return `<li class="badge-user badge-user-more" aria-label="${count} more contacts">+${count}</li>`;
 }
 
 /**
@@ -231,6 +237,6 @@ function getSubtaskTemplate(subtaskId, title, completed) {
  * @returns {string} The HTML of the input.
  */
 function getSubtaskEditTemplate() {
-    return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
+  return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
                 onkeydown="handleSubtaskEditKeydown(event)" onblur="saveSubtaskEdit(this)">`;
 }

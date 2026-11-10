@@ -72,21 +72,16 @@ body#login:target footer {
     margin-inline: auto;
 }
 
-.sign-up-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-lg);
-
-    opacity: 0;
-}
-
+.sign-up-wrapper,
 .sign-up-wrapper a {
     display: flex;
     justify-content: center;
     align-items: center;
+}
 
-    text-decoration: none;
+.sign-up-wrapper {
+    gap: var(--space-lg);
+    opacity: 0;
 }
 
 .sing-up-position {
@@ -144,7 +139,7 @@ body#login:target footer {
     width: clamp(85px, calc(66.429px + 5.804vw), 150px);
     height: 3px;
     margin: 12px auto 0;
-    background-color: #29ABE2;
+    background-color: var(--color-accent);
 }
 
 .main-wrapper form {
@@ -159,29 +154,35 @@ body#login:target footer {
 .login-input-mail,
 .login-input-password {
     width: 100%;
-    min-height: clamp(48px, 45.71px + 0.71vw, 56px);
+    min-height: var(--size-input-height);
     padding-inline: var(--space-md);
 
     font-size: var(--font-input);
     font-weight: 400;
 
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-input-border);
     border-radius: var(--border-radius-middle);
 }
 
-.login-button-area {
+.login-button-area,
+.sign-up-button-area {
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: var(--space-xl);
 
-    padding-top: var(--space-lg);
     width: 100%;
 }
 
-.login-page footer {
+.login-button-area {
+    flex-wrap: wrap;
+    gap: var(--space-xl);
+
+    padding-top: var(--space-lg);
+}
+
+.login-page footer,
+.sign-up-page footer {
     position: fixed;
     bottom: 32px;
     left: 0;
@@ -191,14 +192,17 @@ body#login:target footer {
     justify-content: center;
     gap: var(--space-xl);
 
+    a {
+        font-size: 16px;
+        font-weight: 400;
+    }
+}
+
+.login-page footer {
     opacity: 0;
 
     a {
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: 400;
-
-        color: #000000;
+        color: var(--color-black);
     }
 }
 
@@ -336,8 +340,8 @@ body#login:target footer {
         opacity: 1;
     }
 
-    .sign-up-wrapper,
-    footer {
+    .login-page .sign-up-wrapper,
+    .login-page footer {
         opacity: 1;
         animation: none;
     }

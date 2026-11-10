@@ -6,6 +6,10 @@
     gap: 0;
 }
 
+.sign-up-page {
+    --sign-up-input-size: 40px;
+}
+
 .sign-up-page .landing-page {
     background-color: var(--background-bright-color);
 }
@@ -56,56 +60,36 @@
 }
 
 .sign-up-button-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
     padding-top: var(--space-lg);
-    width: 100%;
 
     text-align: center;
 }
 
 .sign-up-page footer {
-    position: fixed;
-    bottom: 32px;
-    left: 0;
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    gap: var(--space-xl);
-
     opacity: 1;
 
     a {
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: 400;
-
         color: #686868;
     }
 }
 
-.sign-up-page [data-form-error] {
+.sign-up-page [data-form-error],
+.sign-up-page #signup-policy-error {
     text-align: center;
 }
 
 .sign-up-page .input-wrapper,
 .sign-up-page .input-wrapper input {
-    min-height: 40px;
-    height: 40px;
+    min-height: var(--sign-up-input-size);
+    height: var(--sign-up-input-size);
 }
 
 .sign-up-page .input-wrapper button {
-    width: 40px;
-    height: 40px;
+    width: var(--sign-up-input-size);
+    height: var(--sign-up-input-size);
 }
 
 .sign-up-page .input-icon {
-    width: 40px;
-    height: 40px;
     padding: 14px;
 }
 
@@ -131,30 +115,24 @@
     min-width: 180px;
 }
 
-.sign-up-page #signup-policy-error {
-    text-align: center;
-}
-
 @media (min-width: 1280px) {
+    .sign-up-page {
+        --sign-up-input-size: 44px;
+    }
+
     .sign-up-page .main-wrapper {
         gap: var(--space-xl);
         padding-block: var(--space-xl);
     }
 
     .sign-up-page .input-wrapper {
-        min-height: clamp(48px, 45.71px + 0.71vw, 56px);
+        min-height: var(--size-input-height);
         height: auto;
     }
 
     .sign-up-page .input-wrapper input {
         min-height: 0;
-        height: clamp(48px, 45.71px + 0.71vw, 56px);
-    }
-
-    .sign-up-page .input-wrapper button,
-    .sign-up-page .input-icon {
-        width: 44px;
-        height: 44px;
+        height: var(--size-input-height);
     }
 
     .sign-up-page .input-icon {
@@ -162,7 +140,7 @@
     }
 
     .sign-up-page .button-show-password img {
-        width: clamp(18px, 17.43px + 0.18vw, 20px);
+        width: var(--size-input-icon);
         height: auto;
     }
 

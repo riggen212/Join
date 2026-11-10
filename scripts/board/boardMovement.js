@@ -200,6 +200,23 @@ function getTaskMovePopupHtml(taskId, currentStatus) {
 }
 
 /**
+ * Positions the mobile move menu at its task card's move button before opening.
+ * Uses viewport coordinates to position the fixed popover consistently across browsers.
+ *
+ * @param {ToggleEvent} event - The popover's beforetoggle event.
+ * @returns {void}
+ */
+function positionTaskMoveMenu(event) {
+    if (event.newState !== "open") return;
+    const menu = event.currentTarget;
+    const button = menu.closest(".task-card").querySelector(".button-move-task");
+    const bounds = button.getBoundingClientRect();
+
+    menu.style.top = `${bounds.top}px`;
+    menu.style.right = `${document.documentElement.clientWidth - bounds.right}px`;
+}
+
+/**
  * Moves a task from its popup, restores focus and announces a successful move.
  *
  * @param {TaskId} taskId - ID of the task to move.

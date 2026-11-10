@@ -10,14 +10,6 @@
     color: transparent;
 }
 
-.assigned-dropdown,
-.category-field {
-    position: relative;
-    min-width: 0;
-    padding: 0;
-    border: 0;
-}
-
 .assigned-options,
 .category-options,
 .assigned-badges {
@@ -34,7 +26,7 @@
     width: 100%;
     max-height: 280px;
     overflow-y: auto;
-    background-color: #fff;
+    background-color: var(--color-white);
     border-radius: var(--border-radius-middle);
     box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
 }
@@ -47,11 +39,11 @@
     justify-content: space-between;
     font-size: var(--font-input);
     cursor: pointer;
-    color: #757575;
+    color: var(--color-input-muted);
 }
 
-.category-field:has(input:checked)>.input-wrapper {
-    color: #000;
+.category-field:has(input:checked) > .input-wrapper {
+    color: var(--color-black);
 }
 
 .category-options label {
@@ -63,7 +55,7 @@
 
 .category-options label:hover,
 .category-options label:focus-within {
-    background-color: #f5f5f5;
+    background-color: var(--color-option-hover);
 }
 
 .category-options input {
@@ -86,11 +78,11 @@
 
 .assigned-option:hover,
 .assigned-option:focus-within {
-    background-color: #f5f5f5;
+    background-color: var(--color-option-hover);
 }
 
 .assigned-option:has(input:checked) {
-    color: #fff;
+    color: var(--color-white);
     background-color: var(--background-dark-color);
     border-radius: var(--border-radius-middle);
 }
@@ -100,7 +92,7 @@
 }
 
 .assigned-option input:focus-visible {
-    outline: 2px solid #29abe2;
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
 }
 
@@ -142,9 +134,9 @@
     height: 56px;
     padding-inline: var(--space-xs);
     color: inherit;
-    background-color: #fff;
+    background-color: var(--color-white);
     border: none;
-    box-shadow: 0 0 4px rgb(0, 0, 0, 0.4);
+    box-shadow: 0 0 4px rgb(0 0 0 / 40%);
     font-size: var(--font-input);
     font-weight: 400;
 }
@@ -158,17 +150,17 @@
 }
 
 .task-priority button.urgent {
-    color: #fff;
-    background-color: #ff3d00;
+    color: var(--color-white);
+    background-color: var(--color-error);
 }
 
 .task-priority button.medium {
-    color: #fff;
+    color: var(--color-white);
     background-color: #ffa800;
 }
 
 .task-priority button.low {
-    color: #fff;
+    color: var(--color-white);
     background-color: #7ae229;
 }
 
@@ -179,29 +171,18 @@
 }
 
 .input-date[type="date"] {
-    position: relative;
     padding-right: 48px;
 
     font: inherit;
     font-size: var(--font-input);
 
-    color: #757575;
-    background-image: url("../../assets/icons/calender.svg");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-size: 20px;
-    -webkit-text-fill-color: #757575;
+    color: var(--color-input-muted);
+    -webkit-text-fill-color: var(--color-input-muted);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 48px;
-    height: 100%;
-    margin: 0;
     opacity: 0;
-    cursor: pointer;
+    pointer-events: none;
 }
 
 .task-priority,
@@ -209,7 +190,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #task-category,
 #subtask {
     width: 100%;
-    max-width: none;
 }
 
 .assigned-badges {
@@ -230,13 +210,43 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .input-wrapper::placeholder {
-    color: #757575;
+    color: var(--color-input-muted);
     opacity: 1;
 }
 
-.date-input-wrapper .input-date {
+.date-input-wrapper {
     position: relative;
-    z-index: 0;
+    width: 100%;
+}
+
+.date-picker-button {
+    position: absolute;
+    inset: 1px 1px 1px auto;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 46px;
+    padding: 0;
+    background-color: var(--color-white);
+    border: 0;
+    border-radius: 0 var(--border-radius-middle) var(--border-radius-middle) 0;
+    cursor: pointer;
+}
+
+.date-picker-button > img {
+    width: 20px;
+    height: 20px;
+}
+
+@supports (-moz-appearance: none) {
+    .input-date[type="date"] {
+        padding-right: var(--space-md);
+    }
+
+    .date-picker-button {
+        display: none;
+    }
 }
 
 .assigned-options > li[hidden] {
@@ -281,7 +291,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 @media screen and (min-width: 1280px) {
     .task-priority {
         justify-content: space-between;
-        padding-inline: 4px;
     }
 
     .task-priority > div {
