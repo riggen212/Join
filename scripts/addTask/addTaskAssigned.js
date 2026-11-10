@@ -4,8 +4,6 @@
  */
 const MAX_VISIBLE_BADGES = 4;
 
-// ---------- Assigned contacts ----------
-
 /**
  * Loads contacts and the current user's email concurrently, then renders assignment options.
  * Propagates errors from either request or rendering without handling them locally.
@@ -41,6 +39,17 @@ function renderAssignedOptions(form, contacts, task, loggedUserEmail) {
     );
 
     renderAssignedBadges(form);
+}
+
+/**
+ * Returns the IDs of all contacts with a name, sorted by name.
+ *
+ * @param {ContactDirectory} contacts - Contacts indexed by ID.
+ * @returns {ContactId[]} IDs of named contacts in alphabetical order.
+ */
+function getSortedContactIds(contacts) {
+    const contactIds = Object.keys(contacts).filter((id) => contacts[id].name);
+    return contactIds.sort((a, b) => contacts[a].name.localeCompare(contacts[b].name));
 }
 
 /**
@@ -81,17 +90,6 @@ function getAssignedContactOptionHtml(contactId, contact, assignedTo, loggedUser
     const initials = contact.initials || getInitialsFromName(contact.name);
 
     return getAssignedOptionTemplate(contactId, contact, initials, assignedTo[contactId] === true, loggedUserEmail);
-}
-
-/**
- * Returns the IDs of all contacts with a name, sorted by name.
- *
- * @param {ContactDirectory} contacts - Contacts indexed by ID.
- * @returns {ContactId[]} IDs of named contacts in alphabetical order.
- */
-function getSortedContactIds(contacts) {
-    const contactIds = Object.keys(contacts).filter((id) => contacts[id].name);
-    return contactIds.sort((a, b) => contacts[a].name.localeCompare(contacts[b].name));
 }
 
 /**
@@ -146,23 +144,6 @@ function filterAssignedOptions(form) {
 }
 
 /**
- * Creates initials from the first two parts of a name.
- *
- * @param {string} name - The full name.
- * @returns {string} The initials, e.g. "AM" for "Anton Mayer".
- */
-function getInitialsFromName(name) {
-    const parts = name.trim().split(" ");
-    let initials = parts[0].charAt(0);
-
-    if (parts.length > 1) {
-        initials += parts[1].charAt(0);
-    }
-
-    return initials.toUpperCase();
-}
-
-/**
  * Opens or closes the "Assigned to" list when the field or arrow is clicked.
  * A click into the search field only closes the list if nothing is typed.
  * Uses is-collapsed to close the list while keeping focus on its search input.
@@ -180,54 +161,6 @@ function toggleAssignedDropdown(event) {
     event.preventDefault();
     searchInput.focus();
     field.classList.toggle("is-collapsed", wasOpen);
-}
-
-/**
- * Opens or closes the category list when the field is clicked.
- * Toggles aria-expanded while keeping focus on the category button.
- *
- * @param {MouseEvent} event - The mousedown event.
- * @returns {void}
- */
-function toggleCategoryDropdown(event) {
-    const button = event.currentTarget;
-    const field = button.closest("fieldset");
-    const wasExpanded = button.getAttribute("aria-expanded") === "true";
-
-    event.preventDefault();
-    button.focus();
-    setCategoryExpanded(field, !wasExpanded);
-}
-
-/**
- * Updates the category button's expanded state.
- *
- * @param {HTMLFieldSetElement} field - The category fieldset.
- * @param {boolean} expanded - Whether the category options are visible.
- * @returns {void}
- */
-function setCategoryExpanded(field, expanded) {
-    field.querySelector("button").setAttribute("aria-expanded", String(expanded));
-}
-
-/**
- * A dropdown is open while something inside it has the focus.
- * So it is opened by setting the focus and closed by removing it.
- *
- * @param {MouseEvent} event - The mousedown event.
- * @param {HTMLElement} focusElement - The element that gets the focus to open the dropdown.
- * @returns {void}
- */
-function toggleDropdown(event, focusElement) {
-    const dropdown = focusElement.closest("fieldset");
-
-    event.preventDefault();
-
-    if (dropdown.contains(document.activeElement)) {
-        document.activeElement.blur();
-    } else {
-        focusElement.focus();
-    }
 }
 
 /**
@@ -271,114 +204,19 @@ function closeAssignedOnEscape(event) {
 }
 
 /**
- * Closes an open dropdown when the user clicks somewhere outside of it.
+ * Returns the checked contacts, e.g. { contact1: true, contact3: true }.
  *
- * @param {MouseEvent} event - The mousedown event.
- * @returns {void}
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {Object.<ContactId, true>} Selected contact IDs mapped to true; empty if none are selected.
  */
-function closeDropdownsOnOutsideClick(event) {
-    const dropdowns = document.querySelectorAll(".assigned-dropdown, .category-field");
+function getAssignedContacts(form) {
+    const checkedBoxes = form.querySelectorAll('input[name="assignedTo"]:checked');
+    /** @type {Object.<ContactId, true>} */
+    const assignedTo = {};
 
-    for (let i = 0; i < dropdowns.length; i++) {
-        if (dropdowns[i].contains(document.activeElement) && !dropdowns[i].contains(event.target)) {
-            document.activeElement.blur();
-        }
-    }
-}
-
-/**
- * Shows the selected category in the field and closes the list.
- * Moves focus to the subtask input after selecting a category.
- * Keeps focus within the list when selection changes through arrow keys.
- * Closes the list after an option is activated through a click event.
- *
- * @param {Event} event - The change or click event of the category field.
- * @returns {void}
- */
-function selectTaskCategory(event) {
-    const field = event.currentTarget;
-    const selectedCategory = event.target;
-
-    if (!selectedCategory.matches('input[name="category"]')) return;
-
-    field.querySelector("button span").textContent = selectedCategory.value;
-    if (event.type === "click") {
-        field.form.querySelector("#subtask").focus();
-    }
-}
-
-/**
- * Moves focus between category options without selecting them.
- *
- * @param {KeyboardEvent} event - The category field's arrow-key event.
- * @returns {void}
- */
-function moveCategoryFocus(event) {
-    const options = Array.from(event.currentTarget.querySelectorAll('input[name="category"]'));
-    const index = options.indexOf(event.target);
-    const direction = ["ArrowDown", "ArrowRight"].includes(event.key) ? 1 : -1;
-    const nextIndex =
-        index < 0 ? (direction === 1 ? 0 : options.length - 1) : (index + direction + options.length) % options.length;
-
-    event.preventDefault();
-    event.stopPropagation();
-    options[nextIndex]?.focus();
-}
-
-/**
- * Closes the category options with Escape without closing the task dialog.
- *
- * @param {KeyboardEvent} event - The category field's Escape event.
- * @returns {void}
- */
-function closeCategoryOnEscape(event) {
-    const field = event.currentTarget;
-    const button = field.querySelector("button");
-    if (button.getAttribute("aria-expanded") !== "true") return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    button.focus();
-    setCategoryExpanded(field, false);
-}
-
-/**
- * Confirms the focused category option with Enter.
- * Moves focus with arrow keys without changing the selected category.
- * Closes the open category options with Escape and restores button focus.
- * Opens the category options when Enter is pressed on their button.
- * Also opens the category options when Space is pressed on their button.
- *
- * @param {KeyboardEvent} event - The category field's keydown event.
- * @returns {void}
- */
-function handleCategoryKeydown(event) {
-    if (event.key === "Escape") return closeCategoryOnEscape(event);
-    const arrowKeys = ["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft"];
-    if (arrowKeys.includes(event.key)) return moveCategoryFocus(event);
-    const buttonSpace = event.key === " " && event.target.matches("button");
-    if (event.key !== "Enter" && !buttonSpace) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.target.matches('input[name="category"]')) event.target.click();
-    else setCategoryExpanded(event.currentTarget, true);
-}
-
-/**
- * Activates the clicked priority button.
- *
- * @param {HTMLButtonElement} selectedButton - The clicked button.
- * @param {"urgent"|"medium"|"low"} priority - CSS state to apply to the selected priority button.
- * @returns {void}
- */
-function selectTaskPriority(selectedButton, priority) {
-    const buttons = selectedButton.closest(".task-priority").querySelectorAll("button");
-
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove("urgent", "medium", "low");
-        buttons[i].setAttribute("aria-pressed", buttons[i] === selectedButton);
+    for (let i = 0; i < checkedBoxes.length; i++) {
+        assignedTo[checkedBoxes[i].value] = true;
     }
 
-    selectedButton.classList.add(priority);
+    return assignedTo;
 }

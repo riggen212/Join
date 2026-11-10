@@ -54,6 +54,29 @@ function handleKeyboardTaskCardOperation(event, taskId, taskStatus) {
 }
 
 /**
+ * Calls startDraggingTask() to select the task.
+ * If draggingTask is set, enables keyboard movement, sets
+ * highlightedColumnIndex from taskStatus, and highlights
+ * the column identified by draggingTask.status.
+ *
+ * @param {TaskId} taskId - ID of the task to select.
+ * @param {Task["status"]} taskStatus - Current status of the task.
+ * @param {KeyboardEvent} event - The keydown event starting the movement.
+ * @returns {void}
+ */
+function startMovingTaskWithKeyboard(taskId, taskStatus, event) {
+    startDraggingTask(taskId, taskStatus, event);
+
+    if (draggingTask) {
+        isKeyboardMoveActive = true;
+        highlightedColumnIndex = Object.keys(board).findIndex((column) => column === taskStatus);
+
+        addHighlightDroppableColumn(draggingTask.status);
+        announceBoardMoveStatus(`Moving task. Selected column: ${board[taskStatus].name}.`);
+    }
+}
+
+/**
  * Prevents default behavior and ignores repeated Space, Enter,
  * ArrowRight, and ArrowLeft events during keyboard movement.
  * Passes all other events to keyboardMovement().
@@ -119,26 +142,41 @@ function getKeyboardActions(event, taskId) {
 }
 
 /**
- * Calls startDraggingTask() to select the task.
- * If draggingTask is set, enables keyboard movement, sets
- * highlightedColumnIndex from taskStatus, and highlights
- * the column identified by draggingTask.status.
+ * Increments highlightedColumnIndex and moves the highlight
+ * to that column without moving the task.
+ * Wraps from the last column to the first.
+ * Requires a valid highlightedColumnIndex and existing column elements.
  *
- * @param {TaskId} taskId - ID of the task to select.
- * @param {Task["status"]} taskStatus - Current status of the task.
- * @param {KeyboardEvent} event - The keydown event starting the movement.
  * @returns {void}
  */
-function startMovingTaskWithKeyboard(taskId, taskStatus, event) {
-    startDraggingTask(taskId, taskStatus, event);
+function moveToNextColumn() {
+    const columns = Object.keys(board);
+    removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
 
-    if (draggingTask) {
-        isKeyboardMoveActive = true;
-        highlightedColumnIndex = Object.keys(board).findIndex((column) => column === taskStatus);
+    highlightedColumnIndex = highlightedColumnIndex + 1;
+    if (highlightedColumnIndex >= columns.length) highlightedColumnIndex = 0;
 
-        addHighlightDroppableColumn(draggingTask.status);
-        announceBoardMoveStatus(`Moving task. Selected column: ${board[taskStatus].name}.`);
-    }
+    addHighlightDroppableColumn(columns[highlightedColumnIndex]);
+    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
+}
+
+/**
+ * Decrements highlightedColumnIndex and moves the highlight
+ * to that column without moving the task.
+ * Wraps from the first column to the last.
+ * Requires a valid highlightedColumnIndex and existing column elements.
+ *
+ * @returns {void}
+ */
+function moveToPreviousColumn() {
+    const columns = Object.keys(board);
+    removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
+
+    highlightedColumnIndex = highlightedColumnIndex - 1;
+    if (highlightedColumnIndex < 0) highlightedColumnIndex = columns.length - 1;
+
+    addHighlightDroppableColumn(columns[highlightedColumnIndex]);
+    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
 }
 
 /**
@@ -194,42 +232,4 @@ function finishMovingTaskWithKeyboard(taskId, message = "") {
     openButton.setAttribute("aria-describedby", message ? `${taskId}-move-result` : "task-keyboard-help");
     openButton.focus();
     if (alreadyFocused && message) announceBoardMoveStatus(message);
-}
-
-/**
- * Increments highlightedColumnIndex and moves the highlight
- * to that column without moving the task.
- * Wraps from the last column to the first.
- * Requires a valid highlightedColumnIndex and existing column elements.
- *
- * @returns {void}
- */
-function moveToNextColumn() {
-    const columns = Object.keys(board);
-    removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
-
-    highlightedColumnIndex = highlightedColumnIndex + 1;
-    if (highlightedColumnIndex >= columns.length) highlightedColumnIndex = 0;
-
-    addHighlightDroppableColumn(columns[highlightedColumnIndex]);
-    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
-}
-
-/**
- * Decrements highlightedColumnIndex and moves the highlight
- * to that column without moving the task.
- * Wraps from the first column to the last.
- * Requires a valid highlightedColumnIndex and existing column elements.
- *
- * @returns {void}
- */
-function moveToPreviousColumn() {
-    const columns = Object.keys(board);
-    removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
-
-    highlightedColumnIndex = highlightedColumnIndex - 1;
-    if (highlightedColumnIndex < 0) highlightedColumnIndex = columns.length - 1;
-
-    addHighlightDroppableColumn(columns[highlightedColumnIndex]);
-    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
 }

@@ -25,8 +25,6 @@ function initLoginPage() {
     }
 }
 
-initLoginPage();
-
 /**
  * Prevents native submission and starts a regular or guest login attempt.
  * Clears previous errors and blocks repeated submissions while pending.
@@ -46,37 +44,6 @@ async function login(event) {
 }
 
 /**
- * Updates the login form's busy state, buttons and loading announcement.
- *
- * @param {boolean} busy - Whether a login request is pending.
- * @returns {void}
- */
-function setLoginBusy(busy) {
-    const form = document.getElementById("emailField").form;
-    isLoginPending = busy;
-    form.setAttribute("aria-busy", String(busy));
-    form.querySelectorAll("button").forEach((button) => {
-        button.disabled = busy;
-    });
-    document.getElementById("login-status").textContent = busy ? "Logging in…" : "";
-}
-
-/**
- * Loads the guest account before storing its ID and redirecting to the summary page.
- *
- * @returns {Promise<void>} Resolves after initiating the redirect.
- * @throws {Error} If loading fails or the guest account does not exist.
- */
-async function guestLogin() {
-    const guestUser = await getData(DB_USERS + DB_GUEST_USER_ID);
-
-    if (!guestUser) throw new Error("Guest user does not exist.");
-
-    putToSessionStorage("userId", DB_GUEST_USER_ID);
-    window.location.href = "./pages/summaryPage.html?animation=true";
-}
-
-/**
  * Runs the login flow selected by the submitting button.
  * Displays an availability error if the selected login flow throws.
  * Restores controls and, if needed, submitter focus in finally.
@@ -93,6 +60,21 @@ async function handleLoginAttempt(event) {
     } finally {
         finishLoginAttempt(event.submitter);
     }
+}
+
+/**
+ * Loads the guest account before storing its ID and redirecting to the summary page.
+ *
+ * @returns {Promise<void>} Resolves after initiating the redirect.
+ * @throws {Error} If loading fails or the guest account does not exist.
+ */
+async function guestLogin() {
+    const guestUser = await getData(DB_USERS + DB_GUEST_USER_ID);
+
+    if (!guestUser) throw new Error("Guest user does not exist.");
+
+    putToSessionStorage("userId", DB_GUEST_USER_ID);
+    window.location.href = "./pages/summaryPage.html?animation=true";
 }
 
 /**
@@ -151,18 +133,6 @@ function validateLoginData(data) {
 }
 
 /**
- * Focuses the first login field without a value.
- *
- * @param {{email: string, password: string}} data - The entered credentials.
- * @returns {void}
- */
-function focusFirstInvalidLoginField(data) {
-    const fieldId = !data.email ? "emailField" : "passwortField";
-
-    document.getElementById(fieldId).focus();
-}
-
-/**
  * Checks whether email and password are filled.
  *
  * @param {{email: string, password: string}} data - The entered credentials.
@@ -174,6 +144,18 @@ function getLoginValidationError(data) {
     }
 
     return "";
+}
+
+/**
+ * Focuses the first login field without a value.
+ *
+ * @param {{email: string, password: string}} data - The entered credentials.
+ * @returns {void}
+ */
+function focusFirstInvalidLoginField(data) {
+    const fieldId = !data.email ? "emailField" : "passwortField";
+
+    document.getElementById(fieldId).focus();
 }
 
 /**
@@ -196,6 +178,22 @@ function showLoginError(message) {
 function showLoginConnectionError() {
     const form = document.getElementById("emailField").form;
     showFormError(form, "Login is currently unavailable. Please try again later.");
+}
+
+/**
+ * Updates the login form's busy state, buttons and loading announcement.
+ *
+ * @param {boolean} busy - Whether a login request is pending.
+ * @returns {void}
+ */
+function setLoginBusy(busy) {
+    const form = document.getElementById("emailField").form;
+    isLoginPending = busy;
+    form.setAttribute("aria-busy", String(busy));
+    form.querySelectorAll("button").forEach((button) => {
+        button.disabled = busy;
+    });
+    document.getElementById("login-status").textContent = busy ? "Logging in…" : "";
 }
 
 /**
@@ -274,3 +272,5 @@ function getPasswordIconPath(passwordInput) {
           ? "./assets/icons/eyeClose.svg"
           : "./assets/icons/showPassword.svg";
 }
+
+initLoginPage();

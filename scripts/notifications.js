@@ -1,3 +1,8 @@
+/**
+ * Timer used to close the currently displayed notification.
+ *
+ * @type {number|undefined}
+ */
 let notificationTimeout;
 
 /**
@@ -155,27 +160,6 @@ function showDialogNotification(dialog) {
 }
 
 /**
- * Returns a persistent live region within the notification's container.
- *
- * @param {HTMLElement} container - The active notification container.
- * @param {"success"|"error"} type - The notification type.
- * @returns {HTMLElement} The live region used for announcements.
- */
-function getNotificationAnnouncer(container, type) {
-    let region = container.querySelector(`:scope > [data-notification-live="${type}"]`);
-    if (region) return region;
-
-    region = document.createElement("div");
-    region.className = "visually-hidden";
-    region.dataset.notificationLive = type;
-    region.setAttribute("role", type === "error" ? "alert" : "status");
-    region.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
-    region.setAttribute("aria-atomic", "true");
-    container.append(region);
-    return region;
-}
-
-/**
  * Announces a notification independently of its visible display duration.
  *
  * @param {HTMLElement} container - The active notification container.
@@ -195,4 +179,25 @@ function announceNotification(container, message, type) {
             }
         }),
     );
+}
+
+/**
+ * Returns a persistent live region within the notification's container.
+ *
+ * @param {HTMLElement} container - The active notification container.
+ * @param {"success"|"error"} type - The notification type.
+ * @returns {HTMLElement} The live region used for announcements.
+ */
+function getNotificationAnnouncer(container, type) {
+    let region = container.querySelector(`:scope > [data-notification-live="${type}"]`);
+    if (region) return region;
+
+    region = document.createElement("div");
+    region.className = "visually-hidden";
+    region.dataset.notificationLive = type;
+    region.setAttribute("role", type === "error" ? "alert" : "status");
+    region.setAttribute("aria-live", type === "error" ? "assertive" : "polite");
+    region.setAttribute("aria-atomic", "true");
+    container.append(region);
+    return region;
 }

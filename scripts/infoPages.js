@@ -1,11 +1,11 @@
 /**
- * Initializes a meta page with navigation matching the user context.
+ * Initializes an information page with navigation matching the user context.
  * Hides the profile button for visitors and reveals the prepared navbar.
  * The help page is only available for logged in users, visitors are sent to the login page.
  *
  * @returns {Promise<void>}
  */
-async function initMeta() {
+async function initInfoPages() {
     const isHelpPage = window.location.pathname.endsWith("help.html");
     loggedUserId = await loadCurrentUser(!isHelpPage);
 
@@ -18,8 +18,6 @@ async function initMeta() {
 
     document.querySelector(".navbar").classList.remove("navbar-loading");
 }
-
-initMeta();
 
 /**
  * Selects the navigation elements and applies the logged-out layout.
@@ -66,3 +64,5 @@ function hideProfileButton() {
     const profileButton = document.querySelector(".header-profile-initials-button");
     profileButton.classList.add("d-none");
 }
+
+initInfoPages();

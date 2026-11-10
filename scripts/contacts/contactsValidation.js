@@ -1,4 +1,25 @@
 /**
+ * Validates a contact form and returns its values only when they are valid.
+ * Focuses the first invalid field when validation errors are found.
+ *
+ * @param {HTMLFormElement} form - The submitted contact form.
+ * @returns {ContactFormValues|null} The valid form values, or null on errors.
+ */
+function getValidContactFormValues(form) {
+    const values = getContactFormValues(form);
+    const errors = getContactValidationErrors(values);
+
+    renderContactValidationErrors(form, errors);
+    if (Object.keys(errors).length !== 0) {
+        const firstInvalidField = Object.keys(errors)[0];
+        form.querySelector(`[name="${firstInvalidField}"]`)?.focus();
+        return null;
+    }
+
+    return values;
+}
+
+/**
  * Reads and returns the values of a contact form.
  *
  * @param {HTMLFormElement} form - The submitted contact form.
@@ -12,7 +33,7 @@ function getContactFormValues(form) {
         name,
         email: String(formData.get("email")).trim(),
         phone: String(formData.get("phone")).trim(),
-        initials: getContactInitials(name),
+        initials: getInitialsFromName(name),
     };
 }
 
@@ -86,25 +107,4 @@ function validateContactField(input) {
     const errors = getContactValidationErrors(values);
 
     renderContactValidationError(input, errors[input.name] ?? "");
-}
-
-/**
- * Validates a contact form and returns its values only when they are valid.
- * Focuses the first invalid field when validation errors are found.
- *
- * @param {HTMLFormElement} form - The submitted contact form.
- * @returns {ContactFormValues|null} The valid form values, or null on errors.
- */
-function getValidContactFormValues(form) {
-    const values = getContactFormValues(form);
-    const errors = getContactValidationErrors(values);
-
-    renderContactValidationErrors(form, errors);
-    if (Object.keys(errors).length !== 0) {
-        const firstInvalidField = Object.keys(errors)[0];
-        form.querySelector(`[name="${firstInvalidField}"]`)?.focus();
-        return null;
-    }
-
-    return values;
 }

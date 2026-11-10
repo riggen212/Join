@@ -78,6 +78,18 @@ function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
 }
 
 /**
+ * Deletes a task from Firebase.
+ * Propagates errors to the caller for handling.
+ *
+ * @param {TaskId} taskId - ID of the task to delete.
+ * @returns {Promise<void>} Resolves after the task has been deleted.
+ * @throws {Error} If the database deletion fails.
+ */
+async function deleteTaskFromDatabase(taskId) {
+    await deleteData(DB_TASKS + taskId);
+}
+
+/**
  * Calculates summary for the subtasks of a single task.
  *
  * @param {Task} task - A single task.

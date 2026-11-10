@@ -1,4 +1,24 @@
 /**
+ * Appends existing subtasks to the form sorted by position, preserving their IDs.
+ * Treats missing positions as zero.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @param {SubtaskDirectory|null} [subtasks] - Existing subtasks; null or omitted values leave the list unchanged.
+ * @returns {void}
+ */
+function fillSubtasks(form, subtasks) {
+    if (!subtasks) return;
+
+    const list = form.querySelector("#subtask-list");
+    const keys = Object.keys(subtasks).sort((a, b) => (subtasks[a].position ?? 0) - (subtasks[b].position ?? 0));
+
+    for (let i = 0; i < keys.length; i++) {
+        const subtask = subtasks[keys[i]];
+        list.insertAdjacentHTML("beforeend", getSubtaskTemplate(keys[i], subtask.title, subtask.completed));
+    }
+}
+
+/**
  * Adds a subtask when Enter is pressed in the subtask field.
  *
  * @param {KeyboardEvent} event - The keydown event.
@@ -40,39 +60,6 @@ function clearSubtaskInput(form) {
     const input = form.querySelector("#subtask");
     input.value = "";
     input.focus();
-}
-
-/**
- * Appends existing subtasks to the form sorted by position, preserving their IDs.
- * Treats missing positions as zero.
- *
- * @param {HTMLFormElement} form - The task form.
- * @param {SubtaskDirectory|null} [subtasks] - Existing subtasks; null or omitted values leave the list unchanged.
- * @returns {void}
- */
-function fillSubtasks(form, subtasks) {
-    if (!subtasks) return;
-
-    const list = form.querySelector("#subtask-list");
-    const keys = Object.keys(subtasks).sort((a, b) => (subtasks[a].position ?? 0) - (subtasks[b].position ?? 0));
-
-    for (let i = 0; i < keys.length; i++) {
-        const subtask = subtasks[keys[i]];
-        list.insertAdjacentHTML("beforeend", getSubtaskTemplate(keys[i], subtask.title, subtask.completed));
-    }
-}
-
-/**
- * Removes a subtask from the form only; the database changes when the task is saved.
- * Restores focus to the subtask input after removing the item.
- *
- * @param {HTMLButtonElement} button - The clicked delete button.
- * @returns {void}
- */
-function deleteSubtask(button) {
-    const form = button.form;
-    button.closest(".subtask-item").remove();
-    form.querySelector("#subtask").focus();
 }
 
 /**
@@ -169,6 +156,19 @@ function showSubtaskTitle(item, newTitle) {
 
     title.textContent = newTitle;
     title.hidden = false;
+}
+
+/**
+ * Removes a subtask from the form only; the database changes when the task is saved.
+ * Restores focus to the subtask input after removing the item.
+ *
+ * @param {HTMLButtonElement} button - The clicked delete button.
+ * @returns {void}
+ */
+function deleteSubtask(button) {
+    const form = button.form;
+    button.closest(".subtask-item").remove();
+    form.querySelector("#subtask").focus();
 }
 
 /**

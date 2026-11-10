@@ -242,18 +242,6 @@ async function handleDeleteTask(taskId, button) {
 }
 
 /**
- * Deletes a task from Firebase.
- * Propagates errors to the caller for handling.
- *
- * @param {TaskId} taskId - ID of the task to delete.
- * @returns {Promise<void>} Resolves after the task has been deleted.
- * @throws {Error} If the database deletion fails.
- */
-async function deleteTaskFromDatabase(taskId) {
-    await deleteData(DB_TASKS + taskId);
-}
-
-/**
  * Re-enables the delete button and shows a deletion error notification.
  *
  * @param {HTMLButtonElement} button - The delete button to re-enable.
@@ -282,26 +270,6 @@ function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
     } catch (error) {
         showNotification("Task successfully deleted!\nReload required!", "error");
     }
-}
-
-/**
- * Restores board focus after closing a task dialog.
- *
- * @param {TaskId} taskId - ID of the previously opened task.
- * @param {Task["status"]} taskStatus - The task's board column.
- * @returns {void}
- */
-function restoreBoardTaskFocus(taskId, taskStatus) {
-    if (!taskId) return;
-
-    const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
-    const target =
-        document.getElementById(taskId)?.querySelector(".task-card-open") ??
-        column?.querySelector(".task-card-open") ??
-        column?.querySelector(".board-column-header button") ??
-        document.getElementById("search");
-
-    target?.focus();
 }
 
 /**
@@ -344,4 +312,24 @@ function resetTaskCreationState(dialog) {
         delete form.dataset.taskCreated;
         setTaskSavingState(form, false);
     }
+}
+
+/**
+ * Restores board focus after closing a task dialog.
+ *
+ * @param {TaskId} taskId - ID of the previously opened task.
+ * @param {Task["status"]} taskStatus - The task's board column.
+ * @returns {void}
+ */
+function restoreBoardTaskFocus(taskId, taskStatus) {
+    if (!taskId) return;
+
+    const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
+    const target =
+        document.getElementById(taskId)?.querySelector(".task-card-open") ??
+        column?.querySelector(".task-card-open") ??
+        column?.querySelector(".board-column-header button") ??
+        document.getElementById("search");
+
+    target?.focus();
 }

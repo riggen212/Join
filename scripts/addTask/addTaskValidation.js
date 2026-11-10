@@ -1,10 +1,16 @@
 /**
- * Whether task creation or editing is being saved on the current page.
- * Blocks repeated submissions and keeps submit buttons disabled when updated.
- * Reset by the save handlers in finally.
- * @type {boolean}
+ * Checks if all required fields are filled correctly.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {boolean} Whether the required values and due date are valid; ignores saving and loading states.
  */
-let isTaskSaving = false;
+function isTaskFormValid(form) {
+    const title = form.querySelector("#task-title").value.trim();
+    const dueDate = form.querySelector("#task-due-date").value;
+    const category = form.querySelector('input[name="category"]:checked');
+
+    return title !== "" && dueDate !== "" && category !== null && getPastDateError(form) === "";
+}
 
 /**
  * Sets the earliest selectable due date to today.
@@ -44,27 +50,42 @@ function getPastDateError(form) {
 }
 
 /**
- * Checks if all required fields are filled correctly.
+ * Returns today's date as YYYY-MM-DD.
  *
- * @param {HTMLFormElement} form - The task form.
- * @returns {boolean} Whether the required values and due date are valid; ignores saving and loading states.
+ * @returns {string} The date of today.
  */
-function isTaskFormValid(form) {
-    const title = form.querySelector("#task-title").value.trim();
-    const dueDate = form.querySelector("#task-due-date").value;
-    const category = form.querySelector('input[name="category"]:checked');
+function getTodayAsIsoDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
 
-    return title !== "" && dueDate !== "" && category !== null && getPastDateError(form) === "";
+    return year + "-" + month + "-" + day;
 }
 
 /**
- * Enables the submit button only when the fields are valid and isTaskSaving is false.
+ * Shows all error messages at once.
  *
  * @param {HTMLFormElement} form - The task form.
  * @returns {void}
  */
-function updateCreateTaskButton(form) {
-    form.querySelector('button[type="submit"]').disabled = !isTaskFormValid(form) || isTaskSaving;
+function showAllFieldErrors(form) {
+    validateTitle(form);
+    validateDueDate(form);
+    validateCategory(form);
+}
+
+/**
+ * Checks fields that already show an error again,
+ * so the error disappears as soon as the field is correct.
+ *
+ * @param {HTMLFormElement} form - The task form.
+ * @returns {void}
+ */
+function revalidateInvalidFields(form) {
+    if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
+    if (form.querySelector("#task-due-date.is-invalid")) validateDueDate(form);
+    if (form.querySelector("#task-category > button.is-invalid")) validateCategory(form);
 }
 
 /**
@@ -135,31 +156,6 @@ function checkCategoryOnLeave(event) {
 }
 
 /**
- * Checks fields that already show an error again,
- * so the error disappears as soon as the field is correct.
- *
- * @param {HTMLFormElement} form - The task form.
- * @returns {void}
- */
-function revalidateInvalidFields(form) {
-    if (form.querySelector("#task-title.is-invalid")) validateTitle(form);
-    if (form.querySelector("#task-due-date.is-invalid")) validateDueDate(form);
-    if (form.querySelector("#task-category > button.is-invalid")) validateCategory(form);
-}
-
-/**
- * Shows all error messages at once.
- *
- * @param {HTMLFormElement} form - The task form.
- * @returns {void}
- */
-function showAllFieldErrors(form) {
-    validateTitle(form);
-    validateDueDate(form);
-    validateCategory(form);
-}
-
-/**
  * Shows or hides the error message of a field.
  * Updates aria-invalid to expose the field's validation state to assistive technology.
  *
@@ -198,18 +194,4 @@ function clearFieldErrors(form) {
     for (let i = 0; i < errorMessages.length; i++) {
         errorMessages[i].textContent = "";
     }
-}
-
-/**
- * Returns today's date as YYYY-MM-DD.
- *
- * @returns {string} The date of today.
- */
-function getTodayAsIsoDate() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    return year + "-" + month + "-" + day;
 }
