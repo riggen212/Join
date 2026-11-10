@@ -14,13 +14,105 @@ let draggingTask = null;
 let isTaskMovePending = false;
 
 /**
+ * Moves a task through drag-and-drop, keyboard or popup controls.
+ * Skips missing task IDs or current statuses, pending moves and unchanged statuses.
+ *
+ * @param {TaskId|undefined} taskId - ID of the task to move.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @param {Task["status"]|undefined} currentStatus - Current task column.
+ * @returns {Promise<boolean|undefined>} Save result, or undefined if skipped.
+ */
+async function moveTask(taskId, destinationStatus, currentStatus) {
+  if (!taskId || !currentStatus || isTaskMovePending) return;
+  if (currentStatus === destinationStatus) return;
+
+  const moveData = getDataToMoveTask(taskId, destinationStatus, currentStatus);
+
+  return await moveAndSaveTask(moveData);
+}
+
+/**
+ * Builds movement data from the task ID and source and destination statuses.
+ * Requires the task to exist in the source column.
+ *
+ * @param {TaskId} taskId - ID of the task to move.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @param {Task["status"]} currentStatus - Current task column.
+ * @returns {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} Data needed to move the task.
+ */
+function getDataToMoveTask(taskId, destinationStatus, currentStatus) {
+  return {
+    id: taskId,
+    task: board[currentStatus].tasks[taskId],
+    oldStatus: currentStatus,
+    newStatus: destinationStatus,
+  };
+}
+
+/**
+ * Moves the task locally, saves its status, and renders the affected columns.
+ * Reverts the local move through saveTaskMove if saving fails.
+ * Sets isTaskMovePending during the operation and resets it in finally.
+ *
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} moveData - Data needed to move the task.
+ * @returns {Promise<boolean>} Whether the task move was saved successfully.
+ */
+async function moveAndSaveTask(moveData) {
+  isTaskMovePending = true;
+
+  try {
+    moveTaskBetweenColumns(moveData, moveData.newStatus, moveData.oldStatus);
+    const wasSaved = await saveTaskMove(moveData);
+    renderBoard([board[moveData.oldStatus], board[moveData.newStatus]]);
+    return wasSaved;
+  } finally {
+    isTaskMovePending = false;
+  }
+}
+
+/**
+ * Updates the task's local status, adds it to the destination
+ * column's task directory, and removes it from the source column.
+ * Does not save or render the change.
+ *
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} moveData - Data needed to move the task.
+ * @param {Task["status"]} destinationColumn - Status of the destination column.
+ * @param {Task["status"]} sourceColumn - Status of the source column.
+ * @returns {void}
+ */
+function moveTaskBetweenColumns(moveData, destinationColumn, sourceColumn) {
+  moveData.task.status = destinationColumn;
+  board[destinationColumn].tasks[moveData.id] = moveData.task;
+  delete board[sourceColumn].tasks[moveData.id];
+}
+
+/**
+ * Saves the new task status. Reverts the local move and shows an error notification if saving fails.
+ *
+ * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} moveData - Data needed to move the task.
+ * @returns {Promise<boolean>} Whether the task move was saved successfully.
+ */
+async function saveTaskMove(moveData) {
+  try {
+    await updateTaskInDatabase(moveData.id, {
+      status: moveData.newStatus,
+    });
+    return true;
+  } catch (error) {
+    moveTaskBetweenColumns(moveData, moveData.oldStatus, moveData.newStatus);
+    showNotification("Task could not be moved. Please try again.", "error");
+    return false;
+  }
+}
+
+/**
  * Allows task cards to be dropped into a column by preventing the default drag-over behavior.
  *
  * @param {DragEvent} event - The column drag-over event.
  * @returns {void}
  */
 function allowDrop(event) {
-    event.preventDefault();
+  event.preventDefault();
 }
 
 /**
@@ -35,17 +127,17 @@ function allowDrop(event) {
  * @returns {void}
  */
 function startDraggingTask(taskId, taskStatus, event) {
-    if (draggingTask || isTaskMovePending) {
-        event.preventDefault();
-        return;
-    }
+  if (draggingTask || isTaskMovePending) {
+    event.preventDefault();
+    return;
+  }
 
-    addFlipCard(taskId);
+  addFlipCard(taskId);
 
-    draggingTask = {
-        id: taskId,
-        status: taskStatus,
-    };
+  draggingTask = {
+    id: taskId,
+    status: taskStatus,
+  };
 }
 
 /**
@@ -55,109 +147,22 @@ function startDraggingTask(taskId, taskStatus, event) {
  * @returns {void}
  */
 function endDraggingTask(taskId) {
-    removeFlipCard(taskId);
-    draggingTask = null;
+  removeFlipCard(taskId);
+  draggingTask = null;
 }
 
 /**
- * Moves a selected task when its destination differs from its current column.
+ * Moves a dropped task and announces a successful move.
  *
- * @param {Task["status"]} destinationStatus - The destination column.
- * @returns {Promise<boolean|undefined>} Save result, or undefined if skipped.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @returns {Promise<void>}
  */
-async function moveTask(destinationStatus) {
-    if (!draggingTask || isTaskMovePending) return;
+async function moveTaskFromDrop(destinationStatus) {
+  const wasSaved = await moveTask(draggingTask?.id, destinationStatus, draggingTask?.status);
 
-    const draggingTaskData = getDataToMoveTask(destinationStatus);
-    if (!hasTaskStatusChanged(draggingTaskData)) return;
-
-    return await moveAndSaveTask(draggingTaskData);
-}
-
-/**
- * Moves the task locally, saves its status, and renders the affected columns.
- * Reverts the local move through saveTaskMove if saving fails.
- * Sets isTaskMovePending during the operation and resets it in finally.
- *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @returns {Promise<boolean>} Whether the task move was saved successfully.
- */
-async function moveAndSaveTask(draggingTaskData) {
-    isTaskMovePending = true;
-
-    try {
-        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.newStatus, draggingTaskData.oldStatus);
-        const wasSaved = await saveTaskMove(draggingTaskData);
-        renderBoard([board[draggingTaskData.oldStatus], board[draggingTaskData.newStatus]]);
-        return wasSaved;
-    } finally {
-        isTaskMovePending = false;
-    }
-}
-
-/**
- * Saves the new task status. Reverts the local move and shows an error notification if saving fails.
- *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @returns {Promise<boolean>} Whether the task move was saved successfully.
- */
-async function saveTaskMove(draggingTaskData) {
-    try {
-        await updateTaskInDatabase(draggingTaskData.id, {
-            status: draggingTaskData.newStatus,
-        });
-        return true;
-    } catch (error) {
-        moveTaskBetweenColumns(draggingTaskData, draggingTaskData.oldStatus, draggingTaskData.newStatus);
-        showNotification("Task could not be moved. Please try again.", "error");
-        return false;
-    }
-}
-
-/**
- * Updates the task's local status, adds it to the destination
- * column's task directory, and removes it from the source column.
- * Does not save or render the change.
- *
- * @param {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Data needed to move the task.
- * @param {Task["status"]} destinationColumn - Status of the destination column.
- * @param {Task["status"]} sourceColumn - Status of the source column.
- * @returns {void}
- */
-function moveTaskBetweenColumns(draggingTaskData, destinationColumn, sourceColumn) {
-    draggingTaskData.task.status = destinationColumn;
-    board[destinationColumn].tasks[draggingTaskData.id] = draggingTaskData.task;
-    delete board[sourceColumn].tasks[draggingTaskData.id];
-}
-
-/**
- * Reads the selected task from board using draggingTask.
- * Returns its ID, the task object, its original status,
- * and the requested destination status.
- * Requires draggingTask to be set.
- *
- * @param {Task["status"]} destinationStatus - Status of the destination column.
- * @returns {{id: TaskId, task: Task, oldStatus: Task["status"], newStatus: Task["status"]}} Data needed to move the task.
- */
-function getDataToMoveTask(destinationStatus) {
-    return {
-        id: draggingTask.id,
-        task: board[draggingTask.status].tasks[draggingTask.id],
-        oldStatus: draggingTask.status,
-        newStatus: destinationStatus,
-    };
-}
-
-/**
- * Checks whether the destination differs from the task's original status.
- *
- * @param {{oldStatus: Task["status"], newStatus: Task["status"]}} draggingTaskData - Original and destination statuses.
- * @returns {boolean} Whether the task's status would change.
- */
-function hasTaskStatusChanged(draggingTaskData) {
-    if (draggingTaskData.oldStatus === draggingTaskData.newStatus) {
-        return false;
-    } else return true;
+  if (wasSaved) {
+    announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
+  }
 }
 
 /**
@@ -170,9 +175,67 @@ function hasTaskStatusChanged(draggingTaskData) {
  * @returns {void}
  */
 function handleColumnDragLeaveOrDrop(columnStatus, event) {
-    if (event.type === "drop" || (event.type === "dragleave" && !event.currentTarget.contains(event.relatedTarget))) {
-        removeHighlightDroppableColumn(columnStatus);
+  if (event.type === "drop" || (event.type === "dragleave" && !event.currentTarget.contains(event.relatedTarget))) {
+    removeHighlightDroppableColumn(columnStatus);
+  }
+}
+
+/**
+ * Builds the move popup excluding the task's current column.
+ *
+ * @param {TaskId} taskId - ID of the task.
+ * @param {Task["status"]} currentStatus - Current task status.
+ * @returns {string} HTML for the move popup.
+ */
+function getTaskMovePopupHtml(taskId, currentStatus) {
+  let optionHtml = "";
+
+  Object.entries(board).forEach(([status, column]) => {
+    if (status !== currentStatus) {
+      optionHtml += getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, column.name);
     }
+  });
+
+  return getTaskCardMovePopupTemplate(taskId, optionHtml);
+}
+
+/**
+ * Positions the mobile move menu at its task card's move button before opening.
+ * Uses viewport coordinates to position the fixed popover consistently across browsers.
+ *
+ * @param {ToggleEvent} event - The popover's beforetoggle event.
+ * @returns {void}
+ */
+function positionTaskMoveMenu(event) {
+  if (event.newState !== "open") return;
+  const menu = event.currentTarget;
+  const button = menu.closest(".task-card").querySelector(".button-move-task");
+  const bounds = button.getBoundingClientRect();
+
+  menu.style.top = `${bounds.top}px`;
+  menu.style.right = `${document.documentElement.clientWidth - bounds.right}px`;
+}
+
+/**
+ * Moves a task from its popup, restores focus and announces a successful move.
+ *
+ * @param {TaskId} taskId - ID of the task to move.
+ * @param {Task["status"]} destinationStatus - Destination column.
+ * @param {Task["status"]} currentStatus - Current task column.
+ * @returns {Promise<void>}
+ */
+async function moveTaskFromPopup(taskId, destinationStatus, currentStatus) {
+  let wasSaved;
+
+  try {
+    wasSaved = await moveTask(taskId, destinationStatus, currentStatus);
+  } finally {
+    document.getElementById(taskId)?.querySelector(".button-move-task")?.focus();
+  }
+
+  if (wasSaved) {
+    announceBoardMoveStatus(`Task moved to ${board[destinationStatus].name}.`);
+  }
 }
 
 /**
@@ -182,8 +245,8 @@ function handleColumnDragLeaveOrDrop(columnStatus, event) {
  * @returns {void}
  */
 function addHighlightDroppableColumn(columnStatus) {
-    const column = document.getElementById(`${columnStatus}-content`);
-    column.classList.add("board-column-highlight");
+  const column = document.getElementById(`${columnStatus}-content`);
+  column.classList.add("board-column-highlight");
 }
 
 /**
@@ -193,8 +256,8 @@ function addHighlightDroppableColumn(columnStatus) {
  * @returns {void}
  */
 function removeHighlightDroppableColumn(columnStatus) {
-    const column = document.getElementById(`${columnStatus}-content`);
-    column.classList.remove("board-column-highlight");
+  const column = document.getElementById(`${columnStatus}-content`);
+  column.classList.remove("board-column-highlight");
 }
 
 /**
@@ -204,8 +267,8 @@ function removeHighlightDroppableColumn(columnStatus) {
  * @returns {void}
  */
 function addFlipCard(taskId) {
-    const card = document.getElementById(taskId);
-    card.classList.add("card-task-flip");
+  const card = document.getElementById(taskId);
+  card.classList.add("card-task-flip");
 }
 
 /**
@@ -215,6 +278,16 @@ function addFlipCard(taskId) {
  * @returns {void}
  */
 function removeFlipCard(taskId) {
-    const card = document.getElementById(taskId);
-    card.classList.remove("card-task-flip");
+  const card = document.getElementById(taskId);
+  card.classList.remove("card-task-flip");
+}
+
+/**
+ * Announces board movement updates to screen readers.
+ *
+ * @param {string} message - The movement information to announce.
+ * @returns {void}
+ */
+function announceBoardMoveStatus(message) {
+  document.getElementById("board-move-status").textContent = message;
 }

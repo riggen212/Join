@@ -8,14 +8,14 @@
  * @returns {void}
  */
 function showFormError(form, message, fieldIds = []) {
-    const errorElement = form.querySelector("[data-form-error]");
-    errorElement.textContent = message;
+  const errorElement = form.querySelector("[data-form-error]");
+  errorElement.textContent = message;
 
-    for (const fieldId of fieldIds) {
-        const input = form.querySelector(`#${fieldId}`);
-        input.setAttribute("aria-invalid", "true");
-        input.closest(".input-wrapper")?.classList.add("has-error");
-    }
+  for (const fieldId of fieldIds) {
+    const input = form.querySelector(`#${fieldId}`);
+    input.setAttribute("aria-invalid", "true");
+    input.closest(".input-wrapper")?.classList.add("has-error");
+  }
 }
 
 /**
@@ -27,14 +27,14 @@ function showFormError(form, message, fieldIds = []) {
  * @returns {void}
  */
 function showFormFieldErrors(form, errors) {
-    for (const [fieldId, message] of Object.entries(errors)) {
-        const input = form.querySelector(`#${fieldId}`);
-        const error = form.querySelector(`[data-error-for="${fieldId}"]`);
+  for (const [fieldId, message] of Object.entries(errors)) {
+    const input = form.querySelector(`#${fieldId}`);
+    const error = form.querySelector(`[data-error-for="${fieldId}"]`);
 
-        error.textContent = message;
-        input.setAttribute("aria-invalid", "true");
-        input.closest(".input-wrapper")?.classList.add("has-error");
-    }
+    error.textContent = message;
+    input.setAttribute("aria-invalid", "true");
+    input.closest(".input-wrapper")?.classList.add("has-error");
+  }
 }
 
 /**
@@ -45,16 +45,14 @@ function showFormFieldErrors(form, errors) {
  * @returns {void}
  */
 function clearFormError(form) {
-    for (const error of form.querySelectorAll(
-        "[data-form-error], [data-error-for]"
-    )) {
-        error.textContent = "";
-    }
+  for (const error of form.querySelectorAll("[data-form-error], [data-error-for]")) {
+    error.textContent = "";
+  }
 
-    for (const input of form.querySelectorAll('[aria-invalid="true"]')) {
-        input.removeAttribute("aria-invalid");
-        input.closest(".input-wrapper")?.classList.remove("has-error");
-    }
+  for (const input of form.querySelectorAll('[aria-invalid="true"]')) {
+    input.removeAttribute("aria-invalid");
+    input.closest(".input-wrapper")?.classList.remove("has-error");
+  }
 }
 
 /**
@@ -66,10 +64,10 @@ function clearFormError(form) {
  * @returns {void}
  */
 function clearFormFieldError(form, fieldId) {
-    const input = form.querySelector(`#${fieldId}`);
-    const error = form.querySelector(`[data-error-for="${fieldId}"]`);
+  const input = form.querySelector(`#${fieldId}`);
+  const error = form.querySelector(`[data-error-for="${fieldId}"]`);
 
-    error.textContent = "";
-    input.removeAttribute("aria-invalid");
-    input.closest(".input-wrapper")?.classList.remove("has-error");
+  error.textContent = "";
+  input.removeAttribute("aria-invalid");
+  input.closest(".input-wrapper")?.classList.remove("has-error");
 }

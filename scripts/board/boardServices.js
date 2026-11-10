@@ -6,11 +6,11 @@
  * @returns {Promise<void>} Resolves after tasks and contacts are stored locally; rejects if loading or assignment fails.
  */
 async function loadBoardData() {
-    const tasks = await getData(DB_TASKS);
-    const contacts = await getData(DB_CONTACTS);
+  const tasks = await getData(DB_TASKS);
+  const contacts = await getData(DB_CONTACTS);
 
-    assignTasks(board, tasks ?? {});
-    Object.assign(localContacts, contacts ?? {});
+  assignTasks(board, tasks ?? {});
+  Object.assign(localContacts, contacts ?? {});
 }
 
 /**
@@ -23,13 +23,13 @@ async function loadBoardData() {
  * @throws {Error} If a task has an unknown status.
  */
 function assignTasks(board, tasks) {
-    Object.entries(tasks).forEach(([taskKey, taskEntry]) => {
-        if (!board[taskEntry.status]) {
-            throw new Error(`Invalid status: ${taskEntry.status}`);
-        }
+  Object.entries(tasks).forEach(([taskKey, taskEntry]) => {
+    if (!board[taskEntry.status]) {
+      throw new Error(`Invalid status: ${taskEntry.status}`);
+    }
 
-        board[taskEntry.status].tasks[taskKey] = taskEntry;
-    });
+    board[taskEntry.status].tasks[taskKey] = taskEntry;
+  });
 }
 
 /**
@@ -41,13 +41,13 @@ function assignTasks(board, tasks) {
  * @throws {Error} If the task is missing or its column cannot be accessed.
  */
 function getTaskById(taskId, taskStatus) {
-    const task = board[taskStatus].tasks[taskId];
+  const task = board[taskStatus].tasks[taskId];
 
-    if (!task) {
-        throw new Error(`No task found.`);
-    } else {
-        return task;
-    }
+  if (!task) {
+    throw new Error(`No task found.`);
+  } else {
+    return task;
+  }
 }
 
 /**
@@ -60,7 +60,7 @@ function getTaskById(taskId, taskStatus) {
  * rejects if the request or response processing fails.
  */
 function updateTaskInDatabase(taskId, taskData) {
-    return patchData(DB_TASKS + taskId, taskData);
+  return patchData(DB_TASKS + taskId, taskData);
 }
 
 /**
@@ -74,7 +74,19 @@ function updateTaskInDatabase(taskId, taskData) {
  * rejects if the request or response processing fails.
  */
 function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
-    return patchData(DB_TASKS + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
+  return patchData(DB_TASKS + taskId + DB_SUBTASKS + "/" + subtaskId, subtaskData);
+}
+
+/**
+ * Deletes a task from Firebase.
+ * Propagates errors to the caller for handling.
+ *
+ * @param {TaskId} taskId - ID of the task to delete.
+ * @returns {Promise<void>} Resolves after the task has been deleted.
+ * @throws {Error} If the database deletion fails.
+ */
+async function deleteTaskFromDatabase(taskId) {
+  await deleteData(DB_TASKS + taskId);
 }
 
 /**
@@ -84,13 +96,13 @@ function updateSubtaskInDatabase(taskId, subtaskId, subtaskData) {
  * @returns {SubtasksData} Summary data of the task's subtasks.
  */
 function getSubtasksCardData(task) {
-    const subtasks = Object.values(task.subtasks ?? {});
+  const subtasks = Object.values(task.subtasks ?? {});
 
-    return {
-        amount: subtasks.length,
-        completedAmount: getCompletedSubtasks(subtasks).length,
-        progressInPercent: getSubtaskProgressInPercent(subtasks),
-    };
+  return {
+    amount: subtasks.length,
+    completedAmount: getCompletedSubtasks(subtasks).length,
+    progressInPercent: getSubtaskProgressInPercent(subtasks),
+  };
 }
 
 /**
@@ -100,11 +112,11 @@ function getSubtasksCardData(task) {
  * @returns {number} The value of the completion progress as percentage from 0 to 100.
  */
 function getSubtaskProgressInPercent(subtasks) {
-    if (subtasks.length <= 0) {
-        return 0;
-    } else {
-        return (getCompletedSubtasks(subtasks).length / subtasks.length) * 100;
-    }
+  if (subtasks.length <= 0) {
+    return 0;
+  } else {
+    return (getCompletedSubtasks(subtasks).length / subtasks.length) * 100;
+  }
 }
 
 /**
@@ -114,5 +126,5 @@ function getSubtaskProgressInPercent(subtasks) {
  * @returns {Subtask[]} Subtasks whose `completed` property is `true`.
  */
 function getCompletedSubtasks(subtasks) {
-    return subtasks.filter((subtask) => subtask.completed === true);
+  return subtasks.filter((subtask) => subtask.completed === true);
 }

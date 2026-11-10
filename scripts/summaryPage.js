@@ -1,4 +1,4 @@
-/**
+F; /**
  * Loads the current user and tasks, then updates the summary page.
  * Displays and announces a notification if initialization fails.
  * Stops initialization if no valid user is available.
@@ -6,21 +6,19 @@
  * @returns {Promise<void>}
  */
 async function initSummary() {
-    try {
-        showAnimationLogin();
-        loggedUserId = await loadCurrentUser(false);
-        if (!loggedUserId) return;
-        const user = await getData(DB_USERS, loggedUserId);
-        const tasks = await loadTasks();
-        const today = getLocalDate();
+  try {
+    showAnimationLogin();
+    if (!(await initializeCurrentUser())) return;
 
-        updateSummary(user, tasks, today);
-    } catch (error) {
-        showNotification("Summary could not be loaded. Please try again.", "error");
-    }
+    const user = await getData(DB_USERS, loggedUserId);
+    const tasks = await loadTasks();
+    const today = getLocalDate();
+
+    updateSummary(user, tasks, today);
+  } catch (error) {
+    showNotification("Summary could not be loaded. Please try again.", "error");
+  }
 }
-
-initSummary();
 
 /**
  * Checks the URL parameter and starts the mobile login animation.
@@ -29,16 +27,16 @@ initSummary();
  * @returns {void}
  */
 function showAnimationLogin() {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get('animation') !== 'true') return;
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("animation") !== "true") return;
 
-    removeAnimationParameter(url);
+  removeAnimationParameter(url);
 
-    if (window.innerWidth < 1280) {
-        startMobileAnimation();
-    } else {
-        finishMobileAnimation();
-    }
+  if (window.innerWidth < 1280) {
+    startMobileAnimation();
+  } else {
+    finishMobileAnimation();
+  }
 }
 
 /**
@@ -48,8 +46,8 @@ function showAnimationLogin() {
  * @returns {void}
  */
 function removeAnimationParameter(url) {
-    url.searchParams.delete('animation');
-    window.history.replaceState(window.history.state, '', url.toString());
+  url.searchParams.delete("animation");
+  window.history.replaceState(window.history.state, "", url.toString());
 }
 
 /**
@@ -60,14 +58,14 @@ function removeAnimationParameter(url) {
  * @returns {void}
  */
 function startMobileAnimation() {
-    const animationIn = document.getElementById('login-animation-on');
-    const animationOut = document.getElementById('login-animation-out');
+  const animationIn = document.getElementById("login-animation-on");
+  const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.add('animation-in');
-    animationOut.classList.add('animation-out');
+  animationIn.classList.add("animation-in");
+  animationOut.classList.add("animation-out");
 
-    lockSummaryDuringGreeting();
-    setTimeout(finishMobileAnimation, 4000);
+  lockSummaryDuringGreeting();
+  setTimeout(finishMobileAnimation, 4000);
 }
 
 /**
@@ -77,14 +75,13 @@ function startMobileAnimation() {
  * @returns {void}
  */
 function lockSummaryDuringGreeting() {
-    const greeting = document.getElementById("login-animation-out");
-    const animation = greeting.getAnimations()
-        .find(animation => animation.animationName === "greetingFadeOut");
-    if (!animation) return;
-    const elements = document.querySelectorAll(".header, .navbar, .section-container");
-    elements.forEach(element => element.inert = true);
-    const unlock = () => elements.forEach(element => element.inert = false);
-    animation.finished.then(unlock, unlock);
+  const greeting = document.getElementById("login-animation-out");
+  const animation = greeting.getAnimations().find((animation) => animation.animationName === "greetingFadeOut");
+  if (!animation) return;
+  const elements = document.querySelectorAll(".header, .navbar, .section-container");
+  elements.forEach((element) => (element.inert = true));
+  const unlock = () => elements.forEach((element) => (element.inert = false));
+  animation.finished.then(unlock, unlock);
 }
 
 /**
@@ -93,13 +90,13 @@ function lockSummaryDuringGreeting() {
  * @returns {void}
  */
 function finishMobileAnimation() {
-    const animationIn = document.getElementById('login-animation-on');
-    const animationOut = document.getElementById('login-animation-out');
+  const animationIn = document.getElementById("login-animation-on");
+  const animationOut = document.getElementById("login-animation-out");
 
-    animationIn.classList.remove('animation-in');
-    animationOut.classList.remove('animation-out');
+  animationIn.classList.remove("animation-in");
+  animationOut.classList.remove("animation-out");
 
-    document.body.classList.add('mobile-animation-finished');
+  document.body.classList.add("mobile-animation-finished");
 }
 
 /**
@@ -109,7 +106,7 @@ function finishMobileAnimation() {
  * @throws {Error} If loading or parsing the task data fails.
  */
 async function loadTasks() {
-    return (await getData(DB_TASKS)) ?? {};
+  return (await getData(DB_TASKS)) ?? {};
 }
 
 /**
@@ -121,54 +118,10 @@ async function loadTasks() {
  * @returns {void}
  */
 function updateSummary(user, tasks, today) {
-    const taskSummaryData = getTaskSummaryData(tasks, today);
-    const greeting = getGreetingByTime();
+  const taskSummaryData = getTaskSummaryData(tasks, today);
+  const greeting = getGreetingByTime();
 
-    updateSummaryHtml(user, taskSummaryData, greeting);
-}
-
-/**
- * Displays task counts, the upcoming deadline, the user's name and a greeting based on time.
- * Displays zero for missing task counts.
- *
- * @param {User} user - The current user.
- * @param {TaskSummaryData} taskSummaryData - The summary values to display.
- * @param {string} greeting - The greeting to display.
- * @returns {void}
- */
-function updateSummaryHtml(user, taskSummaryData, greeting) {
-    const summaryHtmlElementList = document.querySelectorAll("[data-summary]");
-
-    summaryHtmlElementList.forEach((element) => {
-        element.textContent = taskSummaryData[element.dataset.summary] ?? 0;
-        if (element.dataset.summary === "upcomingDeadline") {
-            updateSummaryDeadline(element, taskSummaryData);
-        }
-    });
-
-    document.getElementById("greeting").textContent =
-        user.type === "guest" ? `${greeting}!` : `${greeting},`;
-
-    document.getElementById("userNames").textContent =
-        user.type === "guest" ? "" : user.name;
-}
-
-/**
- * Displays the upcoming deadline and provides an accessible empty state.
- * Keeps the visible dash when no deadline exists.
- *
- * @param {HTMLTimeElement} element - The deadline's time element.
- * @param {TaskSummaryData} taskSummaryData - The summary values to display.
- * @returns {void}
- */
-function updateSummaryDeadline(element, taskSummaryData) {
-    const deadline = taskSummaryData.upcomingDeadline ?? "";
-    element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "-";
-    if (deadline) element.dateTime = deadline;
-    else element.removeAttribute("datetime");
-    element.setAttribute("aria-hidden", String(!deadline));
-    document.getElementById("summary-deadline-description").textContent =
-        deadline ? "" : "No upcoming deadline.";
+  updateSummaryHtml(user, taskSummaryData, greeting);
 }
 
 /**
@@ -179,13 +132,13 @@ function updateSummaryDeadline(element, taskSummaryData) {
  * @returns {TaskSummaryData} The complete task summary.
  */
 function getTaskSummaryData(tasks, today) {
-    const upcomingDeadline = getUpcomingDeadline(tasks, today);
-    const taskSummaryData = calculateTaskSummaryData(tasks, upcomingDeadline, today);
+  const upcomingDeadline = getUpcomingDeadline(tasks, today);
+  const taskSummaryData = calculateTaskSummaryData(tasks, upcomingDeadline, today);
 
-    taskSummaryData.upcomingDeadline = upcomingDeadline;
-    taskSummaryData.upcomingDeadlineWritten = getDateWritten(upcomingDeadline);
+  taskSummaryData.upcomingDeadline = upcomingDeadline;
+  taskSummaryData.upcomingDeadlineWritten = getDateWritten(upcomingDeadline);
 
-    return taskSummaryData;
+  return taskSummaryData;
 }
 
 /**
@@ -199,73 +152,18 @@ function getTaskSummaryData(tasks, today) {
  * @returns {TaskSummaryCounts} The calculated task counts.
  */
 function calculateTaskSummaryData(tasks, upcomingDeadline, today) {
-    const taskSummaryData = {};
+  const taskSummaryData = {};
 
-    Object.values(tasks).forEach((task) => {
-        taskSummaryData[task.status] = (taskSummaryData[task.status] ?? 0) + 1;
-        taskSummaryData.board = (taskSummaryData.board ?? 0) + 1;
+  Object.values(tasks).forEach((task) => {
+    taskSummaryData[task.status] = (taskSummaryData[task.status] ?? 0) + 1;
+    taskSummaryData.board = (taskSummaryData.board ?? 0) + 1;
 
-        if (task.status !== "done" && (task.dueDate <= upcomingDeadline || task.dueDate < today)) {
-            taskSummaryData.urgent = (taskSummaryData.urgent ?? 0) + 1;
-        }
-    });
-
-    return taskSummaryData;
-}
-
-/**
- * Returns a greeting based on the browser's local hour.
- *
- * @returns {string} The greeting including a trailing comma.
- */
-function getGreetingByTime() {
-    const date = new Date();
-
-    if (date.getHours() >= 5 && date.getHours() < 12) {
-        return "Good morning";
-    } else if (date.getHours() >= 12 && date.getHours() < 18) {
-        return "Good afternoon";
+    if (task.status !== "done" && (task.dueDate <= upcomingDeadline || task.dueDate < today)) {
+      taskSummaryData.urgent = (taskSummaryData.urgent ?? 0) + 1;
     }
+  });
 
-    return "Good evening";
-}
-
-/**
- * Formats a date using the browser's local time zone.
- * Uses the current date and time if no date is provided.
- *
- * @param {Date} [date] - The date to format.
- * @returns {string} The local calendar date in YYYY-MM-DD format.
- */
-function getLocalDate(date) {
-    if (!date) {
-        date = new Date();
-    }
-
-    return [
-        date.getFullYear(),
-        String(date.getMonth() + 1).padStart(2, "0"),
-        String(date.getDate()).padStart(2, "0"),
-    ].join("-");
-}
-
-/**
- * Formats a calendar date as English month name, day and year.
- * Constructs the date in the browser's local time zone.
- *
- * @param {string} date - A date in YYYY-MM-DD format, or an empty string if no date exists.
- * @returns {string} The formatted date, or "-" for an empty input.
- */
-function getDateWritten(date) {
-    if (date.length === 0) {
-        return "-";
-    }
-
-    const [year, month, day] = date.split("-").map(Number);
-    const localDate = new Date(year, month - 1, day);
-    const monthName = localDate.toLocaleDateString("en-EN", { month: "long" });
-
-    return `${monthName} ${localDate.getDate()}, ${localDate.getFullYear()}`;
+  return taskSummaryData;
 }
 
 /**
@@ -277,15 +175,15 @@ function getDateWritten(date) {
  * @returns {string} The earliest qualifying date, or an empty string if no task qualifies.
  */
 function getUpcomingDeadline(tasks, today) {
-    let upcomingDeadline = "";
+  let upcomingDeadline = "";
 
-    Object.values(tasks).forEach((task) => {
-        if (task.status !== "done") {
-            upcomingDeadline = selectUpcomingDeadline(upcomingDeadline, task.dueDate, today);
-        }
-    });
+  Object.values(tasks).forEach((task) => {
+    if (task.status !== "done") {
+      upcomingDeadline = selectUpcomingDeadline(upcomingDeadline, task.dueDate, today);
+    }
+  });
 
-    return upcomingDeadline;
+  return upcomingDeadline;
 }
 
 /**
@@ -299,13 +197,111 @@ function getUpcomingDeadline(tasks, today) {
  * @returns {string} The selected deadline, or an empty string if no deadline qualifies.
  */
 function selectUpcomingDeadline(savedDeadline, newDueDate, currentDate) {
-    if (newDueDate < currentDate) {
-        return savedDeadline;
-    }
-
-    if (!savedDeadline || newDueDate < savedDeadline) {
-        return newDueDate;
-    }
-
+  if (newDueDate < currentDate) {
     return savedDeadline;
+  }
+
+  if (!savedDeadline || newDueDate < savedDeadline) {
+    return newDueDate;
+  }
+
+  return savedDeadline;
 }
+
+/**
+ * Displays task counts, the upcoming deadline, the user's name and a greeting based on time.
+ * Displays zero for missing task counts.
+ *
+ * @param {User} user - The current user.
+ * @param {TaskSummaryData} taskSummaryData - The summary values to display.
+ * @param {string} greeting - The greeting to display.
+ * @returns {void}
+ */
+function updateSummaryHtml(user, taskSummaryData, greeting) {
+  const summaryHtmlElementList = document.querySelectorAll("[data-summary]");
+
+  summaryHtmlElementList.forEach((element) => {
+    element.textContent = taskSummaryData[element.dataset.summary] ?? 0;
+    if (element.dataset.summary === "upcomingDeadline") {
+      updateSummaryDeadline(element, taskSummaryData);
+    }
+  });
+
+  document.getElementById("greeting").textContent = user.type === "guest" ? `${greeting}!` : `${greeting},`;
+
+  document.getElementById("userNames").textContent = user.type === "guest" ? "" : user.name;
+}
+
+/**
+ * Displays the upcoming deadline and provides an accessible empty state.
+ * Keeps the visible dash when no deadline exists.
+ *
+ * @param {HTMLTimeElement} element - The deadline's time element.
+ * @param {TaskSummaryData} taskSummaryData - The summary values to display.
+ * @returns {void}
+ */
+function updateSummaryDeadline(element, taskSummaryData) {
+  const deadline = taskSummaryData.upcomingDeadline ?? "";
+  element.textContent = taskSummaryData.upcomingDeadlineWritten ?? "-";
+  if (deadline) element.dateTime = deadline;
+  else element.removeAttribute("datetime");
+  element.setAttribute("aria-hidden", String(!deadline));
+  document.getElementById("summary-deadline-description").textContent = deadline ? "" : "No upcoming deadline.";
+}
+
+/**
+ * Returns a greeting based on the browser's local hour.
+ *
+ * @returns {string} The greeting including a trailing comma.
+ */
+function getGreetingByTime() {
+  const date = new Date();
+
+  if (date.getHours() >= 5 && date.getHours() < 12) {
+    return "Good morning";
+  } else if (date.getHours() >= 12 && date.getHours() < 18) {
+    return "Good afternoon";
+  }
+
+  return "Good evening";
+}
+
+/**
+ * Formats a date using the browser's local time zone.
+ * Uses the current date and time if no date is provided.
+ *
+ * @param {Date} [date] - The date to format.
+ * @returns {string} The local calendar date in YYYY-MM-DD format.
+ */
+function getLocalDate(date) {
+  if (!date) {
+    date = new Date();
+  }
+
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+/**
+ * Formats a calendar date as English month name, day and year.
+ * Constructs the date in the browser's local time zone.
+ *
+ * @param {string} date - A date in YYYY-MM-DD format, or an empty string if no date exists.
+ * @returns {string} The formatted date, or "-" for an empty input.
+ */
+function getDateWritten(date) {
+  if (date.length === 0) {
+    return "-";
+  }
+
+  const [year, month, day] = date.split("-").map(Number);
+  const localDate = new Date(year, month - 1, day);
+  const monthName = localDate.toLocaleDateString("en-US", { month: "long" });
+
+  return `${monthName} ${localDate.getDate()}, ${localDate.getFullYear()}`;
+}
+
+initSummary();

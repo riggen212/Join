@@ -5,23 +5,35 @@
  * @returns {string} HTML for the task card.
  */
 function getTaskCardTemplate(taskData) {
-    return `<article
+  return `<article
                 id="${taskData.id}"
                 data-task-id="${taskData.id}"
                 class="task-card"
                 draggable="true"
-                role="button"
-                tabindex="0"
-                onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
-                onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
                 ondragstart="startDraggingTask('${taskData.id}', '${taskData.task.status}', event)"
-                ondragend="endDraggingTask('${taskData.id}')"
-                aria-label="Open task: ${taskData.task.title}"
-                aria-describedby="${taskData.id}-move-result task-keyboard-help">
+                ondragend="endDraggingTask('${taskData.id}')">
                     <span class="task-move-result" id="${taskData.id}-move-result" hidden></span>
-                    <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                    <div class="task-card-header">
+                        <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
+                        <button type="button" class="button button-move-task"
+                        onclick="event.stopPropagation()"
+                        onkeydown="event.stopPropagation()"
+                        popovertarget="move-task-${taskData.id}"
+                        aria-label="Move task: ${taskData.task.title}">
+                        <img src="../assets/icons/moveTo.svg" alt="">
+                        </button>
+                        ${taskData.popupHtml}
+                    </div>
                     <div class="task-card-body">
-                        <h3 class="task-card-title">${taskData.task.title}</h3>
+                        <h3 class="task-card-title">
+                            <button type="button"
+                            class="task-card-open"
+                            onclick="openTaskDialog('${taskData.id}', '${taskData.task.status}')"
+                            onkeydown="handleTaskCardKeydown(event, '${taskData.id}', '${taskData.task.status}')"
+                            aria-describedby="${taskData.id}-move-result task-keyboard-help">
+                                ${taskData.task.title}
+                            </button>
+                        </h3>
                         <div class="task-card-description">${taskData.task.description}</div>
                     </div>
                     <div class="task-card-subtasks">
@@ -48,7 +60,7 @@ function getTaskCardTemplate(taskData) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskCardUserBadgeTemplate(contact) {
-    return `<li class="badge-user ${contact.colorClass}" aria-label="${contact.name}">${contact.initials}</li>`;
+  return `<li class="badge-user ${contact.colorClass}" aria-label="${contact.name}">${contact.initials}</li>`;
 }
 
 /**
@@ -58,7 +70,7 @@ function getTaskCardUserBadgeTemplate(contact) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskCardEmptyBadge(columnName) {
-    return `<span class="board-column-feedback">No tasks ${columnName}</span>`;
+  return `<span class="board-column-feedback">No tasks ${columnName}</span>`;
 }
 
 /**
@@ -67,7 +79,51 @@ function getTaskCardEmptyBadge(columnName) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskCardMatchingBadge() {
-    return `<span class="board-column-feedback">No matching tasks</span>`;
+  return `<span class="board-column-feedback">No matching tasks</span>`;
+}
+
+/**
+ * Creates a task's move popup using prepared option HTML.
+ *
+ * @param {TaskId} taskId - ID used to link the popup and its trigger.
+ * @param {string} optionHtml - HTML for the available destination options.
+ * @returns {string} HTML for the move popup.
+ */
+function getTaskCardMovePopupTemplate(taskId, optionHtml) {
+  return `<div
+            id="move-task-${taskId}"
+            class="task-move-popover"
+            onbeforetoggle="positionTaskMoveMenu(event)"
+            onclick="event.stopPropagation()"
+            onkeydown="event.stopPropagation()"
+            popover="auto"
+            aria-labelledby="move-title-${taskId}"
+        >
+            <p id="move-title-${taskId}">Move to</p>
+            <ul>
+                ${optionHtml}
+            </ul>
+        </div>`;
+}
+
+/**
+ * Creates one destination option for moving a task.
+ *
+ * @param {TaskId} taskId - ID of the task to move.
+ * @param {Task["status"]} status - Destination column.
+ * @param {Task["status"]} currentStatus - Current task column.
+ * @param {BoardColumn["name"]} name - Display name of the destination.
+ * @returns {string} HTML for one destination option.
+ */
+function getTaskCardMoveOptionsTemplate(taskId, status, currentStatus, name) {
+  return `<li>
+            <button
+            type="button"
+            class="task-move-option" data-status="${status}"
+            onclick="moveTaskFromPopup('${taskId}', '${status}', '${currentStatus}')">
+                ${name}
+            </button>
+        </li>`;
 }
 
 /**
@@ -77,7 +133,7 @@ function getTaskCardMatchingBadge() {
  * @returns {string} HTML for the task overlay.
  */
 function getTaskOverlayTemplate(taskData) {
-    return `<article class="task-overlay">
+  return `<article class="task-overlay">
                 <header class="task-overlay-header">
                     <div class="task-overlay-type-wrapper">
                         <span class="badge-type badge-type-${taskData.task.category.toLowerCase()}">${taskData.task.category}</span>
@@ -85,7 +141,7 @@ function getTaskOverlayTemplate(taskData) {
                             <img src="../assets/icons/cancel.svg" alt="" />
                         </button>
                     </div>
-                    <h2 id="task-dialog-title" class="scrollbar">${taskData.task.title}</h2>
+                    <h2 class="section-heading scrollbar" id="task-dialog-title">${taskData.task.title}</h2>
                 </header>
 
                 <div class="task-overlay-body">
@@ -143,7 +199,7 @@ function getTaskOverlayTemplate(taskData) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskOverlayUserBadgeTemplate(contact) {
-    return `<li>
+  return `<li>
             <span class="badge-user ${contact.colorClass}">${contact.initials}</span>
             <span>${contact.name}</span>
         </li>`;
@@ -158,8 +214,11 @@ function getTaskOverlayUserBadgeTemplate(contact) {
  * @returns {string} The generated HTML markup.
  */
 function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
-    return `<li>
-            <input type="checkbox" ${isCompleted}
+  return `<li>
+            <input
+            type="checkbox"
+            data-subtask-id="${subtaskId}"
+            ${isCompleted}
             onchange="handleSubtaskCheckboxChange(this, this.closest('dialog').dataset.taskId, this.closest('dialog').dataset.taskStatus, '${subtaskId}')"
             aria-label="Mark ${subtask.title} as completed" />
             ${subtask.title}
@@ -172,7 +231,7 @@ function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
  * @returns {string} HTML for the close button.
  */
 function getAddTaskDialogCloseButtonTemplate() {
-    return `<button class="button button-close add-task-dialog-close" type="button"
+  return `<button class="button button-close add-task-dialog-close" type="button"
                 onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                 <img src="../assets/icons/cancel.svg" alt="">
             </button>`;
@@ -184,7 +243,7 @@ function getAddTaskDialogCloseButtonTemplate() {
  * @returns {string} HTML paragraph with error styling and role="alert".
  */
 function getBoardLoadingFailureTemplate() {
-    return `<p class="board-loading-error" role="alert">
+  return `<p class="board-loading-error" role="alert">
         Board could not be loaded. Please reload the page.
     </p>`;
 }

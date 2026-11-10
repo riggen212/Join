@@ -7,15 +7,15 @@
  * @returns {void}
  */
 function openTaskDialog(taskId, taskStatus) {
-    if (isTaskMovePending) return;
+  if (isTaskMovePending) return;
 
-    const dialog = document.getElementById("dialog-task");
+  const dialog = document.getElementById("dialog-task");
 
-    try {
-        renderAndOpenTaskDialog(dialog, taskId, taskStatus);
-    } catch (error) {
-        showNotification("Task could not be opened. Please reload the board.", "error");
-    }
+  try {
+    renderAndOpenTaskDialog(dialog, taskId, taskStatus);
+  } catch (error) {
+    showNotification("Task could not be opened. Please reload the board.", "error");
+  }
 }
 
 /**
@@ -28,11 +28,11 @@ function openTaskDialog(taskId, taskStatus) {
  * @returns {void}
  */
 function renderAndOpenTaskDialog(dialog, taskId, taskStatus) {
-    const task = getTaskById(taskId, taskStatus);
-    const taskData = getTaskOverlayData(taskId, task);
+  const task = getTaskById(taskId, taskStatus);
+  const taskData = getTaskOverlayData(taskId, task);
 
-    updateTaskDialog(dialog, taskData);
-    openDialog("dialog-task");
+  updateTaskDialog(dialog, taskData);
+  openDialog("dialog-task");
 }
 
 /**
@@ -43,29 +43,32 @@ function renderAndOpenTaskDialog(dialog, taskId, taskStatus) {
  * @returns {TaskOverlayData} Task data with assignee and subtask HTML.
  */
 function getTaskOverlayData(taskId, task) {
-    return {
-        id: taskId,
-        task: task,
-        assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
-        subtasksHtml: getTaskOverlaySubtasksHtml(task.subtasks),
-    };
+  return {
+    id: taskId,
+    task: task,
+    assigneesHtml: getAssigneesHtml(task, getTaskOverlayUserBadgeTemplate),
+    subtasksHtml: getTaskOverlaySubtasksHtml(task.subtasks),
+  };
 }
 
 /**
- * Iterates through the subtasks and creates the html.
+ * Creates subtask HTML sorted by position.
+ * Treats missing positions as zero.
  *
  * @param {SubtaskDirectory|null} [subtasks] - Subtasks to render; null or omitted values produce empty HTML.
  * @returns {string} HTML for the subtasks.
  */
 function getTaskOverlaySubtasksHtml(subtasks) {
-    let subtasksHtml = "";
+  let subtasksHtml = "";
 
-    Object.entries(subtasks ?? {}).forEach(([subtaskId, subtask]) => {
-        const isCompleted = subtask.completed ? "checked" : "";
-        subtasksHtml += getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted);
+  Object.entries(subtasks ?? {})
+    .sort(([, a], [, b]) => (a.position ?? 0) - (b.position ?? 0))
+    .forEach(([subtaskId, subtask]) => {
+      const isCompleted = subtask.completed ? "checked" : "";
+      subtasksHtml += getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted);
     });
 
-    return subtasksHtml;
+  return subtasksHtml;
 }
 
 /**
@@ -76,14 +79,14 @@ function getTaskOverlaySubtasksHtml(subtasks) {
  * @returns {void}
  */
 function updateTaskDialog(dialog, taskData) {
-    dialog.dataset.taskId = taskData.id;
-    dialog.dataset.taskStatus = taskData.task.status;
-    dialog.innerHTML = getTaskOverlayTemplate(taskData);
-    dialog.removeAttribute("aria-label");
-    dialog.setAttribute("aria-labelledby", "task-dialog-title");
-    if (dialog.open) {
-        dialog.querySelector(".button-close").focus();
-    }
+  dialog.dataset.taskId = taskData.id;
+  dialog.dataset.taskStatus = taskData.task.status;
+  dialog.innerHTML = getTaskOverlayTemplate(taskData);
+  dialog.removeAttribute("aria-label");
+  dialog.setAttribute("aria-labelledby", "task-dialog-title");
+  if (dialog.open) {
+    dialog.querySelector(".button-close").focus();
+  }
 }
 
 /**
@@ -94,15 +97,15 @@ function updateTaskDialog(dialog, taskData) {
  * @returns {Promise<void>} Resolves after initialization or error handling.
  */
 async function editTask(taskId) {
-    const dialog = document.getElementById("dialog-task");
+  const dialog = document.getElementById("dialog-task");
 
-    try {
-        const task = getTaskById(taskId, dialog.dataset.taskStatus);
-        await renderAndInitTaskForm(dialog, taskId, task);
-    } catch (error) {
-        openTaskDialog(taskId, dialog.dataset.taskStatus);
-        showNotification("Task could not be opened for editing. Please reload the board.", "error");
-    }
+  try {
+    const task = getTaskById(taskId, dialog.dataset.taskStatus);
+    await renderAndInitTaskForm(dialog, taskId, task);
+  } catch (error) {
+    openTaskDialog(taskId, dialog.dataset.taskStatus);
+    showNotification("Task could not be opened for editing. Please reload the board.", "error");
+  }
 }
 
 /**
@@ -115,11 +118,11 @@ async function editTask(taskId) {
  * @returns {Promise<void>} Resolves after the edit form is initialized.
  */
 async function renderAndInitTaskForm(dialog, taskId, task) {
-    dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask(true);
-    dialog.removeAttribute("aria-labelledby");
-    dialog.setAttribute("aria-label", "Edit task");
-    await initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
-    dialog.querySelector("#task-title").focus();
+  dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask(true);
+  dialog.removeAttribute("aria-labelledby");
+  dialog.setAttribute("aria-label", "Edit task");
+  await initEditTaskForm(dialog.querySelector(".task-form-wrapper"), taskId, task);
+  dialog.querySelector("#task-title").focus();
 }
 
 /**
@@ -133,17 +136,17 @@ async function renderAndInitTaskForm(dialog, taskId, task) {
  * @returns {boolean} True if all update steps succeed; false after handling an update error.
  */
 function updateBoardAfterTaskEdit(taskId, task) {
-    const dialog = document.getElementById("dialog-task");
+  const dialog = document.getElementById("dialog-task");
 
-    try {
-        board[task.status].tasks[taskId] = task;
-        renderBoard(Object.values(board));
-        updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
-        return true;
-    } catch (error) {
-        showNotification("Task saved, but the board could not be refreshed. Please reload the page.", "error");
-        return false;
-    }
+  try {
+    board[task.status].tasks[taskId] = task;
+    renderBoard(Object.values(board));
+    updateTaskDialog(dialog, getTaskOverlayData(taskId, task));
+    return true;
+  } catch (error) {
+    showNotification("Task saved, but the board could not be refreshed. Please reload the page.", "error");
+    return false;
+  }
 }
 
 /**
@@ -156,14 +159,14 @@ function updateBoardAfterTaskEdit(taskId, task) {
  * @returns {Promise<void>} Resolves after requesting navigation, opening the initialized dialog, or handling a desktop dialog error.
  */
 async function openAddTaskDialog(status = "toDo") {
-    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+  const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
 
-    if (!isDesktop) {
-        window.location.href = `./addTask.html?status=${status}`;
-        return;
-    }
+  if (!isDesktop) {
+    window.location.href = `./addTask.html?status=${status}`;
+    return;
+  }
 
-    await renderAndOpenAddTaskDialog(status);
+  await renderAndOpenAddTaskDialog(status);
 }
 
 /**
@@ -175,16 +178,16 @@ async function openAddTaskDialog(status = "toDo") {
  * @returns {Promise<void>} Resolves after opening the initialized dialog or handling an error.
  */
 async function renderAndOpenAddTaskDialog(status) {
-    const dialog = document.getElementById("dialog-add-task");
+  const dialog = document.getElementById("dialog-add-task");
 
-    try {
-        dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
-        dialog.setAttribute("aria-labelledby", "add-task-dialog-title");
-        await initAddTaskForm(dialog.querySelector(".task-form-wrapper"), status);
-        openDialog("dialog-add-task");
-    } catch (error) {
-        showNotification("Task form could not be loaded. Please try again.", "error");
-    }
+  try {
+    dialog.innerHTML = getAddTaskDialogCloseButtonTemplate() + renderAddTask();
+    dialog.setAttribute("aria-labelledby", "add-task-dialog-title");
+    await initAddTaskForm(dialog.querySelector(".task-form-wrapper"), status);
+    openDialog("dialog-add-task");
+  } catch (error) {
+    showNotification("Task form could not be loaded. Please try again.", "error");
+  }
 }
 
 /**
@@ -195,46 +198,47 @@ async function renderAndOpenAddTaskDialog(status) {
  * @returns {void}
  */
 function updateBoardAfterTaskCreation(taskId, task) {
-    board[task.status].tasks[taskId] = task;
-    renderBoard(Object.values(board));
+  board[task.status].tasks[taskId] = task;
+  renderBoard(Object.values(board));
 }
 
 /**
- * Coordinates task deletion and prevents repeated clicks.
- * Re-enables the button if database deletion fails.
- * On success, updates the board and schedules dialog closing through a notification.
+ * Deletes a task unless its delete button is already disabled.
+ * Updates the board and schedules dialog closing after successful deletion.
  *
  * @param {TaskId} taskId - ID of the task to delete.
  * @param {Task["status"]} taskStatus - Column containing the task.
  * @param {HTMLButtonElement} button - The clicked delete button.
- * @returns {Promise<void>} Resolves after deletion handling, without waiting for notification or dialog animations.
+ * @returns {Promise<void>} Resolves after deletion handling, without waiting for dialog animations.
  */
 async function deleteTask(taskId, taskStatus, button) {
-    const dialog = button.closest("dialog");
-    if (button.disabled) return;
+  const dialog = button.closest("dialog");
+  if (button.disabled) return;
 
-    button.disabled = true;
+  const deletionSuccess = await handleDeleteTask(taskId, button);
+  if (!deletionSuccess) return;
 
-    try {
-        await deleteTaskFromDatabase(taskId);
-    } catch (error) {
-        handleTaskDeletionError(button);
-        return;
-    }
-
-    updateBoardAfterTaskDeletion(taskId, taskStatus, dialog);
+  updateBoardAfterTaskDeletion(taskId, taskStatus, dialog);
 }
 
 /**
- * Deletes a task from Firebase.
- * Propagates errors to the caller for handling.
+ * Disables the delete button and attempts to delete the task from Firebase.
+ * Re-enables the button and shows a notification if deletion fails.
  *
  * @param {TaskId} taskId - ID of the task to delete.
- * @returns {Promise<void>} Resolves after the task has been deleted.
- * @throws {Error} If the database deletion fails.
+ * @param {HTMLButtonElement} button - The delete button to disable.
+ * @returns {Promise<boolean>} True if deletion succeeds, otherwise false.
  */
-async function deleteTaskFromDatabase(taskId) {
-    await deleteData(DB_TASKS + taskId);
+async function handleDeleteTask(taskId, button) {
+  button.disabled = true;
+
+  try {
+    await deleteTaskFromDatabase(taskId);
+    return true;
+  } catch (error) {
+    handleTaskDeletionError(button);
+    return false;
+  }
 }
 
 /**
@@ -244,8 +248,8 @@ async function deleteTaskFromDatabase(taskId) {
  * @returns {void}
  */
 function handleTaskDeletionError(button) {
-    button.disabled = false;
-    showNotification("Deleting Task failed!", "error");
+  button.disabled = false;
+  showNotification("Deleting Task failed!", "error");
 }
 
 /**
@@ -259,13 +263,55 @@ function handleTaskDeletionError(button) {
  * @returns {void}
  */
 function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
-    try {
-        delete board[taskStatus].tasks[taskId];
-        renderBoard([board[taskStatus]]);
-        showNotification("Task successfully deleted!", undefined, "success", () => dialog.requestClose());
-    } catch (error) {
-        showNotification("Task successfully deleted!\nReload required!", "error");
-    }
+  try {
+    delete board[taskStatus].tasks[taskId];
+    renderBoard([board[taskStatus]]);
+    showNotification("Task successfully deleted!", undefined, "success", () => dialog.requestClose());
+  } catch (error) {
+    showNotification("Task successfully deleted!\nReload required!", "error");
+  }
+}
+
+/**
+ * Handles the dialog's closing animation end.
+ * Clears its taskId and taskStatus data attributes and calls
+ * closeAnimatedDialog() to finish closing it.
+ * Ignores child animation events and dialogs without the closing class.
+ * Preserves the task ID and status before clearing them to restore board focus.
+ * After closing, focuses the task card or a fallback if the task no longer exists.
+ * Releases the creation lock after a successfully created task's dialog closes.
+ *
+ * @param {AnimationEvent} event - The dialog animation event.
+ * @returns {void}
+ */
+function closeTaskDialog(event) {
+  const dialog = event.currentTarget;
+  if (event.target !== dialog || !dialog.classList.contains("dialog-task-closing")) {
+    return;
+  }
+
+  const { taskId, taskStatus } = dialog.dataset;
+  dialog.dataset.taskId = "";
+  dialog.dataset.taskStatus = "";
+  closeAnimatedDialog(event, "dialog-task-closing");
+  resetTaskCreationState(dialog);
+  restoreBoardTaskFocus(taskId, taskStatus);
+}
+
+/**
+ * Releases the saving lock for a successfully completed Add Task dialog.
+ * Leaves other dialogs and forms without a created task unchanged.
+ *
+ * @param {HTMLDialogElement} dialog - The closed task dialog.
+ * @returns {void}
+ */
+function resetTaskCreationState(dialog) {
+  const form = dialog.querySelector("form");
+
+  if (dialog.id === "dialog-add-task" && form?.dataset.taskCreated === "true") {
+    delete form.dataset.taskCreated;
+    setTaskSavingState(form, false);
+  }
 }
 
 /**
@@ -276,37 +322,14 @@ function updateBoardAfterTaskDeletion(taskId, taskStatus, dialog) {
  * @returns {void}
  */
 function restoreBoardTaskFocus(taskId, taskStatus) {
-    if (!taskId) return;
+  if (!taskId) return;
 
-    const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
-    const target = document.getElementById(taskId)
-        ?? column?.querySelector(".task-card")
-        ?? column?.querySelector(".board-column-header button")
-        ?? document.getElementById("search");
+  const column = document.querySelector(`[data-column-id="${taskStatus}"]`);
+  const target =
+    document.getElementById(taskId)?.querySelector(".task-card-open") ??
+    column?.querySelector(".task-card-open") ??
+    column?.querySelector(".board-column-header button") ??
+    document.getElementById("search");
 
-    target?.focus();
-}
-
-/**
- * Handles the dialog's closing animation end.
- * Clears its taskId and taskStatus data attributes and calls
- * closeAnimatedDialog() to finish closing it.
- * Ignores child animation events and dialogs without the closing class.
- * Preserves the task ID and status before clearing them to restore board focus.
- * After closing, focuses the task card or a fallback if the task no longer exists.
- *
- * @param {AnimationEvent} event - The dialog animation event.
- * @returns {void}
- */
-function closeTaskDialog(event) {
-    const dialog = event.currentTarget;
-    if (event.target !== dialog || !dialog.classList.contains("dialog-task-closing")) {
-        return;
-    }
-
-    const { taskId, taskStatus } = dialog.dataset;
-    dialog.dataset.taskId = "";
-    dialog.dataset.taskStatus = "";
-    closeAnimatedDialog(event, "dialog-task-closing");
-    restoreBoardTaskFocus(taskId, taskStatus);
+  target?.focus();
 }

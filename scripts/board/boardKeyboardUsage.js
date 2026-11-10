@@ -26,11 +26,11 @@ let highlightedColumnIndex = null;
  * @returns {Promise<void>} Resolves after the keyboard input has been handled.
  */
 async function handleTaskCardKeydown(event, taskId, taskStatus) {
-    if (isKeyboardMoveActive) {
-        await handleKeyboardMovement(taskId, event);
-    } else {
-        handleKeyboardTaskCardOperation(event, taskId, taskStatus);
-    }
+  if (isKeyboardMoveActive) {
+    await handleKeyboardMovement(taskId, event);
+  } else {
+    handleKeyboardTaskCardOperation(event, taskId, taskStatus);
+  }
 }
 
 /**
@@ -44,77 +44,13 @@ async function handleTaskCardKeydown(event, taskId, taskStatus) {
  * @returns {void}
  */
 function handleKeyboardTaskCardOperation(event, taskId, taskStatus) {
-    if (event.key === " ") {
-        event.preventDefault();
-        if (!isTaskMovePending && !event.repeat) startMovingTaskWithKeyboard(taskId, taskStatus, event);
-    } else if (event.key === "Enter") {
-        event.preventDefault();
-        if (!isTaskMovePending && !event.repeat) openTaskDialog(taskId, taskStatus);
-    }
-}
-
-/**
- * Prevents default behavior and ignores repeated Space, Enter,
- * ArrowRight, and ArrowLeft events during keyboard movement.
- * Passes all other events to keyboardMovement().
- *
- * @param {TaskId} taskId - ID of the task being moved.
- * @param {KeyboardEvent} event - The task card's keydown event.
- * @returns {Promise<void>} Resolves after the input is ignored or handled.
- */
-async function handleKeyboardMovement(taskId, event) {
-    if (
-        event.repeat &&
-        (event.key === " " || event.key === "Enter" || event.key === "ArrowRight" || event.key === "ArrowLeft")
-    ) {
-        event.preventDefault();
-        return;
-    }
-
-    await keyboardMovement(taskId, event);
-}
-
-/**
- * Executes the action mapped to the pressed key during keyboard movement.
- * Prevents default behavior for mapped keys and Space.
- * Ignores other keys and waits for asynchronous actions to finish.
- *
- * @param {TaskId} taskId - ID of the task being moved.
- * @param {KeyboardEvent} event - The task card's keydown event.
- * @returns {Promise<void>} Resolves after the input is ignored or handled.
- */
-async function keyboardMovement(taskId, event) {
-    /** @type {Record<string, () => void|Promise<void>>} */
-    const actions = getKeyboardActions(event, taskId);
-
-    /** @type {(() => void|Promise<void>)|undefined} */
-    const action = actions[event.key];
-
-    if (!Object.hasOwn(actions, event.key) && event.key !== " ") return;
-
+  if (event.key === " ") {
     event.preventDefault();
-    if (action) await action();
-}
-
-/**
- * Creates the keyboard action mapping for destination navigation,
- * confirmation, and cancellation. Tab and ArrowRight advance; ArrowLeft moves back.
- * Enter confirms, Escape cancels, and column navigation wraps around.
- *
- * @param {TaskId} taskId - ID passed to confirmation and cleanup actions.
- * @returns {Record<string, () => void|Promise<void>>} Actions indexed by key value.
- */
-function getKeyboardActions(event, taskId) {
-    return {
-        ArrowRight: moveToNextColumn,
-        ArrowLeft: moveToPreviousColumn,
-        Tab: event.shiftKey ? moveToPreviousColumn : moveToNextColumn,
-        Enter: () => confirmMovingTaskWithKeyboard(taskId),
-        Escape: () => {
-            finishMovingTaskWithKeyboard(taskId);
-            announceBoardMoveStatus("Task movement cancelled.");
-        },
-    };
+    if (!isTaskMovePending && !event.repeat) startMovingTaskWithKeyboard(taskId, taskStatus, event);
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    if (!isTaskMovePending && !event.repeat) openTaskDialog(taskId, taskStatus);
+  }
 }
 
 /**
@@ -129,56 +65,80 @@ function getKeyboardActions(event, taskId) {
  * @returns {void}
  */
 function startMovingTaskWithKeyboard(taskId, taskStatus, event) {
-    startDraggingTask(taskId, taskStatus, event);
+  startDraggingTask(taskId, taskStatus, event);
 
-    if (draggingTask) {
-        isKeyboardMoveActive = true;
-        highlightedColumnIndex = Object.keys(board).findIndex((column) => column === taskStatus);
+  if (draggingTask) {
+    isKeyboardMoveActive = true;
+    highlightedColumnIndex = Object.keys(board).findIndex((column) => column === taskStatus);
 
-        addHighlightDroppableColumn(draggingTask.status);
-        announceBoardMoveStatus(`Moving task. Selected column: ${board[taskStatus].name}.`);
-    }
+    addHighlightDroppableColumn(draggingTask.status);
+    announceBoardMoveStatus(`Moving task. Selected column: ${board[taskStatus].name}.`);
+  }
 }
 
 /**
- * Moves the task and passes its result to the focus restoration.
+ * Prevents default behavior and ignores repeated Space, Enter,
+ * ArrowRight, and ArrowLeft events during keyboard movement.
+ * Passes all other events to keyboardMovement().
  *
  * @param {TaskId} taskId - ID of the task being moved.
- * @returns {Promise<void>} Resolves after movement and focus restoration.
+ * @param {KeyboardEvent} event - The task card's keydown event.
+ * @returns {Promise<void>} Resolves after the input is ignored or handled.
  */
-async function confirmMovingTaskWithKeyboard(taskId) {
-    const destinationStatus = Object.keys(board)[highlightedColumnIndex];
-    let message = "";
-    isKeyboardMoveActive = false;
-    try {
-        const wasSaved = await moveTask(destinationStatus);
-        message = wasSaved === undefined ? "Task remains in its current column."
-            : wasSaved ? `Task moved to ${board[destinationStatus].name}.`
-            : "Task could not be moved. Its original column has been restored.";
-    } finally {
-        finishMovingTaskWithKeyboard(taskId, message);
-    }
+async function handleKeyboardMovement(taskId, event) {
+  if (
+    event.repeat &&
+    (event.key === " " || event.key === "Enter" || event.key === "ArrowRight" || event.key === "ArrowLeft")
+  ) {
+    event.preventDefault();
+    return;
+  }
+
+  await keyboardMovement(taskId, event);
 }
 
 /**
- * Ends movement, sets the result description and restores card focus.
+ * Executes the action mapped to the pressed key during keyboard movement.
+ * Prevents default behavior for mapped keys and Space.
+ * Ignores other keys and waits for asynchronous actions to finish.
  *
- * @param {TaskId} taskId - ID of the task card.
- * @param {string} [message=""] - Result to include in the card description.
- * @returns {void}
+ * @param {TaskId} taskId - ID of the task being moved.
+ * @param {KeyboardEvent} event - The task card's keydown event.
+ * @returns {Promise<void>} Resolves after the input is ignored or handled.
  */
-function finishMovingTaskWithKeyboard(taskId, message = "") {
-    isKeyboardMoveActive = false;
-    removeHighlightDroppableColumn(Object.keys(board)[highlightedColumnIndex]);
-    highlightedColumnIndex = null;
-    endDraggingTask(taskId);
-    const card = document.getElementById(taskId);
-    const alreadyFocused = document.activeElement === card;
-    card.querySelector(".task-move-result").textContent = message;
-    card.setAttribute("aria-describedby",
-        message ? `${taskId}-move-result` : "task-keyboard-help");
-    card.focus();
-    if (alreadyFocused && message) announceBoardMoveStatus(message);
+async function keyboardMovement(taskId, event) {
+  /** @type {Record<string, () => void|Promise<void>>} */
+  const actions = getKeyboardActions(event, taskId);
+
+  /** @type {(() => void|Promise<void>)|undefined} */
+  const action = actions[event.key];
+
+  if (!Object.hasOwn(actions, event.key) && event.key !== " ") return;
+
+  event.preventDefault();
+  if (action) await action();
+}
+
+/**
+ * Creates the keyboard action mapping for destination navigation,
+ * confirmation, and cancellation. Tab and ArrowRight advance; ArrowLeft moves back.
+ * Enter confirms, Escape cancels, and column navigation wraps around.
+ *
+ * @param {KeyboardEvent} event - Keyboard event used to check the Shift key.
+ * @param {TaskId} taskId - ID passed to confirmation and cleanup actions.
+ * @returns {Record<string, () => void|Promise<void>>} Actions indexed by key value.
+ */
+function getKeyboardActions(event, taskId) {
+  return {
+    ArrowRight: moveToNextColumn,
+    ArrowLeft: moveToPreviousColumn,
+    Tab: event.shiftKey ? moveToPreviousColumn : moveToNextColumn,
+    Enter: () => confirmMovingTaskWithKeyboard(taskId),
+    Escape: () => {
+      finishMovingTaskWithKeyboard(taskId);
+      announceBoardMoveStatus("Task movement cancelled.");
+    },
+  };
 }
 
 /**
@@ -190,14 +150,14 @@ function finishMovingTaskWithKeyboard(taskId, message = "") {
  * @returns {void}
  */
 function moveToNextColumn() {
-    const columns = Object.keys(board);
-    removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
+  const columns = Object.keys(board);
+  removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
 
-    highlightedColumnIndex = highlightedColumnIndex + 1;
-    if (highlightedColumnIndex >= columns.length) highlightedColumnIndex = 0;
+  highlightedColumnIndex = highlightedColumnIndex + 1;
+  if (highlightedColumnIndex >= columns.length) highlightedColumnIndex = 0;
 
-    addHighlightDroppableColumn(columns[highlightedColumnIndex]);
-    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
+  addHighlightDroppableColumn(columns[highlightedColumnIndex]);
+  announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
 }
 
 /**
@@ -209,22 +169,67 @@ function moveToNextColumn() {
  * @returns {void}
  */
 function moveToPreviousColumn() {
-    const columns = Object.keys(board);
-    removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
+  const columns = Object.keys(board);
+  removeHighlightDroppableColumn(columns[highlightedColumnIndex]);
 
-    highlightedColumnIndex = highlightedColumnIndex - 1;
-    if (highlightedColumnIndex < 0) highlightedColumnIndex = columns.length - 1;
+  highlightedColumnIndex = highlightedColumnIndex - 1;
+  if (highlightedColumnIndex < 0) highlightedColumnIndex = columns.length - 1;
 
-    addHighlightDroppableColumn(columns[highlightedColumnIndex]);
-    announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
+  addHighlightDroppableColumn(columns[highlightedColumnIndex]);
+  announceBoardMoveStatus(`Selected column: ${board[columns[highlightedColumnIndex]].name}.`);
 }
 
 /**
- * Announces board movement updates to screen readers.
+ * Moves the task and passes its result to the focus restoration.
  *
- * @param {string} message - The movement information to announce.
+ * @param {TaskId} taskId - ID of the task being moved.
+ * @returns {Promise<void>} Resolves after movement and focus restoration.
+ */
+async function confirmMovingTaskWithKeyboard(taskId) {
+  const destinationStatus = Object.keys(board)[highlightedColumnIndex];
+  let message = "";
+  isKeyboardMoveActive = false;
+
+  try {
+    const wasSaved = await moveTask(taskId, destinationStatus, draggingTask?.status);
+    message = getConfirmMovingTaskWithKeyboardMessage(wasSaved, destinationStatus);
+  } finally {
+    finishMovingTaskWithKeyboard(taskId, message);
+  }
+}
+
+/**
+ * Returns the keyboard movement result message.
+ *
+ * @param {boolean|undefined} wasSaved - True on success, false on failure, undefined if unchanged.
+ * @param {Task["status"]} destinationStatus - The selected destination column.
+ * @returns {string} The message describing the movement result.
+ */
+function getConfirmMovingTaskWithKeyboardMessage(wasSaved, destinationStatus) {
+  return wasSaved === undefined
+    ? "Task remains in its current column."
+    : wasSaved
+      ? `Task moved to ${board[destinationStatus].name}.`
+      : "Task could not be moved. Its original column has been restored.";
+}
+
+/**
+ * Ends movement, sets the result description and restores focus to the task's opening button.
+ *
+ * @param {TaskId} taskId - ID of the task card.
+ * @param {string} [message=""] - Result to include in the card description.
  * @returns {void}
  */
-function announceBoardMoveStatus(message) {
-    document.getElementById("board-move-status").textContent = message;
+function finishMovingTaskWithKeyboard(taskId, message = "") {
+  isKeyboardMoveActive = false;
+  removeHighlightDroppableColumn(Object.keys(board)[highlightedColumnIndex]);
+  highlightedColumnIndex = null;
+  endDraggingTask(taskId);
+  const card = document.getElementById(taskId);
+  const openButton = card.querySelector(".task-card-open");
+  const alreadyFocused = document.activeElement === openButton;
+  card.querySelector(".task-move-result").textContent = message;
+  openButton.setAttribute("aria-describedby", message ? `${taskId}-move-result` : "task-keyboard-help");
+  openButton.focus();
+  if (alreadyFocused && message) announceBoardMoveStatus(message);
 }

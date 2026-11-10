@@ -7,11 +7,11 @@
 
 /**
  * @typedef {string} UserId - The unique ID of a user.
-*/
+ */
 
 /**
  * @typedef {Object<UserId, User>} UserDirectory - Users indexed by their user ID.
-*/
+ */
 
 /**
  * @typedef {string} ContactColorClass - CSS class selecting a contact badge color.
@@ -95,6 +95,7 @@
  * @typedef {Object} Subtask
  * @property {string} title - The title of the subtask.
  * @property {boolean} completed - Indicates whether the subtask is completed.
+ * @property {number} [position] - Zero-based display position; absent in older entries.
  */
 
 /**
@@ -105,6 +106,7 @@
  * @property {Task} task - The task data.
  * @property {SubtasksData} subtasksData - Subtask summary and progress.
  * @property {string} assigneesHtml - HTML for the assigned contacts.
+ * @property {string} popupHtml - HTML for the task's move popup.
  */
 
 /**
