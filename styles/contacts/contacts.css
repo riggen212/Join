@@ -147,18 +147,25 @@ body:has(.contacts-content) #notification {
   --notification-transform: translateX(-50%);
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 768px) {
   .board {
+    min-height: 0;
+    height: calc(100dvh - var(--mobile-header-footer-height));
+    margin-top: var(--mobile-header-footer-height);
+    padding-block: 0;
     overflow: visible;
   }
 
   .contacts-content {
     display: flex;
-    overflow: visible;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .contact-list {
-    flex: 0 0 400px;
+    flex: 0 0 clamp(280px, 36vw, 400px);
+    min-height: 0;
+    scrollbar-gutter: stable;
     padding: var(--space-lg) var(--space-lg) var(--space-xl);
   }
 
@@ -187,5 +194,35 @@ body:has(.contacts-content) #notification {
 
   .contact-list > .detail-view span {
     display: inline;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .contact-list {
+    flex-basis: clamp(260px, 27vw, 340px);
+    padding: var(--space-md) var(--space-md) var(--space-lg);
+  }
+
+  .contact-group {
+    gap: var(--space-md);
+    padding-top: var(--space-lg);
+  }
+
+  .contact-group h2 {
+    padding-bottom: var(--space-md);
+    padding-left: var(--space-sm);
+  }
+
+  .contact-group + .contact-group {
+    margin-top: var(--space-sm);
+  }
+
+  .contact-card {
+    gap: var(--space-md);
+    padding: var(--space-sm);
+  }
+
+  .contact-card p {
+    font-size: 20px;
   }
 }

@@ -1,0 +1,109 @@
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  body:has(.navbar) {
+    --navbar-intermediate-width: clamp(168px, 18vw, 200px);
+  }
+
+  body:has(.navbar) .app-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100dvh;
+
+    & main {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+  }
+
+  body:has(.navbar) .header-wrapper {
+    padding-left: calc(var(--navbar-intermediate-width) + var(--space-md));
+  }
+
+  body:has(.navbar) .header-logo,
+  body:has(.navbar) #link-help-profile-dialog {
+    display: none;
+  }
+
+  body:has(.navbar) .header-headline {
+    display: block;
+    margin-inline-start: var(--space-xl);
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+  body:has(.navbar) .header-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      scale: 1.2;
+    }
+  }
+
+  body:has(.navbar) .navbar {
+    position: sticky;
+    top: 0;
+    bottom: auto;
+    flex: 0 0 var(--navbar-intermediate-width);
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100dvh;
+    height: auto;
+    padding-block: clamp(24px, 5vh, 48px);
+  }
+
+  body:has(.navbar) .navbar[data-is-logged-in="false"] {
+    padding-inline: 0;
+  }
+
+  body:has(.navbar) .navbar footer {
+    display: block;
+
+    & .navbar-links {
+      gap: unset;
+    }
+
+    & .link-navbar:hover {
+      background-color: unset;
+      color: var(--color-brand);
+    }
+  }
+
+  body:has(.navbar) .navbar-logo {
+    display: block;
+    height: clamp(56px, 7vw, 72px);
+    width: auto;
+  }
+
+  body:has(.navbar) .navbar-wrapper {
+    gap: clamp(24px, 5vh, 40px);
+  }
+
+  body:has(.navbar) .navbar-links {
+    flex-direction: column;
+    justify-content: center;
+    width: min(100%, var(--content-max-width));
+    height: auto;
+    gap: 16px;
+  }
+
+  body:has(.navbar) .link-navbar {
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 40px;
+    width: 100%;
+    padding-block: var(--space-xs);
+    padding-inline: clamp(16px, 2vw, 24px);
+    gap: var(--space-xs);
+    border-radius: unset;
+
+    & img {
+      width: 30px;
+    }
+
+    &:hover {
+      background-color: var(--color-brand);
+    }
+  }
+}

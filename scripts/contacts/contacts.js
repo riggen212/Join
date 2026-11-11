@@ -276,7 +276,6 @@ function closeDialogAfterContactDeletion(message) {
 
   if (actionsDialog.open) {
     actionsDialog.close();
-    document.body.classList.remove("overflow-hidden");
   }
 
   if (!contactDialog.open) return showNotification(message, "show-details");

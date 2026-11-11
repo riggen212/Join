@@ -33,10 +33,6 @@
 }
 
 /* State */
-.overflow-hidden {
-  overflow: hidden;
-}
-
 .active {
   color: #fff !important;
   background-color: var(--button-dark-active-background-color) !important;

@@ -74,6 +74,13 @@
   gap: 32px;
 }
 
+@media screen and (max-width: 767px) {
+  .section-container {
+    max-width: 540px;
+    margin-inline: auto;
+  }
+}
+
 .section-inner,
 .flexbox,
 .deadline-inner {

@@ -164,7 +164,7 @@
         </footer>
       </nav>
 
-      <main class="board board-page">
+      <main class="board board-page scrollbar">
         <div class="board-inner">
           <header id="board-header">
             <h1 class="page-heading board-heading">Board</h1>
@@ -224,7 +224,7 @@
 
               <div
                 id="toDo-content"
-                class="board-column-content"
+                class="board-column-content scrollbar"
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="
@@ -249,7 +249,7 @@
 
               <div
                 id="inProgress-content"
-                class="board-column-content"
+                class="board-column-content scrollbar"
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="
@@ -274,7 +274,7 @@
 
               <div
                 id="awaitFeedback-content"
-                class="board-column-content"
+                class="board-column-content scrollbar"
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="
@@ -291,7 +291,7 @@
 
               <div
                 id="done-content"
-                class="board-column-content"
+                class="board-column-content scrollbar"
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="

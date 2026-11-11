@@ -56,6 +56,25 @@ body:has(.add-task-inner) #notification {
   --notification-transform: translateX(-50%);
 }
 
+@media screen and (min-width: 768px) {
+  .board.add-task-page {
+    min-height: 0;
+    height: calc(100dvh - var(--mobile-header-footer-height));
+    margin-top: var(--mobile-header-footer-height);
+    padding-block: 0;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
+
+  .add-task-inner::before {
+    content: none;
+  }
+
+  .add-task-inner > h1 {
+    position: static;
+  }
+}
+
 @media screen and (min-width: 1280px) {
   body:has(.add-task-inner) #notification {
     top: 50%;
@@ -73,7 +92,6 @@ body:has(.add-task-inner) #notification {
 
   .board.add-task-page {
     padding-bottom: 0;
-    height: auto;
   }
 
   .board-inner.add-task-inner {
@@ -83,11 +101,4 @@ body:has(.add-task-inner) #notification {
     padding-inline-end: var(--space-xl);
   }
 
-  .add-task-inner::before {
-    content: none;
-  }
-
-  .add-task-inner > h1 {
-    position: static;
-  }
 }
