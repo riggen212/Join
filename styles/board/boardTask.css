@@ -186,8 +186,7 @@
   background-color: var(--color-white);
   border-radius: var(--border-radius-high);
 
-  overflow-y: scroll;
-  scrollbar-width: none;
+  overflow: hidden;
 
   & .task-overlay-header,
   & .task-overlay-footer {
@@ -204,12 +203,17 @@
   gap: var(--space-task);
 }
 
-.task-overlay-body,
+.task-overlay-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .task-overlay-details,
 .task-overlay-section,
 .task-overlay-section > dd,
 .task-overlay-section > dd > ul {
-  flex: 0 1 auto;
+  flex-shrink: 0;
   min-height: 0;
 }
 
@@ -226,12 +230,10 @@
 }
 
 .task-overlay-description {
-  max-height: 12dvh;
   min-height: 0;
 
   flex-shrink: 0;
 
-  overflow-y: auto;
   overflow-wrap: anywhere;
 }
 
@@ -256,15 +258,15 @@
 
   & .task-overlay-subtasks-list {
     padding-inline-start: 0;
+
+    & input[type="checkbox"] {
+      flex-shrink: 0;
+    }
   }
 
   & > dd {
     display: flex;
     flex-direction: column;
-  }
-
-  & > dd > ul {
-    overflow-y: auto;
   }
 
   & li {
@@ -289,6 +291,43 @@
 
   & .button ~ .button:hover {
     border-left-color: transparent;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .task-overlay {
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+
+  .task-overlay-body {
+    flex: 0 1 auto;
+    overflow: visible;
+  }
+
+  .task-overlay-details,
+  .task-overlay-section,
+  .task-overlay-section > dd,
+  .task-overlay-section > dd > ul {
+    flex-shrink: 1;
+  }
+
+  .task-overlay-description {
+    max-height: 12dvh;
+    overflow-y: auto;
+  }
+
+  .task-overlay-section > dd > ul {
+    overflow-y: auto;
+  }
+
+  /* Limit each list to roughly four rows; allow flex shrinking on short screens. */
+  .task-overlay-assignees-list {
+    max-height: calc(4 * var(--size-badge-user) + 3 * var(--space-task));
+  }
+
+  .task-overlay-subtasks-list {
+    max-height: calc(4 * 24px + 3 * var(--space-task));
   }
 }
 

@@ -144,7 +144,7 @@ function getTaskOverlayTemplate(taskData) {
                     <h2 class="section-heading scrollbar" id="task-dialog-title">${taskData.task.title}</h2>
                 </header>
 
-                <div class="task-overlay-body">
+                <div class="task-overlay-body scrollbar">
                     <p class="task-overlay-description scrollbar">${taskData.task.description}</p>
 
                     <dl class="task-overlay-details">
