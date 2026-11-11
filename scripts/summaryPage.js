@@ -1,4 +1,4 @@
-F; /**
+/**
  * Loads the current user and tasks, then updates the summary page.
  * Displays and announces a notification if initialization fails.
  * Stops initialization if no valid user is available.
