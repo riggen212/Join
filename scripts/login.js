@@ -84,7 +84,7 @@ async function guestLogin() {
  * @throws {Error} If loading users fails.
  */
 async function loadAndCheckLoginCredentials() {
-  const email = document.getElementById("emailField").value.trim();
+  const email = document.getElementById("emailField").value.trim().toLowerCase();
   const password = document.getElementById("passwortField").value;
 
   if (!validateLoginData({ email, password })) return;
