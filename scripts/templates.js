@@ -1,4 +1,4 @@
-F; /**
+/**
  * Returns the HTML of the task form.
  *
  * @param {boolean} [isEditMode=false] - True renders the form for editing an existing task

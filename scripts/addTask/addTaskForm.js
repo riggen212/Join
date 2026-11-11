@@ -6,7 +6,7 @@
  *
  * @param {HTMLFormElement} form - The rendered task form.
  * @param {Task["status"]} [status="toDo"] - Status used when saving the task.
- * @param {Task|null} [task=null] - Existing task to populate, or null for creation.F
+ * @param {Task|null} [task=null] - Existing task to populate, or null for creation.
  * @returns {Promise<void>} Resolves when the form is initialized and interactive; rejects on initialization failure.
  */
 async function initAddTaskForm(form, status = "toDo", task = null) {

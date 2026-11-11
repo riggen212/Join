@@ -4,6 +4,10 @@
 }
 
 /* Board structure */
+html:has(.board-page) {
+  scrollbar-width: none;
+}
+
 .board {
   display: flex;
   flex-direction: column;
@@ -173,6 +177,10 @@
 
 /* Media queries */
 @media screen and (min-width: 1280px) {
+  html:has(.board-page) {
+    scrollbar-width: auto;
+  }
+
   /* Board structure */
   .board {
     min-height: 0;
