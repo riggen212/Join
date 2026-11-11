@@ -168,6 +168,10 @@
   padding: var(--space-xs);
 }
 
+.taks-inner .section-span {
+  white-space: nowrap;
+}
+
 @keyframes greetingFadeOut {
   0%,
   75% {

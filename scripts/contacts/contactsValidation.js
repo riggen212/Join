@@ -56,13 +56,52 @@ function getContactValidationErrors(contact) {
 }
 
 /**
- * Checks whether an email address matches a basic email format.
+ * Validates a common ASCII email address after trimming outer whitespace.
+ * Checks the total length, local part and dotted domain structure.
+ * Does not verify whether the domain or mailbox exists.
  *
  * @param {string} email - The email address to validate.
- * @returns {boolean} Whether the email address matches the expected format.
+ * @returns {boolean} Whether the address matches the supported format.
  */
 function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const value = email.trim();
+  const parts = value.split("@");
+
+  if (value.length > 254 || parts.length !== 2) return false;
+
+  const [localPart, domain] = parts;
+
+  return isValidEmailLocalPart(localPart) && isValidEmailDomain(domain);
+}
+
+/**
+ * Validates an ASCII email local part of 1–64 characters.
+ * Rejects leading, trailing and consecutive dots.
+ *
+ * @param {string} localPart - The part before the @ character.
+ * @returns {boolean} Whether the local part matches the supported format.
+ */
+function isValidEmailLocalPart(localPart) {
+  if (!localPart || localPart.length > 64) return false;
+
+  const pattern = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*$/;
+
+  return pattern.test(localPart);
+}
+
+/**
+ * Validates an ASCII domain with at least two dot-separated labels.
+ * Each label must contain 1–63 letters, digits or hyphens
+ * and must not begin or end with a hyphen.
+ *
+ * @param {string} domain - The part after the @ character.
+ * @returns {boolean} Whether all domain labels match the supported format.
+ */
+function isValidEmailDomain(domain) {
+  const parts = domain.split(".");
+  const pattern = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
+
+  return parts.length >= 2 && parts.every((part) => pattern.test(part));
 }
 
 /**
