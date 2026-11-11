@@ -7,7 +7,7 @@
   min-height: 18px;
   margin-block: 4px;
 
-  color: red;
+  color: var(--color-error);
   font-size: 14px;
 
   text-align: left;
@@ -17,5 +17,5 @@
 .input-wrapper.has-error,
 .input-wrapper.has-error:hover,
 .input-wrapper.has-error:focus-within {
-  border-color: red;
+  border-color: var(--color-error);
 }

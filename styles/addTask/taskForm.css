@@ -84,7 +84,7 @@
   min-height: 16px;
   margin: var(--space-xxs) 0 0;
 
-  color: var(--color-error-light);
+  color: var(--color-error);
   font-size: 12px;
   line-height: 16px;
 }
@@ -96,7 +96,7 @@
 .input-wrapper.is-invalid,
 .input-wrapper.is-invalid:hover,
 .input-wrapper.is-invalid:focus-within {
-  border-color: var(--color-error-light);
+  border-color: var(--color-error);
 }
 
 .submit-task p {

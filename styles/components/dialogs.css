@@ -145,7 +145,7 @@
 }
 
 #notification.is-error {
-  background-color: #b3261e;
+  background-color: var(--color-error);
 }
 
 #notification.is-visible {
