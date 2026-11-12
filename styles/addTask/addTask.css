@@ -31,7 +31,7 @@ html:has(.add-task-page),
 
 .add-task-inner > h1 {
   position: sticky;
-  top: calc(var(--mobile-header-footer-height) + var(--add-task-sticky-cover-height));
+  top: var(--add-task-sticky-cover-height);
   z-index: 3;
 
   padding-bottom: var(--space-xs);
@@ -42,7 +42,7 @@ html:has(.add-task-page),
 }
 
 .board.add-task-page {
-  padding-bottom: calc(var(--mobile-header-footer-height) + 150px);
+  padding-bottom: 150px;
   background-color: var(--background-bright-color);
 }
 

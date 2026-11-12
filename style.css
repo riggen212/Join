@@ -10,7 +10,16 @@
 }
 
 .app-wrapper {
-  min-height: 100dvh;
+  position: absolute;
+  inset: 0;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Keep classic scrollbars from shifting the layout when a modal locks scrolling. */
+[data-background-scroll] {
+  scrollbar-gutter: stable;
 }
 
 .required {

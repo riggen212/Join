@@ -1,4 +1,9 @@
 /* Dialogs */
+/* Lock only application scroll containers, never the active modal's content. */
+body:has(dialog:modal) [data-background-scroll]:not(dialog:modal *) {
+  overflow: hidden;
+}
+
 #dialog-task[open],
 #dialog-add-task[open] {
   top: 50%;

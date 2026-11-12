@@ -1,8 +1,8 @@
 @media screen and (min-width: 768px) and (max-width: 1279px) {
   .main {
-    min-height: 100dvh;
+    height: calc(100dvh - var(--mobile-header-footer-height));
     margin-inline: auto;
-    padding: calc(var(--mobile-header-footer-height) + var(--space-lg)) clamp(24px, 5vw, 48px) var(--space-lg);
+    padding: var(--space-lg) clamp(24px, 5vw, 48px) var(--space-lg);
     gap: var(--space-lg);
   }
 
