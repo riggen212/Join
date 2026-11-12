@@ -200,7 +200,7 @@ body:has(.contacts-content) #notification {
 
 @media (min-width: 768px) and (max-width: 1279px) {
   .contact-list {
-    flex-basis: clamp(260px, 27vw, 340px);
+    flex-basis: clamp(272px, 27vw, 340px);
     padding: var(--space-md) var(--space-md) var(--space-lg);
   }
 
