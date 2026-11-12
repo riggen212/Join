@@ -1,7 +1,8 @@
 @media (min-width: 1280px) {
   .main {
-    margin: 0;
-    padding: calc(var(--mobile-header-footer-height) + var(--space-xl) + var(--space-md)) var(--space-xl)
+    height: calc(100dvh - var(--mobile-header-footer-height));
+    margin: var(--mobile-header-footer-height) 0 0;
+    padding: calc(var(--space-xl) + var(--space-md)) var(--space-xl)
       var(--space-md);
   }
 

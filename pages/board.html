@@ -11,6 +11,7 @@
     <script src="../scripts/board/boardKeyboardUsage.js" defer></script>
     <script src="../scripts/board/boardServices.js" defer></script>
     <script src="../scripts/board/boardMovement.js" defer></script>
+    <script src="../scripts/board/boardDragScroll.js" defer></script>
     <script src="../scripts/board/boardDialogs.js" defer></script>
     <script src="../scripts/addTask/addTaskFieldControls.js" defer></script>
     <script src="../scripts/addTask/addTaskAssigned.js" defer></script>
@@ -53,31 +54,28 @@
           <button
             class="header-profile-initials-button"
             type="button"
-            onclick="openDialog('dialog-profile')"
+            popovertarget="profile-popover"
             aria-label="Open service links and log out"
-            aria-haspopup="dialog"
-            aria-controls="dialog-profile"
-            aria-expanded="false"
+            aria-controls="profile-popover"
           ></button>
         </div>
       </div>
 
-      <dialog
-        id="dialog-profile"
+      <div
+        id="profile-popover"
+        class="menu-popover menu-popover--dark menu-popover--animated profile-popover"
         aria-label="Service links and log out"
-        closedby="any"
-        oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-        onanimationend="closeProfileDialog(event)"
+        popover="auto"
       >
         <nav aria-label="Service links">
           <ul>
             <li>
               <a
-                id="link-help-profile-dialog"
+                id="link-help-profile-popover"
                 href="../pages/help.html"
                 data-nav-link
                 class="link-navbar"
-                onclick="event.target.closest('dialog').close()"
+                onclick="event.target.closest('[popover]').hidePopover()"
                 >Help</a
               >
             </li>
@@ -86,7 +84,7 @@
                 href="../pages/legalNotice.html"
                 data-nav-link
                 class="link-navbar"
-                onclick="event.target.closest('dialog').close()"
+                onclick="event.target.closest('[popover]').hidePopover()"
                 >Legal Notice</a
               >
             </li>
@@ -95,7 +93,7 @@
                 href="../pages/privacyPolicy.html"
                 data-nav-link
                 class="link-navbar"
-                onclick="event.target.closest('dialog').close()"
+                onclick="event.target.closest('[popover]').hidePopover()"
                 >Privacy Policy</a
               >
             </li>
@@ -103,68 +101,74 @@
               <a
                 href="../index.html"
                 class="link-navbar"
-                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                onclick="(event.target.closest('[popover]').hidePopover(), sessionStorage.clear())"
                 >Log out</a
               >
             </li>
           </ul>
         </nav>
-      </dialog>
+      </div>
     </header>
 
     <div class="app-wrapper">
       <nav class="navbar" aria-label="Main navigation">
-        <div class="navbar-wrapper">
-          <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
-          <ul class="navbar-links">
-            <li>
-              <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
-                <img src="../assets/icons/summary.svg" alt="" />
-                <span>Summary</span>
-              </a>
-            </li>
+        <img class="navbar-logo" src="../assets/icons/logoBright.svg" alt="Join Logo bright" />
+        <div class="navbar-scroll scrollbar" data-background-scroll>
+          <div class="navbar-wrapper">
+            <ul class="navbar-links">
+              <li>
+                <a href="../pages/summaryPage.html" data-nav-link class="link-navbar">
+                  <img src="../assets/icons/summary.svg" alt="" />
+                  <span>Summary</span>
+                </a>
+              </li>
 
-            <li>
-              <a href="../pages/addTask.html" data-nav-link class="link-navbar">
-                <img src="../assets/icons/addTask.svg" alt="" />
-                <span>Add Task</span>
-              </a>
-            </li>
+              <li>
+                <a href="../pages/addTask.html" data-nav-link class="link-navbar">
+                  <img src="../assets/icons/addTask.svg" alt="" />
+                  <span>Add Task</span>
+                </a>
+              </li>
 
-            <li>
-              <a href="../pages/board.html" data-nav-link class="link-navbar active" aria-current="page">
-                <img src="../assets/icons/board.svg" alt="" />
-                <span>Board</span>
-              </a>
-            </li>
+              <li>
+                <a href="../pages/board.html" data-nav-link class="link-navbar active" aria-current="page">
+                  <img src="../assets/icons/board.svg" alt="" />
+                  <span>Board</span>
+                </a>
+              </li>
 
-            <li>
-              <a href="../pages/contacts.html" data-nav-link class="link-navbar">
-                <img src="../assets/icons/contacts.svg" alt="" />
-                <span>Contacts</span>
-              </a>
-            </li>
-          </ul>
+              <li>
+                <a href="../pages/contacts.html" data-nav-link class="link-navbar">
+                  <img src="../assets/icons/contacts.svg" alt="" />
+                  <span>Contacts</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <footer>
+            <ul class="navbar-links">
+              <li>
+                <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
+                  <span>Privacy Policy</span>
+                </a>
+              </li>
+
+              <li>
+                <a href="../pages/legalNotice.html" data-nav-link class="link-navbar">
+                  <span>Legal notice</span>
+                </a>
+              </li>
+            </ul>
+          </footer>
         </div>
-
-        <footer>
-          <ul class="navbar-links">
-            <li>
-              <a href="../pages/privacyPolicy.html" data-nav-link class="link-navbar">
-                <span>Privacy Policy</span>
-              </a>
-            </li>
-
-            <li>
-              <a href="../pages/legalNotice.html" data-nav-link class="link-navbar">
-                <span>Legal notice</span>
-              </a>
-            </li>
-          </ul>
-        </footer>
       </nav>
 
-      <main class="board board-page scrollbar">
+      <main
+        class="board board-page scrollbar"
+        data-background-scroll
+        ondragover="updateBoardDragScroll(event)"
+      >
         <div class="board-inner">
           <header id="board-header">
             <h1 class="page-heading board-heading">Board</h1>
@@ -224,7 +228,7 @@
 
               <div
                 id="toDo-content"
-                class="board-column-content scrollbar"
+                class="board-column-content scrollbar" data-background-scroll
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="
@@ -249,7 +253,7 @@
 
               <div
                 id="inProgress-content"
-                class="board-column-content scrollbar"
+                class="board-column-content scrollbar" data-background-scroll
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="
@@ -274,7 +278,7 @@
 
               <div
                 id="awaitFeedback-content"
-                class="board-column-content scrollbar"
+                class="board-column-content scrollbar" data-background-scroll
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="
@@ -291,7 +295,7 @@
 
               <div
                 id="done-content"
-                class="board-column-content scrollbar"
+                class="board-column-content scrollbar" data-background-scroll
                 ondragover="(allowDrop(event), addHighlightDroppableColumn(this.parentElement.dataset.columnId))"
                 ondragleave="handleColumnDragLeaveOrDrop(this.parentElement.dataset.columnId, event)"
                 ondrop="

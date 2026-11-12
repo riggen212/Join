@@ -19,7 +19,7 @@
   }
 
   body:has(.navbar) .header-logo,
-  body:has(.navbar) #link-help-profile-dialog {
+  body:has(.navbar) #link-help-profile-popover {
     display: none;
   }
 
@@ -47,10 +47,12 @@
     bottom: auto;
     flex: 0 0 var(--navbar-intermediate-width);
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 100dvh;
-    height: auto;
-    padding-block: clamp(24px, 5vh, 48px);
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(24px, 5vh, 40px);
+    min-height: 0;
+    height: 100dvh;
+    padding-block: clamp(16px, calc(8vh - 24px), 48px);
   }
 
   body:has(.navbar) .navbar[data-is-logged-in="false"] {
@@ -72,6 +74,7 @@
 
   body:has(.navbar) .navbar-logo {
     display: block;
+    flex-shrink: 0;
     height: clamp(56px, 7vw, 72px);
     width: auto;
   }

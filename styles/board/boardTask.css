@@ -63,21 +63,6 @@
   gap: var(--space-xs);
 }
 
-.task-move-popover {
-  position: fixed;
-  margin: 0;
-
-  inset: auto;
-
-  padding: var(--space-xs);
-
-  color: var(--navbar-link-grey-color);
-  background-color: var(--background-dark-color);
-  border: unset;
-  border-radius: 20px 0 20px 20px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 50%);
-}
-
 .task-move-popover > p {
   padding: var(--space-xs);
   color: var(--color-white);

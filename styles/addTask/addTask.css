@@ -21,7 +21,7 @@ html:has(.add-task-page),
   top: var(--mobile-header-footer-height);
   right: 0;
   left: 0;
-  z-index: 2;
+  z-index: 3;
 
   height: var(--add-task-sticky-cover-height);
 
@@ -31,8 +31,8 @@ html:has(.add-task-page),
 
 .add-task-inner > h1 {
   position: sticky;
-  top: calc(var(--mobile-header-footer-height) + var(--add-task-sticky-cover-height));
-  z-index: 3;
+  top: var(--add-task-sticky-cover-height);
+  z-index: 4;
 
   padding-bottom: var(--space-xs);
 
@@ -42,7 +42,7 @@ html:has(.add-task-page),
 }
 
 .board.add-task-page {
-  padding-bottom: calc(var(--mobile-header-footer-height) + 150px);
+  padding-bottom: 150px;
   background-color: var(--background-bright-color);
 }
 
