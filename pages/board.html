@@ -11,6 +11,7 @@
     <script src="../scripts/board/boardKeyboardUsage.js" defer></script>
     <script src="../scripts/board/boardServices.js" defer></script>
     <script src="../scripts/board/boardMovement.js" defer></script>
+    <script src="../scripts/board/boardDragScroll.js" defer></script>
     <script src="../scripts/board/boardDialogs.js" defer></script>
     <script src="../scripts/addTask/addTaskFieldControls.js" defer></script>
     <script src="../scripts/addTask/addTaskAssigned.js" defer></script>
@@ -166,7 +167,13 @@
         </div>
       </nav>
 
-      <main class="board board-page scrollbar" data-background-scroll>
+      <main
+        class="board board-page scrollbar"
+        data-background-scroll
+        ondragover="updateBoardDragScroll(event)"
+        ondragleave="handleBoardDragScrollLeave(event)"
+        ondrop="stopBoardDragScroll()"
+      >
         <div class="board-inner">
           <header id="board-header">
             <h1 class="page-heading board-heading">Board</h1>

@@ -147,6 +147,7 @@ function startDraggingTask(taskId, taskStatus, event) {
  * @returns {void}
  */
 function endDraggingTask(taskId) {
+  stopBoardDragScroll();
   removeFlipCard(taskId);
   draggingTask = null;
 }
@@ -158,6 +159,7 @@ function endDraggingTask(taskId) {
  * @returns {Promise<void>}
  */
 async function moveTaskFromDrop(destinationStatus) {
+  stopBoardDragScroll();
   const wasSaved = await moveTask(draggingTask?.id, destinationStatus, draggingTask?.status);
 
   if (wasSaved) {
