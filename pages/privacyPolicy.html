@@ -33,31 +33,28 @@
           </a>
           <button
             class="header-profile-initials-button"
-            onclick="openDialog('dialog-profile')"
+            popovertarget="profile-popover"
             aria-label="Open service links and log out"
-            aria-haspopup="dialog"
-            aria-controls="dialog-profile"
-            aria-expanded="false"
+            aria-controls="profile-popover"
           ></button>
         </div>
       </div>
 
-      <dialog
-        id="dialog-profile"
-        closedby="any"
-        oncancel="dialogSlideOut(event, 'dialog-profile-closing')"
-        onanimationend="closeProfileDialog(event)"
+      <div
+        id="profile-popover"
+        class="menu-popover menu-popover--dark menu-popover--animated profile-popover"
+        popover="auto"
         aria-label="Service links and log out"
       >
         <nav aria-label="Service links">
           <ul>
             <li>
               <a
-                id="link-help-profile-dialog"
+                id="link-help-profile-popover"
                 href="../pages/help.html"
                 data-nav-link
                 class="link-navbar"
-                onclick="event.target.closest('dialog').close()"
+                onclick="event.target.closest('[popover]').hidePopover()"
                 >Help</a
               >
             </li>
@@ -66,7 +63,7 @@
                 href="../pages/legalNotice.html"
                 data-nav-link
                 class="link-navbar"
-                onclick="event.target.closest('dialog').close()"
+                onclick="event.target.closest('[popover]').hidePopover()"
                 >Legal Notice</a
               >
             </li>
@@ -75,7 +72,7 @@
                 href="../pages/privacyPolicy.html"
                 data-nav-link
                 class="link-navbar"
-                onclick="event.target.closest('dialog').close()"
+                onclick="event.target.closest('[popover]').hidePopover()"
                 aria-current="page"
                 >Privacy Policy</a
               >
@@ -84,13 +81,13 @@
               <a
                 href="../index.html"
                 class="link-navbar"
-                onclick="(event.target.closest('dialog').close(), sessionStorage.clear())"
+                onclick="(event.target.closest('[popover]').hidePopover(), sessionStorage.clear())"
                 >Log out</a
               >
             </li>
           </ul>
         </nav>
-      </dialog>
+      </div>
     </header>
     <div class="app-wrapper">
       <nav class="navbar navbar-loading" aria-label="Main navigation">

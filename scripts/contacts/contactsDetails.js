@@ -151,16 +151,14 @@ function resetContactDetailsView(contactDetails) {
 }
 
 /**
- * Hides the contact actions and resets the mobile menu button.
+ * Closes the mobile contact actions popover.
  *
  * @returns {void}
  */
 function hideContactActions() {
-  const actions = document.getElementById("contact-actions");
-  const menuButton = document.querySelector(".contact-details > .contact-add");
+  const actions = document.getElementById("contact-actions-popover");
 
-  actions?.classList.remove("is-open");
-  menuButton?.setAttribute("aria-expanded", "false");
+  if (actions?.matches(":popover-open")) actions.hidePopover();
 }
 
 /**
@@ -193,17 +191,16 @@ function getSelectedContactEntry() {
 
 /**
  * Opens the edit dialog with the currently selected contact's data.
- * Closes the mobile contact actions dialog before showing the edit form.
+ * Closes the mobile contact actions popover before showing the edit form.
  *
  * @returns {void}
  */
 function editContact() {
   const dialog = document.getElementById("contact");
-  const actionsDialog = document.getElementById("dialog-edit-contact");
   const selectedContact = getSelectedContactEntry();
 
   if (!selectedContact || dialog.open) return;
-  if (actionsDialog.open) actionsDialog.close();
+  hideContactActions();
 
   dialog.classList.add("contact-edit");
   dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);

@@ -1,3 +1,88 @@
+/* Small navigation and action popovers */
+.menu-popover {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: var(--space-xs);
+  background-color: var(--color-white);
+  border: unset;
+  border-radius: 20px 0 20px 20px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 50%);
+}
+
+.menu-popover ul {
+  padding: var(--space-xs);
+  list-style: none;
+}
+
+.menu-popover--dark {
+  color: var(--navbar-link-grey-color);
+  background-color: var(--background-dark-color);
+}
+
+.menu-popover--animated {
+  transform: translateX(calc(100% + var(--space-xs)));
+  transition:
+    transform 256ms linear,
+    display 256ms allow-discrete,
+    overlay 256ms allow-discrete;
+}
+
+.menu-popover--animated:popover-open {
+  transform: translateX(0);
+}
+
+@starting-style {
+  .menu-popover--animated:popover-open {
+    transform: translateX(calc(100% + var(--space-xs)));
+  }
+}
+
+.profile-popover {
+  top: var(--mobile-header-footer-height);
+  right: var(--space-xs);
+}
+
+.menu-popover.profile-popover .link-navbar {
+  align-items: unset;
+  width: unset;
+  height: unset;
+  padding-block: 16px;
+  padding-inline: var(--space-xs);
+}
+
+.contact-actions-popover {
+  right: var(--space-xs);
+  bottom: calc(var(--mobile-header-footer-height) + 16px);
+}
+
+.contact-actions-popover .button-task-overlay {
+  display: flex;
+  justify-content: flex-start;
+  width: 100px;
+  padding-block: 16px;
+  padding-inline: var(--space-md);
+}
+
+.contact-actions-popover .button-task-overlay:hover {
+  text-shadow: unset;
+}
+
+.contact-actions-popover .button-task-overlay:active {
+  color: var(--color-brand);
+  background-color: var(--color-surface-hover);
+  border-radius: var(--border-radius-middle);
+  text-shadow:
+    0.3px 0 currentColor,
+    -0.3px 0 currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-popover--animated {
+    transition: none;
+  }
+}
+
 /* Buttons */
 .button {
   min-height: 48px;

@@ -92,7 +92,7 @@ function getTaskCardMatchingBadge() {
 function getTaskCardMovePopupTemplate(taskId, optionHtml) {
   return `<div
             id="move-task-${taskId}"
-            class="task-move-popover"
+            class="menu-popover menu-popover--dark task-move-popover"
             onbeforetoggle="positionTaskMoveMenu(event)"
             onclick="event.stopPropagation()"
             onkeydown="event.stopPropagation()"

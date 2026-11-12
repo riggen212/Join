@@ -265,16 +265,6 @@ function openDialog(dialogId) {
 }
 
 /**
- * Finishes the closing animation of a profile-style dialog.
- *
- * @param {AnimationEvent} event - The dialog animation event.
- * @returns {void}
- */
-function closeProfileDialog(event) {
-  closeAnimatedDialog(event, "dialog-profile-closing");
-}
-
-/**
  * Starts the closing animation of a dialog.
  *
  * @param {Event} event - The dialog cancel event.

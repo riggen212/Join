@@ -54,79 +54,12 @@ body:has(dialog:modal) [data-background-scroll]:not(dialog:modal *) {
   }
 }
 
-#dialog-profile[open],
-#dialog-edit-contact[open] {
-  position: fixed;
-  right: var(--space-xs);
-  left: auto;
-  margin: 0;
-  padding: var(--space-xs);
-
-  border: unset;
-  border-radius: 20px 0 20px 20px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 50%);
-
-  &:not(.dialog-profile-closing) {
-    animation: slide-in-from-right 256ms linear forwards;
-  }
-
-  & ul {
-    padding: var(--space-xs);
-    list-style-type: none;
-  }
-}
-
-#dialog-profile[open] {
-  top: var(--mobile-header-footer-height);
-  bottom: auto;
-
-  background-color: var(--background-dark-color);
-
-  & .link-navbar {
-    align-items: unset;
-    width: unset;
-    height: unset;
-    padding-block: 16px;
-    padding-inline: var(--space-xs);
-  }
-}
-
-#dialog-edit-contact[open] {
-  top: auto;
-  bottom: calc(var(--mobile-header-footer-height) + 16px);
-
-  & .button-task-overlay {
-    display: flex;
-    justify-content: flex-start;
-    width: 100px;
-    padding-block: 16px;
-    padding-inline: var(--space-md);
-  }
-
-  & .button-task-overlay:hover {
-    text-shadow: unset;
-  }
-
-  & .button-task-overlay:active {
-    color: var(--color-brand);
-    background-color: var(--color-surface-hover);
-    border-radius: var(--border-radius-middle);
-    text-shadow:
-      0.3px 0 currentColor,
-      -0.3px 0 currentColor;
-  }
-}
-
 .dialog-task-closing {
   animation: slide-out-from-center-to-right 256ms linear forwards;
 }
 
 .contact-closing {
   animation: slide-out-from-center-to-bottom 256ms linear forwards;
-}
-
-.dialog-profile-closing {
-  animation: slide-out-to-right 256ms linear forwards;
 }
 
 /* Notifications */
@@ -214,26 +147,6 @@ body:has(dialog:modal) [data-background-scroll]:not(dialog:modal *) {
 
   to {
     transform: translate(-50%, 50dvh);
-  }
-}
-
-@keyframes slide-in-from-right {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-out-to-right {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(100%);
   }
 }
 

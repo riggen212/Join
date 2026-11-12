@@ -19,7 +19,7 @@
   }
 
   body:has(.navbar) .header-logo,
-  body:has(.navbar) #link-help-profile-dialog {
+  body:has(.navbar) #link-help-profile-popover {
     display: none;
   }
 
