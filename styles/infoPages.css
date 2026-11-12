@@ -81,6 +81,17 @@
   color: var(--color-brand);
 }
 
+@media screen and (min-width: 768px) {
+  .privacy-policy {
+    min-height: 0;
+    height: calc(100dvh - var(--mobile-header-footer-height));
+    margin-top: var(--mobile-header-footer-height);
+    padding-block: 0;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
+}
+
 @media screen and (min-width: 1280px) {
   .privacy-policy {
     padding-bottom: 0;

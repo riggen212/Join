@@ -122,7 +122,7 @@ function renderAddTask(isEditMode = false) {
                                         </button>
                                     </div>
                                 </div>
-                                <ul class="subtask-list" id="subtask-list" aria-label="Subtasks"></ul>
+                                <ul class="subtask-list scrollbar" id="subtask-list" aria-label="Subtasks"></ul>
                             </div>
                         </div>
 

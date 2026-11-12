@@ -294,40 +294,41 @@
   }
 }
 
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  #dialog-task[open] {
+    left: calc(50% + var(--navbar-intermediate-width) / 2);
+    transform: translate(-50%, -50%);
+  }
+}
+
 @media screen and (min-width: 768px) {
-  .task-overlay {
-    overflow-y: scroll;
-    scrollbar-width: none;
+  #dialog-task .task-overlay {
+    box-sizing: border-box;
+    height: auto;
+    overflow: hidden;
   }
 
-  .task-overlay-body {
-    flex: 0 1 auto;
+  #dialog-task .task-overlay-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-inline-end: var(--space-md);
+    overflow: auto;
+    scrollbar-width: auto;
+    scrollbar-gutter: stable;
+  }
+
+  #dialog-task .task-overlay-details,
+  #dialog-task .task-overlay-section,
+  #dialog-task .task-overlay-section > dd,
+  #dialog-task .task-overlay-section > dd > ul {
+    flex-shrink: 0;
+  }
+
+  #dialog-task .task-overlay-description,
+  #dialog-task .task-overlay-assignees-list,
+  #dialog-task .task-overlay-subtasks-list {
+    max-height: none;
     overflow: visible;
-  }
-
-  .task-overlay-details,
-  .task-overlay-section,
-  .task-overlay-section > dd,
-  .task-overlay-section > dd > ul {
-    flex-shrink: 1;
-  }
-
-  .task-overlay-description {
-    max-height: 12dvh;
-    overflow-y: auto;
-  }
-
-  .task-overlay-section > dd > ul {
-    overflow-y: auto;
-  }
-
-  /* Limit each list to roughly four rows; allow flex shrinking on short screens. */
-  .task-overlay-assignees-list {
-    max-height: calc(4 * var(--size-badge-user) + 3 * var(--space-task));
-  }
-
-  .task-overlay-subtasks-list {
-    max-height: calc(4 * 24px + 3 * var(--space-task));
   }
 }
 

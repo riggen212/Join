@@ -1,0 +1,101 @@
+@media (min-width: 768px) and (max-width: 1279px) {
+  .login-page,
+  .sign-up-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  .login-page {
+    background-color: var(--background-bright-color);
+  }
+
+  .login-page .landing-page {
+    display: flex;
+    flex: 1 0 auto;
+    min-height: calc(100dvh - (var(--mobile-header-footer-height) * 2));
+  }
+
+  .sign-up-page > main {
+    display: flex;
+    flex: 1 0 auto;
+    min-height: calc(100dvh - var(--mobile-header-footer-height));
+  }
+
+  .landing-page-content {
+    flex: 1;
+    align-items: flex-start;
+    min-height: 100%;
+    padding-top: 100px;
+    padding-bottom: 16px;
+    box-sizing: border-box;
+    overflow: visible;
+    background-color: var(--background-bright-color);
+  }
+
+  .login-page .landing-page-content {
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: clamp(160px, 24vh, 250px);
+    padding-bottom: var(--space-lg);
+  }
+
+  .login-page .landing-page-content > .main-wrapper {
+    margin: 0;
+  }
+
+  .sign-up-page .landing-page-content {
+    padding-top: clamp(140px, 20vh, 210px);
+    padding-bottom: var(--space-lg);
+  }
+
+  .sign-up-page .landing-page-content > .main-wrapper {
+    margin: 0;
+  }
+
+  .login-page .logo-dark,
+  .login-page .logo-bright {
+    position: fixed;
+    z-index: 4;
+  }
+
+  .login-page .main-wrapper form {
+    gap: var(--space-xl);
+  }
+
+  .sign-up-page .main-wrapper form {
+    gap: calc(var(--space-xl) - 18px);
+  }
+
+  .login-page .login-header {
+    background-color: transparent;
+  }
+
+  .login-page .sing-up-position {
+    position: static;
+    width: auto;
+    transform: none;
+  }
+
+  .login-page .main-margin-bottom {
+    margin-bottom: 0;
+  }
+
+  .login-page .login-button-area {
+    flex-direction: row;
+    gap: var(--space-lg);
+  }
+
+  .login-page .login-button-area .button-width {
+    width: min(50%, 180px);
+  }
+
+  .login-page footer,
+  .sign-up-page footer {
+    position: static;
+    flex: 0 0 64px;
+    min-height: 64px;
+    align-items: center;
+    background-color: var(--background-bright-color);
+  }
+}

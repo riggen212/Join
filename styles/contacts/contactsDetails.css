@@ -16,11 +16,6 @@
   display: flex;
 }
 
-html.contact-details-open,
-body.contact-details-open {
-  overflow: hidden;
-}
-
 .contact-details > header {
   display: flex;
   align-items: flex-start;
@@ -116,16 +111,18 @@ body.contact-details-open {
   display: none;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 768px) {
   .contact-details {
     position: static;
     z-index: auto;
     display: block;
     flex: 1 1 auto;
     min-width: 0;
-    padding-inline: var(--space-xl);
+    min-height: 0;
+    padding-inline: clamp(24px, 4vw, 48px);
     background-color: var(--background-bright-color);
-    overflow: visible;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 
   .contact-details > header > .button-close {
@@ -134,11 +131,6 @@ body.contact-details-open {
 
   .contact-details.is-open > .contact-add {
     display: none;
-  }
-
-  html.contact-details-open,
-  body.contact-details-open {
-    overflow: visible;
   }
 
   .contact-details-info > div:first-child {
@@ -165,7 +157,7 @@ body.contact-details-open {
     visibility: hidden;
 
     & h3 {
-      font-size: 48px;
+      font-size: clamp(36px, 3.75vw, 48px);
       white-space: nowrap;
     }
 
@@ -190,8 +182,8 @@ body.contact-details-open {
   .contact-details-info > div:first-child {
     grid-template-columns: auto 1fr;
     grid-template-rows: 1fr auto auto 1fr;
-    gap: 0 54px;
-    padding-bottom: 48px;
+    gap: 0 clamp(24px, 4.22vw, 54px);
+    padding-bottom: clamp(32px, 3.75vw, 48px);
   }
 
   .contact-details-info > div:first-child > h3 {
@@ -205,12 +197,12 @@ body.contact-details-open {
 
   .contact-details-info .badge-user {
     grid-row: 1 / -1;
-    width: 120px;
-    height: 120px;
+    width: clamp(96px, 9.375vw, 120px);
+    height: clamp(96px, 9.375vw, 120px);
   }
 
   .contact-details-info .badge-user span {
-    font-size: 48px;
+    font-size: clamp(36px, 3.75vw, 48px);
   }
 
   #contact-actions {
@@ -229,6 +221,44 @@ body.contact-details-open {
     width: fit-content;
     margin-top: var(--space-lg);
     --notification-transform: translateX(0);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .contact-details {
+    padding-inline: clamp(16px, 2.5vw, 24px);
+  }
+
+  .contact-details > header > div {
+    gap: var(--space-sm);
+  }
+
+  .contact-details > header > div h2 {
+    font-size: clamp(36px, 4vw, 44px);
+  }
+
+  .contact-details > header > div span {
+    font-size: 20px;
+    white-space: normal;
+  }
+
+  .contact-details > header > div::after {
+    height: 48px;
+  }
+
+  .contact-details-info {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-sm);
+  }
+
+  .contact-details-info h4,
+  .detail-info {
+    font-size: 20px;
+  }
+
+  .contact-details-info h3 {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }
 

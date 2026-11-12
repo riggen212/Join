@@ -252,15 +252,13 @@ function getFromSessionStorage(key) {
 }
 
 /**
- * Opens a modal dialog and prevents background scrolling.
+ * Opens a modal dialog and updates its trigger's expanded state.
  *
  * @param {string} dialogId - The ID of the dialog to open.
  * @returns {void}
  */
 function openDialog(dialogId) {
   const dialog = document.getElementById(dialogId);
-
-  document.body.classList.add("overflow-hidden");
 
   dialog.showModal();
   document.querySelector(`[aria-controls="${dialogId}"]`)?.setAttribute("aria-expanded", "true");
@@ -303,7 +301,6 @@ function closeAnimatedDialog(event, closingClass) {
   }
 
   dialog.classList.remove(closingClass);
-  document.body.classList.remove("overflow-hidden");
   dialog.close();
   document.querySelector(`[aria-controls="${dialog.id}"]`)?.setAttribute("aria-expanded", "false");
   dialog.querySelector("#notification")?.classList.remove("is-visible", "is-closing");

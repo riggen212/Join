@@ -3,6 +3,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+
+  padding-top: var(--space-xs);
 }
 
 .task-form-wrapper,
@@ -11,6 +13,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding-bottom: 16px;
 }
 
 .add-task-form {
@@ -138,6 +141,14 @@
   }
 }
 
+@media screen and (min-width: 768px) {
+  .submit-task-send {
+    position: static;
+    padding: 0;
+    background-color: transparent;
+  }
+}
+
 @media screen and (min-width: 1280px) {
   .add-task-form {
     --task-column-gap-half: var(--space-xl);
@@ -174,11 +185,6 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-  }
-
-  .submit-task-send {
-    position: static;
-    padding: 0;
   }
 
   .task-form:last-child::after {

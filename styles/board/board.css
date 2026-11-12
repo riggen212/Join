@@ -258,3 +258,31 @@ html:has(.board-page) {
     display: inline;
   }
 }
+
+@media screen and (min-width: 768px) {
+  .board.board-page {
+    min-height: 0;
+    height: calc(100dvh - var(--mobile-header-footer-height));
+    margin-top: var(--mobile-header-footer-height);
+    padding-block: 0;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  .board.board-page .board-inner {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .board.board-page .board-column-content {
+    flex-direction: row;
+
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-inline: var(--space-xs);
+    scrollbar-width: auto;
+  }
+}
+

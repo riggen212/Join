@@ -18,7 +18,6 @@ function showContactDetails(card) {
   restartContactDetailsAnimation(contactDetails);
   contactDetails.classList.add("is-open");
   focusContactDetailsControl(contactDetails);
-  document.documentElement.classList.add("contact-details-open");
   document.body.classList.add("contact-details-open");
 }
 
@@ -65,7 +64,7 @@ function restartContactDetailsAnimation(contactDetails) {
  * @returns {void}
  */
 function focusContactDetailsControl(contactDetails) {
-  if (window.innerWidth < 1280) {
+  if (window.innerWidth < 768) {
     const backToListView = contactDetails.querySelector("button.button-close");
     const contactList = document.getElementById("contact-groups");
     backToListView.focus();
@@ -141,7 +140,6 @@ function hideContactDetails() {
  */
 function resetContactDetailsView(contactDetails) {
   contactDetails.classList.remove("is-open");
-  document.documentElement.classList.remove("contact-details-open");
   document.body.classList.remove("contact-details-open");
 
   hideContactActions();
