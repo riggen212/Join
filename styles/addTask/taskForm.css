@@ -169,7 +169,7 @@
   }
 
   .task-form textarea {
-    max-height: 340px;
+    max-height: 290px;
     min-height: 120px;
     overflow-y: auto;
     resize: vertical;
