@@ -1,6 +1,10 @@
 .main {
-  min-height: calc(100vh - 160px);
-  padding: var(--mobile-header-footer-height) 8px 0;
+  height: calc(100dvh - 2 * var(--mobile-header-footer-height));
+  min-height: 0;
+  margin-top: var(--mobile-header-footer-height);
+  padding: 0 8px var(--space-lg);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
   max-width: var(--content-max-width);
 
   display: flex;
@@ -12,6 +16,10 @@
 
 .desktop-wrapper {
   display: contents;
+}
+
+.main > * {
+  flex-shrink: 0;
 }
 
 .headline-h2 {
@@ -72,6 +80,13 @@
 .section-container {
   width: 100%;
   gap: 32px;
+}
+
+@media screen and (max-width: 767px) {
+  .section-container {
+    max-width: 540px;
+    margin-inline: auto;
+  }
 }
 
 .section-inner,
@@ -166,6 +181,10 @@
 
 .taks-inner {
   padding: var(--space-xs);
+}
+
+.taks-inner .section-span {
+  white-space: nowrap;
 }
 
 @keyframes greetingFadeOut {

@@ -54,6 +54,11 @@
   list-style: none;
 }
 
+.add-task-page .subtask-list {
+  height: calc(3 * 32px);
+  overflow-y: auto;
+}
+
 .subtask-item {
   display: flex;
   align-items: center;

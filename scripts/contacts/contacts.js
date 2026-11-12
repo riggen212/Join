@@ -272,12 +272,8 @@ async function getContactsTaskAssignings(contactId, updates) {
  */
 function closeDialogAfterContactDeletion(message) {
   const contactDialog = document.getElementById("contact");
-  const actionsDialog = document.getElementById("dialog-edit-contact");
 
-  if (actionsDialog.open) {
-    actionsDialog.close();
-    document.body.classList.remove("overflow-hidden");
-  }
+  hideContactActions();
 
   if (!contactDialog.open) return showNotification(message, "show-details");
   contactDialog.dataset.notification = message;

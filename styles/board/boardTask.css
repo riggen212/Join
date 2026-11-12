@@ -63,21 +63,6 @@
   gap: var(--space-xs);
 }
 
-.task-move-popover {
-  position: fixed;
-  margin: 0;
-
-  inset: auto;
-
-  padding: var(--space-xs);
-
-  color: var(--navbar-link-grey-color);
-  background-color: var(--background-dark-color);
-  border: unset;
-  border-radius: 20px 0 20px 20px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 50%);
-}
-
 .task-move-popover > p {
   padding: var(--space-xs);
   color: var(--color-white);
@@ -186,8 +171,7 @@
   background-color: var(--color-white);
   border-radius: var(--border-radius-high);
 
-  overflow-y: scroll;
-  scrollbar-width: none;
+  overflow: hidden;
 
   & .task-overlay-header,
   & .task-overlay-footer {
@@ -204,12 +188,17 @@
   gap: var(--space-task);
 }
 
-.task-overlay-body,
+.task-overlay-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .task-overlay-details,
 .task-overlay-section,
 .task-overlay-section > dd,
 .task-overlay-section > dd > ul {
-  flex: 0 1 auto;
+  flex-shrink: 0;
   min-height: 0;
 }
 
@@ -226,12 +215,10 @@
 }
 
 .task-overlay-description {
-  max-height: 12dvh;
   min-height: 0;
 
   flex-shrink: 0;
 
-  overflow-y: auto;
   overflow-wrap: anywhere;
 }
 
@@ -256,15 +243,15 @@
 
   & .task-overlay-subtasks-list {
     padding-inline-start: 0;
+
+    & input[type="checkbox"] {
+      flex-shrink: 0;
+    }
   }
 
   & > dd {
     display: flex;
     flex-direction: column;
-  }
-
-  & > dd > ul {
-    overflow-y: auto;
   }
 
   & li {
@@ -289,6 +276,44 @@
 
   & .button ~ .button:hover {
     border-left-color: transparent;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  #dialog-task[open] {
+    left: calc(50% + var(--navbar-intermediate-width) / 2);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #dialog-task .task-overlay {
+    box-sizing: border-box;
+    height: auto;
+    overflow: hidden;
+  }
+
+  #dialog-task .task-overlay-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-inline-end: var(--space-md);
+    overflow: auto;
+    scrollbar-width: auto;
+    scrollbar-gutter: stable;
+  }
+
+  #dialog-task .task-overlay-details,
+  #dialog-task .task-overlay-section,
+  #dialog-task .task-overlay-section > dd,
+  #dialog-task .task-overlay-section > dd > ul {
+    flex-shrink: 0;
+  }
+
+  #dialog-task .task-overlay-description,
+  #dialog-task .task-overlay-assignees-list,
+  #dialog-task .task-overlay-subtasks-list {
+    max-height: none;
+    overflow: visible;
   }
 }
 

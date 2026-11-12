@@ -92,7 +92,7 @@ function getTaskCardMatchingBadge() {
 function getTaskCardMovePopupTemplate(taskId, optionHtml) {
   return `<div
             id="move-task-${taskId}"
-            class="task-move-popover"
+            class="menu-popover menu-popover--dark task-move-popover"
             onbeforetoggle="positionTaskMoveMenu(event)"
             onclick="event.stopPropagation()"
             onkeydown="event.stopPropagation()"
@@ -144,7 +144,7 @@ function getTaskOverlayTemplate(taskData) {
                     <h2 class="section-heading scrollbar" id="task-dialog-title">${taskData.task.title}</h2>
                 </header>
 
-                <div class="task-overlay-body">
+                <div class="task-overlay-body scrollbar">
                     <p class="task-overlay-description scrollbar">${taskData.task.description}</p>
 
                     <dl class="task-overlay-details">

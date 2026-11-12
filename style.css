@@ -1,3 +1,5 @@
+@import url("./styles/navigationIntermediate.css");
+
 *,
 *::before,
 *::after {
@@ -8,11 +10,20 @@
 }
 
 .app-wrapper {
-  min-height: 100dvh;
+  position: absolute;
+  inset: 0;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Keep classic scrollbars from shifting the layout when a modal locks scrolling. */
+[data-background-scroll] {
+  scrollbar-gutter: stable;
 }
 
 .required {
-  color: #f67d8b;
+  color: var(--color-error);
 }
 
 /* links */
@@ -121,11 +132,11 @@ input[type="checkbox"]:checked {
 .navbar[data-is-logged-in="false"] {
   padding-inline: 16px;
 
-  & > .navbar-wrapper .navbar-links {
+  & .navbar-wrapper .navbar-links {
     justify-content: flex-start;
   }
 
-  & > footer .link-navbar {
+  & .navbar-scroll > footer .link-navbar {
     width: auto;
     padding-inline: clamp(4px, 2vw, 16px);
   }
@@ -133,6 +144,13 @@ input[type="checkbox"]:checked {
 
 .navbar-loading {
   visibility: hidden;
+}
+
+.navbar-scroll {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  scrollbar-gutter: auto;
 }
 
 .navbar footer,
@@ -145,6 +163,7 @@ input[type="checkbox"]:checked {
   flex-direction: column;
 
   width: 100%;
+  min-width: 0;
 
   gap: calc(var(--space-xxl) * 2);
 }
@@ -231,13 +250,15 @@ input[type="checkbox"]:checked {
     }
   }
 
-  #link-help-profile-dialog {
+  #link-help-profile-popover {
     display: none;
   }
 
   .navbar {
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(24px, calc(32vh - 144px), 112px);
 
     position: sticky;
     top: 0;
@@ -246,7 +267,7 @@ input[type="checkbox"]:checked {
     flex: 0 0 var(--navbar-desktop-width);
     height: 100dvh;
 
-    padding-block: var(--navbar-desktop-padding-block);
+    padding-block: clamp(16px, calc(16vh - 64px), 64px);
 
     & footer {
       display: unset;
@@ -259,6 +280,7 @@ input[type="checkbox"]:checked {
 
   .navbar-logo {
     display: block;
+    flex-shrink: 0;
 
     height: var(--logo-end-size);
     width: auto;
@@ -269,7 +291,7 @@ input[type="checkbox"]:checked {
     justify-content: center;
 
     width: min(100%, var(--content-max-width));
-    height: 100%;
+    height: auto;
 
     gap: 16px;
   }
@@ -302,5 +324,31 @@ input[type="checkbox"]:checked {
     &:hover {
       background-color: var(--color-brand);
     }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .navbar {
+    min-width: 0;
+  }
+
+  .navbar-scroll {
+    flex: 1 1 0;
+    flex-direction: column;
+    min-height: 0;
+    gap: var(--space-lg);
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  .navbar-scroll > .navbar-wrapper,
+  .navbar-scroll > footer {
+    flex: 0 0 auto;
+  }
+
+  .navbar-scroll > footer {
+    margin-top: auto;
   }
 }
