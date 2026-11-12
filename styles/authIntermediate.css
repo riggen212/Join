@@ -53,10 +53,8 @@
     margin: 0;
   }
 
-  .login-page .logo-dark,
-  .login-page .logo-bright {
-    position: fixed;
-    z-index: 4;
+  .login-page .login-header {
+    position: absolute;
   }
 
   .login-page .main-wrapper form {

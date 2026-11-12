@@ -1,0 +1,65 @@
+@media screen and (max-width: 1279px) {
+  #contact .contact-dialog-scroll {
+    scrollbar-width: none;
+  }
+
+  #contact .contact-dialog-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  #contact .contact-dialog-custom-scrollbar {
+    --contact-dialog-scrollbar-inset: 12px;
+    --contact-dialog-scrollbar-arrow-size: 6px;
+
+    position: absolute;
+    top: var(--contact-dialog-scrollbar-inset);
+    right: var(--space-xs);
+    z-index: 4;
+
+    width: 12px;
+    height: calc(100% - (var(--contact-dialog-scrollbar-inset) * 2));
+
+    pointer-events: none;
+  }
+
+  #contact .contact-dialog-custom-scrollbar[hidden] {
+    display: none;
+  }
+
+  #contact .contact-dialog-custom-scrollbar-thumb {
+    position: absolute;
+    top: 0;
+
+    right: 0;
+    left: 0;
+
+    background-color: var(--color-grey-bright);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+
+  #contact .contact-dialog-custom-scrollbar::before,
+  #contact .contact-dialog-custom-scrollbar::after {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    transform: translateX(-50%);
+  }
+
+  #contact .contact-dialog-custom-scrollbar::before {
+    top: 0;
+
+    border-bottom: var(--contact-dialog-scrollbar-arrow-size) solid var(--color-grey-bright);
+  }
+
+  #contact .contact-dialog-custom-scrollbar::after {
+    bottom: 0;
+
+    border-top: var(--contact-dialog-scrollbar-arrow-size) solid var(--color-grey-bright);
+  }
+}

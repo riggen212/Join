@@ -42,8 +42,44 @@ html:has(.add-task-page),
 }
 
 .board.add-task-page {
-  padding-bottom: 150px;
+  --add-task-actions-height: calc(56px + var(--space-sm) + var(--space-lg));
+
+  padding-bottom: 0;
   background-color: var(--background-bright-color);
+}
+
+@media screen and (max-width: 767px) {
+  .board.add-task-page {
+    overflow-y: hidden;
+  }
+
+  .board.add-task-page .add-task-inner {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 100%;
+    margin-top: 0;
+    padding-block-start: var(--space-lg);
+    gap: var(--space-xxs);
+    overflow: hidden;
+  }
+
+  .board.add-task-page .add-task {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+  }
+
+  .add-task-inner::before {
+    content: none;
+  }
+
+  .add-task-inner > h1 {
+    position: static;
+  }
 }
 
 body:has(.add-task-inner) #notification {
@@ -61,8 +97,15 @@ body:has(.add-task-inner) #notification {
     min-height: 0;
     height: calc(100dvh - var(--mobile-header-footer-height));
     margin-top: var(--mobile-header-footer-height);
-    padding-block: 0;
-    overflow-y: scroll;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow-y: hidden;
+  }
+
+  .board.add-task-page .add-task-inner {
+    box-sizing: border-box;
+    height: calc(100% - var(--add-task-actions-height) - var(--space-xl));
+    overflow-y: auto;
     scrollbar-gutter: stable;
   }
 
@@ -96,9 +139,17 @@ body:has(.add-task-inner) #notification {
 
   .board-inner.add-task-inner {
     margin-top: 0;
+    height: calc(100% - var(--add-task-actions-height));
     padding-block-start: 64px;
     padding-inline-start: var(--space-xl);
     padding-inline-end: var(--space-xl);
   }
 
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  .board.add-task-page .add-task-inner {
+    height: auto;
+    max-height: calc(100% - var(--add-task-actions-height) - var(--space-xl));
+  }
 }

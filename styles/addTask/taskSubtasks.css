@@ -59,6 +59,17 @@
   overflow-y: auto;
 }
 
+@media screen and (max-width: 1279px) {
+  .add-task-page .subtask-list {
+    height: auto;
+    overflow: visible;
+  }
+
+  .add-task-page .subtask-list:empty {
+    display: none;
+  }
+}
+
 .subtask-item {
   display: flex;
   align-items: center;

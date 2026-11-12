@@ -114,6 +114,7 @@ function addNewContact() {
     dialog.classList.remove("contact-edit");
     dialog.innerHTML = renderAddContactTemplate();
     openDialog("contact");
+    initializeContactDialogScrollbar(dialog);
   }
 }
 

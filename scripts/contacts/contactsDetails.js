@@ -205,6 +205,7 @@ function editContact() {
   dialog.classList.add("contact-edit");
   dialog.innerHTML = renderEditContactTemplate(selectedContact.contact);
   openDialog("contact");
+  initializeContactDialogScrollbar(dialog);
 }
 
 /**

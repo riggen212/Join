@@ -123,6 +123,10 @@ function renderAddTask(isEditMode = false) {
                                     </div>
                                 </div>
                                 <ul class="subtask-list scrollbar" id="subtask-list" aria-label="Subtasks"></ul>
+                                <p class="task-form-required-hint">
+                                    <span class="required">*</span>
+                                    This field is required
+                                </p>
                             </div>
                         </div>
 

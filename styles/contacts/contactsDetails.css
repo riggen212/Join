@@ -160,7 +160,7 @@
 
     & h3 {
       font-size: clamp(36px, 3.75vw, 48px);
-      white-space: nowrap;
+      overflow-wrap: anywhere;
     }
 
     & h4 {
@@ -258,10 +258,6 @@
     font-size: 20px;
   }
 
-  .contact-details-info h3 {
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
 }
 
 @keyframes contact-details-slide-in {

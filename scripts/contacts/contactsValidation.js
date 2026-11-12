@@ -132,6 +132,8 @@ function renderContactValidationError(input, message) {
   wrapper.classList.toggle("has-error", !!message);
   input.setAttribute("aria-invalid", String(!!message));
   error.textContent = message;
+  const scrollArea = input.closest(".contact-dialog-scroll");
+  if (scrollArea instanceof HTMLElement) updateContactDialogScrollbar(scrollArea);
 }
 
 /**
