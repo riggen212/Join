@@ -86,8 +86,14 @@
     gap: var(--space-lg);
   }
 
-  .login-page .login-button-area .button-width {
-    width: min(50%, 180px);
+  .login-page .button-login-desktop {
+    padding: var(--space-xxs);
+    width: 24%;
+  }
+
+  .login-page .button-questlogin-desktop {
+    padding: var(--space-xxs);
+    width: 38%;
   }
 
   .login-page footer,
