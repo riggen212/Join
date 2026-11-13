@@ -1,3 +1,5 @@
+prepareSummaryLoginAnimation();
+
 /**
  * Loads the current user and tasks, then updates the summary page.
  * Displays and announces a notification if initialization fails.
@@ -7,16 +9,30 @@
  */
 async function initSummary() {
   try {
-    showAnimationLogin();
     if (!(await initializeCurrentUser())) return;
-
     const user = await getData(DB_USERS, loggedUserId);
     const tasks = await loadTasks();
     const today = getLocalDate();
-
     updateSummary(user, tasks, today);
+    showAnimationLogin();
   } catch (error) {
+    finishMobileAnimation();
     showNotification("Summary could not be loaded. Please try again.", "error");
+  }
+}
+
+/**
+ * Hides summary content before the mobile greeting animation starts.
+ * Does nothing when reduced motion is preferred or no login animation was requested.
+ *
+ * @returns {void}
+ */
+function prepareSummaryLoginAnimation() {
+  const url = new URL(window.location.href);
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (url.searchParams.get("animation") === "true" && innerWidth < 1280 && !reducedMotion) {
+    document.body.classList.add("summary-login-animation-pending");
   }
 }
 
@@ -96,6 +112,7 @@ function finishMobileAnimation() {
   animationIn.classList.remove("animation-in");
   animationOut.classList.remove("animation-out");
 
+  document.body.classList.remove("summary-login-animation-pending");
   document.body.classList.add("mobile-animation-finished");
 }
 
