@@ -48,6 +48,7 @@ function addSubtask(form) {
   form.querySelector("#subtask-list").insertAdjacentHTML("beforeend", getSubtaskTemplate(subtaskId, title, false));
   input.value = "";
   input.focus();
+  updateTaskActionBar(form);
 }
 
 /**
@@ -169,6 +170,7 @@ function deleteSubtask(button) {
   const form = button.form;
   button.closest(".subtask-item").remove();
   form.querySelector("#subtask").focus();
+  updateTaskActionBar(form);
 }
 
 /**

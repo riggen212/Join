@@ -20,8 +20,20 @@ async function initAddTaskForm(form, status = "toDo", task = null) {
     fillTaskForm(form, task);
   }
 
+  finishTaskFormInitialization(form);
+}
+
+/**
+ * Activates the initialized form and updates its responsive action bar.
+ *
+ * @param {HTMLFormElement} form - The initialized task form.
+ * @returns {void}
+ */
+function finishTaskFormInitialization(form) {
   updateCreateTaskButton(form);
   form.inert = false;
+  observeTaskFormOverflow(form);
+  updateTaskActionBar(form);
 }
 
 /**
@@ -66,6 +78,48 @@ function updateTaskForm(form) {
   filterAssignedOptions(form);
   updateCreateTaskButton(form);
   revalidateInvalidFields(form);
+  updateTaskActionBar(form);
+}
+
+/**
+ * Observes the Add Task content height to update its action bar layout.
+ *
+ * @param {HTMLFormElement} form - The task form inside the Add Task page.
+ * @returns {void}
+ */
+function observeTaskFormOverflow(form) {
+  const content = form.closest(".add-task-page")?.querySelector(".add-task-inner");
+  if (content) new ResizeObserver(() => updateTaskActionBar(form)).observe(content);
+}
+
+/**
+ * Pins the action bar only when the form exceeds its available content height.
+ *
+ * @param {HTMLFormElement} form - The task form inside the Add Task page.
+ * @returns {void}
+ */
+function updateTaskActionBar(form) {
+  const page = form.closest(".add-task-page");
+  const content = page?.querySelector(".add-task-inner");
+  const fields = form.querySelector(".add-task-form");
+  const actions = form.querySelector(".submit-task");
+  if (!page || !content || !fields || !actions || innerWidth < 1280) return;
+  const overflows = fields.scrollHeight + actions.offsetHeight > content.clientHeight;
+  if (overflows) setTaskActionMetrics(page, actions);
+  page.classList.toggle("has-task-form-overflow", overflows);
+}
+
+/**
+ * Stores the current action bar position for its fixed overflow state.
+ *
+ * @param {HTMLElement} page - The Add Task page container.
+ * @param {HTMLElement} actions - The action bar below the task form.
+ * @returns {void}
+ */
+function setTaskActionMetrics(page, actions) {
+  const { left, width } = actions.getBoundingClientRect();
+  page.style.setProperty("--task-action-left", `${left}px`);
+  page.style.setProperty("--task-action-width", `${width}px`);
 }
 
 /**
