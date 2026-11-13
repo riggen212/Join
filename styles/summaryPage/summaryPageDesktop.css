@@ -81,7 +81,7 @@
 
   .flexbox-container-left:hover,
   .flexbox-container-right:hover {
-    transform: scaleX(1.05) scaleY(1.05);
+    transform: scaleX(1.03) scaleY(1.03);
     background-color: var(--background-dark-color);
   }
 

@@ -15,7 +15,7 @@
 
 .contact-list {
   height: 100%;
-  padding: var(--space-xl) clamp(24px, 8vw, 42px) 100px;
+  padding: var(--space-xl) var(--space-xs) 100px;
   background-color: var(--color-white);
   box-shadow: 4px 0 6px rgb(0 0 0 / 8%);
   overflow-y: auto;
@@ -170,10 +170,8 @@ body:has(.contacts-content) #notification {
   }
 
   .contact-list {
-    flex: 0 0 clamp(280px, 36vw, 400px);
     min-height: 0;
-    scrollbar-gutter: stable;
-    padding: var(--space-lg) var(--space-lg) var(--space-xl);
+    padding: var(--space-lg) var(--space-xs) var(--space-xl);
   }
 
   .contact-list.scrollbar {
@@ -206,8 +204,8 @@ body:has(.contacts-content) #notification {
 
 @media (min-width: 768px) and (max-width: 1279px) {
   .contact-list {
-    flex-basis: clamp(272px, 27vw, 340px);
-    padding: var(--space-md) var(--space-md) var(--space-lg);
+    flex-basis: clamp(296px, 36vw, 500px);
+    padding: var(--space-md) var(--space-xs) var(--space-lg);
   }
 
   .contact-group {
@@ -231,5 +229,15 @@ body:has(.contacts-content) #notification {
 
   .contact-card p {
     font-size: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .contact-list {
+    flex: 0 0 clamp(296px, 36vw, 500px);
+  }
+
+  .contact-card {
+    gap: var(--space-lg);
   }
 }
