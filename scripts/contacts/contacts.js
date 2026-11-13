@@ -353,5 +353,3 @@ function setContactButtonsDisabled(isDisabled) {
 function getContactPath(contactId) {
   return contactId ? `${DB_CONTACTS}${contactId}` : DB_CONTACTS;
 }
-
-initContacts();

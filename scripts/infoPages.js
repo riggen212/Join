@@ -81,5 +81,3 @@ function hideProfileButton() {
   const profileButton = document.querySelector(".header-profile-initials-button");
   profileButton.classList.add("d-none");
 }
-
-initInfoPages();
