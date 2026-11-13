@@ -3,15 +3,23 @@ body#login:target .logo-dark,
 body#login:target .logo-bright,
 body#login:target .main-wrapper,
 body#login:target .sign-up-wrapper,
-body#login:target footer {
+body#login:target footer,
+html.login-animation-seen .landing-page,
+html.login-animation-seen .logo-dark,
+html.login-animation-seen .logo-bright,
+html.login-animation-seen .main-wrapper,
+html.login-animation-seen .sign-up-wrapper,
+html.login-animation-seen footer {
   animation: none;
 }
 
-body#login:target .landing-page {
+body#login:target .landing-page,
+html.login-animation-seen .landing-page {
   background-color: var(--background-bright-color);
 }
 
-body#login:target .logo-dark {
+body#login:target .logo-dark,
+html.login-animation-seen .logo-dark {
   top: var(--space-lg);
   left: var(--space-lg);
 
@@ -21,13 +29,17 @@ body#login:target .logo-dark {
   transform: none;
 }
 
-body#login:target .logo-bright {
+body#login:target .logo-bright,
+html.login-animation-seen .logo-bright {
   opacity: 0;
 }
 
 body#login:target .main-wrapper,
 body#login:target .sign-up-wrapper,
-body#login:target footer {
+body#login:target footer,
+html.login-animation-seen .main-wrapper,
+html.login-animation-seen .sign-up-wrapper,
+html.login-animation-seen footer {
   opacity: 1;
 }
 
@@ -198,7 +210,6 @@ body#login:target footer {
 
 .login-page footer {
   opacity: 0;
-  background-color: var(--background-bright-color);
 
   a {
     color: var(--color-black);

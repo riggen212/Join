@@ -1,3 +1,11 @@
+const hasSeenLoginAnimation = sessionStorage.getItem("loginAnimationSeen");
+
+if (hasSeenLoginAnimation) {
+  document.documentElement.classList.add("login-animation-seen");
+} else {
+  sessionStorage.setItem("loginAnimationSeen", "true");
+}
+
 /**
  * Whether a login request is currently pending.
  * @type {boolean}
@@ -272,5 +280,3 @@ function getPasswordIconPath(passwordInput) {
       ? "./assets/icons/eyeClose.svg"
       : "./assets/icons/showPassword.svg";
 }
-
-initLoginPage();
