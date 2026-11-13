@@ -6,7 +6,7 @@ This team project was developed as part of my web development training and serve
 
 ## Project Background
 
-- **Training program / Provider:** [PLACEHOLDER: Add program or provider name]
+- **Training program / Provider:** Developer Akademie
 - **Team:** Calvin Lamel, Sebastian Stock, Norman Domann, Patrick Lorenz
 - **Project period:** September - November 2026
 - **Live demo:** https://join-3247.developerakademie.net/
