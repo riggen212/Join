@@ -156,7 +156,7 @@ function getTaskOverlayTemplate(taskData) {
                         <div class="task-overlay-property">
                             <dt>Priority:</dt>
                             <dd>
-                                <div class="d-flex-align-center gap-xs">
+                                <div class="d-flex-align-items-center gap-xs">
                                     <span>${taskData.task.priority}</span>
                                     <img src="../assets/icons/prio${taskData.task.priority.charAt(0).toUpperCase() + taskData.task.priority.slice(1).toLowerCase()}.svg" alt="">
                                 </div>
