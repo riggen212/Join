@@ -111,6 +111,15 @@
   margin: 0;
 }
 
+.add-task-page .task-form-required-hint {
+  display: flex;
+  padding-top: var(--space-md);
+}
+
+.add-task-page .submit-task > p {
+  display: none;
+}
+
 .submit-task-send {
   position: fixed;
   right: 0;
@@ -210,18 +219,41 @@
   }
 }
 
-@media screen and (max-width: 1279px) {
+@media screen and (min-width: 1280px) {
   .add-task-page .task-form-required-hint {
-    display: flex;
-    padding-top: var(--space-md);
+    display: none;
+  }
+
+  .add-task-page .submit-task {
+    position: static;
+    width: calc(2 * var(--task-fields-max-width) + 2 * var(--space-xl));
+    max-width: 100%;
+    padding: var(--space-sm) 0 var(--space-xs);
+    background-color: var(--background-bright-color);
+  }
+
+  .add-task-page.has-task-form-overflow .submit-task {
+    position: fixed;
+    bottom: 0;
+    left: var(--task-action-left);
+    z-index: 5;
+    width: var(--task-action-width);
+    max-width: none;
+    margin-top: 0;
+  }
+
+  .add-task-page .submit-task > .submit-task-send {
+    position: static;
+    margin-left: auto;
+    padding: 0;
+    background-color: transparent;
   }
 
   .add-task-page .submit-task > p {
-    display: none;
+    display: flex;
+    margin: 0;
   }
-}
 
-@media screen and (min-width: 1280px) {
   .add-task-form {
     --task-column-gap-half: var(--space-xl);
 
@@ -229,6 +261,7 @@
     align-items: flex-start;
     max-width: calc(2 * var(--task-fields-max-width) + 2 * var(--space-xl));
     column-gap: calc(2 * var(--space-xl));
+    padding-bottom: 0;
   }
 
   .textarea-resize-icon {
@@ -253,7 +286,6 @@
 
   .submit-task {
     max-width: calc(2 * var(--task-fields-max-width) + 2 * var(--space-xl));
-    margin-top: var(--space-xl);
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
