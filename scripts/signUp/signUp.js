@@ -301,5 +301,3 @@ function updateSignUpEyeIcon(input, icon, button, hasPassword) {
       ? "../assets/icons/eyeOpen.svg"
       : "../assets/icons/eyeClose.svg";
 }
-
-initSignUpPage();

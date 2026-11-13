@@ -272,5 +272,3 @@ function getPasswordIconPath(passwordInput) {
       ? "./assets/icons/eyeClose.svg"
       : "./assets/icons/showPassword.svg";
 }
-
-initLoginPage();

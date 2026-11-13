@@ -187,5 +187,3 @@ function getVisibleAssigneesHtml(visibleAssignees, remainingCount, getUserBadgeT
 
   return assigneesHtml;
 }
-
-initBoard();

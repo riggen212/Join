@@ -303,5 +303,3 @@ function getDateWritten(date) {
 
   return `${monthName} ${localDate.getDate()}, ${localDate.getFullYear()}`;
 }
-
-initSummary();
