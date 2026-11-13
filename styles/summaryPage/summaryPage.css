@@ -1,3 +1,7 @@
+body:has(.section-container) {
+  background-color: var(--background-bright-color);
+}
+
 .main {
   height: calc(100dvh - 2 * var(--mobile-header-footer-height));
   min-height: 0;

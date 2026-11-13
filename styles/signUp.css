@@ -1,3 +1,7 @@
+body.sign-up-page {
+  background-color: var(--background-bright-color);
+}
+
 .main-wrapper {
   opacity: 1;
 }
