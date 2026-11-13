@@ -47,6 +47,7 @@ function getContactValidationErrors(contact) {
   const errors = {};
 
   if (!contact.name) errors.name = "Please enter a name.";
+  else if (contact.name.length > 25) errors.name = "Name must not exceed 25 characters.";
   if (!contact.email) errors.email = "Please enter an email address.";
   else if (!isValidEmail(contact.email)) errors.email = "Please enter a valid email address.";
   if (!contact.phone) errors.phone = "Please enter a phone number.";
@@ -129,7 +130,10 @@ function isValidEmailDomain(domain) {
 /**
  * Validates a phone number after trimming outer whitespace.
  * Allows digits, spaces, parentheses, slashes, hyphens and one leading plus.
- * Does not check length, country-specific rules or whether the number exists.
+ * Requires a national 0 or an international + / 00 prefix.
+ * Limits national numbers to 20 digits, including the leading 0,
+ * and international numbers to 20 digits, excluding the + / 00 prefix.
+ * Does not check country-specific rules or whether the number exists.
  *
  * @param {string} phone - The phone number to validate.
  * @returns {boolean} Whether the number matches the supported format.
@@ -139,7 +143,24 @@ function isValidPhone(phone) {
 
   if (!/^\+?[\d ()/-]+$/.test(value)) return false;
 
-  return isValidPhoneParentheses(value) && isValidPhoneSeparators(value);
+  return isValidPhoneParentheses(value) && isValidPhoneSeparators(value) && isValidPhoneNumberStructure(value);
+}
+
+/**
+ * Checks the prefix and digits after removing allowed formatting.
+ * Requires at least one digit after a national prefix, or at least two
+ * after an international prefix for a country code and subscriber number.
+ *
+ * @param {string} phone - The phone number with validated formatting.
+ * @returns {boolean} Whether the prefix and digit count are plausible.
+ */
+function isValidPhoneNumberStructure(phone) {
+  const number = phone.replace(/[ ()/-]/g, "");
+  const isInternational = number.startsWith("+") || number.startsWith("00");
+  const digits = isInternational ? number.replace(/^(\+|00)/, "") : number;
+  const pattern = isInternational ? /^[1-9]\d+$/ : /^0\d+$/;
+
+  return pattern.test(digits) && digits.length <= 20;
 }
 
 /**
