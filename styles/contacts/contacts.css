@@ -111,6 +111,12 @@ body.contact-details-open .contact-list > .detail-view {
   line-height: 1.2;
 }
 
+.contact-card > div:last-child > p:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .adress {
   margin-top: var(--space-xxs);
   overflow: hidden;

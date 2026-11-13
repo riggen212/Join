@@ -65,6 +65,7 @@
   & h3 {
     min-width: 0;
     font-size: 36px;
+    overflow-wrap: anywhere;
   }
 
   & h4 {
@@ -160,7 +161,6 @@
 
     & h3 {
       font-size: clamp(36px, 3.75vw, 48px);
-      overflow-wrap: anywhere;
     }
 
     & h4 {

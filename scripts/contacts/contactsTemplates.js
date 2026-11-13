@@ -124,7 +124,8 @@ function renderAddContactTemplate() {
                             aria-label="Name"
                             aria-describedby="contact-name-error"
                             aria-required="true"
-                            oninput="limitInputTextLength(this, 30); validateContactField(this)"
+                            maxlength="100"
+                            oninput="validateContactField(this)"
                         >
                         <span type="button">
                             <img src="../assets/icons/person.svg" alt="">
@@ -135,6 +136,7 @@ function renderAddContactTemplate() {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email"
+                            maxlength="254"
                             aria-label="Email address"
                             aria-describedby="contact-email-error"
                             aria-required="true"
@@ -149,6 +151,7 @@ function renderAddContactTemplate() {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" 
+                            maxlength="50"
                             aria-label="Phone number"
                             aria-describedby="contact-phone-error"
                             aria-required="true"
@@ -205,7 +208,8 @@ function renderEditContactTemplate(contact) {
                             aria-label="Name"
                             aria-describedby="contact-name-error"
                             aria-required="true"
-                            oninput="limitInputTextLength(this, 30); validateContactField(this)"
+                            maxlength="100"
+                            oninput="validateContactField(this)"
                         >
                         <span type="button">
                             <img src="../assets/icons/person.svg" alt="">
@@ -216,6 +220,7 @@ function renderEditContactTemplate(contact) {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" value="${contact.email}"
+                            maxlength="254"
                             aria-label="Email address"
                             aria-describedby="contact-email-error"
                             aria-required="true"
@@ -230,6 +235,7 @@ function renderEditContactTemplate(contact) {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" value="${contact.phone}"
+                            maxlength="50"
                             aria-label="Phone number"
                             aria-describedby="contact-phone-error"
                             aria-required="true"
