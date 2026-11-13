@@ -73,6 +73,10 @@
   }
 }
 
+.contact-details-info > span {
+  overflow-wrap: anywhere;
+}
+
 .contact-details-info > span + h4 {
   padding-top: 16px;
 }

@@ -101,6 +101,13 @@
   text-align: start;
 }
 
+.task-card-title,
+.task-card-description {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 .task-card-title {
   font-weight: 700;
   color: var(--background-dark-color);
@@ -239,10 +246,24 @@
   & .task-overlay-assignees-list {
     padding-inline-start: var(--space-task);
     list-style-type: none;
+
+    & .badge-user {
+      flex-shrink: 0;
+    }
+
+    & li > span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   }
 
   & .task-overlay-subtasks-list {
     padding-inline-start: 0;
+
+    & li > span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
 
     & input[type="checkbox"] {
       flex-shrink: 0;

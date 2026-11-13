@@ -221,7 +221,7 @@ function getTaskOverlaySubtasksTemplate(subtaskId, subtask, isCompleted) {
             ${isCompleted}
             onchange="handleSubtaskCheckboxChange(this, this.closest('dialog').dataset.taskId, this.closest('dialog').dataset.taskStatus, '${subtaskId}')"
             aria-label="Mark ${subtask.title} as completed" />
-            ${subtask.title}
+            <span>${subtask.title}</span>
         </li>`;
 }
 
