@@ -32,9 +32,9 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 0 auto;
   width: min(100%, var(--content-max-width));
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
 }
 
 .privacy-policy-wrapper section {
@@ -104,6 +104,6 @@
   }
 
   .privacy-policy-wrapper {
-    padding: var(--space-md) var(--space-xl);
+    padding: var(--space-lg) var(--space-xl);
   }
 }
