@@ -88,8 +88,12 @@ function updateTaskForm(form) {
  * @returns {void}
  */
 function observeTaskFormOverflow(form) {
-  const content = form.closest(".add-task-page")?.querySelector(".add-task-inner");
-  if (content) new ResizeObserver(() => updateTaskActionBar(form)).observe(content);
+  const page = form.closest(".add-task-page");
+  const content = page?.querySelector(".add-task-inner");
+  if (!page || !content) return;
+  const observer = new ResizeObserver(() => updateTaskActionBar(form));
+  observer.observe(page);
+  observer.observe(content);
 }
 
 /**
@@ -101,12 +105,28 @@ function observeTaskFormOverflow(form) {
 function updateTaskActionBar(form) {
   const page = form.closest(".add-task-page");
   const content = page?.querySelector(".add-task-inner");
-  const fields = form.querySelector(".add-task-form");
   const actions = form.querySelector(".submit-task");
-  if (!page || !content || !fields || !actions || innerWidth < 1280) return;
-  const overflows = fields.scrollHeight + actions.offsetHeight > content.clientHeight;
-  if (overflows) setTaskActionMetrics(page, actions);
+  if (!page || !content || !actions || innerWidth < 1280) return;
+  const overflows = getTaskFormOverflowState(page, content, actions);
   page.classList.toggle("has-task-form-overflow", overflows);
+}
+
+/**
+ * Measures the Add Task form in its normal flow to determine whether it overflows.
+ * Restores an existing fixed state after measuring.
+ *
+ * @param {HTMLElement} page - The Add Task page container.
+ * @param {HTMLElement} content - The visible Add Task content area.
+ * @param {HTMLElement} actions - The action bar below the form.
+ * @returns {boolean} Whether the static form exceeds its available height.
+ */
+function getTaskFormOverflowState(page, content, actions) {
+  const wasFixed = page.classList.contains("has-task-form-overflow");
+  page.classList.remove("has-task-form-overflow");
+  const overflows = content.scrollHeight > content.clientHeight;
+  if (overflows) setTaskActionMetrics(page, actions);
+  page.classList.toggle("has-task-form-overflow", wasFixed);
+  return overflows;
 }
 
 /**
