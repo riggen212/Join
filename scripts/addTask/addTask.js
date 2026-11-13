@@ -202,5 +202,3 @@ async function saveUpdatedTask(taskId, task) {
     return false;
   }
 }
-
-initAddTaskPage();

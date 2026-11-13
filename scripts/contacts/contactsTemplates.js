@@ -124,7 +124,7 @@ function renderAddContactTemplate() {
                             aria-label="Name"
                             aria-describedby="contact-name-error"
                             aria-required="true"
-                            maxlength="100"
+                            maxlength="25"
                             oninput="validateContactField(this)"
                         >
                         <span type="button">
@@ -151,7 +151,7 @@ function renderAddContactTemplate() {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" 
-                            maxlength="50"
+                            maxlength="30"
                             aria-label="Phone number"
                             aria-describedby="contact-phone-error"
                             aria-required="true"
@@ -208,7 +208,7 @@ function renderEditContactTemplate(contact) {
                             aria-label="Name"
                             aria-describedby="contact-name-error"
                             aria-required="true"
-                            maxlength="100"
+                            maxlength="25"
                             oninput="validateContactField(this)"
                         >
                         <span type="button">
@@ -235,7 +235,7 @@ function renderEditContactTemplate(contact) {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" value="${contact.phone}"
-                            maxlength="50"
+                            maxlength="30"
                             aria-label="Phone number"
                             aria-describedby="contact-phone-error"
                             aria-required="true"
