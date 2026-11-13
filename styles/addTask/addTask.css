@@ -98,7 +98,6 @@ body:has(.add-task-inner) #notification {
     height: calc(100dvh - var(--mobile-header-footer-height));
     margin-top: var(--mobile-header-footer-height);
     padding-top: 0;
-    padding-bottom: 0;
     overflow-y: hidden;
   }
 
@@ -131,10 +130,6 @@ body:has(.add-task-inner) #notification {
   html:has(.add-task-page),
   .add-task-page :is(.assigned-options, .assigned-badges, .category-options, textarea) {
     scrollbar-width: auto;
-  }
-
-  .board.add-task-page {
-    padding-bottom: 0;
   }
 
   .board-inner.add-task-inner {

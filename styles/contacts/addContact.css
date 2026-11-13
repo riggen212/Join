@@ -269,8 +269,6 @@
     width: min(calc(100% - 64px), 1212px);
     max-width: none;
     height: min(calc(100dvh - 64px), 592px);
-
-    overflow: hidden;
   }
 
   #contact .contact-dialog-scroll {

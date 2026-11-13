@@ -94,6 +94,12 @@
     min-height: 0;
   }
 
+  #dialog-task .edit-task .subtask-list {
+    max-height: calc(3 * 32px);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
   #dialog-task .edit-task .submit-task {
     position: static;
     flex: 0 0 auto;

@@ -1,3 +1,11 @@
+const hasSeenLoginAnimation = localStorage.getItem("loginAnimationSeen");
+
+if (hasSeenLoginAnimation) {
+  document.documentElement.classList.add("login-animation-seen");
+} else {
+  localStorage.setItem("loginAnimationSeen", "true");
+}
+
 /**
  * Whether a login request is currently pending.
  * @type {boolean}

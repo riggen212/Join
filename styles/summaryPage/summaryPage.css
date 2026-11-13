@@ -83,15 +83,32 @@
 }
 
 @media screen and (max-width: 767px) {
+  .main {
+    padding-inline: var(--space-md);
+    scrollbar-gutter: auto;
+  }
+
   .section-container {
-    max-width: 540px;
+    max-width: 740px;
     margin-inline: auto;
+    gap: var(--space-md);
+  }
+
+  .section-container .section-inner {
+    gap: var(--space-md);
+  }
+
+  .section-container .flexbox-container-left,
+  .section-container .flexbox-container-right,
+  .section-container .task-container {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
   }
 }
 
 .section-inner,
-.flexbox,
-.deadline-inner {
+.flexbox {
   display: flex;
   align-items: center;
 }
@@ -149,9 +166,18 @@
 }
 
 .deadline-inner {
-  justify-content: space-evenly;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-lg);
   padding: var(--space-xs);
+}
+
+.deadline-priority {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  gap: var(--space-md);
 }
 
 .deadline-img {
@@ -167,6 +193,7 @@
 }
 
 .flexbox-deadline {
+  justify-self: center;
   gap: 4px;
 }
 
