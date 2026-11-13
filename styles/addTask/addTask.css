@@ -133,6 +133,7 @@ body:has(.add-task-inner) #notification {
   }
 
   .board-inner.add-task-inner {
+    flex: 0 0 calc(100% - var(--add-task-actions-height));
     margin-top: 0;
     height: calc(100% - var(--add-task-actions-height));
     padding-block-start: 64px;
@@ -140,6 +141,9 @@ body:has(.add-task-inner) #notification {
     padding-inline-end: var(--space-xl);
   }
 
+  .board.add-task-page {
+   --add-task-actions-height: 0;
+  }
 }
 
 @media screen and (min-width: 768px) and (max-width: 1279px) {
