@@ -76,6 +76,11 @@
   cursor: pointer;
 }
 
+.assigned-option > span:not(.badge-user) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .assigned-option:hover,
 .assigned-option:focus-within {
   background-color: var(--color-option-hover);

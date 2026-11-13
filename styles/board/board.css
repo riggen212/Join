@@ -268,7 +268,7 @@ html:has(.board-page) {
     height: calc(100dvh - var(--mobile-header-footer-height));
     margin-top: var(--mobile-header-footer-height);
     padding-block: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
     scrollbar-gutter: stable;
   }
 }
