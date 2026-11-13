@@ -119,10 +119,11 @@ function addNewContact() {
 }
 
 /**
- * Validates, creates, saves, and confirms a contact from the submitted form.
+ * Validates the submitted form and starts creating a new contact.
+ * Stops if the form values are invalid.
  *
  * @param {SubmitEvent} event - The Add Contact form submit event.
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Resolves after creation, error handling or an early return.
  */
 async function createContact(event) {
   event.preventDefault();
@@ -130,6 +131,19 @@ async function createContact(event) {
   const formValues = getValidContactFormValues(form);
   if (!formValues) return;
 
+  await handleCreateContact(form, formValues);
+}
+
+/**
+ * Creates a contact from validated form values while contact buttons are disabled.
+ * Checks email availability before saving and closes the form on success.
+ * Displays an error if validation, saving or confirmation fails.
+ *
+ * @param {HTMLFormElement} form - The submitted Add Contact form.
+ * @param {ContactFormValues} formValues - The validated contact form values.
+ * @returns {Promise<void>} Resolves after creation, error handling or an early return.
+ */
+async function handleCreateContact(form, formValues) {
   const contact = createContactData(formValues, contacts);
   try {
     await runWithDisabledContactButtons(async () => {
