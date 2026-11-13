@@ -55,6 +55,29 @@ function getContactValidationErrors(contact) {
 }
 
 /**
+ * Checks the latest shared contacts before creating a contact.
+ * Marks and focuses the email field when its address is already in use.
+ *
+ * @param {HTMLFormElement} form - The Add Contact form.
+ * @param {string} email - The email address to check.
+ * @returns {Promise<boolean>} Whether the email is available.
+ * @throws {Error} If loading the contacts fails.
+ */
+async function validateNewContactEmail(form, email) {
+  const existingContacts = (await getData(DB_CONTACTS)) ?? {};
+  const normalizedEmail = email.trim().toLowerCase();
+  const exists = Object.values(existingContacts).some(
+    (contact) => contact.email?.trim().toLowerCase() === normalizedEmail,
+  );
+  if (!exists) return true;
+
+  const input = form.querySelector('[name="email"]');
+  renderContactValidationError(input, "A contact with this email address already exists.");
+  input.focus();
+  return false;
+}
+
+/**
  * Validates a common ASCII email address after trimming outer whitespace.
  * Checks the total length, local part and dotted domain structure.
  * Does not verify whether the domain or mailbox exists.
