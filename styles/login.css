@@ -206,6 +206,10 @@ body#login:target footer {
 }
 
 @media (min-width: 1280px) {
+  .login-page .login-header {
+    position: absolute;
+  }
+
   .landing-page-content {
     align-items: flex-start;
   }

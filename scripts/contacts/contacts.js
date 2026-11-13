@@ -114,6 +114,7 @@ function addNewContact() {
     dialog.classList.remove("contact-edit");
     dialog.innerHTML = renderAddContactTemplate();
     openDialog("contact");
+    initializeContactDialogScrollbar(dialog);
   }
 }
 
@@ -131,8 +132,11 @@ async function createContact(event) {
 
   const contact = createContactData(formValues, contacts);
   try {
-    await runWithDisabledContactButtons(() => saveNewContact(contact));
-    closeContactFormWithNotification(form, "Contact successfully created");
+    await runWithDisabledContactButtons(async () => {
+      if (!(await validateNewContactEmail(form, contact.email))) return;
+      await saveNewContact(contact);
+      closeContactFormWithNotification(form, "Contact successfully created");
+    });
   } catch (error) {
     showNotification("Contact could not be created. Please try again.", "error");
   }

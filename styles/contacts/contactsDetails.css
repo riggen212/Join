@@ -65,11 +65,16 @@
   & h3 {
     min-width: 0;
     font-size: 36px;
+    overflow-wrap: anywhere;
   }
 
   & h4 {
     padding: 8px 0 12px;
   }
+}
+
+.contact-details-info > span {
+  overflow-wrap: anywhere;
 }
 
 .contact-details-info > span + h4 {
@@ -160,7 +165,6 @@
 
     & h3 {
       font-size: clamp(36px, 3.75vw, 48px);
-      white-space: nowrap;
     }
 
     & h4 {
@@ -258,10 +262,6 @@
     font-size: 20px;
   }
 
-  .contact-details-info h3 {
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
 }
 
 @keyframes contact-details-slide-in {

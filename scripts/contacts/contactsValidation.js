@@ -45,14 +45,36 @@ function getContactFormValues(form) {
  */
 function getContactValidationErrors(contact) {
   const errors = {};
-  const isValidPhone = /^[+\d\s()/-]+$/.test(contact.phone) && /\d/.test(contact.phone);
 
   if (!contact.name) errors.name = "Please enter a name.";
   if (!contact.email) errors.email = "Please enter an email address.";
   else if (!isValidEmail(contact.email)) errors.email = "Please enter a valid email address.";
   if (!contact.phone) errors.phone = "Please enter a phone number.";
-  else if (!isValidPhone) errors.phone = "Please enter a valid phone number.";
+  else if (!isValidPhone(contact.phone)) errors.phone = "Please enter a valid phone number.";
   return errors;
+}
+
+/**
+ * Checks the latest shared contacts before creating a contact.
+ * Marks and focuses the email field when its address is already in use.
+ *
+ * @param {HTMLFormElement} form - The Add Contact form.
+ * @param {string} email - The email address to check.
+ * @returns {Promise<boolean>} Whether the email is available.
+ * @throws {Error} If loading the contacts fails.
+ */
+async function validateNewContactEmail(form, email) {
+  const existingContacts = (await getData(DB_CONTACTS)) ?? {};
+  const normalizedEmail = email.trim().toLowerCase();
+  const exists = Object.values(existingContacts).some(
+    (contact) => contact.email?.trim().toLowerCase() === normalizedEmail,
+  );
+  if (!exists) return true;
+
+  const input = form.querySelector('[name="email"]');
+  renderContactValidationError(input, "A contact with this email address already exists.");
+  input.focus();
+  return false;
 }
 
 /**
@@ -105,6 +127,49 @@ function isValidEmailDomain(domain) {
 }
 
 /**
+ * Validates a phone number after trimming outer whitespace.
+ * Allows digits, spaces, parentheses, slashes, hyphens and one leading plus.
+ * Does not check length, country-specific rules or whether the number exists.
+ *
+ * @param {string} phone - The phone number to validate.
+ * @returns {boolean} Whether the number matches the supported format.
+ */
+function isValidPhone(phone) {
+  const value = phone.trim();
+
+  if (!/^\+?[\d ()/-]+$/.test(value)) return false;
+
+  return isValidPhoneParentheses(value) && isValidPhoneSeparators(value);
+}
+
+/**
+ * Allows non-empty, non-nested pairs of parentheses containing digit groups.
+ * Spaces may separate digits within a pair, as in (030 123).
+ *
+ * @param {string} phone - The trimmed phone number.
+ * @returns {boolean} Whether every parenthesis belongs to a valid pair.
+ */
+function isValidPhoneParentheses(phone) {
+  const withoutValidPairs = phone.replace(/\(\d+(?: +\d+)*\)/g, "");
+
+  return !/[()]/.test(withoutValidPairs);
+}
+
+/**
+ * Requires digits around separators, ignoring already validated parentheses.
+ * Allows spaces and a single slash or hyphen between digit groups.
+ *
+ * @param {string} phone - The trimmed phone number with valid parentheses.
+ * @returns {boolean} Whether separators occur only between digit groups.
+ */
+function isValidPhoneSeparators(phone) {
+  const withoutParentheses = phone.replace(/[()]/g, "");
+  const pattern = /^\+?\d+(?:(?: +| *[-/] *)\d+)*$/;
+
+  return pattern.test(withoutParentheses);
+}
+
+/**
  * Displays or clears the validation feedback of a contact form.
  *
  * @param {HTMLFormElement} form - The contact form to update.
@@ -132,6 +197,8 @@ function renderContactValidationError(input, message) {
   wrapper.classList.toggle("has-error", !!message);
   input.setAttribute("aria-invalid", String(!!message));
   error.textContent = message;
+  const scrollArea = input.closest(".contact-dialog-scroll");
+  if (scrollArea instanceof HTMLElement) updateContactDialogScrollbar(scrollArea);
 }
 
 /**

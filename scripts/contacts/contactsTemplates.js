@@ -86,12 +86,24 @@ function getContactActionsTemplate() {
 }
 
 /**
+ * Creates the visual scrollbar used by contact dialogs on smaller screens.
+ *
+ * @returns {string} The custom scrollbar HTML.
+ */
+function getContactDialogScrollbarTemplate() {
+  return `<div class="contact-dialog-custom-scrollbar" hidden aria-hidden="true">
+              <div class="contact-dialog-custom-scrollbar-thumb"></div>
+          </div>`;
+}
+
+/**
  * Creates the HTML for the Add Contact dialog.
  *
  * @returns {string} The Add Contact dialog HTML.
  */
 function renderAddContactTemplate() {
-  return `<div>
+  return `<div class="contact-dialog-scroll" onscroll="updateContactDialogScrollbar(this)">
+              <div>
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
@@ -105,12 +117,14 @@ function renderAddContactTemplate() {
             </div>
 
             <form novalidate onsubmit="createContact(event)">
+                <div class="contact-form-content">
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name"
                             aria-label="Name"
                             aria-describedby="contact-name-error"
                             aria-required="true"
+                            maxlength="100"
                             oninput="validateContactField(this)"
                         >
                         <span type="button">
@@ -122,6 +136,7 @@ function renderAddContactTemplate() {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email"
+                            maxlength="254"
                             aria-label="Email address"
                             aria-describedby="contact-email-error"
                             aria-required="true"
@@ -136,6 +151,7 @@ function renderAddContactTemplate() {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" 
+                            maxlength="50"
                             aria-label="Phone number"
                             aria-describedby="contact-phone-error"
                             aria-required="true"
@@ -146,6 +162,7 @@ function renderAddContactTemplate() {
                         </span>
                     </div>
                 <p class="contact-form-error" id="contact-phone-error" aria-live="polite"></p>
+                </div>
                 </div>
                 <div class="contact-form-actions">
                     <button class="button button-bright button-cancel" type="button" onclick="this.closest('dialog').requestClose()">
@@ -158,6 +175,8 @@ function renderAddContactTemplate() {
                     </button>
                 </div>
             </form>
+        </div>
+        ${getContactDialogScrollbarTemplate()}
         `;
 }
 
@@ -168,7 +187,8 @@ function renderAddContactTemplate() {
  * @returns {string} The Edit Contact dialog HTML.
  */
 function renderEditContactTemplate(contact) {
-  return `<div>
+  return `<div class="contact-dialog-scroll" onscroll="updateContactDialogScrollbar(this)">
+              <div>
                 <button class="button button-close" type="button" onclick="this.closest('dialog').requestClose()" aria-label="Close dialog">
                     <img src="../assets/icons/cancel.svg" alt="">
                 </button>
@@ -181,12 +201,14 @@ function renderEditContactTemplate(contact) {
             </div>
 
             <form novalidate onsubmit="saveContact(event)">
+                <div class="contact-form-content">
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="text" id="contact-name" name="name" autocomplete="name" placeholder="Name" value="${contact.name}"
                             aria-label="Name"
                             aria-describedby="contact-name-error"
                             aria-required="true"
+                            maxlength="100"
                             oninput="validateContactField(this)"
                         >
                         <span type="button">
@@ -198,6 +220,7 @@ function renderEditContactTemplate(contact) {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="email" id="contact-email" name="email" autocomplete="email" placeholder="Email" value="${contact.email}"
+                            maxlength="254"
                             aria-label="Email address"
                             aria-describedby="contact-email-error"
                             aria-required="true"
@@ -212,6 +235,7 @@ function renderEditContactTemplate(contact) {
                 <div class="contact-form-field">
                     <div class="input-wrapper">
                         <input type="tel" id="contact-phone" name="phone" autocomplete="tel" placeholder="Phone" value="${contact.phone}"
+                            maxlength="50"
                             aria-label="Phone number"
                             aria-describedby="contact-phone-error"
                             aria-required="true"
@@ -222,6 +246,7 @@ function renderEditContactTemplate(contact) {
                         </span>
                     </div>
                     <p class="contact-form-error" id="contact-phone-error" aria-live="polite"></p>
+                </div>
                 </div>
                 <div class="contact-form-actions">
                     <button class="button button-bright button-delete" type="button" onclick="deleteContact()">
@@ -234,5 +259,7 @@ function renderEditContactTemplate(contact) {
                     </button>
                 </div>
             </form>
+        </div>
+        ${getContactDialogScrollbarTemplate()}
             `;
 }

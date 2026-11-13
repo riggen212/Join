@@ -15,6 +15,7 @@ function renderAddTask(isEditMode = false) {
                             <div class="task-form">
                                 <label for="task-title"> Title<span class="required">*</span> </label>
                                 <input class="input-wrapper" id="task-title" name="title" type="text"
+                                    maxlength="150"
                                     placeholder="Enter a title" aria-describedby="task-title-error"
                                     aria-required="true"
                                     onblur="validateTitle(this.form)" />
@@ -23,6 +24,7 @@ function renderAddTask(isEditMode = false) {
                                 <label for="task-description"> Description </label>
                                 <div class="textarea-wrapper">
                                     <textarea class="input-wrapper" id="task-description" name="description"
+                                        maxlength="5000"
                                         placeholder="Enter a Description"></textarea>
                                     <img class="textarea-resize-icon" src="../assets/icons/recurso.svg" alt="">
                                 </div>
@@ -111,6 +113,7 @@ function renderAddTask(isEditMode = false) {
 
                                 <div class="subtask-input-wrapper">
                                     <input class="input-wrapper" id="subtask" name="subtask" type="text"
+                                        maxlength="150"
                                         placeholder="Add new subtask" autocomplete="off" onkeydown="addSubtaskOnEnter(event)" />
                                     <div class="subtask-input-actions">
                                         <button type="button" aria-label="Clear subtask" onclick="clearSubtaskInput(this.form)">
@@ -123,6 +126,10 @@ function renderAddTask(isEditMode = false) {
                                     </div>
                                 </div>
                                 <ul class="subtask-list scrollbar" id="subtask-list" aria-label="Subtasks"></ul>
+                                <p class="task-form-required-hint">
+                                    <span class="required">*</span>
+                                    This field is required
+                                </p>
                             </div>
                         </div>
 
@@ -238,5 +245,6 @@ function getSubtaskTemplate(subtaskId, title, completed) {
  */
 function getSubtaskEditTemplate() {
   return `<input type="text" class="subtask-edit-input" aria-label="Edit subtask"
+                maxlength="150"
                 onkeydown="handleSubtaskEditKeydown(event)" onblur="saveSubtaskEdit(this)">`;
 }

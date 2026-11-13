@@ -45,6 +45,42 @@ body:has(dialog:modal) [data-background-scroll]:not(dialog:modal *) {
   scrollbar-gutter: stable;
 }
 
+@media screen and (min-width: 768px) {
+  #dialog-add-task[open] {
+    padding-bottom: 0;
+  }
+
+  #dialog-add-task .submit-task {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-md);
+
+    background-color: var(--color-white);
+    margin-top: auto;
+  }
+
+  #dialog-add-task .task-form-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+
+  #dialog-add-task .add-task-form {
+    padding-bottom: 0;
+  }
+
+  #dialog-add-task .submit-task-send {
+    position: static;
+    padding: 0;
+    background-color: transparent;
+  }
+}
+
 #contact[open] {
   top: 50%;
   left: 50%;

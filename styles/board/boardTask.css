@@ -101,6 +101,13 @@
   text-align: start;
 }
 
+.task-card-title,
+.task-card-description {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 .task-card-title {
   font-weight: 700;
   color: var(--background-dark-color);
@@ -239,10 +246,24 @@
   & .task-overlay-assignees-list {
     padding-inline-start: var(--space-task);
     list-style-type: none;
+
+    & .badge-user {
+      flex-shrink: 0;
+    }
+
+    & li > span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
   }
 
   & .task-overlay-subtasks-list {
     padding-inline-start: 0;
+
+    & li > span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
 
     & input[type="checkbox"] {
       flex-shrink: 0;
@@ -309,11 +330,26 @@
     flex-shrink: 0;
   }
 
-  #dialog-task .task-overlay-description,
-  #dialog-task .task-overlay-assignees-list,
-  #dialog-task .task-overlay-subtasks-list {
+  #dialog-task .task-overlay-description {
     max-height: none;
     overflow: visible;
+  }
+}
+
+@media screen and (min-width: 768px) and (min-height: 600px) {
+  #dialog-task .task-overlay-assignees-list,
+  #dialog-task .task-overlay-subtasks-list {
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  /* Show three rows, including the two gaps between them. */
+  #dialog-task .task-overlay-assignees-list {
+    max-height: calc(3 * var(--size-badge-user) + 2 * var(--space-task));
+  }
+
+  #dialog-task .task-overlay-subtasks-list {
+    max-height: calc(3 * 24px + 2 * var(--space-task));
   }
 }
 
