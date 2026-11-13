@@ -1,9 +1,9 @@
-const hasSeenLoginAnimation = localStorage.getItem("loginAnimationSeen");
+const hasSeenLoginAnimation = sessionStorage.getItem("loginAnimationSeen");
 
 if (hasSeenLoginAnimation) {
   document.documentElement.classList.add("login-animation-seen");
 } else {
-  localStorage.setItem("loginAnimationSeen", "true");
+  sessionStorage.setItem("loginAnimationSeen", "true");
 }
 
 /**
