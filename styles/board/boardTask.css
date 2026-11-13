@@ -309,11 +309,26 @@
     flex-shrink: 0;
   }
 
-  #dialog-task .task-overlay-description,
-  #dialog-task .task-overlay-assignees-list,
-  #dialog-task .task-overlay-subtasks-list {
+  #dialog-task .task-overlay-description {
     max-height: none;
     overflow: visible;
+  }
+}
+
+@media screen and (min-width: 768px) and (min-height: 600px) {
+  #dialog-task .task-overlay-assignees-list,
+  #dialog-task .task-overlay-subtasks-list {
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
+  /* Show three rows, including the two gaps between them. */
+  #dialog-task .task-overlay-assignees-list {
+    max-height: calc(3 * var(--size-badge-user) + 2 * var(--space-task));
+  }
+
+  #dialog-task .task-overlay-subtasks-list {
+    max-height: calc(3 * 24px + 2 * var(--space-task));
   }
 }
 
